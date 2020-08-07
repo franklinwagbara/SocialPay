@@ -1,0 +1,2 @@
+INFO  2020-08-06 22:37:40,313 90663ms AccountsController     ?                  - Tasks starts to create account | festus.patrick@sterling.ng | 8/6/2020 10:37:40 PM
+INFO  2020-08-06 22:37:53,660 104009ms antRegistrationService ?                  - Initiating create account | festus.patrick@sterling.ng | 8/6/2020 10:37:53 PM

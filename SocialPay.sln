@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{1B40C423-8307-454E-9CCF-1BE27D8C0245}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialPay.API", "SocialPay.API\SocialPay.API.csproj", "{FC0314D0-DA32-4EDF-A14E-DBA1163B6599}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{C7B3C03F-2773-4D37-B0BF-F6CEFE0EE917}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialPay.Domain", "SocialPay.Domain\SocialPay.Domain.csproj", "{0BD2C01D-F20A-482A-A620-61E2020ED2CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository", "Repository", "{72A0A885-2AD2-4742-8372-4CA3366F0B27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialPay.Core", "SocialPay.Core\SocialPay.Core.csproj", "{4E9841C2-BDF8-4AA8-B2CC-28DCEF4EFBD7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helper", "Helper", "{ACF1DD53-BF68-4613-95C6-788E0989FD62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialPay.Helper", "SocialPay.Helper\SocialPay.Helper.csproj", "{0E71208B-DBA0-4D5E-93C3-288D604C2049}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC0314D0-DA32-4EDF-A14E-DBA1163B6599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC0314D0-DA32-4EDF-A14E-DBA1163B6599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC0314D0-DA32-4EDF-A14E-DBA1163B6599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC0314D0-DA32-4EDF-A14E-DBA1163B6599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD2C01D-F20A-482A-A620-61E2020ED2CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD2C01D-F20A-482A-A620-61E2020ED2CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD2C01D-F20A-482A-A620-61E2020ED2CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD2C01D-F20A-482A-A620-61E2020ED2CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E9841C2-BDF8-4AA8-B2CC-28DCEF4EFBD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E9841C2-BDF8-4AA8-B2CC-28DCEF4EFBD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E9841C2-BDF8-4AA8-B2CC-28DCEF4EFBD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E9841C2-BDF8-4AA8-B2CC-28DCEF4EFBD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E71208B-DBA0-4D5E-93C3-288D604C2049}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E71208B-DBA0-4D5E-93C3-288D604C2049}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E71208B-DBA0-4D5E-93C3-288D604C2049}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E71208B-DBA0-4D5E-93C3-288D604C2049}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FC0314D0-DA32-4EDF-A14E-DBA1163B6599} = {1B40C423-8307-454E-9CCF-1BE27D8C0245}
+		{0BD2C01D-F20A-482A-A620-61E2020ED2CE} = {C7B3C03F-2773-4D37-B0BF-F6CEFE0EE917}
+		{4E9841C2-BDF8-4AA8-B2CC-28DCEF4EFBD7} = {72A0A885-2AD2-4742-8372-4CA3366F0B27}
+		{0E71208B-DBA0-4D5E-93C3-288D604C2049} = {ACF1DD53-BF68-4613-95C6-788E0989FD62}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {30D65A42-FF62-4F5C-B020-C5039EC0A513}
+	EndGlobalSection
+EndGlobal
