@@ -50,7 +50,6 @@ namespace SocialPay.API.Controllers
             {
                 _log4net.Error("Error occured" + " | " + model.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 response.ResponseCode = AppResponseCodes.InternalError;
-              //  _logger.LogError(ex.Message.ToString() + " | " + ex.InnerException.ToString() + " | " + DateTime.Now);
                 return BadRequest(response);
             }
         }
@@ -80,7 +79,6 @@ namespace SocialPay.API.Controllers
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                //  _logger.LogError(ex.Message.ToString() + " | " + ex.InnerException.ToString() + " | " + DateTime.Now);
                 return BadRequest(response);
             }
         }
