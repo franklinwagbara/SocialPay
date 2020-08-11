@@ -14,6 +14,7 @@ namespace SocialPay.Domain.Entities
         public byte[] ClientSecretSalt { get; set; }
         public string StatusCode { get; set; }
         public bool IsDeleted { get; set; }
+        public string RoleName { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
         public virtual ICollection<PinRequest> PinRequest { get; set; }

@@ -12,6 +12,16 @@ namespace SocialPay.Helper
         public const string SignUp = "04";
         public const string DuplicateEmail = "05";
         public const string RecordNotFound = "06";
+        public const string InvalidLogin = "07";
        
+    }
+
+
+
+    public class RoleDetails
+    {
+        public const string Merchant = "Merchant";
+        public const string SuperAdministrator = "Super Administrator";
+        public const string Administrator = "Administrator";     
     }
 }

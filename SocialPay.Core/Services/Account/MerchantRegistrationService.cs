@@ -66,6 +66,7 @@ namespace SocialPay.Core.Services.Account
                             FullName = signUpRequestDto.Fullname,
                             IsDeleted = false,
                             PhoneNumber = signUpRequestDto.PhoneNumber,
+                            RoleName = RoleDetails.Merchant,
                             LastDateModified = DateTime.Now
                         };
                         await _context.ClientAuthentication.AddAsync(model);
@@ -155,6 +156,21 @@ namespace SocialPay.Core.Services.Account
             }
             catch (Exception ex )
             {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> OnboardMerchant(MerchantOnboardingRequestDto model)
+        {
+            try
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
