@@ -18,6 +18,7 @@ namespace SocialPay.Helper
         public const string DuplicateMerchantDetails = "10";               
         public const string InvalidAccountNo = "11";               
         public const string InActiveAccountNumber = "12";               
+        public const string MerchantBusinessInfoRequired = "13";               
     }
 
 

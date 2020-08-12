@@ -245,17 +245,19 @@ namespace SocialPay.Core.Services.Account
             try
             {
 
-
                 if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
                  x.BVN == model.BVN))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
                 var getUserInfo = await _context.ClientAuthentication
-                    .Include(x => x.MerchantBankInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                    .Include(x => x.MerchantBankInfo).Include(x=>x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                if (getUserInfo.MerchantBusinessInfo.Count == 0)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBusinessInfoRequired };
+
                 if (getUserInfo.MerchantBusinessInfo.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
-               
-                if(model.BankName == "Sterling")
+
+                if (model.BankName == "Sterling")
                 {
                     var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban);
                     if (result.ResponseCode != AppResponseCodes.Success)
