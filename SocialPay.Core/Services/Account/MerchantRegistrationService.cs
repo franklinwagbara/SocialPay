@@ -50,7 +50,8 @@ namespace SocialPay.Core.Services.Account
                     newPin = Utilities.GeneratePin();
                 }
                 byte[] passwordHash, passwordSalt;
-                
+                var resetUrl = _appSettings.WebportalUrl + encryptedToken;
+                string urlPath = "<a href=\"" + resetUrl + "\">Click to confirm your sign up process</a>";
                 _utilities.CreatePasswordHash(signUpRequestDto.Password.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
               
                 using(var transaction = await _context.Database.BeginTransactionAsync())

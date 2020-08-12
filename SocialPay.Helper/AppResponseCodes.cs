@@ -13,7 +13,7 @@ namespace SocialPay.Helper
         public const string DuplicateEmail = "05";
         public const string RecordNotFound = "06";
         public const string InvalidLogin = "07";
-       
+               
     }
 
 

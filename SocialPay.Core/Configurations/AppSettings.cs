@@ -9,5 +9,6 @@ namespace SocialPay.Core.Configurations
         public string appKey { get; set; }
         public string SecretKey { get; set; }
         public string EwsServiceUrl { get; set; }
+        public string WebportalUrl { get; set; }
     }
 }
