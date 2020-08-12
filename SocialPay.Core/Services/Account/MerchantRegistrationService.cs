@@ -4,11 +4,13 @@ using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
+using SocialPay.Core.Services.Validations;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,16 +29,19 @@ namespace SocialPay.Core.Services.Account
         private readonly EmailService _emailService;
         private readonly Utilities _utilities;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly BankServiceRepository _bankServiceRepository;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantRegistrationService));
         public MerchantRegistrationService(SocialPayDbContext context,
             IOptions<AppSettings> appSettings, EmailService emailService,
-            Utilities utilities, IHostingEnvironment environment) : base(context)
+            Utilities utilities, IHostingEnvironment environment,
+            BankServiceRepository bankServiceRepository) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
             _emailService = emailService;
             _utilities = utilities;
             _hostingEnvironment = environment;
+            _bankServiceRepository = bankServiceRepository;
         }
 
         public async Task<WebApiResponse> CreateNewMerchant(SignUpRequestDto signUpRequestDto)
@@ -169,21 +174,20 @@ namespace SocialPay.Core.Services.Account
         }
      
 
-        public async Task<WebApiResponse> OnboardMerchant(MerchantOnboardingInfoRequestDto model, long clientId)
+        public async Task<WebApiResponse> OnboardMerchantBusinessInfo(MerchantOnboardingInfoRequestDto model, long clientId)
         {
             try
             {
-                ////if (await _context.MerchantBusinessInfo.AnyAsync(x => x.ClientAuthenticationId == clientId))
-                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateBusinessInfo };
+               
 
                 if(await _context.MerchantBusinessInfo.AnyAsync(x=>x.BusinessEmail == model.BusinessEmail || 
                 x.BusinessPhoneNumber == model.BusinessPhoneNumber || x.Chargebackemail == model.Chargebackemail))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateBusinessInfo };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x=>x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
                 if(getUserInfo.MerchantBusinessInfo.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateBusinessInfo };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
                 string fileName = string.Empty;
                 var merchantId = Guid.NewGuid().ToString("N").Substring(22);
                 var newFileName = string.Empty;
@@ -235,5 +239,74 @@ namespace SocialPay.Core.Services.Account
             }
         }
 
+
+        public async Task<WebApiResponse> OnboardMerchantBankInfo(MerchantBankInfoRequestDto model, long clientId)
+        {
+            try
+            {
+
+
+                if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
+                 x.BVN == model.BVN))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
+
+                var getUserInfo = await _context.ClientAuthentication
+                    .Include(x => x.MerchantBankInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                if (getUserInfo.MerchantBusinessInfo.Count > 0)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
+               
+                if(model.BankName == "Sterling")
+                {
+                    var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban);
+                    if (result.ResponseCode != AppResponseCodes.Success)
+                        return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
+                }
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var bankInfoModel = new MerchantBankInfo
+                        {
+                           ClientAuthenticationId = clientId, Currency = model.Currency,
+                           BankName = model.BankName, BVN = model.BVN, Country = model.Country,
+                           Nuban = model.Nuban, DefaultAccount = model.DefaultAccount
+                        };
+                        await _context.MerchantBankInfo.AddAsync(bankInfoModel);
+                        await _context.SaveChangesAsync();
+                        getUserInfo.StatusCode = AppResponseCodes.Success;
+                        getUserInfo.LastDateModified = DateTime.Now;
+                        await _context.SaveChangesAsync();                      
+                        await transaction.CommitAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<WebApiResponse> GetListOfBanks()
+        {
+            try
+            {
+                var banks = new List<BanksViewModel>();
+                banks.Add(new BanksViewModel { BankName = "Sterling", Code = "000001" });
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = banks };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
     }
 }

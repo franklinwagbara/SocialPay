@@ -14,7 +14,10 @@ namespace SocialPay.Helper
         public const string DuplicateEmail = "06";
         public const string RecordNotFound = "07";
         public const string InvalidLogin = "08";
-        public const string DuplicateBusinessInfo = "09";               
+        public const string MerchantInfoAlreadyExist = "09";               
+        public const string DuplicateMerchantDetails = "10";               
+        public const string InvalidAccountNo = "11";               
+        public const string InActiveAccountNumber = "12";               
     }
 
 

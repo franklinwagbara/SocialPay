@@ -10,5 +10,6 @@ namespace SocialPay.Core.Configurations
         public string SecretKey { get; set; }
         public string EwsServiceUrl { get; set; }
         public string WebportalUrl { get; set; }
+        public string BankServiceUrl { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("onboarding-business-info")]
-        public async Task<IActionResult> ValidateLogin([FromForm] MerchantOnboardingInfoRequestDto model)
+        public async Task<IActionResult> MerchantBusinessInfo([FromForm] MerchantOnboardingInfoRequestDto model)
         {
             var response = new WebApiResponse { };
             try
@@ -37,7 +37,74 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _merchantRegistrationService.OnboardMerchant(model, Convert.ToInt32(clientId));
+                    var result = await _merchantRegistrationService.OnboardMerchantBusinessInfo(model, Convert.ToInt32(clientId));
+                    if (result.ResponseCode != AppResponseCodes.Success)
+                        return BadRequest(result);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("onboarding-bank-info")]
+        public async Task<IActionResult> MerchantBankInfo([FromForm] MerchantBankInfoRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _merchantRegistrationService.OnboardMerchantBankInfo(model, Convert.ToInt32(clientId));
+                    if (result.ResponseCode != AppResponseCodes.Success)
+                        return BadRequest(result);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+
+        [HttpGet]
+        [Route("list-of-banks")]
+        public async Task<IActionResult> GetBanks()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _merchantRegistrationService.GetListOfBanks();
                     if (result.ResponseCode != AppResponseCodes.Success)
                         return BadRequest(result);
                     return Ok(result);
