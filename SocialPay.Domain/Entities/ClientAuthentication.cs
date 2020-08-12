@@ -20,5 +20,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<PinRequest> PinRequest { get; set; }
         public virtual ICollection<MerchantBusinessInfo> MerchantBusinessInfo { get; set; }
         public virtual ICollection<MerchantBankInfo> MerchantBankInfo { get; set; }
+        public virtual ICollection<MerchantActivitySetup> MerchantActivitySetup { get; set; }
     }
 }

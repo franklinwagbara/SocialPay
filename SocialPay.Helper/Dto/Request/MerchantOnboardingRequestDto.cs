@@ -36,4 +36,11 @@ namespace SocialPay.Helper.Dto.Request
         public bool DefaultAccount { get; set; }
     }
 
+    public class MerchantActivitySetupRequestDto
+    {
+        public string PayOrchargeMe { get; set; }
+        public bool ReceiveEmail { get; set; }
+        public string DeliveryFees { get; set; }
+    }
+
 }

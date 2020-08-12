@@ -90,7 +90,6 @@ namespace SocialPay.API.Controllers
         }
 
 
-
         [HttpGet]
         [Route("list-of-banks")]
         public async Task<IActionResult> GetBanks()
@@ -122,5 +121,39 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+
+        [HttpPost]
+        [Route("transaction-setup")]
+        public async Task<IActionResult> TransactionSetup([FromForm] MerchantActivitySetupRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _merchantRegistrationService.TransactionSetupRequest(model, Convert.ToInt32(clientId));
+                    if (result.ResponseCode != AppResponseCodes.Success)
+                        return BadRequest(result);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
     }
 }

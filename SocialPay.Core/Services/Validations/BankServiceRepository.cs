@@ -57,7 +57,7 @@ namespace SocialPay.Core.Services.Validations
             catch (Exception ex)
             {
 
-                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InternalServerError };
+                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InternalError };
             }
 
         }

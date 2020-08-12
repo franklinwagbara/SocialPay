@@ -295,6 +295,35 @@ namespace SocialPay.Core.Services.Account
             }
         }
 
+
+        public async Task<WebApiResponse> TransactionSetupRequest(MerchantActivitySetupRequestDto model, long clientId)
+        {
+            try
+            {
+
+                var getUserInfo = await _context.ClientAuthentication
+                    .Include(x => x.MerchantActivitySetup).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                if (getUserInfo.MerchantBusinessInfo.Count > 0)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
+            
+                        var accountSetupModel = new MerchantActivitySetup
+                        {
+                            ClientAuthenticationId = clientId, DeliveryFees = model.DeliveryFees,
+                            PayOrchargeMe = model.PayOrchargeMe, ReceiveEmail = model.ReceiveEmail
+                            
+                        };
+                        await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
+                        await _context.SaveChangesAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                   
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
         public async Task<WebApiResponse> GetListOfBanks()
         {
             try
