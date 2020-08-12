@@ -12,6 +12,7 @@ namespace SocialPay.Helper.Dto.Request
         [Required(ErrorMessage = "Business Name")]
         public string BusinessName { get; set; }
         [Required(ErrorMessage = "Business Phone number")]
+       // [PhoneNumberValidationAttribute]
         public string BusinessPhoneNumber { get; set; }
         [Required(ErrorMessage = "Business email")]
         public string BusinessEmail { get; set; }
@@ -34,4 +35,5 @@ namespace SocialPay.Helper.Dto.Request
         public string Country { get; set; }
         public bool DefaultAccount { get; set; }
     }
+
 }

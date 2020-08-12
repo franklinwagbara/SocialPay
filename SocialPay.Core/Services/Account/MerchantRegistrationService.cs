@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -166,7 +167,7 @@ namespace SocialPay.Core.Services.Account
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
-
+     
 
         public async Task<WebApiResponse> OnboardMerchant(MerchantOnboardingInfoRequestDto model, long clientId)
         {
@@ -174,6 +175,10 @@ namespace SocialPay.Core.Services.Account
             {
                 ////if (await _context.MerchantBusinessInfo.AnyAsync(x => x.ClientAuthenticationId == clientId))
                 ////    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateBusinessInfo };
+
+                if(await _context.MerchantBusinessInfo.AnyAsync(x=>x.BusinessEmail == model.BusinessEmail || 
+                x.BusinessPhoneNumber == model.BusinessPhoneNumber || x.Chargebackemail == model.Chargebackemail))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateBusinessInfo };
 
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x=>x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
@@ -229,5 +234,6 @@ namespace SocialPay.Core.Services.Account
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
     }
 }
