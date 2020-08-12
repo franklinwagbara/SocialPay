@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
@@ -10,6 +11,9 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,15 +25,17 @@ namespace SocialPay.Core.Services.Account
         private readonly AppSettings _appSettings;
         private readonly EmailService _emailService;
         private readonly Utilities _utilities;
+        private readonly IHostingEnvironment _hostingEnvironment;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantRegistrationService));
         public MerchantRegistrationService(SocialPayDbContext context,
             IOptions<AppSettings> appSettings, EmailService emailService,
-            Utilities utilities) : base(context)
+            Utilities utilities, IHostingEnvironment environment) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
             _emailService = emailService;
             _utilities = utilities;
+            _hostingEnvironment = environment;
         }
 
         public async Task<WebApiResponse> CreateNewMerchant(SignUpRequestDto signUpRequestDto)
@@ -162,16 +168,64 @@ namespace SocialPay.Core.Services.Account
         }
 
 
-        public async Task<WebApiResponse> OnboardMerchant(MerchantOnboardingRequestDto model)
+        public async Task<WebApiResponse> OnboardMerchant(MerchantOnboardingInfoRequestDto model, long clientId)
         {
             try
             {
+                ////if (await _context.MerchantBusinessInfo.AnyAsync(x => x.ClientAuthenticationId == clientId))
+                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateBusinessInfo };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                var getUserInfo = await _context.ClientAuthentication
+                    .Include(x=>x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                if(getUserInfo.MerchantBusinessInfo.Count > 0)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateBusinessInfo };
+                string fileName = string.Empty;
+                var merchantId = Guid.NewGuid().ToString("N").Substring(22);
+                var newFileName = string.Empty;
+                fileName = (model.Logo.FileName);
+
+                var FileExtension = Path.GetExtension(fileName);
+                fileName = Path.Combine(_hostingEnvironment.WebRootPath, "MerchantLogo") + $@"\{newFileName}";
+                
+                // concating  FileName + FileExtension
+                newFileName = merchantId + FileExtension;
+                var filePath = Path.Combine(fileName, newFileName);
+                using(var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var businessInfoModel = new MerchantBusinessInfo
+                        {
+                            BusinessEmail = model.BusinessEmail,
+                            BusinessName = model.BusinessName,
+                            BusinessPhoneNumber = model.BusinessPhoneNumber,
+                            Chargebackemail = model.Chargebackemail,
+                            ClientAuthenticationId = clientId,
+                            Country = model.Country,
+                            MerchantReferenceId = merchantId,
+                            FileLocation = "MerchantLogo",
+                            Logo = newFileName
+                        };
+                        await _context.MerchantBusinessInfo.AddAsync(businessInfoModel);
+                        await _context.SaveChangesAsync();
+                        getUserInfo.StatusCode = AppResponseCodes.BusinessInfo;
+                        getUserInfo.LastDateModified = DateTime.Now;
+                        await _context.SaveChangesAsync();
+                        model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
+                        await transaction.CommitAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                   
+                }
+               
             }
             catch (Exception ex)
             {
-
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

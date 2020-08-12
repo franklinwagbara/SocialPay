@@ -28,6 +28,10 @@
     <ProjectReference Include="..\SocialPay.Domain\SocialPay.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\MerchantLogo\" />
+  </ItemGroup>
+
 
 
 </Project>

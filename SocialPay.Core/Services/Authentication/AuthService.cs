@@ -58,7 +58,7 @@ namespace SocialPay.Core.Services.Authentication
                     new Claim(ClaimTypes.Name, validateuserInfo.Email),
                     new Claim(ClaimTypes.Role, validateuserInfo.RoleName),
                     new Claim(ClaimTypes.Email, validateuserInfo.Email),
-                    new Claim("UserId",  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
+                    new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
                    }),
                     Expires = DateTime.UtcNow.AddDays(1),

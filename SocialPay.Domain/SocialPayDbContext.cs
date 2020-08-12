@@ -12,5 +12,7 @@ namespace SocialPay.Domain
         { }
         public DbSet<ClientAuthentication> ClientAuthentication { get; set; }
         public DbSet<PinRequest> PinRequest { get; set; }
+        public DbSet<MerchantBusinessInfo> MerchantBusinessInfo { get; set; }
+        public DbSet<MerchantBankInfo> MerchantBankInfo { get; set; }
     }
 }

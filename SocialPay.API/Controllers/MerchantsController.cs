@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Account;
@@ -11,7 +13,8 @@ using SocialPay.Helper.Dto.Response;
 
 namespace SocialPay.API.Controllers
 {
-    [Route("api/socialpay")]
+    [Authorize]
+    [Route("api/socialpay/merchant")]
     [ApiController]
     public class MerchantsController : ControllerBase
     {
@@ -22,15 +25,19 @@ namespace SocialPay.API.Controllers
         }
 
         [HttpPost]
-        [Route("merchant-onboarding")]
-        public async Task<IActionResult> ValidateLogin([FromForm] MerchantOnboardingRequestDto model)
+        [Route("onboarding-business-info")]
+        public async Task<IActionResult> ValidateLogin([FromForm] MerchantOnboardingInfoRequestDto model)
         {
             var response = new WebApiResponse { };
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _merchantRegistrationService.OnboardMerchant(model);
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _merchantRegistrationService.OnboardMerchant(model, Convert.ToInt32(clientId));
                     if (result.ResponseCode != AppResponseCodes.Success)
                         return BadRequest(result);
                     return Ok(result);

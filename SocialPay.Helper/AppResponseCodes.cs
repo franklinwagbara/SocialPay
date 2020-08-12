@@ -10,10 +10,11 @@ namespace SocialPay.Helper
         public const string InternalError = "02";
         public const string Failed = "03";
         public const string SignUp = "04";
-        public const string DuplicateEmail = "05";
-        public const string RecordNotFound = "06";
-        public const string InvalidLogin = "07";
-               
+        public const string BusinessInfo = "05";
+        public const string DuplicateEmail = "06";
+        public const string RecordNotFound = "07";
+        public const string InvalidLogin = "08";
+        public const string DuplicateBusinessInfo = "09";               
     }
 
 

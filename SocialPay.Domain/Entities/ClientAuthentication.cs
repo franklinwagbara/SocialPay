@@ -18,5 +18,7 @@ namespace SocialPay.Domain.Entities
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
         public virtual ICollection<PinRequest> PinRequest { get; set; }
+        public virtual ICollection<MerchantBusinessInfo> MerchantBusinessInfo { get; set; }
+        public virtual ICollection<MerchantBankInfo> MerchantBankInfo { get; set; }
     }
 }
