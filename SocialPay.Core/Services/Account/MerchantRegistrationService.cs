@@ -271,11 +271,44 @@ namespace SocialPay.Core.Services.Account
                 if (getUserInfo.MerchantBusinessInfo.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
 
+                var bankInfoModel = new MerchantBankInfo
+                {
+                    ClientAuthenticationId = clientId,
+                    Currency = model.Currency,
+                    BankName = model.BankName,
+                    BVN = model.BVN,
+                    Country = model.Country,
+                    Nuban = model.Nuban,
+                    DefaultAccount = model.DefaultAccount,
+                };
+
                 if (model.BankCode == _appSettings.SterlingBankCode)
                 {
                     var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban);
                     if (result.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
+
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            bankInfoModel.AccountName = result.CUS_SHO_NAME;
+                            await _context.MerchantBankInfo.AddAsync(bankInfoModel);
+                            await _context.SaveChangesAsync();
+                            getUserInfo.StatusCode = AppResponseCodes.Success;
+                            getUserInfo.LastDateModified = DateTime.Now;
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        }
+
+                    }
+
                 }
 
                 var nibsRequestModel = new IBSNameEnquiryRequestDto
@@ -291,22 +324,16 @@ namespace SocialPay.Core.Services.Account
 
                 if(ibsRequest.BVN != model.BVN)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN };
-
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                        var bankInfoModel = new MerchantBankInfo
-                        {
-                           ClientAuthenticationId = clientId, Currency = model.Currency,
-                           BankName = model.BankName, BVN = model.BVN, Country = model.Country,
-                           Nuban = model.Nuban, DefaultAccount = model.DefaultAccount
-                        };
+                        bankInfoModel.AccountName = ibsRequest.AccountName;
                         await _context.MerchantBankInfo.AddAsync(bankInfoModel);
                         await _context.SaveChangesAsync();
                         getUserInfo.StatusCode = AppResponseCodes.Success;
                         getUserInfo.LastDateModified = DateTime.Now;
-                        await _context.SaveChangesAsync();                      
+                        await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
@@ -317,6 +344,7 @@ namespace SocialPay.Core.Services.Account
                     }
 
                 }
+
 
             }
             catch (Exception ex)
