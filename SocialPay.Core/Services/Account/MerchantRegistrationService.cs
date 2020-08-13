@@ -101,8 +101,16 @@ namespace SocialPay.Core.Services.Account
                             SourceEmail = "info@sterling.ng",
                             DestinationEmail = signUpRequestDto.Email,
                             // DestinationEmail = "festypat9@gmail.com",
-                            EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                          //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
                         };
+                        var mailBuilder = new StringBuilder();
+                        mailBuilder.AppendLine("Dear" + " " + signUpRequestDto.Email + "," + "<br />");
+                        mailBuilder.AppendLine("<br />");
+                        mailBuilder.AppendLine("You have successfully sign up. Please confirm your sign up by clicking the link below.<br />");
+                        mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
+                       // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                        mailBuilder.AppendLine("Best Regards,");
+                        emailModal.EmailBody = mailBuilder.ToString();
 
                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                         if(sendMail != AppResponseCodes.Success)

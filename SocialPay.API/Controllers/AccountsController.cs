@@ -38,9 +38,7 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _merchantRegistrationService.CreateNewMerchant(model);
-                    if(result.ResponseCode != AppResponseCodes.Success)
-                        return BadRequest(result);
+                    var result = await _merchantRegistrationService.CreateNewMerchant(model);                  
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
@@ -68,9 +66,7 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _merchantRegistrationService.ConfirmSignUp(model);
-                    if (result.ResponseCode != AppResponseCodes.Success)
-                        return BadRequest(result);
+                    var result = await _merchantRegistrationService.ConfirmSignUp(model);                  
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
@@ -99,9 +95,7 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _authRepoService.Authenticate(model);
-                    if (result.ResponseCode != AppResponseCodes.Success)
-                        return BadRequest(result);
+                    var result = await _authRepoService.Authenticate(model);                   
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
