@@ -104,8 +104,8 @@ namespace SocialPay.API.Controllers
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     var result = await _merchantRegistrationService.GetListOfBanks();
-                    if (result.ResponseCode != AppResponseCodes.Success)
-                        return BadRequest(result);
+                    //if (result.ResponseCode != AppResponseCodes.Success)
+                    //    return BadRequest(result);
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
@@ -137,8 +137,8 @@ namespace SocialPay.API.Controllers
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     var result = await _merchantRegistrationService.TransactionSetupRequest(model, Convert.ToInt32(clientId));
-                    if (result.ResponseCode != AppResponseCodes.Success)
-                        return BadRequest(result);
+                    //if (result.ResponseCode != AppResponseCodes.Success)
+                    //    return BadRequest(result);
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
