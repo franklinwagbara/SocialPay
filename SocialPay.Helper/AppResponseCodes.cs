@@ -19,6 +19,8 @@ namespace SocialPay.Helper
         public const string InvalidAccountNo = "11";               
         public const string InActiveAccountNumber = "12";               
         public const string MerchantBusinessInfoRequired = "13";               
+        public const string InterBankNameEnquiryFailed = "14";               
+        public const string InvalidBVN = "15";               
     }
 
 

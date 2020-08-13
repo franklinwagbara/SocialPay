@@ -256,13 +256,15 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+              
 
                 if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
                  x.BVN == model.BVN))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
                 var getUserInfo = await _context.ClientAuthentication
-                    .Include(x => x.MerchantBankInfo).Include(x=>x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                    .Include(x => x.MerchantBankInfo).Include(x=>x.MerchantBusinessInfo)
+                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
                 if (getUserInfo.MerchantBusinessInfo.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBusinessInfoRequired };
 
@@ -283,6 +285,12 @@ namespace SocialPay.Core.Services.Account
                     DestinationBankCode = model.BankCode,
                     RequestType = _appSettings.nameEnquiryRequestType,
                 };
+                var ibsRequest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModel);
+                if (ibsRequest.ResponseCode != AppResponseCodes.Success)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
+
+                if(ibsRequest.BVN != model.BVN)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {

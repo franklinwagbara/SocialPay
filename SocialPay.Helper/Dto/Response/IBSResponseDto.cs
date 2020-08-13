@@ -6,9 +6,26 @@ using System.Xml.Serialization;
 
 namespace SocialPay.Helper.Dto.Response
 {
-    public class IBSResponseDto
-    {
-    }
+	[XmlRoot(ElementName = "IBSResponse")]
+	public class IBSNameEnquiryResponseDto
+	{
+		[XmlElement(ElementName = "ReferenceID")]
+		public string ReferenceID { get; set; }
+		[XmlElement(ElementName = "RequestType")]
+		public string RequestType { get; set; }
+		[XmlElement(ElementName = "ResponseCode")]
+		public string ResponseCode { get; set; }
+		[XmlElement(ElementName = "ResponseText")]
+		public string ResponseText { get; set; }
+		[XmlElement(ElementName = "SessionID")]
+		public string SessionID { get; set; }
+		[XmlElement(ElementName = "BVN")]
+		public string BVN { get; set; }
+		[XmlElement(ElementName = "KYCLevel")]
+		public string KYCLevel { get; set; }
+		[XmlElement(ElementName = "AccountName")]
+		public string AccountName { get; set; }
+	}
 
 	[XmlRoot(ElementName = "Rec")]
 	public class Rec

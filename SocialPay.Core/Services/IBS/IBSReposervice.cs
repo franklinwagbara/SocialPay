@@ -61,6 +61,45 @@ namespace SocialPay.Core.Services.IBS
             }
         }
 
+
+
+        public async Task<IBSNameEnquiryResponseDto> InitiateNameEnquiry(IBSNameEnquiryRequestDto iBSNameEnquiryRequestDto)
+        {
+
+            try
+            {
+                var ibsService = new BSServicesSoapClient(BSServicesSoapClient.EndpointConfiguration.IBSServicesSoap, _appSettings.IBSserviceUrl);
+                string referenceId = Guid.NewGuid().ToString().Substring(10) + " " + Convert.ToString(DateTime.Now.Ticks);
+
+                var nameEnquiryStringBuilder = new StringBuilder();
+                nameEnquiryStringBuilder.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+                nameEnquiryStringBuilder.Append("<IBSRequest>");
+                nameEnquiryStringBuilder.Append("<ReferenceID>" + referenceId + "</ReferenceID>");
+                nameEnquiryStringBuilder.Append("<RequestType>" + iBSNameEnquiryRequestDto.RequestType + "</RequestType>");
+                nameEnquiryStringBuilder.Append("<ToAccount>" + iBSNameEnquiryRequestDto.ToAccount + "</ToAccount>");
+                nameEnquiryStringBuilder.Append("<DestinationBankCode>" + iBSNameEnquiryRequestDto.DestinationBankCode + "</DestinationBankCode>");
+                nameEnquiryStringBuilder.Append("</IBSRequest>");
+                var nameEnquiryStringRequest = nameEnquiryStringBuilder.ToString();
+
+                var en = new EncryptDecrypt();
+                var encryptRequest = en.Encrypt(nameEnquiryStringRequest);
+                              
+                var encryptedDataRequest = await ibsService.IBSBridgeAsync(encryptRequest, Convert.ToInt32(_appSettings.appId));
+
+                var decryptResponse = en.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
+                var deserializeResponseObject = ObjectToXML(decryptResponse, typeof(IBSNameEnquiryResponseDto));
+
+                var serializeResponse = JsonConvert.SerializeObject(deserializeResponseObject);
+                var result = JsonConvert.DeserializeObject<IBSNameEnquiryResponseDto>(serializeResponse);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new IBSNameEnquiryResponseDto { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
         public static Object ObjectToXML(string xml, Type objectType)
         {
             StringReader strReader = null;
