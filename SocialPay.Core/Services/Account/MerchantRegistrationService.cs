@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
+using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Validations;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
@@ -30,11 +31,13 @@ namespace SocialPay.Core.Services.Account
         private readonly Utilities _utilities;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly BankServiceRepository _bankServiceRepository;
+        private readonly IBSReposervice _iBSReposervice;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantRegistrationService));
         public MerchantRegistrationService(SocialPayDbContext context,
             IOptions<AppSettings> appSettings, EmailService emailService,
             Utilities utilities, IHostingEnvironment environment,
-            BankServiceRepository bankServiceRepository) : base(context)
+            BankServiceRepository bankServiceRepository,
+            IBSReposervice iBSReposervice) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -42,6 +45,7 @@ namespace SocialPay.Core.Services.Account
             _utilities = utilities;
             _hostingEnvironment = environment;
             _bankServiceRepository = bankServiceRepository;
+            _iBSReposervice = iBSReposervice;
         }
 
         public async Task<WebApiResponse> CreateNewMerchant(SignUpRequestDto signUpRequestDto)
@@ -265,12 +269,20 @@ namespace SocialPay.Core.Services.Account
                 if (getUserInfo.MerchantBusinessInfo.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
 
-                if (model.BankName == "Sterling")
+                if (model.BankCode == _appSettings.SterlingBankCode)
                 {
                     var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban);
                     if (result.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
                 }
+
+                var nibsRequestModel = new IBSNameEnquiryRequestDto
+                {
+                    ReferenceID = Guid.NewGuid().ToString(),
+                    ToAccount = model.Nuban,
+                    DestinationBankCode = model.BankCode,
+                    RequestType = _appSettings.nameEnquiryRequestType,
+                };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -338,9 +350,13 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                var banks = new List<BanksViewModel>();
-                banks.Add(new BanksViewModel { BankName = "Sterling", Code = "000001" });
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = banks };
+                var nibsRequestModel = new IBSGetBanksRequestDto
+                {
+                    ReferenceID = Guid.NewGuid().ToString(),                   
+                    RequestType = _appSettings.getBanksRequestType
+                };
+                var result = await _iBSReposervice.GetParticipatingBanks(nibsRequestModel);               
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
             {

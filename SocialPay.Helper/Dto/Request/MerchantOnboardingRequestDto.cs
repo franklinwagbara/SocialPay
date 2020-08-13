@@ -29,6 +29,7 @@ namespace SocialPay.Helper.Dto.Request
     public class MerchantBankInfoRequestDto
     {
         public string BankName { get; set; }
+        public string BankCode { get; set; }
         public string Nuban { get; set; }
         public string Currency { get; set; }
         public string BVN { get; set; }
