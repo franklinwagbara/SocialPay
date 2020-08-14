@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -19,6 +20,7 @@ namespace SocialPay.Helper.Dto.Request
        // [Required(ErrorMessage = "Pin is required.")]
         public string Pin { get; set; }
        // [Required(ErrorMessage = "Token is required.")]
+       [JsonIgnore]
         public string Token { get; set; }
     }
 }

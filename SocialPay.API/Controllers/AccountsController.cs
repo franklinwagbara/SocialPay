@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Account;
@@ -56,7 +57,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
+       // [AllowAnonymous]
         [HttpPost]
         [Route("signup-confirmation")]
         public async Task<IActionResult> SignUpConfirmation([FromBody] SignUpConfirmationRequestDto model)

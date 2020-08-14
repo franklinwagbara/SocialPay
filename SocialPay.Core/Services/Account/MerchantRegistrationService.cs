@@ -58,7 +58,7 @@ namespace SocialPay.Core.Services.Account
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail };
                 var token = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
-                var newPin = Utilities.GeneratePin();
+                var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
                 var encryptedPin = newPin.Encrypt(_appSettings.appKey);
                 if (await _context.PinRequest.AnyAsync(x => x.Pin == encryptedPin))
                 {
@@ -147,10 +147,10 @@ namespace SocialPay.Core.Services.Account
             try
             {
                 var encryptPin = model.Pin.Encrypt(_appSettings.appKey);
-                var token = model.Token.Trim().Replace(" ", "+");
+                var token = model.Token.Trim().Replace("%", "+");
 
-                var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.TokenSecret == token.Trim()
-                && x.Pin == encryptPin && x.Status == false);
+                var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.Pin == encryptPin
+                && x.Status == false);
 
                 using(var transaction = await _context.Database.BeginTransactionAsync())
                 {
