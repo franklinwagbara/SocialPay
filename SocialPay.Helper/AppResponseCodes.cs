@@ -9,21 +9,24 @@ namespace SocialPay.Helper
         public const string Success = "00";
         public const string InternalError = "02";
         public const string Failed = "03";
-        public const string SignUp = "04";
-        public const string BusinessInfo = "05";
-        public const string DuplicateEmail = "06";
-        public const string RecordNotFound = "07";
-        public const string InvalidLogin = "08";
-        public const string MerchantInfoAlreadyExist = "09";               
-        public const string DuplicateMerchantDetails = "10";               
-        public const string InvalidAccountNo = "11";               
-        public const string InActiveAccountNumber = "12";               
-        public const string MerchantBusinessInfoRequired = "13";               
-        public const string InterBankNameEnquiryFailed = "14";               
-        public const string InvalidBVN = "15";               
+        public const string DuplicateEmail = "04";
+        public const string RecordNotFound = "05";
+        public const string InvalidLogin = "06";
+        public const string MerchantInfoAlreadyExist = "07";               
+        public const string DuplicateMerchantDetails = "08";               
+        public const string InvalidAccountNo = "09";               
+        public const string InActiveAccountNumber = "10";               
+        public const string MerchantBusinessInfoRequired = "11";               
+        public const string InterBankNameEnquiryFailed = "12";               
+        public const string InvalidBVN = "13";               
     }
 
-
+    public class MerchantOnboardingProcess
+    {
+        public const string CreateAccount = "01";
+        public const string SignUp = "02";
+        public const string BusinessInfo = "03";
+    }
 
     public class RoleDetails
     {

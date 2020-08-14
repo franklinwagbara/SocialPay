@@ -79,7 +79,7 @@ namespace SocialPay.Core.Services.Account
                             ClientSecretHash = passwordHash,
                             ClientSecretSalt = passwordSalt,
                             Email = signUpRequestDto.Email,
-                            StatusCode = AppResponseCodes.SignUp,
+                            StatusCode = MerchantOnboardingProcess.CreateAccount,
                             FullName = signUpRequestDto.Fullname,
                             IsDeleted = false,
                             PhoneNumber = signUpRequestDto.PhoneNumber,
@@ -147,7 +147,7 @@ namespace SocialPay.Core.Services.Account
             try
             {
                 var encryptPin = model.Pin.Encrypt(_appSettings.appKey);
-                var token = model.Token.Trim().Replace("%", "+");
+               // var token = model.Token.Trim().Replace(" ", "+");
 
                 var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.Pin == encryptPin
                 && x.Status == false);
@@ -162,7 +162,7 @@ namespace SocialPay.Core.Services.Account
                            SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateToken.ClientAuthenticationId);
                         if (getuserInfo == null)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
-                        getuserInfo.StatusCode = AppResponseCodes.SignUp;
+                        getuserInfo.StatusCode = MerchantOnboardingProcess.SignUp;
                         _context.ClientAuthentication.Update(getuserInfo);
                         await _context.SaveChangesAsync();
                         validateToken.Status = true;
@@ -229,7 +229,7 @@ namespace SocialPay.Core.Services.Account
                         };
                         await _context.MerchantBusinessInfo.AddAsync(businessInfoModel);
                         await _context.SaveChangesAsync();
-                        getUserInfo.StatusCode = AppResponseCodes.BusinessInfo;
+                        getUserInfo.StatusCode = MerchantOnboardingProcess.BusinessInfo;
                         getUserInfo.LastDateModified = DateTime.Now;
                         await _context.SaveChangesAsync();
                         model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
