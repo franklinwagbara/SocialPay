@@ -361,8 +361,9 @@ namespace SocialPay.Core.Services.Account
             
                         var accountSetupModel = new MerchantActivitySetup
                         {
-                            ClientAuthenticationId = clientId, DeliveryFees = model.DeliveryFees,
-                            PayOrchargeMe = model.PayOrchargeMe, ReceiveEmail = model.ReceiveEmail
+                            ClientAuthenticationId = clientId, WithinLagos = model.WithinLagos,
+                            PayOrchargeMe = model.PayOrchargeMe, ReceiveEmail = model.ReceiveEmail,
+                            OutSideLagos = model.OutSideLagos, OutSideNigeria = model.OutSideNigeria
                             
                         };
                         await _context.MerchantActivitySetup.AddAsync(accountSetupModel);

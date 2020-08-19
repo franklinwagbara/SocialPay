@@ -38,7 +38,10 @@ namespace SocialPay.Helper.Dto.Request
     {
         public string PayOrchargeMe { get; set; }
         public bool ReceiveEmail { get; set; }
-        public string DeliveryFees { get; set; }
+        public decimal WithinLagos { get; set; }
+        public decimal OutSideLagos { get; set; }
+        public decimal OutSideNigeria { get; set; }
+        //public decimal customField { get; set; }
     }
 
 }

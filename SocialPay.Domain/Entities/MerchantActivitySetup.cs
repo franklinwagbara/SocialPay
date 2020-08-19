@@ -8,7 +8,9 @@ namespace SocialPay.Domain.Entities
         public long ClientAuthenticationId { get; set; }
         public string PayOrchargeMe { get; set; }
         public bool ReceiveEmail { get; set; }
-        public string DeliveryFees { get; set; }
+        public decimal WithinLagos { get; set; }
+        public decimal OutSideLagos { get; set; }
+        public decimal OutSideNigeria { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
     }
