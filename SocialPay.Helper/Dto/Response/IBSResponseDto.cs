@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace SocialPay.Helper.Dto.Response
 {
-	[XmlRoot(ElementName = "IBSResponse")]
+    [XmlRoot(ElementName = "IBSResponse")]
 	public class IBSNameEnquiryResponseDto
 	{
 		[XmlElement(ElementName = "ReferenceID")]

@@ -1,5 +1,3 @@
-using System;
-
 namespace SocialPay.API.Models
 {
     public class ErrorViewModel

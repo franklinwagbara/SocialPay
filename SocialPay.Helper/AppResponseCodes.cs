@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SocialPay.Helper
+﻿namespace SocialPay.Helper
 {
     public class AppResponseCodes
     {

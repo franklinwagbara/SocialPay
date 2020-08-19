@@ -1,10 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-
-namespace SocialPay.Helper.Dto.Request
+﻿namespace SocialPay.Helper.Dto.Request
 {
     public class SignUpRequestDto
     {

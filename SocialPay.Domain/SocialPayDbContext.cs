@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialPay.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SocialPay.Domain
 {

@@ -4,3 +4,5 @@ INFO  2020-08-10 20:13:09,197 184780ms AccountsController     ?                 
 INFO  2020-08-10 20:13:14,862 190446ms antRegistrationService ?                  - Initiating create account | festus.patrick@sterling.ng | 8/10/2020 8:13:14 PM
 INFO  2020-08-14 11:37:03,454 120031ms AccountsController     ?                  - Tasks starts to create account | festus.patrick@sterling.ng | 8/14/2020 11:37:03 AM
 INFO  2020-08-14 11:37:05,442 122019ms antRegistrationService ?                  - Initiating create account | festus.patrick@sterling.ng | 8/14/2020 11:37:05 AM
+INFO  2020-08-15 15:19:52,358 153057ms AccountsController     ?                  - Tasks starts to create account | festypat9@gmail.com | 8/15/2020 3:19:52 PM
+INFO  2020-08-15 15:19:53,933 154631ms antRegistrationService ?                  - Initiating create account | festypat9@gmail.com | 8/15/2020 3:19:53 PM
