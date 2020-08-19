@@ -124,7 +124,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("transaction-setup")]
-        public async Task<IActionResult> TransactionSetup([FromForm] MerchantActivitySetupRequestDto model)
+        public async Task<IActionResult> TransactionSetup([FromBody] MerchantActivitySetupRequestDto model)
         {
             var response = new WebApiResponse { };
             try
