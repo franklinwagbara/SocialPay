@@ -290,7 +290,7 @@ namespace SocialPay.Core.Services.Account
                             bankInfoModel.AccountName = result.CUS_SHO_NAME;
                             await _context.MerchantBankInfo.AddAsync(bankInfoModel);
                             await _context.SaveChangesAsync();
-                            getUserInfo.StatusCode = AppResponseCodes.Success;
+                            getUserInfo.StatusCode = MerchantOnboardingProcess.BankInfo;
                             getUserInfo.LastDateModified = DateTime.Now;
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
@@ -359,16 +359,36 @@ namespace SocialPay.Core.Services.Account
                 if (getUserInfo.MerchantBusinessInfo.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
             
-                        var accountSetupModel = new MerchantActivitySetup
+                        using(var transaction  = await _context.Database.BeginTransactionAsync())
                         {
-                            ClientAuthenticationId = clientId, WithinLagos = model.WithinLagos,
-                            PayOrchargeMe = model.PayOrchargeMe, ReceiveEmail = model.ReceiveEmail,
-                            OutSideLagos = model.OutSideLagos, OutSideNigeria = model.OutSideNigeria
-                            
-                        };
-                        await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
-                        await _context.SaveChangesAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                            try
+                            {
+                                var accountSetupModel = new MerchantActivitySetup
+                                {
+                                    ClientAuthenticationId = clientId,
+                                    WithinLagos = model.WithinLagos,
+                                    PayOrchargeMe = model.PayOrchargeMe,
+                                    ReceiveEmail = model.ReceiveEmail,
+                                    OutSideLagos = model.OutSideLagos,
+                                    OutSideNigeria = model.OutSideNigeria
+
+                                };
+                                getUserInfo.StatusCode = AppResponseCodes.Success;
+                                 _context.ClientAuthentication.Update(getUserInfo);
+                                await _context.SaveChangesAsync();
+                                await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
+                                await _context.SaveChangesAsync();
+                                await transaction.CommitAsync();
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                         }
+                            catch (Exception ex)
+                            {
+                                await transaction.RollbackAsync();
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+
+                             }
+                        }
+                       
                    
             }
             catch (Exception ex)

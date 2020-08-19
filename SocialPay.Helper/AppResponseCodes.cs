@@ -22,6 +22,7 @@
         public const string CreateAccount = "01";
         public const string SignUp = "02";
         public const string BusinessInfo = "03";
+        public const string BankInfo = "04";
     }
 
     public class RoleDetails
