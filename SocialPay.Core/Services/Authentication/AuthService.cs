@@ -57,6 +57,7 @@ namespace SocialPay.Core.Services.Authentication
                     new Claim(ClaimTypes.Name, validateuserInfo.Email),
                     new Claim(ClaimTypes.Role, validateuserInfo.RoleName),
                     new Claim(ClaimTypes.Email, validateuserInfo.Email),
+                    new Claim("UserStatus",  validateuserInfo.StatusCode),
                     new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
                    }),
@@ -69,6 +70,7 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.AccessToken = tokenString;
                 tokenResult.ClientId = validateuserInfo.Email;
                 tokenResult.Role = validateuserInfo.RoleName;
+                tokenResult.UserStatus = validateuserInfo.StatusCode;
                 tokenResult.ResponseCode = AppResponseCodes.Success;
                 return tokenResult;
             }

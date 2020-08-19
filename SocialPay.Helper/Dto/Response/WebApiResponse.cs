@@ -13,6 +13,7 @@ namespace SocialPay.Helper.Dto.Response
     {
         public string ClientId { get; set; }
         public string ResponseCode { get; set; }
+        public string UserStatus { get; set; }
         public string AccessToken { get; set; }
         public string Role { get; set; }
     }
