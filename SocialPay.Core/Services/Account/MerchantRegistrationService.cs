@@ -83,6 +83,20 @@ namespace SocialPay.Core.Services.Account
                         };
                         await _context.ClientAuthentication.AddAsync(model);
                         await _context.SaveChangesAsync();
+                        var merchantWallet = new MerchantWallet
+                        {
+                            ClientAuthenticationId = model.ClientAuthenticationId,
+                            CurrencyCode = _appSettings.currencyCode,
+                            DoB = signUpRequestDto.DateOfBirth,
+                            Firstname = signUpRequestDto.Fullname,
+                            Lastname = model.FullName,
+                            Mobile = signUpRequestDto.PhoneNumber,
+                            Gender = signUpRequestDto.Gender,
+                            LastDateModified = DateTime.Now,
+                            status = MerchantWalletProcess.CreateAccount
+                        };
+                        await _context.MerchantWallet.AddAsync(merchantWallet);
+                        await _context.SaveChangesAsync();
 
                         var pinRequestModel = new PinRequest
                         {
@@ -210,15 +224,7 @@ namespace SocialPay.Core.Services.Account
                 {
                     try
                     {
-                        var merchantWallet = new MerchantWallet
-                        {
-                            ClientAuthenticationId = clientId, CurrencyCode = _appSettings.currencyCode,
-                            DoB = model.DateOfBirth, Firstname = model.BusinessName,
-                            Lastname = model.BusinessName, Mobile = model.BusinessPhoneNumber,
-                            Gender = model.Gender, LastDateModified = DateTime.Now, status = false
-                        };
-                        await _context.MerchantWallet.AddAsync(merchantWallet);
-                        await _context.SaveChangesAsync();
+                      
                         var businessInfoModel = new MerchantBusinessInfo
                         {
                             BusinessEmail = model.BusinessEmail,

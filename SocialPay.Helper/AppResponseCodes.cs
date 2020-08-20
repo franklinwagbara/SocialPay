@@ -25,6 +25,12 @@
         public const string BankInfo = "04";
     }
 
+    public class MerchantWalletProcess
+    {
+        public const string CreateAccount = "01";
+        public const string Processed = "02";       
+    }
+
     public class RoleDetails
     {
         public const string Merchant = "Merchant";

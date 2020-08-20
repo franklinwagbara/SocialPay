@@ -14,7 +14,7 @@ namespace SocialPay.Domain.Entities
         public string DoB { get; set; }
         public string Gender { get; set; }
         public string CurrencyCode { get; set; }
-        public bool status { get; set; }
+        public string status { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
         public virtual ClientAuthentication ClientAuthentication { get; set; }
