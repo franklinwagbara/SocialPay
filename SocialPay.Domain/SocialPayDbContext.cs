@@ -12,5 +12,6 @@ namespace SocialPay.Domain
         public DbSet<MerchantBusinessInfo> MerchantBusinessInfo { get; set; }
         public DbSet<MerchantBankInfo> MerchantBankInfo { get; set; }
         public DbSet<MerchantActivitySetup> MerchantActivitySetup { get; set; }
+        public DbSet<MerchantWallet> MerchantWallet { get; set; }
     }
 }

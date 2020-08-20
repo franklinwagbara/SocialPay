@@ -210,6 +210,15 @@ namespace SocialPay.Core.Services.Account
                 {
                     try
                     {
+                        var merchantWallet = new MerchantWallet
+                        {
+                            ClientAuthenticationId = clientId, CurrencyCode = _appSettings.currencyCode,
+                            DoB = model.DateOfBirth, Firstname = model.BusinessName,
+                            Lastname = model.BusinessName, Mobile = model.BusinessPhoneNumber,
+                            Gender = model.Gender, LastDateModified = DateTime.Now, status = false
+                        };
+                        await _context.MerchantWallet.AddAsync(merchantWallet);
+                        await _context.SaveChangesAsync();
                         var businessInfoModel = new MerchantBusinessInfo
                         {
                             BusinessEmail = model.BusinessEmail,

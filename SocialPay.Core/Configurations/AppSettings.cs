@@ -12,5 +12,6 @@
         public string BankServiceUrl { get; set; }
         public string nameEnquiryRequestType { get; set; }
         public string getBanksRequestType { get; set; }
+        public string currencyCode { get; set; }
     }
 }
