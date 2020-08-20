@@ -13,5 +13,7 @@
         public string nameEnquiryRequestType { get; set; }
         public string getBanksRequestType { get; set; }
         public string currencyCode { get; set; }
+        public string walletBaseUrl { get; set; }
+        public string createwalletUrl { get; set; }
     }
 }
