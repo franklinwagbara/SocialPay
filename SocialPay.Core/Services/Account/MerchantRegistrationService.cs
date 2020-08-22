@@ -278,7 +278,7 @@ namespace SocialPay.Core.Services.Account
                 if (getUserInfo.MerchantBusinessInfo.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBusinessInfoRequired };
 
-                if (getUserInfo.MerchantBusinessInfo.Count > 0)
+                if (getUserInfo.MerchantBankInfo.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
 
                 var bankInfoModel = new MerchantBankInfo
