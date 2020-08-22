@@ -1,5 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using SocialPay.Core.Configurations;
+using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
+using SocialPay.Helper.Dto.Response;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -8,46 +12,61 @@ using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Wallet
 {
-    public class WalletService
+    public class WalletRepoService
     {
         private readonly HttpClient _client;
-
-        public WalletService(string baseUrl)
+        private readonly AppSettings _appSettings;
+        public WalletRepoService(IOptions<AppSettings> appSettings)
         {
+            _appSettings = appSettings.Value;
             //var username = "test";
             //var password = "NeRWNtWQMS";
-            baseUrl = "https://pass.sterling.ng/OneWallet/";
+            //  baseUrl = "https://pass.sterling.ng/OneWallet/";
             _client = new HttpClient
             {
-                BaseAddress = new Uri(baseUrl)
+                BaseAddress = new Uri(_appSettings.walletBaseUrl)
             };
-          
+
         }
 
-        public async Task<bool> CreateMerchantWallet()
+        public async Task<WalletResponseDto> CreateMerchantWallet(MerchantWalletRequestDto model)
         {
+            var apiResponse = new WalletResponseDto { };
             try
             {
-                var model = new MerchantWalletRequestDto { };
+                
+               
+                ////model.CURRENCYCODE = "NGN"; 
+              //  model.DOB = "2090-05-21";
+                ////model.firstname = "Pat";
+                ////model.lastname = "Pat";
+                ////model.Gender = "M";
+                //model.mobile = "93984984338";
                 var request = JsonConvert.SerializeObject(model);
-                var content = new StringContent(
-                    request, Encoding.UTF8,
-                    "application/json");
-                string uri = "/api/Wallet/CreateWallet";
-                var response = await _client.PostAsync($"vendor/{uri}", content);
+                ////var content = new StringContent(
+                ////    request, Encoding.UTF8,
+                ////    "application/json");                
+                ////var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.createwalletUrl, content);
+                ////var result = await response.Content.ReadAsStringAsync();
 
-
-                var response1 = await _client.PostAsync($"vendor/{uri}", new StringContent(
-                    request, Encoding.UTF8,
-                    "application/json"));
-
-                //  var content = await response.Content.ReadAsStringAsync();
-                return true;
+                var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.createwalletUrl,
+                    new StringContent(request, Encoding.UTF8, "application/json"));
+                var result = await response.Content.ReadAsStringAsync();
+                if(response.IsSuccessStatusCode)
+                {
+                     apiResponse = JsonConvert.DeserializeObject<WalletResponseDto>(result);
+                     apiResponse.responsedata = result;
+                    return apiResponse;
+                }
+                apiResponse.response = AppResponseCodes.Failed;
+                apiResponse.responsedata = result;
+                return apiResponse;
             }
             catch (Exception ex)
             {
-
-                return false;
+                apiResponse.response = AppResponseCodes.InternalError;
+                apiResponse.responsedata = "An error occured while creating wallet";
+                return apiResponse;
             }
         }
     }

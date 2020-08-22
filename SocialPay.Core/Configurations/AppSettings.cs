@@ -15,5 +15,6 @@
         public string currencyCode { get; set; }
         public string walletBaseUrl { get; set; }
         public string createwalletUrl { get; set; }
+        public string walletExtensionUrl { get; set; }
     }
 }

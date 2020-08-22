@@ -6,6 +6,7 @@ using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Validations;
+using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -13,6 +14,7 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,12 +29,13 @@ namespace SocialPay.Core.Services.Account
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly BankServiceRepository _bankServiceRepository;
         private readonly IBSReposervice _iBSReposervice;
+        private readonly WalletRepoService _walletRepoService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantRegistrationService));
         public MerchantRegistrationService(SocialPayDbContext context,
             IOptions<AppSettings> appSettings, EmailService emailService,
             Utilities utilities, IHostingEnvironment environment,
             BankServiceRepository bankServiceRepository,
-            IBSReposervice iBSReposervice) : base(context)
+            IBSReposervice iBSReposervice, WalletRepoService walletRepoService) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -41,6 +44,7 @@ namespace SocialPay.Core.Services.Account
             _hostingEnvironment = environment;
             _bankServiceRepository = bankServiceRepository;
             _iBSReposervice = iBSReposervice;
+            _walletRepoService = walletRepoService;
         }
 
         public async Task<WebApiResponse> CreateNewMerchant(SignUpRequestDto signUpRequestDto)
@@ -369,9 +373,9 @@ namespace SocialPay.Core.Services.Account
             try
             {
 
-                var getUserInfo = await _context.ClientAuthentication
+                var getUserInfo = await _context.ClientAuthentication.Include(x=>x.MerchantWallet)
                     .Include(x => x.MerchantActivitySetup).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
-                if (getUserInfo.MerchantBusinessInfo.Count > 0)
+                if (getUserInfo.MerchantActivitySetup.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
             
                         using(var transaction  = await _context.Database.BeginTransactionAsync())
@@ -388,14 +392,44 @@ namespace SocialPay.Core.Services.Account
                                     OutSideNigeria = model.OutSideNigeria
 
                                 };
-                                getUserInfo.StatusCode = AppResponseCodes.Success;
-                                 _context.ClientAuthentication.Update(getUserInfo);
-                                await _context.SaveChangesAsync();
-                                await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
+                                var walletModel = new MerchantWalletRequestDto
+                                {
+                                    CURRENCYCODE = _appSettings.currencyCode, DOB = getUserInfo.MerchantWallet.Select(x=>x.DoB).FirstOrDefault(),
+                                    firstname = getUserInfo.MerchantWallet.Select(x => x.Firstname).FirstOrDefault(),
+                                    lastname = getUserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault(),
+                                    Gender = getUserInfo.MerchantWallet.Select(x => x.Gender).FirstOrDefault(),
+                                    mobile = getUserInfo.PhoneNumber,
+                                };
+                                var walletResponse = new CreateWalletResponse { };
+                    
+                                var createWallet = await _walletRepoService.CreateMerchantWallet(walletModel);
+                                if(createWallet.response == AppResponseCodes.Success)
+                                {
+                                    var walletInfo = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                                    walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
+                                    walletResponse.Message = createWallet.responsedata.ToString();
+                                    await _context.CreateWalletResponse.AddAsync(walletResponse);
+                                    await _context.SaveChangesAsync();
+                            
+                                    getUserInfo.StatusCode = AppResponseCodes.Success;
+                                    walletInfo.status = MerchantWalletProcess.Processed;
+                                    walletInfo.LastDateModified = DateTime.Now;
+                                    _context.ClientAuthentication.Update(getUserInfo);
+                                    await _context.SaveChangesAsync();
+                                    _context.MerchantWallet.Update(walletInfo);
+                                    await _context.SaveChangesAsync();
+                                    await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
+                                    await _context.SaveChangesAsync();
+                                    await transaction.CommitAsync();
+                                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                                 }
+                                walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
+                                walletResponse.Message = createWallet.responsedata.ToString();
+                                await _context.CreateWalletResponse.AddAsync(walletResponse);
                                 await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
-                                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
-                         }
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.FailedCreatingWallet };  
+                        }
                             catch (Exception ex)
                             {
                                 await transaction.RollbackAsync();

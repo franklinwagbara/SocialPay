@@ -16,6 +16,7 @@ using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Validations;
+using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 
 namespace SocialPay.API
@@ -101,6 +102,7 @@ namespace SocialPay.API
             services.AddScoped<Utilities>();
             services.AddScoped<BankServiceRepository>();
             services.AddScoped<IBSReposervice>();
+            services.AddScoped<WalletRepoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

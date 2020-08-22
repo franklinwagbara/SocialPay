@@ -46,11 +46,12 @@ namespace SocialPay.Helper.Dto.Request
 
     public class MerchantWalletRequestDto
     {
-        public string PayOrchargeMe { get; set; }
-        public bool ReceiveEmail { get; set; }
-        public decimal WithinLagos { get; set; }
-        public decimal OutSideLagos { get; set; }
-        public decimal OutSideNigeria { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
+        public string mobile { get; set; }
+        public string DOB { get; set; }
+        public string Gender { get; set; }
+        public string CURRENCYCODE { get; set; }
         //public decimal customField { get; set; }
     }
 }
