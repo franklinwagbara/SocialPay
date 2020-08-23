@@ -32,6 +32,12 @@
         public const string Processed = "02";       
     }
 
+    public class MerchantPaymentCategory
+    {
+        public const string Basic = "01";
+        public const string Escrow = "02";
+    }
+
     public class RoleDetails
     {
         public const string Merchant = "Merchant";

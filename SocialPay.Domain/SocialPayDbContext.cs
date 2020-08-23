@@ -14,5 +14,6 @@ namespace SocialPay.Domain
         public DbSet<MerchantActivitySetup> MerchantActivitySetup { get; set; }
         public DbSet<MerchantWallet> MerchantWallet { get; set; }
         public DbSet<CreateWalletResponse> CreateWalletResponse { get; set; }
+        public DbSet<MerchantPaymentSetup> MerchantPaymentSetup { get; set; }
     }
 }

@@ -54,4 +54,20 @@ namespace SocialPay.Helper.Dto.Request
         public string CURRENCYCODE { get; set; }
         //public decimal customField { get; set; }
     }
+
+
+    public class MerchantpaymentLinkRequestDto
+    {
+        public string PaymentLinkName { get; set; }
+        public string Description { get; set; }
+        public decimal Amount { get; set; }
+        public string CustomUrl { get; set; }
+        public string DeliveryMethod { get; set; }
+        public string DeliveryTime { get; set; }
+        public bool RedirectAfterPayment { get; set; }
+        public string AdditionalDetails { get; set; }
+        public string PaymentCategory { get; set; }
+        public string PaymentMethod { get; set; }
+        //public decimal customField { get; set; }
+    }
 }
