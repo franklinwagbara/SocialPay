@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
@@ -15,14 +17,16 @@ namespace SocialPay.API.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly MerchantRegistrationService _merchantRegistrationService;
+        private readonly ADRepoService _aDRepoService;
         private readonly AuthRepoService _authRepoService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AccountsController));
 
         public AccountsController(MerchantRegistrationService merchantRegistrationService,
-            AuthRepoService authRepoService)
+            AuthRepoService authRepoService, ADRepoService aDRepoService)
         {
             _merchantRegistrationService = merchantRegistrationService;
             _authRepoService = authRepoService;
+            _aDRepoService = aDRepoService;
         }
 
         [HttpPost]
@@ -82,8 +86,6 @@ namespace SocialPay.API.Controllers
         }
 
 
-
-
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> ValidateLogin([FromBody] LoginRequestDto model)
@@ -105,6 +107,37 @@ namespace SocialPay.API.Controllers
             }
             catch (Exception ex)
             {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
+        [HttpPost]
+        [Route("create-user")]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDto model)
+        {
+            _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
+
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _aDRepoService.RegisterUser(model);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 response.ResponseCode = AppResponseCodes.InternalError;
                 return BadRequest(response);
             }

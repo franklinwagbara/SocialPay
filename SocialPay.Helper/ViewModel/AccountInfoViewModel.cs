@@ -59,4 +59,14 @@
         public string ResponseCode { get; set; }
     }
 
+    public class ADUserViewModel
+    {
+        public string Username { get; set; }
+        public string Fullname { get; set; }
+        public string Email { get; set; }
+        public string SupervisorName { get; set; }
+        public string SupervisorEmail { get; set; }
+        public string mobile { get; set; }
+
+    }
 }

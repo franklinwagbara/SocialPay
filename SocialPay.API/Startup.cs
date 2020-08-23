@@ -105,6 +105,7 @@ namespace SocialPay.API
             services.AddScoped<IBSReposervice>();
             services.AddScoped<WalletRepoService>();
             services.AddScoped<MerchantPaymentLinkService>();
+            services.AddScoped<ADRepoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
