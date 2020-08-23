@@ -65,7 +65,7 @@ namespace SocialPay.Core.Services.Account
                     FullName = accountDetail.Fullname,
                     IsDeleted = false,
                     PhoneNumber = accountDetail.mobile,
-                    RoleName = RoleDetails.Merchant,
+                    RoleName = RoleDetails.SuperAdministrator,
                     LastDateModified = DateTime.Now
                 };
                 await _context.ClientAuthentication.AddAsync(model);
