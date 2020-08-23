@@ -373,8 +373,12 @@ namespace SocialPay.Core.Services.Account
             try
             {
 
-                var getUserInfo = await _context.ClientAuthentication.Include(x=>x.MerchantWallet)
+                var getUserInfo = await _context.ClientAuthentication
+                    .Include(x=>x.MerchantWallet)
+                    .Include(x=>x.MerchantBankInfo)
                     .Include(x => x.MerchantActivitySetup).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                if(getUserInfo.MerchantBankInfo.Count == 0)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBankInfoRequired };
                 if (getUserInfo.MerchantActivitySetup.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
             

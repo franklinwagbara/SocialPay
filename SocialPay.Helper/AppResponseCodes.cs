@@ -15,9 +15,10 @@
         public const string MerchantBusinessInfoRequired = "11";               
         public const string InterBankNameEnquiryFailed = "12";               
         public const string InvalidBVN = "13";               
-        public const string FailedCreatingWallet = "14";               
-        public const string InvalidADUser = "15";               
-        public const string UserNotFoundOnAD = "16";               
+        public const string FailedCreatingWallet = "14";
+        public const string MerchantBankInfoRequired = "15";
+        public const string InvalidADUser = "16";               
+        public const string UserNotFoundOnAD = "17";               
     }
 
     public class MerchantOnboardingProcess
