@@ -273,7 +273,7 @@ namespace SocialPay.Core.Services.Account
               
 
                 if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
-                 x.BVN == model.BVN))
+                 x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
                 var getUserInfo = await _context.ClientAuthentication
