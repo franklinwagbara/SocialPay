@@ -36,12 +36,12 @@ namespace SocialPay.Core.Services.Wallet
             {
                 
                
-                ////model.CURRENCYCODE = "NGN"; 
-              //  model.DOB = "2090-05-21";
-                ////model.firstname = "Pat";
-                ////model.lastname = "Pat";
-                ////model.Gender = "M";
-                //model.mobile = "93984984338";
+                //model.CURRENCYCODE = "NGN"; 
+                //model.DOB = "2090-05-21";
+                //model.firstname = "Pat";
+                //model.lastname = "Pat";
+                //model.Gender = "M";
+               // model.mobile = "343334345";
                 var request = JsonConvert.SerializeObject(model);
                 ////var content = new StringContent(
                 ////    request, Encoding.UTF8,

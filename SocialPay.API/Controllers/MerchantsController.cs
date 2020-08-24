@@ -121,7 +121,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
+        //[AllowAnonymous]
         [HttpPost]
         [Route("transaction-setup")]
         public async Task<IActionResult> TransactionSetup([FromBody] MerchantActivitySetupRequestDto model)
