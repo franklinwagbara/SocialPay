@@ -372,7 +372,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-               // clientId = 10013;
+                //clientId = 10013;
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x=>x.MerchantWallet)
                     .Include(x=>x.MerchantBankInfo)
