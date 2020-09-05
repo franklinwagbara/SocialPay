@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SocialPay.Domain.Entities
 {
@@ -18,6 +16,9 @@ namespace SocialPay.Domain.Entities
         public string AdditionalDetails { get; set; }
         public string PaymentCategory { get; set; }
         public string PaymentMethod { get; set; }
+        public string TransactionReference { get; set; }
+        public string TransactionToken { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
     }

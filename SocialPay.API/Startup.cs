@@ -12,8 +12,10 @@ using Microsoft.OpenApi.Models;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
+using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
+using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Transaction;
@@ -108,6 +110,8 @@ namespace SocialPay.API
             services.AddScoped<MerchantPaymentLinkService>();
             services.AddScoped<ADRepoService>();
             services.AddScoped<MerchantReportService>();
+            services.AddScoped<CustomerRepoService>();
+            services.AddScoped<ICustomerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

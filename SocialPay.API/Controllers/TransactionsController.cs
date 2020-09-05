@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Transaction;
 using SocialPay.Helper;
@@ -25,6 +23,7 @@ namespace SocialPay.API.Controllers
             _merchantPaymentLinkService = merchantPaymentLinkService;
         }
 
+        //[AllowAnonymous]
         [HttpPost]
         [Route("generate-payment-link")]
         public async Task<IActionResult> GeneratePaymentLink([FromBody] MerchantpaymentLinkRequestDto model)
