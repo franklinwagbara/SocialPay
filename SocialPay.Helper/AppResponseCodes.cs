@@ -28,6 +28,7 @@
         public const string SignUp = "02";
         public const string BusinessInfo = "03";
         public const string BankInfo = "04";
+        public const string Customer = "05";
     }
 
     public class MerchantWalletProcess
@@ -47,5 +48,6 @@
         public const string Merchant = "Merchant";
         public const string SuperAdministrator = "Super Administrator";
         public const string Administrator = "Administrator";     
+        public const string CustomerAccount = "Customer";     
     }
 }

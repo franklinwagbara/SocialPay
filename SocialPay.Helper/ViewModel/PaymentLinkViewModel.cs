@@ -8,5 +8,6 @@
         public string CustomUrl { get; set; }
         public string DeliveryMethod { get; set; }
         public string DeliveryTime { get; set; }
+        public string TransactionReference { get; set; }
     }
 }

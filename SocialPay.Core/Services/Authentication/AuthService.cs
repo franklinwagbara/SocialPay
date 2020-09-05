@@ -20,12 +20,21 @@ namespace SocialPay.Core.Services.Authentication
     {
         private readonly SocialPayDbContext _context;
         private readonly AppSettings _appSettings;
-        public AuthRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings) : base(context)
+        private readonly Utilities _utilities;
+        public AuthRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
+            Utilities utilities) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
+            _utilities = utilities;
         }
 
+        public async Task<ClientAuthentication> GetClientDetails(string email)
+        {
+            return await _context.ClientAuthentication.SingleOrDefaultAsync(p => p.Email
+            == email
+            );
+        }
         public async Task<LoginAPIResponse> Authenticate(LoginRequestDto loginRequestDto)
         {
             try
@@ -97,6 +106,39 @@ namespace SocialPay.Core.Services.Authentication
             }
 
             return true;
+        }
+
+        public async Task<WebApiResponse> CreateAccount(string email, string password, string fullname, string phoneNumber)
+        {
+            try
+            {
+                byte[] passwordHash, passwordSalt;
+                if(string.IsNullOrEmpty(password))
+                {
+                    var newPassword = Guid.NewGuid().ToString("N").Substring(0, 9) + DateTime.Now.Ticks;
+                    password = newPassword;
+                }
+                _utilities.CreatePasswordHash(password.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
+                var model = new ClientAuthentication
+                {
+                    ClientSecretHash = passwordHash,
+                    ClientSecretSalt = passwordSalt,
+                    Email = email,
+                    StatusCode = MerchantOnboardingProcess.Customer,
+                    FullName = fullname,
+                    IsDeleted = false,
+                    PhoneNumber = phoneNumber,
+                    RoleName = RoleDetails.CustomerAccount,
+                    LastDateModified = DateTime.Now
+                };
+                await _context.ClientAuthentication.AddAsync(model);
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
         }
 
     }

@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SocialPay.Core.Services;
+using SocialPay.Core.Services.Authentication;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
+using SocialPay.Helper;
+using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +16,11 @@ namespace SocialPay.Core.Repositories.Customer
     public class ICustomerService : BaseService<MerchantPaymentSetup>
     {
         private readonly SocialPayDbContext _context;
-        public ICustomerService(SocialPayDbContext context) : base(context)
+        private readonly AuthRepoService _authRepoService;
+        public ICustomerService(SocialPayDbContext context, AuthRepoService authRepoService) : base(context)
         {
             _context = context;
+            _authRepoService = authRepoService;
         }
 
         public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
@@ -25,6 +30,21 @@ namespace SocialPay.Core.Repositories.Customer
             );
         }
 
+        public async Task<WebApiResponse> GetClientDetails(string email)
+        {
+            var getClientInfo = await _authRepoService.GetClientDetails(email);
+            if (getClientInfo == null)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+        }
+
+        public async Task<WebApiResponse> CreateNewCustomer(string email, string fullname, string phoneNumber)
+        {
+            var createCustomer = await _authRepoService.CreateAccount(email, null, fullname,  phoneNumber);
+            if (createCustomer == null)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+        }
 
         public async Task<PaymentLinkViewModel> GetTransactionDetails(string refId)
         {

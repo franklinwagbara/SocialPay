@@ -45,5 +45,33 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+
+        [HttpPost]
+        [Route("initiate-payment")]
+        public async Task<IActionResult> InitiatePayment([FromBody] CustomerPaymentRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    var result = await _customerRepoService.MakePayment(model);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
     }
 }
