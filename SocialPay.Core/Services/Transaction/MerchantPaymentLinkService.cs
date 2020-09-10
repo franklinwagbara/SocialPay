@@ -2,12 +2,14 @@
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
+using SocialPay.Core.Repositories.Customer;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Transaction
@@ -17,12 +19,14 @@ namespace SocialPay.Core.Services.Transaction
         private readonly SocialPayDbContext _context;
         private readonly AppSettings _appSettings;
         private readonly Utilities _utilities;
+        private readonly ICustomerService _customerService;
         public MerchantPaymentLinkService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
-            Utilities utilities)
+            Utilities utilities, ICustomerService customerService)
         {
             _context = context;
             _appSettings = appSettings.Value;
             _utilities = utilities;
+            _customerService = customerService;
         }
 
         public async Task<WebApiResponse> GeneratePaymentLink(MerchantpaymentLinkRequestDto paymentModel, long clientId)
@@ -58,18 +62,32 @@ namespace SocialPay.Core.Services.Transaction
                     //encryptedPin = newPin.Encrypt(_appSettings.appKey);
                 }
                 model.TransactionReference = newGuid;
-                model.TransactionToken = _appSettings.paymentlinkUrl + encryptedToken;
+                model.PaymentLinkUrl = _appSettings.paymentlinkUrl + encryptedToken;
                 if (paymentModel.PaymentCategory == MerchantPaymentCategory.Basic)
                 {
                     await _context.MerchantPaymentSetup.AddAsync(model);
                     await _context.SaveChangesAsync();
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.TransactionToken };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
                 }
                 model.DeliveryTime = paymentModel.DeliveryTime;
                 model.PaymentMethod = paymentModel.PaymentMethod;
                 await _context.MerchantPaymentSetup.AddAsync(model);
                 await _context.SaveChangesAsync();
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.TransactionToken };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<WebApiResponse> GetAllPaymentLinksByMerchant(long clientId)
+        {
+            try
+            {
+               // clientId = 10014;
+                var getlinks = await _customerService.GetPaymentLinks(clientId);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getlinks };
             }
             catch (Exception ex)
             {

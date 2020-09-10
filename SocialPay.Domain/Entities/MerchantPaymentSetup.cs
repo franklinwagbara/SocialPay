@@ -17,7 +17,7 @@ namespace SocialPay.Domain.Entities
         public string PaymentCategory { get; set; }
         public string PaymentMethod { get; set; }
         public string TransactionReference { get; set; }
-        public string TransactionToken { get; set; }
+        public string PaymentLinkUrl { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }

@@ -58,10 +58,23 @@ namespace SocialPay.Core.Repositories.Customer
             return paymentview;
         }
 
-        public async Task<List<MerchantPaymentSetup>> GetAllPaymentLinks()
+        public async Task<List<MerchantPaymentSetup>> GetAllPaymentLinksByClientId(long clientId)
         {
             return await _context.MerchantPaymentSetup.Where(x => x.IsDeleted
-            == false).ToListAsync();
+            == false && x.ClientAuthenticationId == clientId).ToListAsync();
+        }
+
+
+        public async Task <List<PaymentLinkViewModel>> GetPaymentLinks(long clientId)
+        {
+            var paymentview = new List<PaymentLinkViewModel>();
+            var validateReference = await GetAllPaymentLinksByClientId(clientId);
+            if (validateReference == null)
+                return paymentview;
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
+            var mapper = config.CreateMapper();
+            paymentview = mapper.Map<List<PaymentLinkViewModel>>(validateReference);
+            return paymentview;
         }
     }
 }
