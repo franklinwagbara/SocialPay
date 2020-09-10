@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
+using SocialPay.Core.Extensions.Utilities;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Services.Account;
@@ -22,6 +23,7 @@ using SocialPay.Core.Services.Transaction;
 using SocialPay.Core.Services.Validations;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
+using SocialPay.Helper.Cryptography;
 
 namespace SocialPay.API
 {
@@ -112,6 +114,8 @@ namespace SocialPay.API
             services.AddScoped<MerchantReportService>();
             services.AddScoped<CustomerRepoService>();
             services.AddScoped<ICustomerService>();
+            services.AddScoped<EncryptDecryptAlgorithm>();
+            services.AddScoped<EncryptDecrypt>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

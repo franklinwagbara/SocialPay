@@ -16,6 +16,10 @@
         public string currencyCode { get; set; }
         public string walletBaseUrl { get; set; }
         public string createwalletUrl { get; set; }
+        public string paymentlinkUrl { get; set; }
         public string walletExtensionUrl { get; set; }
+        public string sterlingpaymentGatewayRequestUrl { get; set; }
+        public string mid { get; set; }
+        public string paymentCombination { get; set; }
     }
 }

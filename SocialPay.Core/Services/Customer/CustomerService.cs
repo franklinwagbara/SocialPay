@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
+using SocialPay.Core.Extensions.Utilities;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Helper;
+using SocialPay.Helper.Cryptography;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Customer
@@ -15,10 +18,15 @@ namespace SocialPay.Core.Services.Customer
       
         private readonly ICustomerService _customerService;
         private readonly AppSettings _appSettings;
-        public CustomerRepoService(ICustomerService customerService, IOptions<AppSettings> appSettings)
+        private readonly EncryptDecryptAlgorithm _encryptDecryptAlgorithm;
+        private readonly EncryptDecrypt _encryptDecrypt;
+        public CustomerRepoService(ICustomerService customerService, IOptions<AppSettings> appSettings,
+            EncryptDecryptAlgorithm encryptDecryptAlgorithm, EncryptDecrypt encryptDecrypt)
         {
             _customerService = customerService;
             _appSettings = appSettings.Value;
+            _encryptDecrypt = encryptDecrypt;
+            _encryptDecryptAlgorithm = encryptDecryptAlgorithm;
         }
 
         public async Task<WebApiResponse> GetLinkDetails(string transactionReference)
@@ -45,15 +53,24 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-
+               
                 var getClient = await _customerService.GetClientDetails(model.Email);
-                if(getClient == null)
+                var getPaymentDetails = await _customerService.GetTransactionReference(model.TransactionReference);
+                if (getPaymentDetails == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
+                if (getClient.ResponseCode != AppResponseCodes.Success)
                 {
-                    //var createCustomer = await _customerService.CreateNewCustomer(model.Email, model.Fullname,
-                    //    model.PhoneNumber);
+                    var createCustomer = await _customerService.CreateNewCustomer(model.Email, model.Fullname,
+                       model.PhoneNumber);
+                    if (createCustomer.ResponseCode != AppResponseCodes.Success)
+                        return new WebApiResponse { ResponseCode = createCustomer.ResponseCode };
                 }
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                   
+                var encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.Amount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                var encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
+                //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
+                var paymentData =  _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentData };
             }
             catch (Exception ex)
             {

@@ -39,6 +39,7 @@ namespace SocialPay.Core.Services.Authentication
         {
             try
             {
+                
                 if (string.IsNullOrEmpty(loginRequestDto.Email) || string.IsNullOrEmpty(loginRequestDto.Password))
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.Failed};
 

@@ -19,7 +19,8 @@
         public const string MerchantBankInfoRequired = "15";
         public const string InvalidADUser = "16";               
         public const string UserNotFoundOnAD = "17";               
-        public const string InvalidPaymentLink = "17";               
+        public const string InvalidPaymentLink = "18";               
+        public const string InvalidPaymentReference = "19";               
     }
 
     public class MerchantOnboardingProcess

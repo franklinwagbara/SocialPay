@@ -29,7 +29,7 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-               // clientId = 10014;
+                //clientId = 10014;
                 var model = new MerchantPaymentSetup { };
                 model.PaymentLinkName = paymentModel.PaymentLinkName;
                 model.AdditionalDetails = paymentModel.AdditionalDetails;
@@ -58,18 +58,18 @@ namespace SocialPay.Core.Services.Transaction
                     //encryptedPin = newPin.Encrypt(_appSettings.appKey);
                 }
                 model.TransactionReference = newGuid;
-                model.TransactionToken = encryptedToken;
+                model.TransactionToken = _appSettings.paymentlinkUrl + encryptedToken;
                 if (paymentModel.PaymentCategory == MerchantPaymentCategory.Basic)
                 {
                     await _context.MerchantPaymentSetup.AddAsync(model);
                     await _context.SaveChangesAsync();
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.TransactionToken };
                 }
                 model.DeliveryTime = paymentModel.DeliveryTime;
                 model.PaymentMethod = paymentModel.PaymentMethod;
                 await _context.MerchantPaymentSetup.AddAsync(model);
                 await _context.SaveChangesAsync();
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.TransactionToken };
             }
             catch (Exception ex)
             {
