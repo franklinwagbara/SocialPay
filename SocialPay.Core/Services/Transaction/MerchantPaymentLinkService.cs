@@ -44,7 +44,7 @@ namespace SocialPay.Core.Services.Transaction
                 model.DeliveryMethod = paymentModel.DeliveryMethod;
                 model.ClientAuthenticationId = clientId;
                 var newGuid = Guid.NewGuid().ToString("N");
-                var token = model.Amount + "," + model.PaymentCategory +","+ model.PaymentLinkName +","+ newGuid;
+                var token = model.Amount + "," + model.PaymentCategory + ","+ model.PaymentLinkName + ","+ newGuid;
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
                 //var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
                 //var encryptedPin = newPin.Encrypt(_appSettings.appKey);
