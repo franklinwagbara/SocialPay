@@ -33,8 +33,10 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-
+                //var decryptedReference1 = transactionReference.Decrypt(_appSettings.appKey);
+                //string dv = decryptedReference1.Split(",")[3];
                 var decryptedReference = transactionReference.Decrypt(_appSettings.appKey).Split(",")[3];
+
                 var result = await _customerService.GetTransactionDetails(decryptedReference);
 
                 if (result == null)
