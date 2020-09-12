@@ -33,13 +33,13 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-                var decryptedReference = transactionReference.Replace(" ", "+").Decrypt(_appSettings.appKey).Split(",")[3];
+               // var decryptedReference = transactionReference.Replace(" ", "+").Decrypt(_appSettings.appKey).Split(",")[3];
                 //var res = t1.Decrypt(_appSettings.appKey).Split(",")[3];
                 //var decryptedReference1 = transactionReference.Decrypt(_appSettings.appKey);
                 //string dv = decryptedReference1.Split(",")[3];
                // var decryptedReference = transactionReference.Decrypt(_appSettings.appKey).Split(",")[3];
 
-                var result = await _customerService.GetTransactionDetails(decryptedReference);
+                var result = await _customerService.GetTransactionDetails(transactionReference);
 
                 if (result == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentLink};

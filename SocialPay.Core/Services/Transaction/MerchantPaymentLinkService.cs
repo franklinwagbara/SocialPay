@@ -62,7 +62,7 @@ namespace SocialPay.Core.Services.Transaction
                     //encryptedPin = newPin.Encrypt(_appSettings.appKey);
                 }
                 model.TransactionReference = newGuid;
-                model.PaymentLinkUrl = _appSettings.paymentlinkUrl + encryptedToken;
+                model.PaymentLinkUrl = _appSettings.paymentlinkUrl + model.TransactionReference;
                 if (paymentModel.PaymentCategory == MerchantPaymentCategory.Basic)
                 {
                     await _context.MerchantPaymentSetup.AddAsync(model);
