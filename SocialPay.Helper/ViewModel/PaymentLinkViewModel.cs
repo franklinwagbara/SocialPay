@@ -10,5 +10,8 @@
         public string DeliveryTime { get; set; }
         public string TransactionReference { get; set; }
         public string PaymentLinkUrl { get; set; }
+        public string PaymentCategory { get; set; }
+        public string PaymentMethod { get; set; }
+
     }
 }
