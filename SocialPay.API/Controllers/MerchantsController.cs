@@ -160,7 +160,7 @@ namespace SocialPay.API.Controllers
 
        // [AllowAnonymous]
         [HttpGet]
-        [Route("list-of-payment-details")]
+        [Route("payment-links")]
         public async Task<IActionResult> GetPaymentDetails()
         {
             var response = new WebApiResponse { };
