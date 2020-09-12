@@ -47,6 +47,7 @@ namespace SocialPay.Core.Services.Authentication
 
                 var validateuserInfo = await _context.ClientAuthentication
                     .Include(x=>x.MerchantBusinessInfo)
+                    .Include(x=>x.MerchantWallet)
                     .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email);
 
                 // check if username exists
@@ -86,6 +87,7 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.UserStatus = validateuserInfo.StatusCode;
                 tokenResult.ResponseCode = AppResponseCodes.Success;
                 tokenResult.BusinessName = validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault();
+                tokenResult.FullName = validateuserInfo.MerchantWallet.Select(x => x.Firstname).FirstOrDefault() +" "+ validateuserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault();
                 return tokenResult;
             }
             catch (Exception ex)
