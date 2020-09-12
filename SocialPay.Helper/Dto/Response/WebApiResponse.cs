@@ -17,6 +17,11 @@ namespace SocialPay.Helper.Dto.Response
         public string AccessToken { get; set; }
         public string Role { get; set; }
         public string BusinessName { get; set; }
-        public string FullName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string BankName { get; set; }
+        public string Nuban { get; set; }
+        public string AccountName { get; set; }
     }
 }
