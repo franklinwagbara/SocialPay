@@ -16,5 +16,6 @@ namespace SocialPay.Helper.Dto.Response
         public string UserStatus { get; set; }
         public string AccessToken { get; set; }
         public string Role { get; set; }
+        public string BusinessName { get; set; }
     }
 }

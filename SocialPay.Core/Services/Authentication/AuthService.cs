@@ -10,6 +10,7 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +45,9 @@ namespace SocialPay.Core.Services.Authentication
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.Failed};
 
 
-                var validateuserInfo = await _context.ClientAuthentication.SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email);
+                var validateuserInfo = await _context.ClientAuthentication
+                    .Include(x=>x.MerchantBusinessInfo)
+                    .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email);
 
                 // check if username exists
                 if (validateuserInfo == null)
@@ -82,6 +85,7 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.Role = validateuserInfo.RoleName;
                 tokenResult.UserStatus = validateuserInfo.StatusCode;
                 tokenResult.ResponseCode = AppResponseCodes.Success;
+                tokenResult.BusinessName = validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault();
                 return tokenResult;
             }
             catch (Exception ex)
