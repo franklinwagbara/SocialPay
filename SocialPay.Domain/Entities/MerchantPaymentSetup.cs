@@ -9,6 +9,7 @@ namespace SocialPay.Domain.Entities
         public string PaymentLinkName { get; set; }
         public string Description { get; set; }
         public decimal Amount { get; set; }
+        public decimal ShippingFee { get; set; }
         public string CustomUrl { get; set; }
         public string DeliveryMethod { get; set; }
         public string DeliveryTime { get; set; }
