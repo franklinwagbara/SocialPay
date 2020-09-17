@@ -75,6 +75,33 @@ namespace SocialPay.API.Controllers
         }
 
         [HttpPost]
+        [Route("validate-payment")]
+        public async Task<IActionResult> ValidatePayment([FromBody] PaymentValidationRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    var result = await _customerRepoService.PaymentConfirmation(model);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost]
         [Route("accept-reject-order")]
         public async Task<IActionResult> AcceptRejectOrder([FromBody] CustomerPaymentRequestDto model)
         {

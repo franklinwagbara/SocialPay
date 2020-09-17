@@ -80,5 +80,20 @@ namespace SocialPay.Core.Services.Customer
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+
+        public async Task<WebApiResponse> PaymentConfirmation(PaymentValidationRequestDto model)
+        {
+            try
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success};
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
     }
 }

@@ -12,4 +12,11 @@
         public string Fullname { get; set; }
         public string PhoneNumber { get; set; }
     }
+
+    public class PaymentValidationRequestDto
+    {
+        public string TransactionReference { get; set; }
+        public string Status { get; set; }
+     
+    }
 }
