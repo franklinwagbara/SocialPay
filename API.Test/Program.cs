@@ -14,13 +14,13 @@ namespace API.Test
             Console.WriteLine("Hello World!");
             // Process.Start("chrome.exe", "http://www.YourUrl.com");
             //Mid^Amt^OrderId
-            string newParameter = "3Xd1AuUoqehJ2fKYXm9Yeq5ucFy5Na5JXgmcDqdJERG78qIDVYKtyaAkmp/34tbnLqUDWUX3zM/mMhO4uZFw==";
+            string newParameter = "3Xd1AuUoqehJ2fK YXm9Yeq5ucFy5Na 5JXgmcDqdJGaa oAcJpAEQlEJsCjPpAa4xLfmhqmd6Dyqrdpg1x2sQ==";
             string mid = "111024";
             string toDecrypt = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJGK1iPjKRN22N%2FY7GClg7pIUlGky5mFmoquTSt2dVQcOg%3D%3D";
             decimal amount = 200;
             var refId = "2525263";
             //string url1 =  HttpUtility.UrlDecode(newParameter);
-            string url =  HttpUtility.UrlDecode(toDecrypt).Replace(" ","");
+            string url =  HttpUtility.UrlDecode(newParameter).Replace(" ","");
             var algorithm = new EncryptDecrypt();
            
             var encryptedText = mid +"^" + amount +"^" + refId;
