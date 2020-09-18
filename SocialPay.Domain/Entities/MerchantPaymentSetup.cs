@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SocialPay.Domain.Entities
 {
@@ -23,5 +24,6 @@ namespace SocialPay.Domain.Entities
         public bool IsDeleted { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
+        public virtual ICollection<CustomerTransaction> CustomerTransaction { get; set; }
     }
 }

@@ -16,6 +16,7 @@
     public class PaymentValidationRequestDto
     {
         public string TransactionReference { get; set; }
+        public long CustomerId { get; set; }
         public string Message { get; set; }
      
     }

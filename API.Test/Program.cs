@@ -14,18 +14,29 @@ namespace API.Test
             Console.WriteLine("Hello World!");
             // Process.Start("chrome.exe", "http://www.YourUrl.com");
             //Mid^Amt^OrderId
-            string newParameter = "3Xd1AuUoqehJ2fK YXm9Yeq5ucFy5Na 5JXgmcDqdJGaa oAcJpAEQlEJsCjPpAa4xLfmhqmd6Dyqrdpg1x2sQ==";
+            string newParameter = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
             string mid = "111024";
             string toDecrypt = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJGK1iPjKRN22N%2FY7GClg7pIUlGky5mFmoquTSt2dVQcOg%3D%3D";
             decimal amount = 200;
             var refId = "2525263";
             //string url1 =  HttpUtility.UrlDecode(newParameter);
-            string url =  HttpUtility.UrlDecode(newParameter).Replace(" ","");
+             //string url =  HttpUtility.UrlDecode(newParameter);
+
+            var sec = new EncryptandDecrypt();
+
+            var encryptedText = mid + "^" + amount + "^" + refId;
+            string enConfig = sec.EncryptAlt(encryptedText);
+            var lo = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJEhkeumNM2I3SCmCgdaeX7khQkmY09j81I%3D";
+              string deConfig = sec.DecryptAlt(lo);
+              string config = sec.Repad(newParameter);
+              string config1 = sec.DecryptAlt(config);
+            //var dn = Convert.FromBase64String(url);
             var algorithm = new EncryptDecrypt();
            
-            var encryptedText = mid +"^" + amount +"^" + refId;
+           
             // var de = algorithm.DecryptAlt("+hgnDAzlw5UjYY5b8shjSOVFQz2r29q8");
-            var decryptTest = algorithm.DecryptAlt(newParameter);
+            var decryptTest = algorithm.DecryptAltOld(newParameter);
+           // byte vc = algorithm.(newParameter);
             var en = algorithm.EncryptAlt(encryptedText);
 
             System.Diagnostics.Process.Start("cmd", "/C start https://pass.sterling.ng/sterlinggateway/?q=" + en);

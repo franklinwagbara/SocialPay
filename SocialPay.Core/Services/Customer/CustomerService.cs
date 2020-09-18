@@ -56,8 +56,9 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-               
+                long customerId = 0;
                 var getClient = await _customerService.GetClientDetails(model.Email);
+                customerId = Convert.ToInt32(getClient.Data);
                 var getPaymentDetails = await _customerService.GetTransactionReference(model.TransactionReference);
                 if (getPaymentDetails == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
@@ -67,13 +68,14 @@ namespace SocialPay.Core.Services.Customer
                        model.PhoneNumber);
                     if (createCustomer.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = createCustomer.ResponseCode };
+                    customerId = Convert.ToInt32(createCustomer.Data);
                 }
-                   
-                var encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.Amount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                var encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                 var encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                 //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
                 var paymentData =  _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentData };
+                var paymentResponse = new CustomerResponseDto { CustomerId = customerId, PaymentLink = paymentData };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
             }
             catch (Exception ex)
             {
@@ -86,7 +88,7 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-
+                //var validateCustomerId = await _customerService.v
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success};
             }
             catch (Exception ex)

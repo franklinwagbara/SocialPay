@@ -36,6 +36,14 @@ namespace SocialPay.Core.Services.Authentication
             == email
             );
         }
+
+
+        public async Task<ClientAuthentication> GetClientDetailsByClientId(long clientId)
+        {
+            return await _context.ClientAuthentication.SingleOrDefaultAsync(p => p.ClientAuthenticationId
+            == clientId
+            );
+        }
         public async Task<LoginAPIResponse> Authenticate(LoginRequestDto loginRequestDto)
         {
             try
@@ -147,7 +155,7 @@ namespace SocialPay.Core.Services.Authentication
                 };
                 await _context.ClientAuthentication.AddAsync(model);
                 await _context.SaveChangesAsync();
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.ClientAuthenticationId };
             }
             catch (Exception ex)
             {

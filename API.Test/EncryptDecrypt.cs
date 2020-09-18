@@ -31,7 +31,27 @@ namespace API.Test
             }
             return Convert.ToBase64String(ms.ToArray());
         }
-        public String DecryptAlt(String val)
+
+
+        private static byte[] ConvertFromBase64String(string input)
+        {
+            if (String.IsNullOrWhiteSpace(input)) return null;
+            try
+            {
+                string working = input.Replace('-', '+').Replace('_', '/'); ;
+                while (working.Length % 4 != 0)
+                {
+                    working += '=';
+                }
+                return Convert.FromBase64String(working);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public String DecryptAltOld(String val)
         {
             MemoryStream ms = new MemoryStream();
             string rsp = "";
@@ -54,6 +74,22 @@ namespace API.Test
             {
                 return "";
             }
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
+
+        public String DecryptAlt(String val)
+        {
+            MemoryStream ms = new MemoryStream();
+            byte[] sharedkey = { 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11, 0x12, 0x11, 0x0D, 0x0B, 0x07, 0x02, 0x04, 0x08, 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11 };
+            byte[] sharedvector = { 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11 };
+            TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
+            byte[] toDecrypt = Convert.FromBase64String(val);
+            CryptoStream cs = new CryptoStream(ms, tdes.CreateDecryptor(sharedkey, sharedvector), CryptoStreamMode.Write);
+
+            cs.Write(toDecrypt, 0, toDecrypt.Length);
+            cs.FlushFinalBlock();
+
             return Encoding.UTF8.GetString(ms.ToArray());
         }
     }

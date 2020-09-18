@@ -7,6 +7,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace SocialPay.Core.Repositories.Customer
             var getClientInfo = await _authRepoService.GetClientDetails(email);
             if (getClientInfo == null)
                 return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
-            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getClientInfo.ClientAuthenticationId };
         }
 
         public async Task<WebApiResponse> CreateNewCustomer(string email, string fullname, string phoneNumber)
@@ -43,7 +44,38 @@ namespace SocialPay.Core.Repositories.Customer
             var createCustomer = await _authRepoService.CreateAccount(email, null, fullname,  phoneNumber);
             if (createCustomer == null)
                 return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
-            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = createCustomer.Data };
+        }
+
+
+        public async Task<WebApiResponse> PaymentValidation(long clientId, string transactionReference, string message, bool status)
+        {
+            try
+            {
+                var validateClient = await _authRepoService.GetClientDetailsByClientId(clientId);
+                if (validateClient == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var getPaymentLinkInfo = await GetTransactionReference(transactionReference);
+                if (getPaymentLinkInfo == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var logCustomerPayment = new CustomerTransaction
+                {
+                    CustomerEmail = validateClient.Email,
+                    MerchantPaymentSetupId = getPaymentLinkInfo.MerchantPaymentSetupId,
+                    Message = message,
+                    Status = status
+                };
+                await _context.CustomerTransaction.AddAsync(logCustomerPayment);
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+           
         }
 
         public async Task<PaymentLinkViewModel> GetTransactionDetails(string refId)
@@ -63,7 +95,6 @@ namespace SocialPay.Core.Repositories.Customer
             return await _context.MerchantPaymentSetup.Where(x => x.IsDeleted
             == false && x.ClientAuthenticationId == clientId).ToListAsync();
         }
-
 
         public async Task <List<PaymentLinkViewModel>> GetPaymentLinks(long clientId)
         {
