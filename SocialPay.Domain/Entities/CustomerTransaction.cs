@@ -8,6 +8,7 @@ namespace SocialPay.Domain.Entities
     {
         public long CustomerTransactionId { get; set; }
         public long MerchantPaymentSetupId { get; set; }
+        public long ClientAuthenticationId { get; set; }
         public string CustomerEmail { get; set; }
         public bool Status { get; set; }
         public string Message { get; set; }

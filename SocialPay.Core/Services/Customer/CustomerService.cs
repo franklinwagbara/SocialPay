@@ -88,8 +88,8 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-                //var validateCustomerId = await _customerService.v
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success};
+                var result = await _customerService.LogPaymentResponse(model);
+                return result;
             }
             catch (Exception ex)
             {

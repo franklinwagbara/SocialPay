@@ -75,7 +75,7 @@ namespace SocialPay.API.Controllers
         }
 
         [HttpPost]
-        [Route("validate-payment")]
+        [Route("payment-confirmation")]
         public async Task<IActionResult> ValidatePayment([FromBody] PaymentValidationRequestDto model)
         {
             var response = new WebApiResponse { };

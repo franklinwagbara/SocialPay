@@ -97,5 +97,20 @@ namespace SocialPay.Core.Services.Transaction
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+
+        public async Task<WebApiResponse> GetCustomerPayments(long clientId)
+        {
+            try
+            {
+                 clientId = 10013;
+                var getlinks = await _customerService.GetCustomerPaymentsByMerchantPayRef(clientId);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getlinks };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
     }
 }

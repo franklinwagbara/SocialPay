@@ -5,6 +5,7 @@ using SocialPay.Core.Services.Authentication;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
+using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.ViewModel;
 using System;
@@ -26,9 +27,41 @@ namespace SocialPay.Core.Repositories.Customer
 
         public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
         {
-            return await _context.MerchantPaymentSetup.SingleOrDefaultAsync(p => p.TransactionReference
-            == refId
+            return await _context.MerchantPaymentSetup.Include(x => x.CustomerTransaction).SingleOrDefaultAsync(p => p.TransactionReference
+              == refId
             );
+        }
+
+
+        public async Task<WebApiResponse> GetCustomerPaymentsByMerchantPayRef(long clientId)
+        {
+            var result = new List<CustomerPaymentViewModel>();
+            ////var getPaymentSetupInfo = await _context.MerchantPaymentSetup.Include(x=>x.CustomerTransaction)
+            ////    .SingleOrDefaultAsync(x => x.TransactionReference == tranId);
+
+            var getPaymentSetupInfo = await _context.MerchantPaymentSetup
+                .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
+
+            if (getPaymentSetupInfo.Count == 0)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+
+            var response =  (from c in getPaymentSetupInfo
+                             join p in _context.CustomerTransaction on c.ClientAuthenticationId  equals p.ClientAuthenticationId
+                         join a in _context.ClientAuthentication on c.ClientAuthenticationId equals a.ClientAuthenticationId
+                         select new CustomerPaymentViewModel { Amount = c.Amount, CustomerEmail = a.Email,
+                         TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber,
+                         ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod,
+                         DeliveryTime = c.DeliveryTime, Description = c.Description,
+                         TransactionReference = c.TransactionReference}).ToList();
+            result = response;
+            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+        }
+
+
+        public async Task <List<CustomerTransaction>> GetCustomerPaymentsByMerchantId(long merchantId)
+        {
+            return await _context.CustomerTransaction.Where(p => p.MerchantPaymentSetupId
+            == merchantId).ToListAsync();
         }
 
         public async Task<WebApiResponse> GetClientDetails(string email)
@@ -106,6 +139,32 @@ namespace SocialPay.Core.Repositories.Customer
             var mapper = config.CreateMapper();
             paymentview = mapper.Map<List<PaymentLinkViewModel>>(validateReference);
             return paymentview;
+        }
+
+        public async Task<WebApiResponse> LogPaymentResponse(PaymentValidationRequestDto model)
+        {
+            try
+            {
+                var customerInfo = await _context.ClientAuthentication
+                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == model.CustomerId);
+
+                var paymentSetupInfo = await _context.MerchantPaymentSetup
+                   .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+                var logRequest = new CustomerTransaction
+                {
+                    ClientAuthenticationId = model.CustomerId, CustomerEmail = customerInfo.Email,
+                    Message = model.Message, Status = true, MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId
+                };
+
+                await _context.CustomerTransaction.AddAsync(logRequest);
+                await _context.SaveChangesAsync();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
         }
     }
 }
