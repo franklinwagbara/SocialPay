@@ -104,8 +104,8 @@ namespace SocialPay.Core.Services.Transaction
             try
             {
                  clientId = 10013;
-                var getlinks = await _customerService.GetCustomerPaymentsByMerchantPayRef(clientId);
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getlinks };
+                var result = await _customerService.GetCustomerPaymentsByMerchantPayRef(clientId);
+                return result;
             }
             catch (Exception ex)
             {

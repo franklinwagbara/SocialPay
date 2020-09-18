@@ -46,7 +46,7 @@ namespace SocialPay.Core.Repositories.Customer
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
 
             var response =  (from c in getPaymentSetupInfo
-                             join p in _context.CustomerTransaction on c.ClientAuthenticationId  equals p.ClientAuthenticationId
+                             join p in _context.CustomerTransaction on c.MerchantPaymentSetupId  equals p.MerchantPaymentSetupId
                          join a in _context.ClientAuthentication on c.ClientAuthenticationId equals a.ClientAuthenticationId
                          select new CustomerPaymentViewModel { Amount = c.Amount, CustomerEmail = a.Email,
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber,
