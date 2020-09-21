@@ -9,6 +9,9 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Customer
@@ -88,6 +91,8 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
+                string newParameter = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
+                string deConfig = DecryptAlt(newParameter);
                 var result = await _customerService.LogPaymentResponse(model);
                 return result;
             }
@@ -97,5 +102,19 @@ namespace SocialPay.Core.Services.Customer
             }
         }
 
+        public static String DecryptAlt(String val)
+        {
+            MemoryStream ms = new MemoryStream();
+            byte[] sharedkey = { 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11, 0x12, 0x11, 0x0D, 0x0B, 0x07, 0x02, 0x04, 0x08, 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11 };
+            byte[] sharedvector = { 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11 };
+            TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
+            byte[] toDecrypt = Convert.FromBase64String(val);
+            CryptoStream cs = new CryptoStream(ms, tdes.CreateDecryptor(sharedkey, sharedvector), CryptoStreamMode.Write);
+
+            cs.Write(toDecrypt, 0, toDecrypt.Length);
+            cs.FlushFinalBlock();
+
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
     }
 }

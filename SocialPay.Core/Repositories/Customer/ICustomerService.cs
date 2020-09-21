@@ -49,7 +49,7 @@ namespace SocialPay.Core.Repositories.Customer
                              join p in _context.CustomerTransaction on c.MerchantPaymentSetupId  equals p.MerchantPaymentSetupId
                          join a in _context.ClientAuthentication on c.ClientAuthenticationId equals a.ClientAuthenticationId
                          select new CustomerPaymentViewModel { Amount = c.Amount, CustomerEmail = a.Email,
-                         TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber,
+                         TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod,
                          DeliveryTime = c.DeliveryTime, Description = c.Description,
                          TransactionReference = c.TransactionReference}).ToList();

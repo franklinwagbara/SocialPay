@@ -9,7 +9,9 @@ namespace API.Test
     public class EncryptandDecrypt
     {
         //private readonly IOptions<AppSettings> appSettings;
-      
+
+
+        
 
         public static string BinaryToString(string binary)
         {
@@ -37,7 +39,7 @@ namespace API.Test
             return builder.ToString();
         }
 
-        public String EncryptAlt(String val)
+        public static String EncryptAlt(String val)
         {
             MemoryStream ms = new MemoryStream();
             string rsp = "";
@@ -93,31 +95,22 @@ namespace API.Test
 
             return Encoding.UTF8.GetString(ms.ToArray());
         }*/
-        public string Repad(string base64)
-        {
-            var l = base64.Length;
-            return l % 4 == 1 && base64[l - 1] == '='
-                ? base64.Substring(0, l - 1)
-                : base64;
-        }
-        public String DecryptAlt(String val)
+
+        public static String DecryptAlt(String val)
         {
             MemoryStream ms = new MemoryStream();
-            string rsp = "";
             byte[] sharedkey = { 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11, 0x12, 0x11, 0x0D, 0x0B, 0x07, 0x02, 0x04, 0x08, 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11 };
             byte[] sharedvector = { 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11 };
-
             TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
             byte[] toDecrypt = Convert.FromBase64String(val);
-
             CryptoStream cs = new CryptoStream(ms, tdes.CreateDecryptor(sharedkey, sharedvector), CryptoStreamMode.Write);
-
 
             cs.Write(toDecrypt, 0, toDecrypt.Length);
             cs.FlushFinalBlock();
 
             return Encoding.UTF8.GetString(ms.ToArray());
         }
+
 
     }
 }

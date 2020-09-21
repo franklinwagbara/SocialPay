@@ -1,4 +1,6 @@
-﻿namespace SocialPay.Helper.ViewModel
+﻿using System;
+
+namespace SocialPay.Helper.ViewModel
 {
     public class PaymentLinkViewModel
     {
@@ -28,6 +30,7 @@
         public string TransactionReference { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerPhoneNumber { get; set; }
+        public DateTime TransactionDate { get; set; }
     }
 
 }
