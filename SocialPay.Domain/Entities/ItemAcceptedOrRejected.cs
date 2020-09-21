@@ -11,7 +11,7 @@ namespace SocialPay.Domain.Entities
         public long CustomerTransactionId { get; set; }
         public string TransactionReference { get; set; }
         public string Comment { get; set; }
-        public bool Status { get; set; }
+        public string Status { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
     }

@@ -45,6 +45,13 @@
         public const string Escrow = "02";
     }
 
+
+    public class OrderStatusCode
+    {
+        public const string Pending = "01";
+        public const string Approved = "02";
+        public const string Decline = "03";
+    }
     public class RoleDetails
     {
         public const string Merchant = "Merchant";

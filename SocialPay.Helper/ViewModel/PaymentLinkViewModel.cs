@@ -11,7 +11,7 @@ namespace SocialPay.Helper.ViewModel
         public decimal TotalAmount { get; set; }
         public string CustomUrl { get; set; }
         public string DeliveryMethod { get; set; }
-        public string DeliveryTime { get; set; }
+        public long DeliveryTime { get; set; }
         public string TransactionReference { get; set; }
         public string PaymentLinkUrl { get; set; }
         public string PaymentCategory { get; set; }
@@ -33,4 +33,20 @@ namespace SocialPay.Helper.ViewModel
         public DateTime TransactionDate { get; set; }
     }
 
+    public class OrdersViewModel
+    {
+        public long CustomerTransactionId { get; set; }
+        public string Description { get; set; }
+        public decimal Amount { get; set; }
+        public decimal ShippingFee { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string DeliveryMethod { get; set; }
+        public DateTime DeliveryTime { get; set; }
+        public string TransactionReference { get; set; }
+        public string PaymentLinkUrl { get; set; }
+        public string PaymentCategory { get; set; }
+        public string PaymentMethod { get; set; }
+        public string AdditionalDetails { get; set; }
+        public string OrderStatus { get; set; }
+    }
 }

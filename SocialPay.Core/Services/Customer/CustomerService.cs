@@ -55,6 +55,19 @@ namespace SocialPay.Core.Services.Customer
         }
 
 
+        public async Task<WebApiResponse> GetAllCustomerOrders(long clientId)
+        {
+            try
+            {
+                return await _customerService.GetCustomerOrders(clientId);
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> MakePayment(CustomerPaymentRequestDto model)
         {
             try

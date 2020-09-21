@@ -37,6 +37,11 @@ namespace SocialPay.Core.Repositories.Customer
             );
         }
 
+        public async Task<List<CustomerTransaction>> GetTransactionByClientId(long clientId)
+        {
+            return await _context.CustomerTransaction
+                .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
+        }
 
         public async Task<WebApiResponse> GetCustomerPaymentsByMerchantPayRef(long clientId)
         {
@@ -86,7 +91,7 @@ namespace SocialPay.Core.Repositories.Customer
         }
 
 
-        public async Task<WebApiResponse> PaymentValidation(long clientId, string transactionReference, string message, bool status)
+        public async Task<WebApiResponse> PaymentValidation(long clientId, string transactionReference, string message, string status)
         {
             try
             {
@@ -103,7 +108,7 @@ namespace SocialPay.Core.Repositories.Customer
                     CustomerEmail = validateClient.Email,
                     MerchantPaymentSetupId = getPaymentLinkInfo.MerchantPaymentSetupId,
                     Message = message,
-                    Status = status
+                    OrderStatus = status
                 };
                 await _context.CustomerTransaction.AddAsync(logCustomerPayment);
                 await _context.SaveChangesAsync();
@@ -126,6 +131,32 @@ namespace SocialPay.Core.Repositories.Customer
             var mapper = config.CreateMapper();
             paymentview = mapper.Map<PaymentLinkViewModel>(validateReference);
             return paymentview;
+        }
+
+        public async Task<WebApiResponse> GetCustomerOrders(long clientId)
+        {
+            try
+            {
+                var getCustomerOrders = await GetTransactionByClientId(clientId);
+                if (getCustomerOrders == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var response = (from c in getCustomerOrders
+                                join m in _context.MerchantPaymentSetup on c.MerchantPaymentSetupId equals m.MerchantPaymentSetupId
+                                select new OrdersViewModel { Amount = m.Amount, DeliveryTime = c.DeliveryDate, 
+                                ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
+                                DeliveryMethod = m.DeliveryMethod, Description = m.Description,
+                                TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory,
+                                OrderStatus = c.OrderStatus}).ToList();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+          
         }
 
         public async Task<List<MerchantPaymentSetup>> GetAllPaymentLinksByClientId(long clientId)
@@ -158,7 +189,7 @@ namespace SocialPay.Core.Repositories.Customer
                 var logRequest = new CustomerTransaction
                 {
                     ClientAuthenticationId = model.CustomerId, CustomerEmail = customerInfo.Email,
-                    Message = model.Message, Status = true, MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId,
+                    Message = model.Message, OrderStatus = OrderStatusCode.Pending, MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId,
                     DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime)
                 };
 
@@ -187,7 +218,7 @@ namespace SocialPay.Core.Repositories.Customer
 
                 int sla = Convert.ToInt32(_appSettings.deliverySLA);
 
-                if(response.DeliveryDate.AddDays(sla) < DateTime.Now && model.Status == true)
+                if(response.DeliveryDate.AddDays(sla) < DateTime.Now && model.Status == OrderStatusCode.Decline)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
 
                 var logRequest = new ItemAcceptedOrRejected
