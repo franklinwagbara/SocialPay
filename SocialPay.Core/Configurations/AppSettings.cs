@@ -21,5 +21,6 @@
         public string sterlingpaymentGatewayRequestUrl { get; set; }
         public string mid { get; set; }
         public string paymentCombination { get; set; }
+        public string deliverySLA { get; set; }
     }
 }

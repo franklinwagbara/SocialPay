@@ -21,6 +21,7 @@
         public const string UserNotFoundOnAD = "17";               
         public const string InvalidPaymentLink = "18";               
         public const string InvalidPaymentReference = "19";               
+        public const string CancelHasExpired = "20";               
     }
 
     public class MerchantOnboardingProcess

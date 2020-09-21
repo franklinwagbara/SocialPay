@@ -14,7 +14,7 @@ namespace SocialPay.Domain.Entities
         public decimal TotalAmount { get; set; }
         public string CustomUrl { get; set; }
         public string DeliveryMethod { get; set; }
-        public string DeliveryTime { get; set; }
+        public long DeliveryTime { get; set; }
         public bool RedirectAfterPayment { get; set; }
         public string AdditionalDetails { get; set; }
         public string PaymentCategory { get; set; }

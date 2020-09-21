@@ -102,6 +102,21 @@ namespace SocialPay.Core.Services.Customer
             }
         }
 
+
+        public async Task<WebApiResponse> AcceptOrRejectItem(AcceptRejectRequestDto model, long clientId)
+        {
+            try
+            {
+                var validateReference = await _customerService.ValidateShippingRequest(model, clientId);
+                return validateReference;
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
         public static String DecryptAlt(String val)
         {
             MemoryStream ms = new MemoryStream();

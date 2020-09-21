@@ -20,4 +20,13 @@
         public string Message { get; set; }
      
     }
+
+    public class AcceptRejectRequestDto
+    {
+        public string TransactionReference { get; set; }
+        public string Comment { get; set; }
+        public long RequestId { get; set; }
+        public bool Status { get; set; }
+       
+    }
 }

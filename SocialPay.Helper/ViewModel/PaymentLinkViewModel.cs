@@ -26,7 +26,7 @@ namespace SocialPay.Helper.ViewModel
         public decimal ShippingFee { get; set; }
         public decimal TotalAmount { get; set; }
         public string DeliveryMethod { get; set; }
-        public string DeliveryTime { get; set; }
+        public long DeliveryTime { get; set; }
         public string TransactionReference { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerPhoneNumber { get; set; }

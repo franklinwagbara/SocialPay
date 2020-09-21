@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SocialPay.Core.Configurations;
 using SocialPay.Core.Services;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Domain;
@@ -19,10 +21,13 @@ namespace SocialPay.Core.Repositories.Customer
     {
         private readonly SocialPayDbContext _context;
         private readonly AuthRepoService _authRepoService;
-        public ICustomerService(SocialPayDbContext context, AuthRepoService authRepoService) : base(context)
+        private readonly AppSettings _appSettings;
+        public ICustomerService(SocialPayDbContext context, AuthRepoService authRepoService,
+            IOptions<AppSettings> appSettings) : base(context)
         {
             _context = context;
             _authRepoService = authRepoService;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
@@ -153,7 +158,8 @@ namespace SocialPay.Core.Repositories.Customer
                 var logRequest = new CustomerTransaction
                 {
                     ClientAuthenticationId = model.CustomerId, CustomerEmail = customerInfo.Email,
-                    Message = model.Message, Status = true, MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId
+                    Message = model.Message, Status = true, MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId,
+                    DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime)
                 };
 
                 await _context.CustomerTransaction.AddAsync(logRequest);
@@ -163,6 +169,45 @@ namespace SocialPay.Core.Repositories.Customer
             }
             catch (Exception ex)
             {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<WebApiResponse> ValidateShippingRequest(AcceptRejectRequestDto model, long clientId)
+        {
+            try
+            {
+                var validateOrder = await _context.MerchantPaymentSetup
+                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+                if(validateOrder == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var response = await _context.CustomerTransaction
+                    .SingleOrDefaultAsync(x => x.CustomerTransactionId == model.RequestId);
+
+                int sla = Convert.ToInt32(_appSettings.deliverySLA);
+
+                if(response.DeliveryDate.AddDays(sla) < DateTime.Now && model.Status == true)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
+
+                var logRequest = new ItemAcceptedOrRejected
+                {
+                    ClientAuthenticationId = clientId, Status = model.Status, Comment = model.Comment,
+                    TransactionReference = model.TransactionReference, CustomerTransactionId = model.RequestId
+                };
+                await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
+                await _context.SaveChangesAsync();
+                //var respose = from c in _context.CustomerTransaction
+                //              join m in _context.MerchantPaymentSetup on c.MerchantPaymentSetupId equals m.MerchantPaymentSetupId
+                //              where c.CustomerTransactionId == model.RequestId
+                //where m.TransactionReference == model.TransactionReference
+
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

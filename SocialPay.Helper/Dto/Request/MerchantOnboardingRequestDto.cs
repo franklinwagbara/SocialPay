@@ -64,7 +64,7 @@ namespace SocialPay.Helper.Dto.Request
         public decimal ShippingFee { get; set; }
         public string CustomUrl { get; set; }
         public string DeliveryMethod { get; set; }
-        public string DeliveryTime { get; set; }
+        public long DeliveryTime { get; set; }
         public bool RedirectAfterPayment { get; set; }
         public string AdditionalDetails { get; set; }
         public string PaymentCategory { get; set; }

@@ -12,6 +12,7 @@ namespace SocialPay.Domain.Entities
         public string CustomerEmail { get; set; }
         public bool Status { get; set; }
         public string Message { get; set; }
+        public DateTime DeliveryDate { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
         public virtual MerchantPaymentSetup MerchantPaymentSetup { get; set; }
     }
