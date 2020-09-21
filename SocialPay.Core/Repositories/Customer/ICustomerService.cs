@@ -190,13 +190,17 @@ namespace SocialPay.Core.Repositories.Customer
 
                 var paymentSetupInfo = await _context.MerchantPaymentSetup
                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+              
                 var logRequest = new CustomerTransaction
                 {
                     ClientAuthenticationId = model.CustomerId, CustomerEmail = customerInfo.Email,
                     Message = model.Message, OrderStatus = OrderStatusCode.Pending, MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId,
                     DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime)
                 };
-
+                if (model.Message.Contains("Approve"))
+                {
+                    logRequest.Status = true;
+                }
                 await _context.CustomerTransaction.AddAsync(logRequest);
                 await _context.SaveChangesAsync();
 

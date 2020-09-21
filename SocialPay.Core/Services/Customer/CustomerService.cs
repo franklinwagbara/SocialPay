@@ -111,8 +111,13 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-                string newParameter = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
-                string deConfig = DecryptAlt(newParameter);
+                var decodeMessage = System.Uri.UnescapeDataString(model.Message);
+                if (decodeMessage.Contains(" "))
+                {
+                    decodeMessage = decodeMessage.Replace(" ", "+");
+                }
+                var decryptResponse = DecryptAlt(decodeMessage);
+                model.Message = decryptResponse;
                 var result = await _customerService.LogPaymentResponse(model);
                 return result;
             }
