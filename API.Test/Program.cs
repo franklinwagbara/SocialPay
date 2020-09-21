@@ -14,26 +14,28 @@ namespace API.Test
             Console.WriteLine("Hello World!");
             // Process.Start("chrome.exe", "http://www.YourUrl.com");
             //Mid^Amt^OrderId
-            string newParameter = "3Xd1AuUoqehJ2fK YXm9Yeq5ucFy5Na 5JXgmcDqdJERG78qIDVYKtyaAkmp/34tbnLqUDWUX3zM/mMhO4uZFw==";
+            string newParameter = "3214Xd1AuUoqehJ2fK YXm9Yeq5ucFy5Na 5JXgmcDqdJERG78qIDVYKtyaAkmp/34tbnLqUDWUX3zM/mMhO4uZFw==";
             string mid = "111024";
             string toDecrypt = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJGK1iPjKRN22N%2FY7GClg7pIUlGky5mFmoquTSt2dVQcOg%3D%3D";
-            decimal amount = 200;
-            var refId = "2525263";
+            decimal amount = 480;
+            var refId = "77888899";
             //string url1 =  HttpUtility.UrlDecode(newParameter);
              //string url =  HttpUtility.UrlDecode(newParameter);
 
             var sec = new EncryptDecrypt();
 
             var encryptedText = mid + "^" + amount + "^" + refId;
-           
+
+            var kk = sec.EncryptAlt(encryptedText);
+
             var lo = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJEhkeumNM2I3SCmCgdaeX7khQkmY09j81I%3D";
 
             if (newParameter.Contains(" "))
             {
                 newParameter = newParameter.Replace(" ", "+");
             }
-
-            var decryptedData1 = sec.DecryptAlt(newParameter);
+            var pp = "EgbOBbHXQXvsy7fst1ARZJJLdz9X2CtGvpPwSRFEHFB5vwwCHBPNwxR/1K8+R6GoNyNKe4TXQcrT7ISgKoA2YdFIxJ93j033";
+            var decryptedData1 = sec.DecryptAlt(pp);
 
             var decryptedData = EncryptandDecrypt.DecryptAlt(newParameter);
            // ViewBag.Status = decryptedData;

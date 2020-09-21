@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
+using SocialPay.Core.Messaging;
 using SocialPay.Core.Services;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Domain;
@@ -13,6 +14,7 @@ using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Repositories.Customer
@@ -22,12 +24,14 @@ namespace SocialPay.Core.Repositories.Customer
         private readonly SocialPayDbContext _context;
         private readonly AuthRepoService _authRepoService;
         private readonly AppSettings _appSettings;
+        private readonly EmailService _emailService;
         public ICustomerService(SocialPayDbContext context, AuthRepoService authRepoService,
-            IOptions<AppSettings> appSettings) : base(context)
+            IOptions<AppSettings> appSettings, EmailService emailService) : base(context)
         {
             _context = context;
             _authRepoService = authRepoService;
             _appSettings = appSettings.Value;
+            _emailService = emailService;
         }
 
         public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
@@ -147,7 +151,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
                                 DeliveryMethod = m.DeliveryMethod, Description = m.Description,
                                 TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory,
-                                OrderStatus = c.OrderStatus}).ToList();
+                                OrderStatus = c.OrderStatus, RequestId = c.CustomerTransactionId}).ToList();
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
             }
@@ -218,27 +222,51 @@ namespace SocialPay.Core.Repositories.Customer
 
                 int sla = Convert.ToInt32(_appSettings.deliverySLA);
 
-                if(response.DeliveryDate.AddDays(sla) < DateTime.Now && model.Status == OrderStatusCode.Decline)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
-
                 var logRequest = new ItemAcceptedOrRejected
                 {
-                    ClientAuthenticationId = clientId, Status = model.Status, Comment = model.Comment,
-                    TransactionReference = model.TransactionReference, CustomerTransactionId = model.RequestId
+                    ClientAuthenticationId = clientId,
+                    Status = model.Status,
+                    Comment = model.Comment,
+                    TransactionReference = model.TransactionReference,
+                    CustomerTransactionId = model.RequestId
                 };
+                if (model.Status == OrderStatusCode.Decline)
+                {
+                    var getMerchant = await _context.ClientAuthentication
+                        .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateOrder.ClientAuthenticationId);
+                    if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
+
+                   
+                    await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
+                    await _context.SaveChangesAsync();
+                    var emailModal = new EmailRequestDto
+                    {
+                        Subject = "Order" + " "+ model.TransactionReference + " "+ "was Rejected",
+                        SourceEmail = "info@sterling.ng",
+                        DestinationEmail = getMerchant.Email,
+                        // DestinationEmail = "festypat9@gmail.com",
+                        //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                    };
+                    var mailBuilder = new StringBuilder();
+                    mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
+                    mailBuilder.AppendLine("<br />");
+                    mailBuilder.AppendLine("An order has been rejected by" + ""+ response.CustomerEmail +" "+ ".<br />");
+                    //mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
+                    // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                    mailBuilder.AppendLine("Best Regards,");
+                    emailModal.EmailBody = mailBuilder.ToString();
+
+                    var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                }
+
                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                 await _context.SaveChangesAsync();
-                //var respose = from c in _context.CustomerTransaction
-                //              join m in _context.MerchantPaymentSetup on c.MerchantPaymentSetupId equals m.MerchantPaymentSetupId
-                //              where c.CustomerTransactionId == model.RequestId
-                //where m.TransactionReference == model.TransactionReference
-
-
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
-
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

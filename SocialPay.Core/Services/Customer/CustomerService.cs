@@ -36,6 +36,13 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
+                //////var decodeUrl = System.Uri.UnescapeDataString(transactionReference);
+                //////if (decodeUrl.Contains(" "))
+                //////{
+                //////    decodeUrl = decodeUrl.Replace(" ", "+");
+                //////}
+                //////var dd = DecryptAlt(decodeUrl);
+
                // var decryptedReference = transactionReference.Replace(" ", "+").Decrypt(_appSettings.appKey).Split(",")[3];
                 //var res = t1.Decrypt(_appSettings.appKey).Split(",")[3];
                 //var decryptedReference1 = transactionReference.Decrypt(_appSettings.appKey);
