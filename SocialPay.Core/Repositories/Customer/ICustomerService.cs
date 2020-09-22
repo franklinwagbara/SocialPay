@@ -86,9 +86,9 @@ namespace SocialPay.Core.Repositories.Customer
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getClientInfo.ClientAuthenticationId };
         }
 
-        public async Task<WebApiResponse> CreateNewCustomer(string email, string fullname, string phoneNumber)
+        public async Task<WebApiResponse> CreateNewCustomer(string email, string password, string fullname, string phoneNumber)
         {
-            var createCustomer = await _authRepoService.CreateAccount(email, null, fullname,  phoneNumber);
+            var createCustomer = await _authRepoService.CreateAccount(email, password, fullname,  phoneNumber);
             if (createCustomer == null)
                 return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = createCustomer.Data };

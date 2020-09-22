@@ -2,6 +2,7 @@
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Extensions.Utilities;
+using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Helper;
 using SocialPay.Helper.Cryptography;
@@ -21,15 +22,18 @@ namespace SocialPay.Core.Services.Customer
       
         private readonly ICustomerService _customerService;
         private readonly AppSettings _appSettings;
+        private readonly EmailService _emailService;
         private readonly EncryptDecryptAlgorithm _encryptDecryptAlgorithm;
         private readonly EncryptDecrypt _encryptDecrypt;
         public CustomerRepoService(ICustomerService customerService, IOptions<AppSettings> appSettings,
-            EncryptDecryptAlgorithm encryptDecryptAlgorithm, EncryptDecrypt encryptDecrypt)
+            EncryptDecryptAlgorithm encryptDecryptAlgorithm, EncryptDecrypt encryptDecrypt,
+            EmailService emailService)
         {
             _customerService = customerService;
             _appSettings = appSettings.Value;
             _encryptDecrypt = encryptDecrypt;
             _encryptDecryptAlgorithm = encryptDecryptAlgorithm;
+            _emailService = emailService;
         }
 
         public async Task<WebApiResponse> GetLinkDetails(string transactionReference)
@@ -87,11 +91,31 @@ namespace SocialPay.Core.Services.Customer
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
                 if (getClient.ResponseCode != AppResponseCodes.Success)
                 {
-                    var createCustomer = await _customerService.CreateNewCustomer(model.Email, model.Fullname,
+                    var newCustomerAccess = Guid.NewGuid().ToString("N").Substring(0,10);
+                    var createCustomer = await _customerService.CreateNewCustomer(model.Email, newCustomerAccess, model.Fullname,
                        model.PhoneNumber);
                     if (createCustomer.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = createCustomer.ResponseCode };
                     customerId = Convert.ToInt32(createCustomer.Data);
+
+                    var emailModal = new EmailRequestDto
+                    {
+                        Subject = "Guest Account Access",
+                        SourceEmail = "info@sterling.ng",
+                        DestinationEmail = model.Email,
+                        // DestinationEmail = "festypat9@gmail.com",
+                        //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                    };
+                    var mailBuilder = new StringBuilder();
+                    mailBuilder.AppendLine("Dear" + " " + model.Email + "," + "<br />");
+                    mailBuilder.AppendLine("<br />");
+                    mailBuilder.AppendLine("You have successfully sign up as a Guest.<br />");
+                    mailBuilder.AppendLine("Kindly use this token" + "  " + newCustomerAccess + "  " + "to login" + " " + "" + "<br />");
+                    // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                    mailBuilder.AppendLine("Best Regards,");
+                    emailModal.EmailBody = mailBuilder.ToString();
+
+                    var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                 }
                 var encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                 var encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
