@@ -22,6 +22,7 @@
         public const string InvalidPaymentLink = "18";               
         public const string InvalidPaymentReference = "19";               
         public const string CancelHasExpired = "20";               
+        public const string InvalidPaymentcategory = "21";               
     }
 
     public class MerchantOnboardingProcess
@@ -43,6 +44,8 @@
     {
         public const string Basic = "01";
         public const string Escrow = "02";
+        public const string OneOffBasicLink = "03";
+        public const string OneOffEscrowLink = "04";
     }
 
 

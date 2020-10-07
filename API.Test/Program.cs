@@ -1,4 +1,5 @@
-﻿using System;
+﻿using bankService;
+using System;
 using System.Diagnostics;
 using System.Web;
 
@@ -11,14 +12,22 @@ namespace API.Test
             var myUrl = "http://socialpay-web.sterlingapps.p.azurewebsites.net/#/confirm-payments?q=3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
             var decodeUrl = System.Uri.UnescapeDataString(myUrl);
 
+            var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap,
+                  "");
+
+            //var createCorporateAccount = bankService.CreateCorporateCustomer2Async
+
+            var dateMain = DateTime.Now.ToString("MM-yyyy-dd");
+
             Console.WriteLine("Hello World!");
             // Process.Start("chrome.exe", "http://www.YourUrl.com");
             //Mid^Amt^OrderId
             string newParameter = "3214Xd1AuUoqehJ2fK YXm9Yeq5ucFy5Na 5JXgmcDqdJERG78qIDVYKtyaAkmp/34tbnLqUDWUX3zM/mMhO4uZFw==";
-            string mid = "111024";
+            //string mid = "111024";
+            string mid = "112024";
             string toDecrypt = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJGK1iPjKRN22N%2FY7GClg7pIUlGky5mFmoquTSt2dVQcOg%3D%3D";
-            decimal amount = 480;
-            var refId = "77888899";
+            decimal amount = 2333;
+            var refId = Guid.NewGuid().ToString("N");
             //string url1 =  HttpUtility.UrlDecode(newParameter);
              //string url =  HttpUtility.UrlDecode(newParameter);
 
@@ -36,6 +45,8 @@ namespace API.Test
             }
             var pp = "EgbOBbHXQXvsy7fst1ARZJJLdz9X2CtGvpPwSRFEHFB5vwwCHBPNwxR/1K8+R6GoNyNKe4TXQcrT7ISgKoA2YdFIxJ93j033";
             var decryptedData1 = sec.DecryptAlt(pp);
+
+            string getReference = decryptedData1.Split("^")[5];
 
             var decryptedData = EncryptandDecrypt.DecryptAlt(newParameter);
            // ViewBag.Status = decryptedData;
