@@ -27,5 +27,6 @@ namespace SocialPay.Domain.Entities
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
         public virtual ICollection<CustomerTransaction> CustomerTransaction { get; set; }
+        public virtual ICollection<CustomerOtherPaymentsInfo> CustomerOtherPaymentsInfo { get; set; }
     }
 }

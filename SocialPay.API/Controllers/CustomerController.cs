@@ -52,7 +52,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("initiate-payment")]
-        public async Task<IActionResult> InitiatePayment([FromBody] CustomerPaymentRequestDto model)
+        public async Task<IActionResult> InitiatePayment([FromForm] CustomerPaymentRequestDto model)
         {
             var response = new WebApiResponse { };
             try

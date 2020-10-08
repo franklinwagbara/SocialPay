@@ -1,4 +1,8 @@
-﻿namespace SocialPay.Helper.Dto.Request
+﻿using Microsoft.AspNetCore.Http;
+using SocialPay.Helper.Validator;
+using System.ComponentModel.DataAnnotations;
+
+namespace SocialPay.Helper.Dto.Request
 {
     public class CustomerRequestDto
     {
@@ -13,8 +17,11 @@
         public string PhoneNumber { get; set; }
         public string Description { get; set; }
         public decimal CustomerAmount { get; set; }
-        public string Document { get; set; }
-       // public string FileLocation { get; set; }
+        [DataType(DataType.Upload)]
+        [MaxFileSize(1518592)]
+        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", "pdf" })]
+        public IFormFile Document { get; set; }
+        // public string FileLocation { get; set; }
     }
 
     public class PaymentValidationRequestDto
