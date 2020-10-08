@@ -62,10 +62,10 @@ namespace SocialPay.Core.Repositories.Customer
             var response =  (from c in getPaymentSetupInfo
                              join p in _context.CustomerTransaction on c.MerchantPaymentSetupId  equals p.MerchantPaymentSetupId
                          join a in _context.ClientAuthentication on c.ClientAuthenticationId equals a.ClientAuthenticationId
-                         select new CustomerPaymentViewModel { Amount = c.Amount, CustomerEmail = a.Email,
+                         select new CustomerPaymentViewModel { MerchantAmount = c.MerchantAmount, CustomerEmail = a.Email,
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
-                         ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod,
-                         DeliveryTime = c.DeliveryTime, Description = c.Description,
+                         ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
+                         DeliveryTime = c.DeliveryTime, Description = c.Description, CustomerDescription = c.CustomerDescription,
                          TransactionReference = c.TransactionReference}).ToList();
             result = response;
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
@@ -147,7 +147,7 @@ namespace SocialPay.Core.Repositories.Customer
 
                 var response = (from c in getCustomerOrders
                                 join m in _context.MerchantPaymentSetup on c.MerchantPaymentSetupId equals m.MerchantPaymentSetupId
-                                select new OrdersViewModel { Amount = m.Amount, DeliveryTime = c.DeliveryDate, 
+                                select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
                                 DeliveryMethod = m.DeliveryMethod, Description = m.Description,
                                 TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory,
