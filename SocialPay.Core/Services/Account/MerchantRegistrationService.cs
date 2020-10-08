@@ -203,7 +203,6 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-               
 
                 if(await _context.MerchantBusinessInfo.AnyAsync(x=>x.BusinessEmail == model.BusinessEmail || 
                 x.BusinessPhoneNumber == model.BusinessPhoneNumber || x.Chargebackemail == model.Chargebackemail))
@@ -219,7 +218,7 @@ namespace SocialPay.Core.Services.Account
                 fileName = (model.Logo.FileName);
 
                 var FileExtension = Path.GetExtension(fileName);
-               /// fileName = Path.Combine(_hostingEnvironment.WebRootPath, "MerchantLogo") + $@"\{newFileName}";
+                fileName = Path.Combine(_hostingEnvironment.WebRootPath, "MerchantLogo") + $@"\{newFileName}";
                 
                 // concating  FileName + FileExtension
                 newFileName = merchantId + FileExtension;
@@ -246,12 +245,13 @@ namespace SocialPay.Core.Services.Account
                         getUserInfo.StatusCode = MerchantOnboardingProcess.BusinessInfo;
                         getUserInfo.LastDateModified = DateTime.Now;
                         await _context.SaveChangesAsync();
-                       //// model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
+                        model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
                         await transaction.CommitAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
+                        _log4net.Error("An error ocuured while saving merchant business info" + model.BusinessEmail + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }

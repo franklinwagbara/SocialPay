@@ -34,58 +34,61 @@ namespace SocialPay.Core.Services.Transaction
             try
             {
                 //clientId = 10014;
-                if(paymentModel.PaymentCategory != MerchantPaymentCategory.Basic 
-                    || paymentModel.PaymentCategory != MerchantPaymentCategory.Escrow
-                    || paymentModel.PaymentCategory != MerchantPaymentCategory.OneOffBasicLink
-                    || paymentModel.PaymentCategory != MerchantPaymentCategory.OneOffEscrowLink)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentcategory };
-                var model = new MerchantPaymentSetup { };
-                model.PaymentLinkName = paymentModel.PaymentLinkName == null ? string.Empty : paymentModel.PaymentLinkName;
-                model.AdditionalDetails = paymentModel.AdditionalDetails == null ? string.Empty : paymentModel.AdditionalDetails;
-                model.Description = paymentModel.Description == null ? string.Empty : paymentModel.Description;
-                model.Amount = paymentModel.Amount < 1 ? 0 : paymentModel.Amount;
-                model.CustomUrl = paymentModel.CustomUrl == null ? string.Empty : paymentModel.CustomUrl;
-                model.RedirectAfterPayment = paymentModel.RedirectAfterPayment == false ? false : paymentModel.RedirectAfterPayment;
-                model.DeliveryMethod = paymentModel.DeliveryMethod == null ? string.Empty : paymentModel.DeliveryMethod;
-                model.ClientAuthenticationId = clientId;
-                model.PaymentCategory = paymentModel.PaymentCategory == null ? string.Empty : paymentModel.PaymentCategory;
-                model.ShippingFee = paymentModel.ShippingFee < 1 ? 0 : paymentModel.ShippingFee;
-                model.TotalAmount = model.Amount + model.ShippingFee;
-                model.DeliveryTime = paymentModel.DeliveryTime < 1 ? 0 : paymentModel.DeliveryTime;
-                model.PaymentMethod = paymentModel.PaymentMethod == null ? string.Empty : paymentModel.PaymentMethod;
-                var newGuid = Guid.NewGuid().ToString("N");
-                var token = model.Amount + "," + model.PaymentCategory + ","+ model.PaymentLinkName + ","+ newGuid;
-                var encryptedToken = token.Encrypt(_appSettings.appKey);
-                //var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
-                //var encryptedPin = newPin.Encrypt(_appSettings.appKey);
-                //byte[] HashReference, SaltReference;
-                //_utilities.CreatePasswordHash(encryptedPin, out HashReference, out SaltReference);
-                if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))
+                if(paymentModel.PaymentCategory == MerchantPaymentCategory.Basic 
+                    || paymentModel.PaymentCategory == MerchantPaymentCategory.Escrow
+                    || paymentModel.PaymentCategory == MerchantPaymentCategory.OneOffBasicLink
+                    || paymentModel.PaymentCategory == MerchantPaymentCategory.OneOffEscrowLink)
                 {
-                    newGuid = Guid.NewGuid().ToString("N");
-                    token = string.Empty;
-                    encryptedToken = string.Empty;
-                    token = model.Amount + model.PaymentCategory + model.PaymentLinkName + newGuid;
-                    encryptedToken = token.Encrypt(_appSettings.appKey);
-                    //newPin = string.Empty;
-                    //newPin = Utilities.GeneratePin();
-                    //encryptedPin = newPin.Encrypt(_appSettings.appKey);
-                }
-                model.TransactionReference = newGuid;
-                model.PaymentLinkUrl = _appSettings.paymentlinkUrl + model.TransactionReference;
-                await _context.MerchantPaymentSetup.AddAsync(model);
-                await _context.SaveChangesAsync();
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
-                ////if (paymentModel.PaymentCategory == MerchantPaymentCategory.Basic)
-                ////{
-                    
-                ////}
+                    var model = new MerchantPaymentSetup { };
+                    model.PaymentLinkName = paymentModel.PaymentLinkName == null ? string.Empty : paymentModel.PaymentLinkName;
+                    model.AdditionalDetails = paymentModel.AdditionalDetails == null ? string.Empty : paymentModel.AdditionalDetails;
+                    model.Description = paymentModel.Description == null ? string.Empty : paymentModel.Description;
+                    model.Amount = paymentModel.Amount < 1 ? 0 : paymentModel.Amount;
+                    model.CustomUrl = paymentModel.CustomUrl == null ? string.Empty : paymentModel.CustomUrl;
+                    model.RedirectAfterPayment = paymentModel.RedirectAfterPayment == false ? false : paymentModel.RedirectAfterPayment;
+                    model.DeliveryMethod = paymentModel.DeliveryMethod == null ? string.Empty : paymentModel.DeliveryMethod;
+                    model.ClientAuthenticationId = clientId;
+                    model.PaymentCategory = paymentModel.PaymentCategory == null ? string.Empty : paymentModel.PaymentCategory;
+                    model.ShippingFee = paymentModel.ShippingFee < 1 ? 0 : paymentModel.ShippingFee;
+                    model.TotalAmount = model.Amount + model.ShippingFee;
+                    model.DeliveryTime = paymentModel.DeliveryTime < 1 ? 0 : paymentModel.DeliveryTime;
+                    model.PaymentMethod = paymentModel.PaymentMethod == null ? string.Empty : paymentModel.PaymentMethod;
+                    var newGuid = Guid.NewGuid().ToString("N");
+                    var token = model.Amount + "," + model.PaymentCategory + "," + model.PaymentLinkName + "," + newGuid;
+                    var encryptedToken = token.Encrypt(_appSettings.appKey);
+                    //var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
+                    //var encryptedPin = newPin.Encrypt(_appSettings.appKey);
+                    //byte[] HashReference, SaltReference;
+                    //_utilities.CreatePasswordHash(encryptedPin, out HashReference, out SaltReference);
+                    if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))
+                    {
+                        newGuid = Guid.NewGuid().ToString("N");
+                        token = string.Empty;
+                        encryptedToken = string.Empty;
+                        token = model.Amount + model.PaymentCategory + model.PaymentLinkName + newGuid;
+                        encryptedToken = token.Encrypt(_appSettings.appKey);
+                        //newPin = string.Empty;
+                        //newPin = Utilities.GeneratePin();
+                        //encryptedPin = newPin.Encrypt(_appSettings.appKey);
+                    }
+                    model.TransactionReference = newGuid;
+                    model.PaymentLinkUrl = _appSettings.paymentlinkUrl + model.TransactionReference;
+                    await _context.MerchantPaymentSetup.AddAsync(model);
+                    await _context.SaveChangesAsync();
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
+                    ////if (paymentModel.PaymentCategory == MerchantPaymentCategory.Basic)
+                    ////{
 
-                ////model.DeliveryTime = paymentModel.DeliveryTime;
-                ////model.PaymentMethod = paymentModel.PaymentMethod;
-                ////await _context.MerchantPaymentSetup.AddAsync(model);
-                ////await _context.SaveChangesAsync();
-                ////return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
+                    ////}
+
+                    ////model.DeliveryTime = paymentModel.DeliveryTime;
+                    ////model.PaymentMethod = paymentModel.PaymentMethod;
+                    ////await _context.MerchantPaymentSetup.AddAsync(model);
+                    ////await _context.SaveChangesAsync();
+                    ////return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
+                }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentcategory };
+               
             }
             catch (Exception ex)
             {
