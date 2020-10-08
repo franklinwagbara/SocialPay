@@ -5,7 +5,7 @@ namespace SocialPay.Helper.ViewModel
     public class PaymentLinkViewModel
     {
         public string PaymentLinkName { get; set; }
-        public string Description { get; set; }
+        public string MerchantDescription { get; set; }
         public decimal Amount { get; set; }
         public decimal ShippingFee { get; set; }
         public decimal TotalAmount { get; set; }

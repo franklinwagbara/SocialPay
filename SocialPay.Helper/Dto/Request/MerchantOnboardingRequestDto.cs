@@ -59,7 +59,7 @@ namespace SocialPay.Helper.Dto.Request
     public class MerchantpaymentLinkRequestDto
     {
         public string PaymentLinkName { get; set; }
-        public string Description { get; set; }
+        public string MerchantDescription { get; set; }
         public decimal MerchantAmount { get; set; }
         public decimal ShippingFee { get; set; }
         public string CustomUrl { get; set; }

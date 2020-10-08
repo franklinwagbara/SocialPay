@@ -8,7 +8,7 @@ namespace SocialPay.Domain.Entities
         public long MerchantPaymentSetupId { get; set; }
         public long ClientAuthenticationId { get; set; }
         public string PaymentLinkName { get; set; }
-        public string Description { get; set; }
+        public string MerchantDescription { get; set; }
         public string CustomerDescription { get; set; }
         public decimal MerchantAmount { get; set; }
         public decimal CustomerAmount { get; set; }

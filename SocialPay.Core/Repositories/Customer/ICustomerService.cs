@@ -65,7 +65,7 @@ namespace SocialPay.Core.Repositories.Customer
                          select new CustomerPaymentViewModel { MerchantAmount = c.MerchantAmount, CustomerEmail = a.Email,
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
-                         DeliveryTime = c.DeliveryTime, Description = c.Description, CustomerDescription = c.CustomerDescription,
+                         DeliveryTime = c.DeliveryTime, Description = c.MerchantDescription, CustomerDescription = c.CustomerDescription,
                          TransactionReference = c.TransactionReference}).ToList();
             result = response;
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
@@ -149,7 +149,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 join m in _context.MerchantPaymentSetup on c.MerchantPaymentSetupId equals m.MerchantPaymentSetupId
                                 select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                                DeliveryMethod = m.DeliveryMethod, Description = m.Description,
+                                DeliveryMethod = m.DeliveryMethod, Description = m.MerchantDescription,
                                 TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory,
                                 OrderStatus = c.OrderStatus, RequestId = c.CustomerTransactionId}).ToList();
 
