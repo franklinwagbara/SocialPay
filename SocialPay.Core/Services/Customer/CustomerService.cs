@@ -147,7 +147,7 @@ namespace SocialPay.Core.Services.Customer
                         var logCustomerInfo = new CustomerOtherPaymentsInfo
                         {
                             Amount = model.CustomerAmount, ClientAuthenticationId = customerId,
-                            CustomerDescription = model.Description,
+                            CustomerDescription = model.CustomerDescription,
                             MerchantPaymentSetupId = getPaymentDetails.MerchantPaymentSetupId,
                             Document = newFileName,
                             FileLocation = "CustomerDocuments"
