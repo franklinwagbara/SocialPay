@@ -96,6 +96,10 @@ namespace SocialPay.Core.Services.Customer
             try
             {
                 long customerId = 0;
+                string encryptedText = string.Empty;
+                string encryptData = string.Empty;
+                string paymentData = string.Empty;
+                var paymentResponse = new CustomerResponseDto { };
                 var getClient = await _customerService.GetClientDetails(model.Email);
                 customerId = Convert.ToInt32(getClient.Data);
                 //var getPaymentDetails = await _context.MerchantPaymentSetup
@@ -161,17 +165,23 @@ namespace SocialPay.Core.Services.Customer
                         model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
                         await transaction.CommitAsync();
                         _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
-
+                        decimal CustomerTotalAmount = model.CustomerAmount + getPaymentDetails.ShippingFee;
+                        encryptedText = _appSettings.mid + _appSettings.paymentCombination + CustomerTotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                        encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
+                        //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
+                        paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
+                        paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                     }
                 }
-                var encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
-                var encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
+                encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                 //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
-                var paymentData =  _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
-                var paymentResponse = new CustomerResponseDto { CustomerId = customerId, PaymentLink = paymentData };
+                paymentData =  _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
+                paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
             }
-            catch (Exception ex)
+          catch (Exception ex)
             {
                 _log4net.Error("An error occured while trying to initiate payment" + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | "+ DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
