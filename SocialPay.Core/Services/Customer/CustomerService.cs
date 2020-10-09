@@ -182,7 +182,7 @@ namespace SocialPay.Core.Services.Customer
                 paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
             }
-          catch (Exception ex)
+            catch (Exception ex)
             {
                 _log4net.Error("An error occured while trying to initiate payment" + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | "+ DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
@@ -194,15 +194,26 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-                var decodeMessage = System.Uri.UnescapeDataString(model.Message);
-                if (decodeMessage.Contains(" "))
+                if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank)
                 {
-                    decodeMessage = decodeMessage.Replace(" ", "+");
+                    if(model.Channel == PaymentChannel.Card)
+                    {
+                        var decodeMessage = System.Uri.UnescapeDataString(model.Message);
+                        if (decodeMessage.Contains(" "))
+                        {
+                            decodeMessage = decodeMessage.Replace(" ", "+");
+                        }
+                        var decryptResponse = DecryptAlt(decodeMessage);
+                        model.Message = decryptResponse;
+                        var result = await _customerService.LogPaymentResponse(model);
+                        return result;
+                    }
+
+                    var oneBankRequest = await _customerService.LogPaymentResponse(model);
+                    return oneBankRequest;
+
                 }
-                var decryptResponse = DecryptAlt(decodeMessage);
-                model.Message = decryptResponse;
-                var result = await _customerService.LogPaymentResponse(model);
-                return result;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPamentChannel };
             }
             catch (Exception ex)
             {

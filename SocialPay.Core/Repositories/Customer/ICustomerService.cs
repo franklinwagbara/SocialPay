@@ -193,7 +193,7 @@ namespace SocialPay.Core.Repositories.Customer
               
                 var logRequest = new CustomerTransaction
                 {
-                    ClientAuthenticationId = model.CustomerId, CustomerEmail = customerInfo.Email,
+                    ClientAuthenticationId = model.CustomerId, CustomerEmail = customerInfo.Email, Channel = model.Channel,
                     Message = model.Message, OrderStatus = OrderStatusCode.Pending, MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId,
                     DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime)
                 };

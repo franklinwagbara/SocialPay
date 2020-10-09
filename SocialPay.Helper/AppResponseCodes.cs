@@ -23,6 +23,7 @@
         public const string InvalidPaymentReference = "19";               
         public const string CancelHasExpired = "20";               
         public const string InvalidPaymentcategory = "21";               
+        public const string InvalidPamentChannel = "22";               
     }
 
     public class MerchantOnboardingProcess
@@ -38,6 +39,12 @@
     {
         public const string CreateAccount = "01";
         public const string Processed = "02";       
+    }
+
+    public class PaymentChannel
+    {
+        public const string OneBank = "01";
+        public const string Card = "02";
     }
 
     public class MerchantPaymentCategory
