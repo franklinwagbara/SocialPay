@@ -17,6 +17,8 @@ namespace SocialPay.API.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly CustomerRepoService _customerRepoService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CustomerController));
+
         public CustomerController(CustomerRepoService customerRepoService)
         {
             _customerRepoService = customerRepoService;
@@ -55,6 +57,8 @@ namespace SocialPay.API.Controllers
         public async Task<IActionResult> InitiatePayment([FromForm] CustomerPaymentRequestDto model)
         {
             var response = new WebApiResponse { };
+            _log4net.Info("Task starts to initiate payments" + " | " + model.TransactionReference + " | " + DateTime.Now);
+
             try
             {
                 if (ModelState.IsValid)
@@ -72,6 +76,7 @@ namespace SocialPay.API.Controllers
             }
             catch (Exception ex)
             {
+                _log4net.Error("An error occured while initiating payment" + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 response.ResponseCode = AppResponseCodes.InternalError;
                 return BadRequest(response);
             }

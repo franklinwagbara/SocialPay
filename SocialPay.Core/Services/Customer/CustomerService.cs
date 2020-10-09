@@ -31,6 +31,7 @@ namespace SocialPay.Core.Services.Customer
         private readonly EncryptDecryptAlgorithm _encryptDecryptAlgorithm;
         private readonly EncryptDecrypt _encryptDecrypt;
         private readonly IHostingEnvironment _hostingEnvironment;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CustomerRepoService));
         public CustomerRepoService(ICustomerService customerService, IOptions<AppSettings> appSettings,
             EncryptDecryptAlgorithm encryptDecryptAlgorithm, EncryptDecrypt encryptDecrypt,
             EmailService emailService, IHostingEnvironment environment,
@@ -90,6 +91,8 @@ namespace SocialPay.Core.Services.Customer
 
         public async Task<WebApiResponse> MakePayment(CustomerPaymentRequestDto model)
         {
+            _log4net.Info("Task starts to save payments info" + " | " + model.TransactionReference + " | " + DateTime.Now);
+
             try
             {
                 long customerId = 0;
@@ -154,8 +157,11 @@ namespace SocialPay.Core.Services.Customer
                         };
                         await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                         await _context.SaveChangesAsync();
+                        _log4net.Info("About to save uploaded document" + " | " + model.TransactionReference + " | " + DateTime.Now);
                         model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
                         await transaction.CommitAsync();
+                        _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
+
                     }
                 }
                 var encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
@@ -167,6 +173,7 @@ namespace SocialPay.Core.Services.Customer
             }
             catch (Exception ex)
             {
+                _log4net.Error("An error occured while trying to initiate payment" + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | "+ DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
