@@ -134,7 +134,7 @@ namespace SocialPay.Core.Services.Customer
                 fileName = (model.Document.FileName);
                 var documentId = Guid.NewGuid().ToString("N").Substring(22);
                 var FileExtension = Path.GetExtension(fileName);
-                fileName = Path.Combine(_hostingEnvironment.WebRootPath, "CustomerDocuments") + $@"\{newFileName}";
+               // fileName = Path.Combine(_hostingEnvironment.WebRootPath, "CustomerDocuments") + $@"\{newFileName}";
 
                 // concating  FileName + FileExtension
                 newFileName = documentId + FileExtension;
@@ -154,7 +154,7 @@ namespace SocialPay.Core.Services.Customer
                         };
                         await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                         await _context.SaveChangesAsync();
-                        model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
+                       // model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
                         await transaction.CommitAsync();
                     }
                 }
