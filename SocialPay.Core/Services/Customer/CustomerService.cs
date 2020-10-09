@@ -136,19 +136,20 @@ namespace SocialPay.Core.Services.Customer
 
                     var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                 }
-                string fileName = string.Empty;
-                var newFileName = string.Empty;
-                fileName = (model.Document.FileName);
-                var documentId = Guid.NewGuid().ToString("N").Substring(22);
-                var FileExtension = Path.GetExtension(fileName);
-                fileName = Path.Combine(_hostingEnvironment.WebRootPath, "CustomerDocuments") + $@"\{newFileName}";
-
-                // concating  FileName + FileExtension
-                newFileName = documentId + FileExtension;
-                var filePath = Path.Combine(fileName, newFileName);
+               
                 if(getPaymentDetails.PaymentCategory == MerchantPaymentCategory.OneOffBasicLink
                     || getPaymentDetails.PaymentCategory == MerchantPaymentCategory.OneOffEscrowLink)
                 {
+                    string fileName = string.Empty;
+                    var newFileName = string.Empty;
+                    fileName = (model.Document.FileName);
+                    var documentId = Guid.NewGuid().ToString("N").Substring(22);
+                    var FileExtension = Path.GetExtension(fileName);
+                    fileName = Path.Combine(_hostingEnvironment.WebRootPath, "CustomerDocuments") + $@"\{newFileName}";
+
+                    // concating  FileName + FileExtension
+                    newFileName = documentId + FileExtension;
+                    var filePath = Path.Combine(fileName, newFileName);
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         var logCustomerInfo = new CustomerOtherPaymentsInfo
