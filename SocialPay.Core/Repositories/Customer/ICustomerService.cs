@@ -41,10 +41,35 @@ namespace SocialPay.Core.Repositories.Customer
             );
         }
 
+        
+        public async Task<WebApiResponse> GetMerchantPaymentInfo(string transactionReference)
+        {
+            var validateReference = await GetTransactionReference(transactionReference);
+            if(validateReference == null)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference};
+
+            var getMerchantInfo = await GetMerchantInfo(validateReference.ClientAuthenticationId);
+            if(getMerchantInfo == null)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
+
+
+
+
+            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = validateReference };
+        }
+
         public async Task<List<CustomerTransaction>> GetTransactionByClientId(long clientId)
         {
             return await _context.CustomerTransaction
                 .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
+        }
+
+
+        public async Task<MerchantBusinessInfo> GetMerchantInfo(long clientId)
+        {
+            return await _context.MerchantBusinessInfo.SingleOrDefaultAsync(p => p.ClientAuthenticationId
+             == clientId
+           );
         }
 
         public async Task<WebApiResponse> GetCustomerPaymentsByMerchantPayRef(long clientId)
@@ -131,9 +156,24 @@ namespace SocialPay.Core.Repositories.Customer
             var validateReference = await GetTransactionReference(refId);
             if (validateReference == null)
                 return new PaymentLinkViewModel { };
+            var getMerchantInfo = await GetMerchantInfo(validateReference.ClientAuthenticationId);
+            if (getMerchantInfo == null)
+                return new PaymentLinkViewModel { };
             var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
             var mapper = config.CreateMapper();
             paymentview = mapper.Map<PaymentLinkViewModel>(validateReference);
+
+            paymentview.MerchantInfo = new MerchantInfoViewModel
+            {
+                BusinessEmail = getMerchantInfo.BusinessEmail,
+                BusinessPhoneNumber = getMerchantInfo.BusinessPhoneNumber,
+                BusinessName = getMerchantInfo.BusinessName,
+                Chargebackemail = getMerchantInfo.Chargebackemail,
+                Country = getMerchantInfo.Country,
+                Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
+            };
+            //ProfilePhoto = getInvestors == null ? string.Empty : _appSettings.BaseApiUrl + getInvestors.IndividualInvestor.Select(x => x.FileLocation).First() + "/" + getInvestors.IndividualInvestor.Select(x => x.ProfilePhoto).First(),
+
             return paymentview;
         }
 

@@ -6,6 +6,7 @@
         public string appId { get; set; }
         public string SecretKey { get; set; }
         public string SterlingBankCode { get; set; }
+        public string BaseApiUrl { get; set; }
         public string EwsServiceUrl { get; set; }
         public string LdapServiceUrl { get; set; }
         public string IBSserviceUrl { get; set; }

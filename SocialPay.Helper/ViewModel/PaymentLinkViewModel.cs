@@ -4,6 +4,7 @@ namespace SocialPay.Helper.ViewModel
 {
     public class PaymentLinkViewModel
     {
+        public MerchantInfoViewModel MerchantInfo { get; set; }
         public string PaymentLinkName { get; set; }
         public string MerchantDescription { get; set; }
         public decimal MerchantAmount { get; set; }
@@ -52,5 +53,16 @@ namespace SocialPay.Helper.ViewModel
         public string AdditionalDetails { get; set; }
         public string OrderStatus { get; set; }
         public long RequestId { get; set; }
+    }
+
+    public class MerchantInfoViewModel
+    {
+        public string BusinessName { get; set; }
+        public string BusinessPhoneNumber { get; set; }
+        public string BusinessEmail { get; set; }
+        public string Country { get; set; }
+        public string Chargebackemail { get; set; }
+        public string Logo { get; set; }
+     
     }
 }
