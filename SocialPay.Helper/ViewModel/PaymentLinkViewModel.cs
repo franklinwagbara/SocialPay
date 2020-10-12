@@ -24,7 +24,8 @@ namespace SocialPay.Helper.ViewModel
 
     public class CustomerPaymentViewModel
     {
-        public string Description { get; set; }
+        public long CustomerTransactionId { get; set; }
+        public string MerchantDescription { get; set; }
         public string CustomerDescription { get; set; }
         public decimal MerchantAmount { get; set; }
         public decimal CustomerAmount { get; set; }
