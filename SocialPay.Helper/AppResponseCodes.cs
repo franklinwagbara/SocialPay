@@ -24,6 +24,7 @@
         public const string CancelHasExpired = "20";               
         public const string InvalidPaymentcategory = "21";               
         public const string InvalidPamentChannel = "22";               
+        public const string InvalidTransactionReference = "23";               
     }
 
     public class MerchantOnboardingProcess

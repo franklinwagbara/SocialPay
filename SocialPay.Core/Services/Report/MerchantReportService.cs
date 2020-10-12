@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialPay.Core.Repositories.Customer;
 using SocialPay.Domain;
 using SocialPay.Helper;
+using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.ViewModel;
 using System;
@@ -13,10 +15,12 @@ namespace SocialPay.Core.Services.Report
     public class MerchantReportService
     {
         private readonly SocialPayDbContext _context;
+        private readonly ICustomerService _customerService;
 
-        public MerchantReportService(SocialPayDbContext context)
+        public MerchantReportService(SocialPayDbContext context, ICustomerService customerService)
         {
             _context = context;
+            _customerService = customerService;
         }
 
         public async Task<WebApiResponse> GetMerchants()
@@ -46,6 +50,28 @@ namespace SocialPay.Core.Services.Report
             catch (Exception ex)
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = result };
+            }
+        }
+
+        public async Task<WebApiResponse> GenerateCustomerReceipt(CustomerReceiptRequestDto model)
+        {
+            try
+            {
+                var validateTransaction = await _customerService.GetTransactionReference(model.TransactionReference);
+
+                if(validateTransaction == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
+
+                var validateCustomer = validateTransaction.CustomerTransaction
+                    .SingleOrDefault(x => x.CustomerTransactionId == model.CustomerTransactionId);
+
+                //Send Mail here
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
     }

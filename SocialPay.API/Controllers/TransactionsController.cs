@@ -23,7 +23,6 @@ namespace SocialPay.API.Controllers
             _merchantPaymentLinkService = merchantPaymentLinkService;
         }
 
-       // [AllowAnonymous]
         [HttpPost]
         [Route("generate-payment-link")]
         public async Task<IActionResult> GeneratePaymentLink([FromBody] MerchantpaymentLinkRequestDto model)
@@ -33,13 +32,15 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var url = Request.Host.Value;
+
+                    
+
                     var identity = User.Identity as ClaimsIdentity;
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _merchantPaymentLinkService.GeneratePaymentLink(model, Convert.ToInt32(clientId));
-                    //if (result.ResponseCode != AppResponseCodes.Success)
-                    //    return BadRequest(result);
+                    var result = await _merchantPaymentLinkService.GeneratePaymentLink(model, Convert.ToInt32(clientId));                   
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
@@ -57,7 +58,6 @@ namespace SocialPay.API.Controllers
         }
 
 
-        //[AllowAnonymous]
         [HttpGet]
         [Route("get-customer-payments")]
         public async Task<IActionResult> GetCustomerPayments()
@@ -71,9 +71,7 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _merchantPaymentLinkService.GetCustomerPayments(Convert.ToInt32(clientId));
-                    //if (result.ResponseCode != AppResponseCodes.Success)
-                    //    return BadRequest(result);
+                    var result = await _merchantPaymentLinkService.GetCustomerPayments(Convert.ToInt32(clientId));                
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)

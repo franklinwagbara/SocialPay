@@ -44,6 +44,13 @@ namespace SocialPay.Helper.Dto.Request
         //public decimal customField { get; set; }
     }
 
+    public class CustomerReceiptRequestDto
+    {
+        public string TransactionReference { get; set; }
+        public long CustomerTransactionId { get; set; }
+
+    }
+
     public class MerchantWalletRequestDto
     {
         public string firstname { get; set; }

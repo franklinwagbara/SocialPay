@@ -36,7 +36,9 @@ namespace SocialPay.Core.Repositories.Customer
 
         public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
         {
-            return await _context.MerchantPaymentSetup.Include(x => x.CustomerTransaction).SingleOrDefaultAsync(p => p.TransactionReference
+            return await _context.MerchantPaymentSetup
+                .Include(x => x.CustomerTransaction)
+                .SingleOrDefaultAsync(p => p.TransactionReference
               == refId
             );
         }
@@ -98,12 +100,33 @@ namespace SocialPay.Core.Repositories.Customer
         }
 
 
+
+        public async Task<WebApiResponse> GetCustomerByMerchantId(long clientId)
+        {
+            var result = new List<CustomerInfoViewModel>();
+          
+            var getPaymentSetupInfo = await _context.MerchantPaymentSetup
+                .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
+
+            if (getPaymentSetupInfo.Count == 0)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+
+            var response =  (from c in getPaymentSetupInfo
+                             join p in _context.CustomerTransaction on c.MerchantPaymentSetupId  equals p.MerchantPaymentSetupId
+                         join a in _context.ClientAuthentication on p.ClientAuthenticationId equals a.ClientAuthenticationId
+                         select new CustomerInfoViewModel { CustomerEmail = a.Email,
+                             CustomerPhoneNumber = a.PhoneNumber, DateRegistered = a.DateEntered }).ToList();
+            result = response;
+            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+        }
+
         public async Task <List<CustomerTransaction>> GetCustomerPaymentsByMerchantId(long merchantId)
         {
             return await _context.CustomerTransaction.Where(p => p.MerchantPaymentSetupId
             == merchantId).ToListAsync();
         }
 
+       
         public async Task<WebApiResponse> GetClientDetails(string email)
         {
             var getClientInfo = await _authRepoService.GetClientDetails(email);

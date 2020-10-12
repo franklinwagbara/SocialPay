@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Account;
+using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Transaction;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
@@ -20,11 +21,13 @@ namespace SocialPay.API.Controllers
     {
         private readonly MerchantRegistrationService _merchantRegistrationService;
         private readonly MerchantPaymentLinkService _merchantPaymentLinkService;
+        private readonly MerchantReportService _merchantReportService;
         public MerchantsController(MerchantRegistrationService merchantRegistrationService,
-            MerchantPaymentLinkService merchantPaymentLinkService)
+            MerchantPaymentLinkService merchantPaymentLinkService, MerchantReportService merchantReportService)
         {
             _merchantRegistrationService = merchantRegistrationService;
             _merchantPaymentLinkService = merchantPaymentLinkService;
+            _merchantReportService = merchantReportService;
         }
 
         [HttpPost]
@@ -173,6 +176,70 @@ namespace SocialPay.API.Controllers
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     var result = await _merchantPaymentLinkService.GetAllPaymentLinksByMerchant(Convert.ToInt32(clientId));
+                    //if (result.ResponseCode != AppResponseCodes.Success)
+                    //    return BadRequest(result);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("customers")]
+        public async Task<IActionResult> GetMerchantCustomers()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _merchantPaymentLinkService.GetCustomers(Convert.ToInt32(clientId));
+                  
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost]
+        [Route("send-receipt")]
+        public async Task<IActionResult> SendCustomerReceipt([FromBody] CustomerReceiptRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _merchantReportService.GenerateCustomerReceipt(model);
                     //if (result.ResponseCode != AppResponseCodes.Success)
                     //    return BadRequest(result);
                     return Ok(result);
