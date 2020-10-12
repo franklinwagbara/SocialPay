@@ -34,6 +34,7 @@ namespace SocialPay.Helper.ViewModel
         public string DeliveryMethod { get; set; }
         public long DeliveryTime { get; set; }
         public string TransactionReference { get; set; }
+        public string CustomerTransactionReference { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerPhoneNumber { get; set; }
         public DateTime TransactionDate { get; set; }

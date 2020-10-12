@@ -91,7 +91,8 @@ namespace SocialPay.Core.Repositories.Customer
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
                          DeliveryTime = c.DeliveryTime, MerchantDescription = c.MerchantDescription, CustomerDescription = c.CustomerDescription,
-                         TransactionReference = c.TransactionReference, CustomerTransactionId = p.CustomerTransactionId}).ToList();
+                         TransactionReference = c.TransactionReference,
+                         CustomerTransactionId = p.CustomerTransactionId, CustomerTransactionReference = p.CustomerTransactionReference}).ToList();
             result = response;
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
         }
@@ -235,7 +236,8 @@ namespace SocialPay.Core.Repositories.Customer
                 {
                     ClientAuthenticationId = model.CustomerId, CustomerEmail = customerInfo.Email, Channel = model.Channel,
                     Message = model.Message, OrderStatus = OrderStatusCode.Pending, MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId,
-                    DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime)
+                    DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime),
+                    CustomerTransactionReference = Guid.NewGuid().ToString()
                 };
                 if (model.Message.Contains("Approve"))
                 {

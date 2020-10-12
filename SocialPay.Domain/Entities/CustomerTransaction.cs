@@ -13,6 +13,7 @@ namespace SocialPay.Domain.Entities
         public string Channel { get; set; }
         public string OrderStatus { get; set; }
         public string Message { get; set; }
+        public string CustomerTransactionReference { get; set; }
         public bool Status { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
