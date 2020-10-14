@@ -29,11 +29,14 @@ namespace SocialPay.Core.Services.Transaction
             _customerService = customerService;
         }
 
-        public async Task<WebApiResponse> GeneratePaymentLink(MerchantpaymentLinkRequestDto paymentModel, long clientId)
+        public async Task<WebApiResponse> GeneratePaymentLink(MerchantpaymentLinkRequestDto paymentModel,
+            long clientId, string userStatus)
         {
             try
             {
                 //clientId = 10014;
+                if (userStatus != AppResponseCodes.Success)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
                 if(paymentModel.PaymentCategory == MerchantPaymentCategory.Basic 
                     || paymentModel.PaymentCategory == MerchantPaymentCategory.Escrow
                     || paymentModel.PaymentCategory == MerchantPaymentCategory.OneOffBasicLink
