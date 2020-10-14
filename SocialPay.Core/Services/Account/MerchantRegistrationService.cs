@@ -344,7 +344,7 @@ namespace SocialPay.Core.Services.Account
                         bankInfoModel.AccountName = ibsRequest.AccountName;
                         await _context.MerchantBankInfo.AddAsync(bankInfoModel);
                         await _context.SaveChangesAsync();
-                        getUserInfo.StatusCode = AppResponseCodes.Success;
+                        getUserInfo.StatusCode = MerchantOnboardingProcess.BankInfo;
                         getUserInfo.LastDateModified = DateTime.Now;
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
