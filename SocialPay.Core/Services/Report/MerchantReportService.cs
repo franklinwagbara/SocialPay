@@ -62,7 +62,7 @@ namespace SocialPay.Core.Services.Report
             try
             {
 
-                await _transactionReceipt.ReceiptTemplate("festypat9@gmail.com");
+               // await _transactionReceipt.ReceiptTemplate("festypat9@gmail.com");
                 var validateTransaction = await _customerService.GetTransactionReference(model.TransactionReference);
 
                 if(validateTransaction == null)
