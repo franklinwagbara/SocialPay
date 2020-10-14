@@ -226,6 +226,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("send-receipt")]
         public async Task<IActionResult> SendCustomerReceipt([FromBody] CustomerReceiptRequestDto model)

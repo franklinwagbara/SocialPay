@@ -47,6 +47,7 @@ namespace SocialPay.Helper.ViewModel
         public long ClientAuthenticationId { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerPhoneNumber { get; set; }
+        public string Fullname { get; set; }
         //public string PaymentLinkUrl { get; set; }
         public DateTime DateRegistered { get; set; } 
     }

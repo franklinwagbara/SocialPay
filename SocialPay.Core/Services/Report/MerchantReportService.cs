@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Domain;
 using SocialPay.Helper;
@@ -16,11 +17,14 @@ namespace SocialPay.Core.Services.Report
     {
         private readonly SocialPayDbContext _context;
         private readonly ICustomerService _customerService;
+        private readonly TransactionReceipt _transactionReceipt;
 
-        public MerchantReportService(SocialPayDbContext context, ICustomerService customerService)
+        public MerchantReportService(SocialPayDbContext context,
+            ICustomerService customerService, TransactionReceipt transactionReceipt)
         {
             _context = context;
             _customerService = customerService;
+            _transactionReceipt = transactionReceipt;
         }
 
         public async Task<WebApiResponse> GetMerchants()
@@ -57,6 +61,8 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
+
+                await _transactionReceipt.ReceiptTemplate("festypat9@gmail.com");
                 var validateTransaction = await _customerService.GetTransactionReference(model.TransactionReference);
 
                 if(validateTransaction == null)
@@ -64,7 +70,7 @@ namespace SocialPay.Core.Services.Report
 
                 var validateCustomer = validateTransaction.CustomerTransaction
                     .SingleOrDefault(x => x.CustomerTransactionId == model.CustomerTransactionId);
-
+                await _transactionReceipt.ReceiptTemplate(validateCustomer.CustomerEmail);
                 //Send Mail here
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

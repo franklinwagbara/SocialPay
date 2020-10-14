@@ -114,7 +114,7 @@ namespace SocialPay.Core.Repositories.Customer
             var response =  (from c in getPaymentSetupInfo
                              join p in _context.CustomerTransaction on c.MerchantPaymentSetupId  equals p.MerchantPaymentSetupId
                          join a in _context.ClientAuthentication on p.ClientAuthenticationId equals a.ClientAuthenticationId
-                         select new CustomerInfoViewModel { CustomerEmail = a.Email,
+                         select new CustomerInfoViewModel { CustomerEmail = a.Email, Fullname = a.FullName,
                              CustomerPhoneNumber = a.PhoneNumber, DateRegistered = a.DateEntered }).ToList();
             result = response;
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };

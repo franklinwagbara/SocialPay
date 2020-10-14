@@ -116,6 +116,7 @@ namespace SocialPay.API
             services.AddScoped<ICustomerService>();
             services.AddScoped<EncryptDecryptAlgorithm>();
             services.AddScoped<EncryptDecrypt>();
+            services.AddScoped<TransactionReceipt>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
