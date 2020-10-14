@@ -23,9 +23,10 @@ namespace SocialPay.API.Controllers
             _merchantPaymentLinkService = merchantPaymentLinkService;
         }
 
+       // [AllowAnonymous]
         [HttpPost]
         [Route("generate-payment-link")]
-        public async Task<IActionResult> GeneratePaymentLink([FromBody] MerchantpaymentLinkRequestDto model)
+        public async Task<IActionResult> GeneratePaymentLink([FromForm] MerchantpaymentLinkRequestDto model)
         {
             var response = new WebApiResponse { };
             try

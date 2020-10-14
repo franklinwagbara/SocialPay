@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
@@ -9,6 +10,7 @@ using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,13 +22,15 @@ namespace SocialPay.Core.Services.Transaction
         private readonly AppSettings _appSettings;
         private readonly Utilities _utilities;
         private readonly ICustomerService _customerService;
+        private readonly IHostingEnvironment _hostingEnvironment;
         public MerchantPaymentLinkService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
-            Utilities utilities, ICustomerService customerService)
+            Utilities utilities, ICustomerService customerService, IHostingEnvironment environment)
         {
             _context = context;
             _appSettings = appSettings.Value;
             _utilities = utilities;
             _customerService = customerService;
+            _hostingEnvironment = environment;
         }
 
         public async Task<WebApiResponse> GeneratePaymentLink(MerchantpaymentLinkRequestDto paymentModel,
@@ -35,6 +39,8 @@ namespace SocialPay.Core.Services.Transaction
             try
             {
                 //clientId = 10014;
+
+                decimal addtionalAmount = 0;
                 if (userStatus != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
                 if(paymentModel.PaymentCategory == MerchantPaymentCategory.Basic 
@@ -74,9 +80,35 @@ namespace SocialPay.Core.Services.Transaction
                         //newPin = Utilities.GeneratePin();
                         //encryptedPin = newPin.Encrypt(_appSettings.appKey);
                     }
+                    string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.MerchantLinkPaymentDocument);
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    string fileName = string.Empty;
+                    var newFileName = string.Empty;
+                    fileName = (paymentModel.Document.FileName);
+                    var documentId = Guid.NewGuid().ToString("N").Substring(22);
+                    var FileExtension = Path.GetExtension(fileName);
+                    fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.MerchantLinkPaymentDocument) + $@"\{newFileName}";
+
+                    // concating  FileName + FileExtension
+                    newFileName = documentId + FileExtension;
+                    var filePath = Path.Combine(fileName, newFileName);
                     model.TransactionReference = newGuid;
+                    model.Document = newFileName;
+                    model.FileLocation = _appSettings.MerchantLinkPaymentDocument;
                     model.PaymentLinkUrl = _appSettings.paymentlinkUrl + model.TransactionReference;
+                    if(paymentModel.PaymentCategory == MerchantPaymentCategory.Escrow ||
+                        paymentModel.PaymentCategory == MerchantPaymentCategory.Escrow)
+                    {
+                        addtionalAmount = model.TotalAmount * Convert.ToInt32(_appSettings.PaymentLinkPercentage) / 100;
+                        model.TotalAmount = model.TotalAmount + addtionalAmount;
+                        model.AdditionalCharges = addtionalAmount;
+                        model.HasAdditionalCharges = true;
+                    }
                     await _context.MerchantPaymentSetup.AddAsync(model);
+                    paymentModel.Document.CopyTo(new FileStream(filePath, FileMode.Create));
                     await _context.SaveChangesAsync();
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
                     ////if (paymentModel.PaymentCategory == MerchantPaymentCategory.Basic)

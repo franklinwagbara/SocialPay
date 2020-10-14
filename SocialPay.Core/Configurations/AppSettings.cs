@@ -23,5 +23,7 @@
         public string mid { get; set; }
         public string paymentCombination { get; set; }
         public string deliverySLA { get; set; }
+        public string MerchantLinkPaymentDocument { get; set; }
+        public string PaymentLinkPercentage { get; set; }
     }
 }
