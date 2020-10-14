@@ -25,13 +25,16 @@ namespace SocialPay.Core.Repositories.Customer
         private readonly AuthRepoService _authRepoService;
         private readonly AppSettings _appSettings;
         private readonly EmailService _emailService;
+        private readonly TransactionReceipt _transactionReceipt;
         public ICustomerService(SocialPayDbContext context, AuthRepoService authRepoService,
-            IOptions<AppSettings> appSettings, EmailService emailService) : base(context)
+            IOptions<AppSettings> appSettings, EmailService emailService,
+            TransactionReceipt transactionReceipt) : base(context)
         {
             _context = context;
             _authRepoService = authRepoService;
             _appSettings = appSettings.Value;
             _emailService = emailService;
+            _transactionReceipt = transactionReceipt;
         }
 
         public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
@@ -268,7 +271,8 @@ namespace SocialPay.Core.Repositories.Customer
                 }
                 await _context.CustomerTransaction.AddAsync(logRequest);
                 await _context.SaveChangesAsync();
-
+                //Send mail
+                await _transactionReceipt.ReceiptTemplate(logRequest.CustomerEmail);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
