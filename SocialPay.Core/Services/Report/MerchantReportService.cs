@@ -62,15 +62,19 @@ namespace SocialPay.Core.Services.Report
             try
             {
 
-               // await _transactionReceipt.ReceiptTemplate("festypat9@gmail.com");
+                //await _transactionReceipt.ReceiptTemplate("festypat9@gmail.com");
                 var validateTransaction = await _customerService.GetTransactionReference(model.TransactionReference);
 
                 if(validateTransaction == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
 
+                var getMerchantInfo = await _customerService.GetMerchantInfo(validateTransaction.ClientAuthenticationId);
+
                 var validateCustomer = validateTransaction.CustomerTransaction
                     .SingleOrDefault(x => x.CustomerTransactionId == model.CustomerTransactionId);
-                await _transactionReceipt.ReceiptTemplate(validateCustomer.CustomerEmail);
+                await _transactionReceipt.ReceiptTemplate(validateCustomer.CustomerEmail,
+                    validateTransaction.TotalAmount, validateCustomer.TransactionDate,
+                    model.TransactionReference, getMerchantInfo == null ? string.Empty : getMerchantInfo.BusinessName );
                 //Send Mail here
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

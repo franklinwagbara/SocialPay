@@ -255,6 +255,8 @@ namespace SocialPay.Core.Repositories.Customer
                 var customerInfo = await _context.ClientAuthentication
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == model.CustomerId);
 
+                var merhantInfo = await GetMerchantInfo(customerInfo.ClientAuthenticationId);
+
                 var paymentSetupInfo = await _context.MerchantPaymentSetup
                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
               
@@ -272,7 +274,8 @@ namespace SocialPay.Core.Repositories.Customer
                 await _context.CustomerTransaction.AddAsync(logRequest);
                 await _context.SaveChangesAsync();
                 //Send mail
-                await _transactionReceipt.ReceiptTemplate(logRequest.CustomerEmail);
+                await _transactionReceipt.ReceiptTemplate(logRequest.CustomerEmail, paymentSetupInfo.TotalAmount,
+                    logRequest.TransactionDate, model.TransactionReference, merhantInfo == null ? string.Empty : merhantInfo.BusinessName );
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)

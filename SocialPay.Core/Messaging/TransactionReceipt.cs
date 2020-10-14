@@ -22,7 +22,8 @@ namespace SocialPay.Core.Messaging
             _appSettings = appSettings.Value;
             this.env = env;
         }
-        public async Task<bool> ReceiptTemplate(string destinationEmail)
+        public async Task<bool> ReceiptTemplate(string destinationEmail,
+            decimal amount, DateTime tranDate, string tranreference, string businessname)
         {
 			try
 			{
@@ -31,7 +32,7 @@ namespace SocialPay.Core.Messaging
                     Subject = "Customer receipt" + " " + Guid.NewGuid().ToString() + " ",
                     SourceEmail = "info@sterling.ng",
                     DestinationEmail = destinationEmail,
-                    // DestinationEmail = "festypat9@gmail.com",
+                     //DestinationEmail = "festypat9@gmail.com",
                     //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
                 };
                 var mailBuilder = new StringBuilder();
@@ -49,6 +50,13 @@ namespace SocialPay.Core.Messaging
                 //using (StreamReader reader = new StreamReader("C:/stmt/intro.html"))
                 {
                     emailModal.EmailBody = reader.ReadToEnd();
+                    StringBuilder b = new StringBuilder(emailModal.EmailBody);
+                    b.Replace("%amount%", Convert.ToString(amount));
+                    b.Replace("%trandate%", Convert.ToString(tranDate));
+                    b.Replace("%tranreference%", tranreference);
+                    b.Replace("%businessname%", businessname);
+                    b.Replace("%currentyear%", Convert.ToString(DateTime.Now.Year));
+                    emailModal.EmailBody = b.ToString();
                 }
                
                 try
