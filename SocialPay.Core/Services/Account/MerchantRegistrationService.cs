@@ -405,34 +405,42 @@ namespace SocialPay.Core.Services.Account
                                     mobile = getUserInfo.PhoneNumber,
                                 };
                                 var walletResponse = new CreateWalletResponse { };
-                    
-                                var createWallet = await _walletRepoService.CreateMerchantWallet(walletModel);
-                                if(createWallet.response == AppResponseCodes.Success)
-                                {
-                                    var walletInfo = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
-                                    walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
-                                    walletResponse.Message = createWallet.responsedata.ToString();
-                                    await _context.CreateWalletResponse.AddAsync(walletResponse);
+                                getUserInfo.StatusCode = AppResponseCodes.Success;
+                                _context.ClientAuthentication.Update(getUserInfo);
                                     await _context.SaveChangesAsync();
-                            
-                                    getUserInfo.StatusCode = AppResponseCodes.Success;
-                                    walletInfo.status = MerchantWalletProcess.Processed;
-                                    walletInfo.LastDateModified = DateTime.Now;
-                                    _context.ClientAuthentication.Update(getUserInfo);
-                                    await _context.SaveChangesAsync();
-                                    _context.MerchantWallet.Update(walletInfo);
-                                    await _context.SaveChangesAsync();
+                                    //_context.MerchantWallet.Update(walletInfo);
+                                    //await _context.SaveChangesAsync();
                                     await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
                                     await _context.SaveChangesAsync();
                                     await transaction.CommitAsync();
                                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
-                                 }
-                                walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
-                                walletResponse.Message = createWallet.responsedata.ToString();
-                                await _context.CreateWalletResponse.AddAsync(walletResponse);
-                                await _context.SaveChangesAsync();
-                                await transaction.CommitAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.FailedCreatingWallet };  
+                                ////var createWallet = await _walletRepoService.CreateMerchantWallet(walletModel);
+                                ////if(createWallet.response == AppResponseCodes.Success)
+                                ////{
+                                ////    var walletInfo = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                                ////    walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
+                                ////    walletResponse.Message = createWallet.responsedata.ToString();
+                                ////    await _context.CreateWalletResponse.AddAsync(walletResponse);
+                                ////    await _context.SaveChangesAsync();
+                            
+                                ////    getUserInfo.StatusCode = AppResponseCodes.Success;
+                                ////    walletInfo.status = MerchantWalletProcess.Processed;
+                                ////    walletInfo.LastDateModified = DateTime.Now;
+                                ////    _context.ClientAuthentication.Update(getUserInfo);
+                                ////    await _context.SaveChangesAsync();
+                                ////    _context.MerchantWallet.Update(walletInfo);
+                                ////    await _context.SaveChangesAsync();
+                                ////    await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
+                                ////    await _context.SaveChangesAsync();
+                                ////    await transaction.CommitAsync();
+                                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                                //// }
+                                ////walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
+                                ////walletResponse.Message = createWallet.responsedata.ToString();
+                                ////await _context.CreateWalletResponse.AddAsync(walletResponse);
+                                ////await _context.SaveChangesAsync();
+                                ////await transaction.CommitAsync();
+                       // return new WebApiResponse { ResponseCode = AppResponseCodes.FailedCreatingWallet };  
                         }
                             catch (Exception ex)
                             {
