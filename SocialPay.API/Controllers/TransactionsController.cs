@@ -33,9 +33,6 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var url = Request.Host.Value;
-
-                    
 
                     var identity = User.Identity as ClaimsIdentity;
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
