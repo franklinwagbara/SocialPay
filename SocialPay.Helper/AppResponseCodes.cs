@@ -26,6 +26,7 @@
         public const string InvalidPamentChannel = "22";               
         public const string InvalidTransactionReference = "23";               
         public const string IncompleteMerchantProfile = "24";               
+        public const string DuplicateInvoiceName = "25";               
     }
 
     public class MerchantOnboardingProcess

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201014234546_created_invoice_module")]
+    partial class created_invoice_module
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

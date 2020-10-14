@@ -24,5 +24,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<CreateWalletResponse> CreateWalletResponse { get; set; }
         public virtual ICollection<MerchantPaymentSetup> MerchantPaymentSetup { get; set; }
         public virtual ICollection<ItemAcceptedOrRejected> ItemAcceptedOrRejected { get; set; }
+        public virtual ICollection<InvoicePaymentLink> InvoicePaymentLink { get; set; }
     }
 }

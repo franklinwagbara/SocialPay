@@ -174,5 +174,29 @@ namespace SocialPay.Core.Services.Transaction
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+        public async Task<WebApiResponse> GenerateInvoice(InvoiceRequestDto invoiceRequestDto, long clientId)
+        {
+            try
+            {
+                if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
+                var model = new InvoicePaymentLink
+                {
+                    TransactionStatus = false, ClientAuthenticationId = clientId, CustomerEmail = invoiceRequestDto.CustomerEmail,
+                    DueDate = Convert.ToDateTime(invoiceRequestDto.DueDate), InvoiceName = invoiceRequestDto.InvoiceName,
+                    Qty = invoiceRequestDto.Qty, UnitPrice = invoiceRequestDto.UnitPrice, TransactionReference = Guid.NewGuid().ToString(),
+                    TotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice
+                };
+
+                await _context.InvoicePaymentLink.AddAsync(model);
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
     }
 }

@@ -84,5 +84,7 @@ namespace SocialPay.Core.Services.Report
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+       
     }
 }
