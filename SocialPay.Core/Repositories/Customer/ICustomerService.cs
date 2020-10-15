@@ -189,7 +189,7 @@ namespace SocialPay.Core.Repositories.Customer
             var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
             var mapper = config.CreateMapper();
             paymentview = mapper.Map<PaymentLinkViewModel>(validateReference);
-
+            paymentview.MerchantDocument = validateReference == null ? string.Empty : _appSettings.BaseApiUrl + validateReference.FileLocation + "/" + validateReference.Document;
             paymentview.MerchantInfo = new MerchantInfoViewModel
             {
                 BusinessEmail = getMerchantInfo.BusinessEmail,

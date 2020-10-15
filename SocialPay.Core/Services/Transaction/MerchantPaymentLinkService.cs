@@ -191,6 +191,7 @@ namespace SocialPay.Core.Services.Transaction
 
                 await _context.InvoicePaymentLink.AddAsync(model);
                 await _context.SaveChangesAsync();
+                //send mail
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
