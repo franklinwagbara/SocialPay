@@ -195,7 +195,8 @@ namespace SocialPay.Core.Services.Transaction
                     TransactionStatus = false, ClientAuthenticationId = clientId, CustomerEmail = invoiceRequestDto.CustomerEmail,
                     DueDate = Convert.ToDateTime(invoiceRequestDto.DueDate), InvoiceName = invoiceRequestDto.InvoiceName,
                     Qty = invoiceRequestDto.Qty, UnitPrice = invoiceRequestDto.UnitPrice, TransactionReference = Guid.NewGuid().ToString(),
-                    TotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice
+                    TotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice + invoiceRequestDto.ShippingFee,
+                    ShippingFee = invoiceRequestDto.ShippingFee, Description = invoiceRequestDto.Description
                 };
 
                 await _context.InvoicePaymentLink.AddAsync(model);

@@ -16,6 +16,8 @@ namespace SocialPay.Domain.Entities
         public string CustomerEmail { get; set; }
         public bool IsDeleted { get; set; }
         public bool TransactionStatus { get; set; }
+        public decimal ShippingFee { get; set; }
+        public string Description { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
