@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
+using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Domain;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
@@ -18,13 +19,16 @@ namespace SocialPay.Core.Services.Report
         private readonly SocialPayDbContext _context;
         private readonly ICustomerService _customerService;
         private readonly TransactionReceipt _transactionReceipt;
+        private readonly InvoiceService _invoiceService;
 
         public MerchantReportService(SocialPayDbContext context,
-            ICustomerService customerService, TransactionReceipt transactionReceipt)
+            ICustomerService customerService, TransactionReceipt transactionReceipt,
+            InvoiceService invoiceService)
         {
             _context = context;
             _customerService = customerService;
             _transactionReceipt = transactionReceipt;
+            _invoiceService = invoiceService;
         }
 
         public async Task<WebApiResponse> GetMerchants()
@@ -85,6 +89,52 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
-       
+        public async Task<WebApiResponse> GetAllInvoiceByMerchantId(long clientId)
+        {
+            try
+            {
+                //clientId = 30032;
+                var result = await _invoiceService.GetInvoiceByClientId(clientId);
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> GetAllEscrowTransactions(long clientId)
+        {
+            var result = new List<EscrowViewModel>();
+            try
+            {
+               // clientId = 30032;
+                var getTransactions = await _context.MerchantPaymentSetup
+                    .Include(c => c.CustomerTransaction)
+                    .Include(c => c.CustomerOtherPaymentsInfo)
+                    .Where(x => x.ClientAuthenticationId == clientId 
+                    && x.PaymentCategory == MerchantPaymentCategory.Escrow
+                    || x.PaymentCategory == MerchantPaymentCategory.OneOffEscrowLink).ToListAsync();
+                if (getTransactions.Count == 0)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                result = getTransactions.Select(p => new EscrowViewModel
+                {
+                    PaymentLinkName = p.PaymentLinkName, MerchantAmount = p.MerchantAmount,
+                    PaymentCategory = p.PaymentCategory, DeliveryMethod = p.DeliveryMethod, 
+                    PaymentLinkUrl = p.PaymentLinkUrl, MerchantDescription = p.MerchantDescription,
+                    ShippingFee = p.ShippingFee, TotalAmount = p.TotalAmount,
+                    Channel = p.CustomerTransaction.Count == 0 ? string.Empty : p.CustomerTransaction.Select(x=>x.Channel).First(),
+                }).ToList();
+
+                return new WebApiResponse {ResponseCode = AppResponseCodes.Success, Data = result };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
     }
 }

@@ -14,6 +14,7 @@ using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Extensions.Utilities;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
+using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
@@ -117,6 +118,7 @@ namespace SocialPay.API
             services.AddScoped<EncryptDecryptAlgorithm>();
             services.AddScoped<EncryptDecrypt>();
             services.AddScoped<TransactionReceipt>();
+            services.AddScoped<InvoiceService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

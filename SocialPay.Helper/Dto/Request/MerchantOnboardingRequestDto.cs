@@ -76,7 +76,7 @@ namespace SocialPay.Helper.Dto.Request
         public string AdditionalDetails { get; set; }
         public string PaymentCategory { get; set; }
         public string PaymentMethod { get; set; }
-        [Required(ErrorMessage = "Please select a document.")]
+       // [Required(ErrorMessage = "Please select a document.")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]
         [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", "pdf" })]
