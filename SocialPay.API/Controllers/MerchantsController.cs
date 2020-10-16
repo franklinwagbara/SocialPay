@@ -259,7 +259,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
+        //[AllowAnonymous]
         [HttpPost]
         [Route("send-Invoice")]
         public async Task<IActionResult> SendInvoice([FromBody] InvoiceRequestDto model)
@@ -272,8 +272,10 @@ namespace SocialPay.API.Controllers
                     var identity = User.Identity as ClaimsIdentity;
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var businessName = identity.Claims.FirstOrDefault(c => c.Type == "businessName")?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _merchantPaymentLinkService.GenerateInvoice(model, Convert.ToInt32(clientId));
+                    var result = await _merchantPaymentLinkService
+                        .GenerateInvoice(model, Convert.ToInt32(clientId), businessName);
                     //if (result.ResponseCode != AppResponseCodes.Success)
                     //    return BadRequest(result);
                     return Ok(result);

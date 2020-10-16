@@ -25,5 +25,8 @@
         public string deliverySLA { get; set; }
         public string MerchantLinkPaymentDocument { get; set; }
         public string PaymentLinkPercentage { get; set; }
+        public string EmailTemplatesPath { get; set; }
+        public string InvoiceTemplateDescription { get; set; }
+        public string receiptTemplateDescription { get; set; }
     }
 }

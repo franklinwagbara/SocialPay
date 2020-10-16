@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Repositories.Customer;
+using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -22,15 +23,18 @@ namespace SocialPay.Core.Services.Transaction
         private readonly AppSettings _appSettings;
         private readonly Utilities _utilities;
         private readonly ICustomerService _customerService;
+        private readonly InvoiceService _invoiceService;
         private readonly IHostingEnvironment _hostingEnvironment;
         public MerchantPaymentLinkService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
-            Utilities utilities, ICustomerService customerService, IHostingEnvironment environment)
+            Utilities utilities, ICustomerService customerService, IHostingEnvironment environment,
+            InvoiceService invoiceService)
         {
             _context = context;
             _appSettings = appSettings.Value;
             _utilities = utilities;
             _customerService = customerService;
             _hostingEnvironment = environment;
+            _invoiceService = invoiceService;
         }
 
         public async Task<WebApiResponse> GeneratePaymentLink(MerchantpaymentLinkRequestDto paymentModel,
@@ -184,10 +188,13 @@ namespace SocialPay.Core.Services.Transaction
             }
         }
 
-        public async Task<WebApiResponse> GenerateInvoice(InvoiceRequestDto invoiceRequestDto, long clientId)
+        public async Task<WebApiResponse> GenerateInvoice(InvoiceRequestDto invoiceRequestDto, long clientId,
+            string businessName)
         {
             try
             {
+               
+
                 if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
                 var model = new InvoicePaymentLink
@@ -201,6 +208,9 @@ namespace SocialPay.Core.Services.Transaction
 
                 await _context.InvoicePaymentLink.AddAsync(model);
                 await _context.SaveChangesAsync();
+                await _invoiceService.SendInvoiceAsync(invoiceRequestDto.CustomerEmail,
+                    invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, businessName
+                    );
                 //send mail
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
