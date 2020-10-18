@@ -47,12 +47,13 @@ namespace SocialPay.Core.Services.Transaction
                 decimal addtionalAmount = 0;
                 if (userStatus != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
-                if(paymentModel.PaymentCategory == MerchantPaymentCategory.Basic 
-                    || paymentModel.PaymentCategory == MerchantPaymentCategory.Escrow
-                    || paymentModel.PaymentCategory == MerchantPaymentCategory.OneOffBasicLink
-                    || paymentModel.PaymentCategory == MerchantPaymentCategory.OneOffEscrowLink)
+                if(paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic 
+                    || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow
+                    || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink
+                    || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
                 {
                     var model = new MerchantPaymentSetup { };
+                   
                     model.PaymentLinkName = paymentModel.PaymentLinkName == null ? string.Empty : paymentModel.PaymentLinkName;
                     model.AdditionalDetails = paymentModel.AdditionalDetails == null ? string.Empty : paymentModel.AdditionalDetails;
                     model.MerchantDescription = paymentModel.MerchantDescription == null ? string.Empty : paymentModel.MerchantDescription;
@@ -87,43 +88,69 @@ namespace SocialPay.Core.Services.Transaction
                    
                     model.TransactionReference = newGuid;
                     model.PaymentLinkUrl = _appSettings.paymentlinkUrl + model.TransactionReference;
-                    if(paymentModel.PaymentCategory == MerchantPaymentCategory.Escrow ||
-                        paymentModel.PaymentCategory == MerchantPaymentCategory.OneOffEscrowLink)
+                    if(paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow ||
+                        paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
                     {
                         addtionalAmount = model.TotalAmount * Convert.ToInt32(_appSettings.PaymentLinkPercentage) / 100;
                         model.TotalAmount = model.TotalAmount + addtionalAmount;
                         model.AdditionalCharges = addtionalAmount;
                         model.HasAdditionalCharges = true;
                     }
-                    if(paymentModel.PaymentCategory == MerchantPaymentCategory.Escrow ||
-                        paymentModel.PaymentCategory == MerchantPaymentCategory.Basic)
+
+                    var linkCatModel = new LinkCategory
                     {
-                        string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.MerchantLinkPaymentDocument);
-                        if (!Directory.Exists(path))
+                        ClientAuthenticationId = clientId, Channel = paymentModel.PaymentCategory,
+                        TransactionReference = newGuid
+                    };
+                    using(var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
                         {
-                            Directory.CreateDirectory(path);
+                            if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow ||
+                                paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic)
+                            {
+                                string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.MerchantLinkPaymentDocument);
+                                if (!Directory.Exists(path))
+                                {
+                                    Directory.CreateDirectory(path);
+                                }
+                                string fileName = string.Empty;
+                                var newFileName = string.Empty;
+                                fileName = (paymentModel.Document.FileName);
+                                var documentId = Guid.NewGuid().ToString("N").Substring(18);
+                                var FileExtension = Path.GetExtension(fileName);
+                                fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.MerchantLinkPaymentDocument) + $@"\{newFileName}";
+
+                                // concating  FileName + FileExtension
+                                newFileName = documentId + FileExtension;
+                                var filePath = Path.Combine(fileName, newFileName);
+                                model.Document = newFileName;
+                                model.FileLocation = _appSettings.MerchantLinkPaymentDocument;
+                                await _context.MerchantPaymentSetup.AddAsync(model);
+                                paymentModel.Document.CopyTo(new FileStream(filePath, FileMode.Create));
+                                await _context.SaveChangesAsync();
+                                await _context.LinkCategory.AddAsync(linkCatModel);
+                                await _context.SaveChangesAsync();
+                                await transaction.CommitAsync();
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
+
+                            }
+                            await _context.MerchantPaymentSetup.AddAsync(model);
+                            await _context.SaveChangesAsync();
+                            await _context.LinkCategory.AddAsync(linkCatModel);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
                         }
-                        string fileName = string.Empty;
-                        var newFileName = string.Empty;
-                        fileName = (paymentModel.Document.FileName);
-                        var documentId = Guid.NewGuid().ToString("N").Substring(18);
-                        var FileExtension = Path.GetExtension(fileName);
-                        fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.MerchantLinkPaymentDocument) + $@"\{newFileName}";
-
-                        // concating  FileName + FileExtension
-                        newFileName = documentId + FileExtension;
-                        var filePath = Path.Combine(fileName, newFileName);
-                        model.Document = newFileName;
-                        model.FileLocation = _appSettings.MerchantLinkPaymentDocument;
-                        await _context.MerchantPaymentSetup.AddAsync(model);
-                        paymentModel.Document.CopyTo(new FileStream(filePath, FileMode.Create));
-                        await _context.SaveChangesAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
-
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError};
+                        }
+                      
                     }
-                    await _context.MerchantPaymentSetup.AddAsync(model);
-                    await _context.SaveChangesAsync();
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
+
+                  
                     ////if (paymentModel.PaymentCategory == MerchantPaymentCategory.Basic)
                     ////{
 

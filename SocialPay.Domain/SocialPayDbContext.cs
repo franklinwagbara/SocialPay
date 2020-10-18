@@ -19,5 +19,7 @@ namespace SocialPay.Domain
         public DbSet<ItemAcceptedOrRejected> ItemAcceptedOrRejected { get; set; }
         public DbSet<CustomerOtherPaymentsInfo> CustomerOtherPaymentsInfo { get; set; }
         public DbSet<InvoicePaymentLink> InvoicePaymentLink { get; set; }
+        public DbSet<LinkCategory> LinkCategory { get; set; }
+        public DbSet<TransactionLog> TransactionLog { get; set; }
     }
 }

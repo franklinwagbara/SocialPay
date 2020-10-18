@@ -63,10 +63,11 @@ namespace SocialPay.Core.Repositories.Customer
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = validateReference };
         }
 
-        public async Task<List<CustomerTransaction>> GetTransactionByClientId(long clientId)
+        public async Task<List<TransactionLog>> GetTransactionByClientId(long clientId, string category)
         {
-            return await _context.CustomerTransaction
-                .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
+            return await _context.TransactionLog
+                .Where(x => x.ClientAuthenticationId == clientId
+                && x.Category == category).ToListAsync();
         }
 
 
@@ -77,6 +78,12 @@ namespace SocialPay.Core.Repositories.Customer
            );
         }
 
+        public async Task<LinkCategory> GetLinkCategorybyTranref(string tranRef)
+        {
+            return await _context.LinkCategory.SingleOrDefaultAsync(p => p.TransactionReference
+             == tranRef
+           );
+        }
         public async Task<WebApiResponse> GetCustomerPaymentsByMerchantPayRef(long clientId)
         {
             var result = new List<CustomerPaymentViewModel>();
@@ -204,23 +211,37 @@ namespace SocialPay.Core.Repositories.Customer
             return paymentview;
         }
 
-        public async Task<WebApiResponse> GetCustomerOrders(long clientId)
+        public async Task<WebApiResponse> GetCustomerOrders(long clientId, string category)
         {
+            var request = new List<OrdersViewModel>();
             try
             {
-                var getCustomerOrders = await GetTransactionByClientId(clientId);
+                var getCustomerOrders = await GetTransactionByClientId(clientId, category);
                 if (getCustomerOrders == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                var response = (from c in getCustomerOrders
-                                join m in _context.MerchantPaymentSetup on c.MerchantPaymentSetupId equals m.MerchantPaymentSetupId
+                if(category == MerchantPaymentLinkCategory.InvoiceLink )
+                {
+                     var invoiceResponse = (from c in getCustomerOrders
+                                join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
+                                select new OrdersViewModel { MerchantAmount = m.UnitPrice, DeliveryTime = c.DeliveryDate, 
+                                ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
+                                 Description = m.Description,
+                                TotalAmount = m.TotalAmount, PaymentCategory = category,
+                                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
+                    request = invoiceResponse;
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
+                }
+
+                var otherLinksresponse = (from c in getCustomerOrders
+                                join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
                                 select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
                                 DeliveryMethod = m.DeliveryMethod, Description = m.MerchantDescription,
                                 TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory,
-                                OrderStatus = c.OrderStatus, RequestId = c.CustomerTransactionId}).ToList();
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
+                                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
+                request = otherLinksresponse;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
             }
             catch (Exception ex)
             {
@@ -257,26 +278,63 @@ namespace SocialPay.Core.Repositories.Customer
 
                 var merhantInfo = await GetMerchantInfo(customerInfo.ClientAuthenticationId);
 
+                var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
+                var logRequest = new CustomerTransaction { };
+                var logconfirmation = new TransactionLog { };
+                logconfirmation.Category = linkInfo.Channel;
+                logconfirmation.ClientAuthenticationId = model.CustomerId;
+                logconfirmation.CustomerEmail = customerInfo.Email;
+                logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
+                logconfirmation.TransactionReference = model.TransactionReference;
+                logconfirmation.OrderStatus = OrderStatusCode.Pending;
+                logconfirmation.Message = model.Message;
+                if (linkInfo.Channel == MerchantPaymentLinkCategory.InvoiceLink)
+                {
+                    if (model.Message.Contains("Approve"))
+                    {
+                        logconfirmation.Status = true;
+                    }
+                    await _context.TransactionLog.AddAsync(logconfirmation);
+                    await _context.SaveChangesAsync();
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                }
+
                 var paymentSetupInfo = await _context.MerchantPaymentSetup
                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
-              
-                var logRequest = new CustomerTransaction
-                {
-                    ClientAuthenticationId = model.CustomerId, CustomerEmail = customerInfo.Email, Channel = model.Channel,
-                    Message = model.Message, OrderStatus = OrderStatusCode.Pending, MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId,
-                    DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime),
-                    CustomerTransactionReference = Guid.NewGuid().ToString()
-                };
+
+
+                //logRequest.ClientAuthenticationId = model.CustomerId;
+                //logRequest.CustomerEmail = customerInfo.Email;
+                //logRequest.Channel = model.Channel;
+                //logRequest.Message = model.Message;
+                //logRequest.OrderStatus = OrderStatusCode.Pending;
+                //logRequest.MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId;
+                //logRequest.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
+                //logRequest.CustomerTransactionReference = Guid.NewGuid().ToString();                
                 if (model.Message.Contains("Approve"))
                 {
                     logRequest.Status = true;
                 }
-                await _context.CustomerTransaction.AddAsync(logRequest);
-                await _context.SaveChangesAsync();
-                //Send mail
-                await _transactionReceipt.ReceiptTemplate(logRequest.CustomerEmail, paymentSetupInfo.TotalAmount,
-                    logRequest.TransactionDate, model.TransactionReference, merhantInfo == null ? string.Empty : merhantInfo.BusinessName );
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+              
+                using(var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
+                        await _context.TransactionLog.AddAsync(logconfirmation);
+                        await _context.SaveChangesAsync();
+                        //Send mail
+                        await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
+                            logconfirmation.TransactionDate, model.TransactionReference, merhantInfo == null ? string.Empty : merhantInfo.BusinessName);
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw;
+                    }
+                }
+              
             }
             catch (Exception ex)
             {
@@ -288,58 +346,64 @@ namespace SocialPay.Core.Repositories.Customer
         {
             try
             {
-                var validateOrder = await _context.MerchantPaymentSetup
-                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
-                if(validateOrder == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                var response = await _context.CustomerTransaction
-                    .SingleOrDefaultAsync(x => x.CustomerTransactionId == model.RequestId);
-
-                int sla = Convert.ToInt32(_appSettings.deliverySLA);
-
-                var logRequest = new ItemAcceptedOrRejected
+                if(model.Status == OrderStatusCode.Decline || model.Status == OrderStatusCode.Approved)
                 {
-                    ClientAuthenticationId = clientId,
-                    Status = model.Status,
-                    Comment = model.Comment,
-                    TransactionReference = model.TransactionReference,
-                    CustomerTransactionId = model.RequestId
-                };
-                if (model.Status == OrderStatusCode.Decline)
-                {
-                    var getMerchant = await _context.ClientAuthentication
-                        .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateOrder.ClientAuthenticationId);
-                    if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
+                    var validateOrder = await _context.MerchantPaymentSetup
+                   .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+                    if (validateOrder == null)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                   
+                    var response = await _context.CustomerTransaction
+                        .SingleOrDefaultAsync(x => x.CustomerTransactionId == model.RequestId);
+
+                    int sla = Convert.ToInt32(_appSettings.deliverySLA);
+
+                    var logRequest = new ItemAcceptedOrRejected
+                    {
+                        ClientAuthenticationId = clientId,
+                        Status = model.Status,
+                        Comment = model.Comment,
+                        TransactionReference = model.TransactionReference,
+                        CustomerTransactionId = model.RequestId
+                    };
+                    if (model.Status == OrderStatusCode.Decline)
+                    {
+                        var getMerchant = await _context.ClientAuthentication
+                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateOrder.ClientAuthenticationId);
+                        if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
+
+
+                        await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
+                        await _context.SaveChangesAsync();
+                        var emailModal = new EmailRequestDto
+                        {
+                            Subject = "Order" + " " + model.TransactionReference + " " + "was Rejected",
+                            SourceEmail = "info@sterling.ng",
+                            DestinationEmail = getMerchant.Email,
+                            // DestinationEmail = "festypat9@gmail.com",
+                            //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                        };
+                        var mailBuilder = new StringBuilder();
+                        mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
+                        mailBuilder.AppendLine("<br />");
+                        mailBuilder.AppendLine("An order has been rejected by" + "" + response.CustomerEmail + " " + ".<br />");
+                        //mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
+                        // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                        mailBuilder.AppendLine("Best Regards,");
+                        emailModal.EmailBody = mailBuilder.ToString();
+
+                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+
                     await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                     await _context.SaveChangesAsync();
-                    var emailModal = new EmailRequestDto
-                    {
-                        Subject = "Order" + " "+ model.TransactionReference + " "+ "was Rejected",
-                        SourceEmail = "info@sterling.ng",
-                        DestinationEmail = getMerchant.Email,
-                        // DestinationEmail = "festypat9@gmail.com",
-                        //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
-                    };
-                    var mailBuilder = new StringBuilder();
-                    mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
-                    mailBuilder.AppendLine("<br />");
-                    mailBuilder.AppendLine("An order has been rejected by" + ""+ response.CustomerEmail +" "+ ".<br />");
-                    //mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
-                    // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
-                    mailBuilder.AppendLine("Best Regards,");
-                    emailModal.EmailBody = mailBuilder.ToString();
-
-                    var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidConfirmation };
 
-                await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
-                await _context.SaveChangesAsync();
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {

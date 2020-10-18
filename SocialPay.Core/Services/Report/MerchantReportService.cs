@@ -105,7 +105,7 @@ namespace SocialPay.Core.Services.Report
         }
 
 
-        public async Task<WebApiResponse> GetAllEscrowTransactions(long clientId)
+        public async Task<WebApiResponse> GetAllEscrowTransactions(long clientId, string status)
         {
             var result = new List<EscrowViewModel>();
             try
@@ -115,8 +115,8 @@ namespace SocialPay.Core.Services.Report
                     .Include(c => c.CustomerTransaction)
                     .Include(c => c.CustomerOtherPaymentsInfo)
                     .Where(x => x.ClientAuthenticationId == clientId 
-                    && x.PaymentCategory == MerchantPaymentCategory.Escrow
-                    || x.PaymentCategory == MerchantPaymentCategory.OneOffEscrowLink).ToListAsync();
+                    && x.PaymentCategory == MerchantPaymentLinkCategory.Escrow
+                    || x.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink).ToListAsync();
                 if (getTransactions.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 

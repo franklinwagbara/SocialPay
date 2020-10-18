@@ -27,6 +27,7 @@
         public const string InvalidTransactionReference = "23";               
         public const string IncompleteMerchantProfile = "24";               
         public const string DuplicateInvoiceName = "25";               
+        public const string InvalidConfirmation = "26";               
     }
 
     public class MerchantOnboardingProcess
@@ -50,12 +51,13 @@
         public const string Card = "02";
     }
 
-    public class MerchantPaymentCategory
+    public class MerchantPaymentLinkCategory
     {
         public const string Basic = "01";
         public const string Escrow = "02";
         public const string OneOffBasicLink = "03";
         public const string OneOffEscrowLink = "04";
+        public const string InvoiceLink = "05";
     }
 
 

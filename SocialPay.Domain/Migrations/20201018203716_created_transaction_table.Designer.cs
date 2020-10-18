@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201018203716_created_transaction_table")]
+    partial class created_transaction_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,32 +248,6 @@ namespace SocialPay.Domain.Migrations
                     b.HasIndex("ClientAuthenticationId");
 
                     b.ToTable("ItemAcceptedOrRejected");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.LinkCategory", b =>
-                {
-                    b.Property<long>("LinkCategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Channel")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("ClientAuthenticationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("LinkCategoryId");
-
-                    b.HasIndex("ClientAuthenticationId");
-
-                    b.ToTable("LinkCategory");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.MerchantActivitySetup", b =>
@@ -560,32 +536,17 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Category")
+                    b.Property<string>("Channel")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("CustomerEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DeliveryDate")
+                    b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Message")
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrderStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("TransactionReference")
                         .HasColumnType("nvarchar(max)");
@@ -637,15 +598,6 @@ namespace SocialPay.Domain.Migrations
                 {
                     b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
                         .WithMany("ItemAcceptedOrRejected")
-                        .HasForeignKey("ClientAuthenticationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.LinkCategory", b =>
-                {
-                    b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
-                        .WithMany("LinkCategory")
                         .HasForeignKey("ClientAuthenticationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

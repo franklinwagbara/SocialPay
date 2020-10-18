@@ -143,7 +143,7 @@ namespace SocialPay.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [Route("get-orders")]
-        public async Task<IActionResult> GetOrders()
+        public async Task<IActionResult> GetOrders([FromQuery] string category)
         {
             var response = new WebApiResponse { };
             try
@@ -154,7 +154,8 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _customerRepoService.GetAllCustomerOrders(Convert.ToInt32(clientId));
+                    var result = await _customerRepoService
+                        .GetAllCustomerOrders(Convert.ToInt32(clientId), category);
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)

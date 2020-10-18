@@ -76,11 +76,11 @@ namespace SocialPay.Core.Services.Customer
         }
 
 
-        public async Task<WebApiResponse> GetAllCustomerOrders(long clientId)
+        public async Task<WebApiResponse> GetAllCustomerOrders(long clientId, string category)
         {
             try
             {
-                return await _customerService.GetCustomerOrders(clientId);
+                return await _customerService.GetCustomerOrders(clientId, category);
             }
             catch (Exception ex)
             {
@@ -137,8 +137,8 @@ namespace SocialPay.Core.Services.Customer
                     var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                 }
                
-                if(getPaymentDetails.PaymentCategory == MerchantPaymentCategory.OneOffBasicLink
-                    || getPaymentDetails.PaymentCategory == MerchantPaymentCategory.OneOffEscrowLink)
+                if(getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink
+                    || getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
                 {
                     string fileName = string.Empty;
                     var newFileName = string.Empty;

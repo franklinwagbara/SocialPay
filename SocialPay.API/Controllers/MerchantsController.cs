@@ -329,7 +329,7 @@ namespace SocialPay.API.Controllers
        // [AllowAnonymous]
         [HttpGet]
         [Route("get-escrow-transactions")]
-        public async Task<IActionResult> GetEscrows()
+        public async Task<IActionResult> GetEscrows([FromQuery] string status)
         {
             var response = new WebApiResponse { };
             try
@@ -340,7 +340,8 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _merchantReportService.GetAllEscrowTransactions(Convert.ToInt32(clientId));
+                    var result = await _merchantReportService
+                        .GetAllEscrowTransactions(Convert.ToInt32(clientId), status);
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
