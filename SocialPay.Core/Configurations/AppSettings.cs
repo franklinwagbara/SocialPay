@@ -20,6 +20,8 @@
         public string paymentlinkUrl { get; set; }
         public string walletExtensionUrl { get; set; }
         public string sterlingpaymentGatewayRequestUrl { get; set; }
+        public string paywithSpectaBaseUrl { get; set; }
+        public string paywithSpectaPurchaseUrlExtension { get; set; }
         public string mid { get; set; }
         public string paymentCombination { get; set; }
         public string deliverySLA { get; set; }

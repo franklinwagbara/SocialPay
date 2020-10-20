@@ -298,8 +298,8 @@ namespace SocialPay.Core.Repositories.Customer
                     await _context.SaveChangesAsync();
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
-
-                var paymentSetupInfo = await _context.MerchantPaymentSetup
+              
+                    var paymentSetupInfo = await _context.MerchantPaymentSetup
                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
 
 
@@ -311,7 +311,7 @@ namespace SocialPay.Core.Repositories.Customer
                 //logRequest.MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId;
                 //logRequest.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
                 //logRequest.CustomerTransactionReference = Guid.NewGuid().ToString();                
-                if (model.Message.Contains("Approve"))
+                if (model.Message.Contains("Approve") || model.Message.Contains("Success"))
                 {
                     logRequest.Status = true;
                 }
