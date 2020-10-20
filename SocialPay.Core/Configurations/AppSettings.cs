@@ -21,6 +21,7 @@
         public string walletExtensionUrl { get; set; }
         public string sterlingpaymentGatewayRequestUrl { get; set; }
         public string paywithSpectaBaseUrl { get; set; }
+        public string paywithSpectaCallBackUrl { get; set; }
         public string paywithSpectaPurchaseUrlExtension { get; set; }
         public string mid { get; set; }
         public string paymentCombination { get; set; }
@@ -30,5 +31,6 @@
         public string EmailTemplatesPath { get; set; }
         public string InvoiceTemplateDescription { get; set; }
         public string receiptTemplateDescription { get; set; }
+        public string paywithspectamerchanId { get; set; }
     }
 }

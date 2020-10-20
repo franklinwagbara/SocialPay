@@ -6,6 +6,7 @@ using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Extensions.Utilities;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
+using SocialPay.Core.Services.Specta;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -30,12 +31,13 @@ namespace SocialPay.Core.Services.Customer
         private readonly EmailService _emailService;
         private readonly EncryptDecryptAlgorithm _encryptDecryptAlgorithm;
         private readonly EncryptDecrypt _encryptDecrypt;
+        private readonly PayWithSpectaService _payWithSpectaService;
         private readonly IHostingEnvironment _hostingEnvironment;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CustomerRepoService));
         public CustomerRepoService(ICustomerService customerService, IOptions<AppSettings> appSettings,
             EncryptDecryptAlgorithm encryptDecryptAlgorithm, EncryptDecrypt encryptDecrypt,
             EmailService emailService, IHostingEnvironment environment,
-            SocialPayDbContext context)
+            SocialPayDbContext context, PayWithSpectaService payWithSpectaService)
         {
             _customerService = customerService;
             _appSettings = appSettings.Value;
@@ -44,6 +46,7 @@ namespace SocialPay.Core.Services.Customer
             _emailService = emailService;
             _hostingEnvironment = environment;
             _context = context;
+            _payWithSpectaService = payWithSpectaService;
         }
 
         public async Task<WebApiResponse> GetLinkDetails(string transactionReference)
@@ -157,7 +160,7 @@ namespace SocialPay.Core.Services.Customer
                             Amount = model.CustomerAmount, ClientAuthenticationId = customerId,
                             CustomerDescription = model.CustomerDescription,
                             MerchantPaymentSetupId = getPaymentDetails.MerchantPaymentSetupId,
-                            Document = newFileName,
+                            Document = newFileName, Channel = model.Channel,
                             FileLocation = "CustomerDocuments"
                         };
                         await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
@@ -167,6 +170,15 @@ namespace SocialPay.Core.Services.Customer
                         await transaction.CommitAsync();
                         _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
                         decimal CustomerTotalAmount = model.CustomerAmount + getPaymentDetails.ShippingFee;
+                        if (model.Channel == PaymentChannel.PayWithSpecta)
+                        {
+                            var generateToken = await _payWithSpectaService.InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference);
+                            if (generateToken.ResponseCode != AppResponseCodes.Success)
+                                return generateToken;
+                            paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
+                        }
+                        
                         encryptedText = _appSettings.mid + _appSettings.paymentCombination + CustomerTotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                         encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                         //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
@@ -175,7 +187,17 @@ namespace SocialPay.Core.Services.Customer
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                     }
                 }
-                encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                decimal totalAmount = getPaymentDetails.TotalAmount + getPaymentDetails.ShippingFee;
+                if (model.Channel == PaymentChannel.PayWithSpecta)
+                {
+                    var generateToken = await _payWithSpectaService.InitiatePayment(totalAmount, "Social pay", model.TransactionReference);
+                    if (generateToken.ResponseCode != AppResponseCodes.Success)
+                        return generateToken;
+                    paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
+                }
+                //encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                encryptedText = _appSettings.mid + _appSettings.paymentCombination + totalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                 encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                 //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
                 paymentData =  _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
