@@ -348,7 +348,10 @@ namespace SocialPay.Core.Repositories.Customer
             try
             {
 
-                if(model.Status == OrderStatusCode.Decline || model.Status == OrderStatusCode.Approved)
+                if (await _context.ItemAcceptedOrRejected
+                    .AnyAsync(x => x.ClientAuthenticationId == clientId && x.TransactionReference == model.TransactionReference))
+                return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionAlreadyexit };
+                if (model.Status == OrderStatusCode.Decline || model.Status == OrderStatusCode.Approved)
                 {
                     var validateOrder = await _context.MerchantPaymentSetup
                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
@@ -368,40 +371,54 @@ namespace SocialPay.Core.Repositories.Customer
                         TransactionReference = model.TransactionReference,
                         CustomerTransactionId = model.RequestId
                     };
-                    if (model.Status == OrderStatusCode.Decline)
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
-                        var getMerchant = await _context.ClientAuthentication
-                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateOrder.ClientAuthenticationId);
-                        if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
-
-
-                        await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
-                        await _context.SaveChangesAsync();
-                        var emailModal = new EmailRequestDto
+                        try
                         {
-                            Subject = "Order" + " " + model.TransactionReference + " " + "was Rejected",
-                            SourceEmail = "info@sterling.ng",
-                            DestinationEmail = getMerchant.Email,
-                            // DestinationEmail = "festypat9@gmail.com",
-                            //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
-                        };
-                        var mailBuilder = new StringBuilder();
-                        mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
-                        mailBuilder.AppendLine("<br />");
-                        mailBuilder.AppendLine("An order has been rejected by" + "" + response.CustomerEmail + " " + ".<br />");
-                        //mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
-                        // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
-                        mailBuilder.AppendLine("Best Regards,");
-                        emailModal.EmailBody = mailBuilder.ToString();
+                            if (model.Status == OrderStatusCode.Decline)
+                            {
+                                var getMerchant = await _context.ClientAuthentication
+                                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateOrder.ClientAuthenticationId);
+                                if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
+                                    return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
 
-                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+
+                                await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
+                                await _context.SaveChangesAsync();
+                                await transaction.CommitAsync();
+                                var emailModal = new EmailRequestDto
+                                {
+                                    Subject = "Order" + " " + model.TransactionReference + " " + "was Rejected",
+                                    SourceEmail = "info@sterling.ng",
+                                    DestinationEmail = getMerchant.Email,
+                                    // DestinationEmail = "festypat9@gmail.com",
+                                    //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                                };
+                                var mailBuilder = new StringBuilder();
+                                mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
+                                mailBuilder.AppendLine("<br />");
+                                mailBuilder.AppendLine("An order has been rejected by" + "" + response.CustomerEmail + " " + ".<br />");
+                                //mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
+                                // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                                mailBuilder.AppendLine("Best Regards,");
+                                emailModal.EmailBody = mailBuilder.ToString();
+
+                                var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                            }
+
+                            await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        }
+                        catch (Exception ex)
+                        {
+
+                            await transaction.RollbackAsync();
+                        }
                     }
-
-                    await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
-                    await _context.SaveChangesAsync();
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                   
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidConfirmation };
 

@@ -110,7 +110,7 @@ namespace SocialPay.Core.Services.Report
             var result = new List<EscrowViewModel>();
             try
             {
-               // clientId = 30032;
+                //clientId = 30032;
                 var getTransactions = await _context.MerchantPaymentSetup
                     .Include(c => c.CustomerTransaction)
                     .Include(c => c.CustomerOtherPaymentsInfo)
@@ -120,14 +120,25 @@ namespace SocialPay.Core.Services.Report
                 if (getTransactions.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                result = getTransactions.Select(p => new EscrowViewModel
-                {
-                    PaymentLinkName = p.PaymentLinkName, MerchantAmount = p.MerchantAmount,
-                    PaymentCategory = p.PaymentCategory, DeliveryMethod = p.DeliveryMethod, 
-                    PaymentLinkUrl = p.PaymentLinkUrl, MerchantDescription = p.MerchantDescription,
-                    ShippingFee = p.ShippingFee, TotalAmount = p.TotalAmount,
-                    Channel = p.CustomerTransaction.Count == 0 ? string.Empty : p.CustomerTransaction.Select(x=>x.Channel).First(),
-                }).ToList();
+                var response = (from m in getTransactions
+                                join i in _context.ItemAcceptedOrRejected on m.TransactionReference equals i.TransactionReference
+                                join t in  _context.TransactionLog on m.TransactionReference equals t.TransactionReference
+                                where i.Status == status select new EscrowViewModel {
+                                ShippingFee = m.ShippingFee, PaymentCategory = m.PaymentCategory, PaymentLinkName = m.PaymentLinkName,
+                                MerchantAmount = m.MerchantAmount, DeliveryMethod = m.DeliveryMethod,
+                                MerchantDescription = m.MerchantDescription, TotalAmount = m.TotalAmount,
+                                Channel = t.Category, 
+                                }).ToList();
+
+                result = response;
+                //result = getTransactions.Select(p => new EscrowViewModel
+                //{
+                //    PaymentLinkName = p.PaymentLinkName, MerchantAmount = p.MerchantAmount,
+                //    PaymentCategory = p.PaymentCategory, DeliveryMethod = p.DeliveryMethod, 
+                //    PaymentLinkUrl = p.PaymentLinkUrl, MerchantDescription = p.MerchantDescription,
+                //    ShippingFee = p.ShippingFee, TotalAmount = p.TotalAmount,
+                //    Channel = p.CustomerTransaction.Count == 0 ? string.Empty : p.CustomerTransaction.Select(x=>x.Channel).First(),
+                //}).ToList();
 
                 return new WebApiResponse {ResponseCode = AppResponseCodes.Success, Data = result };
             }

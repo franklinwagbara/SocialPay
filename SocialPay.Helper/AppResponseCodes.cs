@@ -28,6 +28,7 @@
         public const string IncompleteMerchantProfile = "24";               
         public const string DuplicateInvoiceName = "25";               
         public const string InvalidConfirmation = "26";               
+        public const string TransactionAlreadyexit = "27";               
     }
 
     public class MerchantOnboardingProcess
