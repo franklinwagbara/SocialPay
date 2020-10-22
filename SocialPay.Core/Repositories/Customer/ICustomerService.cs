@@ -347,7 +347,9 @@ namespace SocialPay.Core.Repositories.Customer
         {
             try
             {
-
+                var getTransactionLogs = await _context.TransactionLog
+                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId
+                    && x.TransactionReference == model.TransactionReference);
                 if (await _context.ItemAcceptedOrRejected
                     .AnyAsync(x => x.ClientAuthenticationId == clientId && x.TransactionReference == model.TransactionReference))
                 return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionAlreadyexit };
@@ -385,6 +387,8 @@ namespace SocialPay.Core.Repositories.Customer
 
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
+                                getTransactionLogs.OrderStatus = model.Status;
+                                await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
                                 var emailModal = new EmailRequestDto
                                 {
@@ -408,6 +412,8 @@ namespace SocialPay.Core.Repositories.Customer
                             }
 
                             await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
+                            await _context.SaveChangesAsync();
+                            getTransactionLogs.OrderStatus = model.Status;
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
