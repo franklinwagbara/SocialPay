@@ -97,14 +97,14 @@ namespace SocialPay.Core.Repositories.Customer
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
 
             var response =  (from c in getPaymentSetupInfo
-                             join p in _context.CustomerTransaction on c.MerchantPaymentSetupId  equals p.MerchantPaymentSetupId
+                             join p in _context.TransactionLog on c.TransactionReference  equals p.TransactionReference
                          join a in _context.ClientAuthentication on c.ClientAuthenticationId equals a.ClientAuthenticationId
                          select new CustomerPaymentViewModel { MerchantAmount = c.MerchantAmount, CustomerEmail = a.Email,
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
                          DeliveryTime = c.DeliveryTime, MerchantDescription = c.MerchantDescription, CustomerDescription = c.CustomerDescription,
                          TransactionReference = c.TransactionReference,
-                         CustomerTransactionId = p.CustomerTransactionId, CustomerTransactionReference = p.CustomerTransactionReference}).ToList();
+                         CustomerTransactionReference = p.CustomerTransactionReference}).ToList();
             result = response;
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
         }
@@ -279,7 +279,7 @@ namespace SocialPay.Core.Repositories.Customer
                 var merhantInfo = await GetMerchantInfo(customerInfo.ClientAuthenticationId);
 
                 var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
-                var logRequest = new CustomerTransaction { };
+                //var logRequest = new CustomerTransaction { };
                 var logconfirmation = new TransactionLog { };
                 logconfirmation.Category = linkInfo.Channel;
                 logconfirmation.ClientAuthenticationId = model.CustomerId;
