@@ -63,11 +63,11 @@ namespace SocialPay.Core.Repositories.Customer
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = validateReference };
         }
 
-        public async Task<List<TransactionLog>> GetTransactionByClientId(long clientId, string category)
+        public async Task<List<TransactionLog>> GetTransactionByClientId(long clientId)
         {
             return await _context.TransactionLog
                 .Where(x => x.ClientAuthenticationId == clientId
-                && x.Category == category).ToListAsync();
+               ).ToListAsync();
         }
 
 
@@ -216,7 +216,7 @@ namespace SocialPay.Core.Repositories.Customer
             var request = new List<OrdersViewModel>();
             try
             {
-                var getCustomerOrders = await GetTransactionByClientId(clientId, category);
+                var getCustomerOrders = await GetTransactionByClientId(clientId);
                 if (getCustomerOrders == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
