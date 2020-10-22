@@ -72,7 +72,34 @@ namespace SocialPay.Core.Services.Authentication
                 var key = Encoding.ASCII.GetBytes(_appSettings.SecretKey);
                 var tokenDescriptor = new SecurityTokenDescriptor();
                 var tokenHandler = new JwtSecurityTokenHandler();
+                if(validateuserInfo.RoleName == "Guest")
+                {
+                    tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                       Subject = new ClaimsIdentity(new Claim[]
+                       {
+                        new Claim(ClaimTypes.Name, validateuserInfo.Email),
+                        new Claim(ClaimTypes.Role, validateuserInfo.RoleName),
+                        new Claim(ClaimTypes.Email, validateuserInfo.Email),
+                        new Claim("UserStatus",  validateuserInfo.StatusCode),
+                       // new Claim("businessName",  validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault()),
+                        new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
+                       }),
+                        Expires = DateTime.UtcNow.AddDays(1),
+                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                    };
+
+                    var guestToken = tokenHandler.CreateToken(tokenDescriptor);
+                    var guestTokenString = tokenHandler.WriteToken(guestToken);
+                    tokenResult.AccessToken = guestTokenString;
+                    tokenResult.ClientId = validateuserInfo.Email;
+                    tokenResult.Role = validateuserInfo.RoleName;
+                    tokenResult.UserStatus = validateuserInfo.StatusCode;
+                    tokenResult.ResponseCode = AppResponseCodes.Success;                    
+                    tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
+                    return tokenResult;
+                }
                 tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
