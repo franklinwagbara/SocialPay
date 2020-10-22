@@ -121,9 +121,9 @@ namespace SocialPay.Core.Services.Report
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 var response = (from m in getTransactions
-                                join i in _context.ItemAcceptedOrRejected on m.TransactionReference equals i.TransactionReference
+                              //  join i in _context.ItemAcceptedOrRejected on m.TransactionReference equals i.TransactionReference
                                 join t in  _context.TransactionLog on m.TransactionReference equals t.TransactionReference
-                                where i.Status == status select new EscrowViewModel {
+                                where t.OrderStatus == status select new EscrowViewModel {
                                 ShippingFee = m.ShippingFee, PaymentCategory = m.PaymentCategory, PaymentLinkName = m.PaymentLinkName,
                                 MerchantAmount = m.MerchantAmount, DeliveryMethod = m.DeliveryMethod,
                                 MerchantDescription = m.MerchantDescription, TotalAmount = m.TotalAmount,
