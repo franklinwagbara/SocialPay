@@ -42,8 +42,8 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-                //clientId = 10014;
-
+                //clientId = 30032;
+                //userStatus = "00";
                 decimal addtionalAmount = 0;
                 if (userStatus != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };

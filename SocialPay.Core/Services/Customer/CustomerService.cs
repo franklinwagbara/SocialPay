@@ -187,7 +187,7 @@ namespace SocialPay.Core.Services.Customer
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                     }
                 }
-                decimal totalAmount = getPaymentDetails.TotalAmount + getPaymentDetails.ShippingFee;
+                //decimal totalAmount = getPaymentDetails.TotalAmount + getPaymentDetails.ShippingFee;
                 if (model.Channel == PaymentChannel.PayWithSpecta)
                 {
                     var generateToken = await _payWithSpectaService.InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", model.TransactionReference);
@@ -197,7 +197,7 @@ namespace SocialPay.Core.Services.Customer
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                 }
                 //encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
-                encryptedText = _appSettings.mid + _appSettings.paymentCombination + totalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                 encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                 //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
                 paymentData =  _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
