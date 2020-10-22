@@ -69,6 +69,8 @@ namespace SocialPay.Helper.ViewModel
         public string AdditionalDetails { get; set; }
         public string OrderStatus { get; set; }
         public long RequestId { get; set; }
+        public long ClientId { get; set; }
+        public string CustomerTransactionReference { get; set; }
     }
 
     public class MerchantInfoViewModel

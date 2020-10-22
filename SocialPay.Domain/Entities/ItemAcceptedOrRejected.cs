@@ -10,6 +10,7 @@ namespace SocialPay.Domain.Entities
         public long ClientAuthenticationId { get; set; }
         public long CustomerTransactionId { get; set; }
         public string TransactionReference { get; set; }
+        public string CustomerTransactionReference { get; set; }
         public string Comment { get; set; }
         public string Status { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;

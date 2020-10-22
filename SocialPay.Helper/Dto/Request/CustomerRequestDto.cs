@@ -40,6 +40,7 @@ namespace SocialPay.Helper.Dto.Request
         public string Comment { get; set; }
         public long RequestId { get; set; }
         public string Status { get; set; }
-       
+        public string CustomerTransactionReference { get; set; }
+
     }
 }

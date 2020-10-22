@@ -127,7 +127,7 @@ namespace SocialPay.Core.Services.Report
                                 ShippingFee = m.ShippingFee, PaymentCategory = m.PaymentCategory, PaymentLinkName = m.PaymentLinkName,
                                 MerchantAmount = m.MerchantAmount, DeliveryMethod = m.DeliveryMethod,
                                 MerchantDescription = m.MerchantDescription, TotalAmount = m.TotalAmount,
-                                Channel = t.Category, 
+                                Channel = t.Category, ClientId = t.ClientAuthenticationId, CustomerTransactionReference = t.CustomerTransactionReference,
                                 }).ToList();
 
                 result = response;

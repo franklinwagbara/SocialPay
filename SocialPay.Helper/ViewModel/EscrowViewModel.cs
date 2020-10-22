@@ -29,6 +29,7 @@ namespace SocialPay.Helper.ViewModel
         public string Channel { get; set; }
         public string OrderStatus { get; set; }
         public string Message { get; set; }
+        public long ClientId { get; set; }
         public string CustomerTransactionReference { get; set; }
     }
 }

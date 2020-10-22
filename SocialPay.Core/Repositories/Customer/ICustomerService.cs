@@ -226,7 +226,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
                                 select new OrdersViewModel { MerchantAmount = m.UnitPrice, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                                 Description = m.Description,
+                                 Description = m.Description, ClientId = clientId, CustomerTransactionReference = c.CustomerTransactionReference,
                                 TotalAmount = m.TotalAmount, PaymentCategory = category,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
                     request = invoiceResponse;
@@ -238,7 +238,8 @@ namespace SocialPay.Core.Repositories.Customer
                                 select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
                                 DeliveryMethod = m.DeliveryMethod, Description = m.MerchantDescription,
-                                TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory,
+                                TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory, ClientId = clientId,
+                                CustomerTransactionReference = c.CustomerTransactionReference,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
                 request = otherLinksresponse;
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
@@ -348,10 +349,9 @@ namespace SocialPay.Core.Repositories.Customer
             try
             {
                 var getTransactionLogs = await _context.TransactionLog
-                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId
-                    && x.TransactionReference == model.TransactionReference);
+                    .SingleOrDefaultAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference);
                 if (await _context.ItemAcceptedOrRejected
-                    .AnyAsync(x => x.ClientAuthenticationId == clientId && x.TransactionReference == model.TransactionReference))
+                    .AnyAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference))
                 return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionAlreadyexit };
                 if (model.Status == OrderStatusCode.Decline || model.Status == OrderStatusCode.Approved)
                 {
@@ -371,7 +371,8 @@ namespace SocialPay.Core.Repositories.Customer
                         Status = model.Status,
                         Comment = model.Comment,
                         TransactionReference = model.TransactionReference,
-                        CustomerTransactionId = model.RequestId
+                        CustomerTransactionId = model.RequestId,
+                        CustomerTransactionReference = model.CustomerTransactionReference
                     };
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
@@ -388,6 +389,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
                                 getTransactionLogs.OrderStatus = model.Status;
+                                getTransactionLogs.Status = true;
                                 await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
                                 var emailModal = new EmailRequestDto
@@ -414,6 +416,7 @@ namespace SocialPay.Core.Repositories.Customer
                             await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                             await _context.SaveChangesAsync();
                             getTransactionLogs.OrderStatus = model.Status;
+                            getTransactionLogs.Status = true;
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
