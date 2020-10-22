@@ -313,7 +313,7 @@ namespace SocialPay.Core.Repositories.Customer
                 //logRequest.CustomerTransactionReference = Guid.NewGuid().ToString();                
                 if (model.Message.Contains("Approve") || model.Message.Contains("Success"))
                 {
-                    logRequest.Status = true;
+                    logconfirmation.Status = true;
                 }
               
                 using(var transaction = await _context.Database.BeginTransactionAsync())
@@ -323,6 +323,7 @@ namespace SocialPay.Core.Repositories.Customer
                         logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
                         await _context.TransactionLog.AddAsync(logconfirmation);
                         await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
                         //Send mail
                         await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
                             logconfirmation.TransactionDate, model.TransactionReference, merhantInfo == null ? string.Empty : merhantInfo.BusinessName);
@@ -330,8 +331,8 @@ namespace SocialPay.Core.Repositories.Customer
                     }
                     catch (Exception ex)
                     {
-
-                        throw;
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
                 }
               
