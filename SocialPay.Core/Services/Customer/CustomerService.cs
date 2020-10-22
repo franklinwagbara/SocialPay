@@ -126,14 +126,12 @@ namespace SocialPay.Core.Services.Customer
                         SourceEmail = "info@sterling.ng",
                         DestinationEmail = model.Email,
                         // DestinationEmail = "festypat9@gmail.com",
-                        //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
                     };
                     var mailBuilder = new StringBuilder();
                     mailBuilder.AppendLine("Dear" + " " + model.Email + "," + "<br />");
                     mailBuilder.AppendLine("<br />");
                     mailBuilder.AppendLine("You have successfully sign up as a Guest.<br />");
                     mailBuilder.AppendLine("Kindly use this token" + "  " + newCustomerAccess + "  " + "to login" + " " + "" + "<br />");
-                    // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
                     mailBuilder.AppendLine("Best Regards,");
                     emailModal.EmailBody = mailBuilder.ToString();
 
@@ -190,7 +188,7 @@ namespace SocialPay.Core.Services.Customer
                 decimal totalAmount = getPaymentDetails.TotalAmount + getPaymentDetails.ShippingFee;
                 if (model.Channel == PaymentChannel.PayWithSpecta)
                 {
-                    var generateToken = await _payWithSpectaService.InitiatePayment(totalAmount, "Social pay", model.TransactionReference);
+                    var generateToken = await _payWithSpectaService.InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", model.TransactionReference);
                     if (generateToken.ResponseCode != AppResponseCodes.Success)
                         return generateToken;
                     paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
