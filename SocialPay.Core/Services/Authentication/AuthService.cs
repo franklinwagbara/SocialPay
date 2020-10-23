@@ -108,7 +108,7 @@ namespace SocialPay.Core.Services.Authentication
                     new Claim(ClaimTypes.Role, validateuserInfo.RoleName),
                     new Claim(ClaimTypes.Email, validateuserInfo.Email),
                     new Claim("UserStatus",  validateuserInfo.StatusCode),
-                    new Claim("businessName",  validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault()),
+                    new Claim("businessName", validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault()),
                     new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
                    }),
@@ -123,13 +123,13 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.Role = validateuserInfo.RoleName;
                 tokenResult.UserStatus = validateuserInfo.StatusCode;
                 tokenResult.ResponseCode = AppResponseCodes.Success;
-                tokenResult.BusinessName = validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault();
-                tokenResult.FirstName = validateuserInfo.MerchantWallet.Select(x => x.Firstname).FirstOrDefault();
-                tokenResult.LastName = validateuserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault();
-                tokenResult.LastName = validateuserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault();
-                tokenResult.BankName = validateuserInfo.MerchantBankInfo.Select(x => x.BankName).FirstOrDefault();
-                tokenResult.Nuban = validateuserInfo.MerchantBankInfo.Select(x => x.Nuban).FirstOrDefault();
-                tokenResult.AccountName = validateuserInfo.MerchantBankInfo.Select(x => x.AccountName).FirstOrDefault();
+                tokenResult.BusinessName = validateuserInfo.MerchantBusinessInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault();
+                tokenResult.FirstName = validateuserInfo.MerchantWallet.Count == 0 ? string.Empty : validateuserInfo.MerchantWallet.Select(x => x.Firstname).FirstOrDefault();
+                tokenResult.LastName = validateuserInfo.MerchantWallet.Count == 0 ? string.Empty : validateuserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault();
+                tokenResult.LastName = validateuserInfo.MerchantWallet.Count == 0 ? string.Empty : validateuserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault();
+                tokenResult.BankName = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.BankName).FirstOrDefault();
+                tokenResult.Nuban = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.Nuban).FirstOrDefault();
+                tokenResult.AccountName = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.AccountName).FirstOrDefault();
                 tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
                 return tokenResult;
             }
