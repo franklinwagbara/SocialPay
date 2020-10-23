@@ -5,6 +5,7 @@ namespace SocialPay.Helper.Dto.Response
     public class WebApiResponse
     {
         public string ResponseCode { get; set; }
+        public string UserStatus { get; set; }
         public Object Data { get; set; }
     }
 

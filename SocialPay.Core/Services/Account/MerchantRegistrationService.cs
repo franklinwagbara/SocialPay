@@ -247,7 +247,7 @@ namespace SocialPay.Core.Services.Account
                         await _context.SaveChangesAsync();
                         model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
                         await transaction.CommitAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo };
                     }
                     catch (Exception ex)
                     {
@@ -312,7 +312,7 @@ namespace SocialPay.Core.Services.Account
                             getUserInfo.LastDateModified = DateTime.Now;
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
                         }
                         catch (Exception ex)
                         {
@@ -412,7 +412,7 @@ namespace SocialPay.Core.Services.Account
                                     await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
                                     await _context.SaveChangesAsync();
                                     await transaction.CommitAsync();
-                                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = AppResponseCodes.Success };
                                 ////var createWallet = await _walletRepoService.CreateMerchantWallet(walletModel);
                                 ////if(createWallet.response == AppResponseCodes.Success)
                                 ////{
