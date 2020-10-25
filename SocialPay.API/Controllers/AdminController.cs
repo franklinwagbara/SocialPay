@@ -13,7 +13,7 @@ using SocialPay.Helper.Dto.Response;
 
 namespace SocialPay.API.Controllers
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Administrator")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Administrator")]
     [Route("api/socialpay/admin")]
     [ApiController]
     public class AdminController : ControllerBase
