@@ -64,7 +64,8 @@ namespace SocialPay.Core.Services.Account
                     IsDeleted = false,
                     PhoneNumber = accountDetail.mobile,
                     RoleName = RoleDetails.SuperAdministrator,
-                    LastDateModified = DateTime.Now
+                    LastDateModified = DateTime.Now,
+                    UserName = createUserRequestDto.Username
                 };
                 await _context.ClientAuthentication.AddAsync(model);
                 await _context.SaveChangesAsync();
@@ -73,6 +74,23 @@ namespace SocialPay.Core.Services.Account
             catch (Exception ex)
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<LoginAPIResponse> ValidateUserAD(string username, string password)
+        {
+            try
+            {
+                var banksLdap = new ldapSoapClient(ldapSoapClient.EndpointConfiguration.ldapSoap, _appSettings.LdapServiceUrl);
+                bool validateADUser = await banksLdap.loginAsync(username, password);
+                if(!validateADUser)
+                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+                return new LoginAPIResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception)
+            {
+
+                return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
     }

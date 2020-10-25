@@ -83,7 +83,8 @@ namespace SocialPay.Core.Services.Account
                             IsDeleted = false,
                             PhoneNumber = signUpRequestDto.PhoneNumber,
                             RoleName = RoleDetails.Merchant,
-                            LastDateModified = DateTime.Now
+                            LastDateModified = DateTime.Now,
+                            UserName = signUpRequestDto.Email
                         };
                         await _context.ClientAuthentication.AddAsync(model);
                         await _context.SaveChangesAsync();

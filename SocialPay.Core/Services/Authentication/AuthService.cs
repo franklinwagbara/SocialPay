@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
+using SocialPay.Core.Services.Account;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -22,12 +23,14 @@ namespace SocialPay.Core.Services.Authentication
         private readonly SocialPayDbContext _context;
         private readonly AppSettings _appSettings;
         private readonly Utilities _utilities;
+        private readonly ADRepoService _aDRepoService;
         public AuthRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
-            Utilities utilities) : base(context)
+            Utilities utilities, ADRepoService aDRepoService) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
             _utilities = utilities;
+            _aDRepoService = aDRepoService;
         }
 
         public async Task<ClientAuthentication> GetClientDetails(string email)
@@ -62,16 +65,44 @@ namespace SocialPay.Core.Services.Authentication
                 // check if username exists
                 if (validateuserInfo == null)
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+                var tokenResult = new LoginAPIResponse();
+                var key = Encoding.ASCII.GetBytes(_appSettings.SecretKey);
+                var tokenDescriptor = new SecurityTokenDescriptor();
+                var tokenHandler = new JwtSecurityTokenHandler();
+                if (validateuserInfo.RoleName == "Super Administrator")
+                {
+                    var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
+                    if(validateUserAD.ResponseCode != AppResponseCodes.Success)
+                    return validateUserAD;
+                    tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                     Subject = new ClaimsIdentity(new Claim[]
+                    {
+                    new Claim(ClaimTypes.Name, validateuserInfo.Email),
+                    new Claim(ClaimTypes.Role, validateuserInfo.RoleName),
+                    new Claim(ClaimTypes.Email, validateuserInfo.Email),
+                    new Claim("UserStatus",  validateuserInfo.StatusCode),
+                    new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
+                    }),
+                        Expires = DateTime.UtcNow.AddDays(1),
+                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                    };
+
+                    var adtoken = tokenHandler.CreateToken(tokenDescriptor);
+                    var adtokenString = tokenHandler.WriteToken(adtoken);
+                    tokenResult.AccessToken = adtokenString;
+                    tokenResult.ClientId = validateuserInfo.Email;
+                    tokenResult.Role = validateuserInfo.RoleName;
+                    tokenResult.UserStatus = validateuserInfo.StatusCode;
+                    tokenResult.ResponseCode = AppResponseCodes.Success;
+                    return tokenResult;
+                }
                 // check if password is correct
                 if (!VerifyPasswordHash(loginRequestDto.Password.Encrypt(_appSettings.appKey), validateuserInfo.ClientSecretHash, validateuserInfo.ClientSecretSalt))
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
 
-                var tokenResult = new LoginAPIResponse();
-                // var getName = checkIfUserExist.TblRole.RoleName.ToString();
-                var key = Encoding.ASCII.GetBytes(_appSettings.SecretKey);
-                var tokenDescriptor = new SecurityTokenDescriptor();
-                var tokenHandler = new JwtSecurityTokenHandler();
+               
                 if(validateuserInfo.RoleName == "Guest")
                 {
                     tokenDescriptor = new SecurityTokenDescriptor
@@ -191,5 +222,7 @@ namespace SocialPay.Core.Services.Authentication
             }
         }
 
+
+       
     }
 }
