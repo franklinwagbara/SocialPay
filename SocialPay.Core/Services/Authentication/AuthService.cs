@@ -60,7 +60,7 @@ namespace SocialPay.Core.Services.Authentication
                     .Include(x=>x.MerchantBusinessInfo)
                     .Include(x=>x.MerchantWallet)
                     .Include(x=>x.MerchantBankInfo)
-                    .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email);
+                    .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email && x.IsDeleted == false);
 
                 // check if username exists
                 if (validateuserInfo == null)
@@ -222,7 +222,27 @@ namespace SocialPay.Core.Services.Authentication
             }
         }
 
+        public async Task<WebApiResponse> ModifyUserAccount(UpdateUserRequestDto updateUserRequestDto)
+        {
+            try
+            {
+                var validateUser = await _context.ClientAuthentication
+                    .SingleOrDefaultAsync(x => x.Email == updateUserRequestDto.Email);
+                if(validateUser == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
 
+                validateUser.IsDeleted = updateUserRequestDto.Status;
+                validateUser.LastDateModified = DateTime.Now;
+                _context.Update(validateUser);
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
        
     }
 }

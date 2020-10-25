@@ -27,3 +27,5 @@ INFO  2020-10-09 10:04:54,562 1315717ms CustomerController     ?                
 INFO  2020-10-09 10:04:56,565 1317720ms CustomerRepoService    ?                  - Task starts to save payments info | a1d36a784b614ce189593f9fe1f15553 | 10/9/2020 10:04:56 AM
 INFO  2020-10-09 10:05:18,924 1340079ms CustomerRepoService    ?                  - About to save uploaded document | a1d36a784b614ce189593f9fe1f15553 | 10/9/2020 10:05:18 AM
 INFO  2020-10-09 10:05:27,653 1348808ms CustomerRepoService    ?                  - Uploaded document was successfully saved | a1d36a784b614ce189593f9fe1f15553 | 10/9/2020 10:05:27 AM
+INFO  2020-10-25 18:38:30,306 116368ms AdminController        ?                  - Tasks starts to disable account | festus.patrick@sterling.ng | 10/25/2020 6:38:30 PM
+INFO  2020-10-25 18:48:54,447 191606ms AdminController        ?                  - Tasks starts to disable account | festus.patrick@sterling.ng | 10/25/2020 6:48:54 PM

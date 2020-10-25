@@ -29,6 +29,7 @@
         public const string DuplicateInvoiceName = "25";               
         public const string InvalidConfirmation = "26";               
         public const string TransactionAlreadyexit = "27";               
+        public const string UserNotFound = "28";               
     }
 
     public class MerchantOnboardingProcess

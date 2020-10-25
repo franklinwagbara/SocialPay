@@ -1,4 +1,6 @@
-﻿namespace SocialPay.Helper.Dto.Request
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SocialPay.Helper.Dto.Request
 {
     public class SignUpRequestDto
     {
@@ -18,5 +20,13 @@
        // [Required(ErrorMessage = "Token is required.")]
        ///[JsonIgnore]
        // public string Token { get; set; }
+    }
+
+
+    public class UpdateUserRequestDto
+    {
+        [Required(ErrorMessage = "Email is required.")]
+        public string Email { get; set; }
+        public bool Status { get; set; }
     }
 }
