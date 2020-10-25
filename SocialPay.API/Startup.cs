@@ -121,6 +121,7 @@ namespace SocialPay.API
             services.AddScoped<TransactionReceipt>();
             services.AddScoped<InvoiceService>();
             services.AddScoped<PayWithSpectaService>();
+            services.AddScoped<TransactionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

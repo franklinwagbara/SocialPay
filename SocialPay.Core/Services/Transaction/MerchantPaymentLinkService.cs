@@ -12,7 +12,6 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Transaction

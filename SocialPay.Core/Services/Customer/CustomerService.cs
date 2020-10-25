@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
-using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Extensions.Utilities;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
@@ -14,7 +12,6 @@ using SocialPay.Helper.Cryptography;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
