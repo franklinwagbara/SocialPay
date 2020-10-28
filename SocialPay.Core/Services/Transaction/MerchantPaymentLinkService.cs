@@ -219,8 +219,8 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-               
 
+               // clientId = 30043;
                 if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
                 var model = new InvoicePaymentLink
@@ -235,7 +235,7 @@ namespace SocialPay.Core.Services.Transaction
                 await _context.InvoicePaymentLink.AddAsync(model);
                 await _context.SaveChangesAsync();
                 await _invoiceService.SendInvoiceAsync(invoiceRequestDto.CustomerEmail,
-                    invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, businessName
+                    invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName
                     );
                 //send mail
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

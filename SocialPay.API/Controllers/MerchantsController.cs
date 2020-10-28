@@ -259,7 +259,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        //[AllowAnonymous]
+       // [AllowAnonymous]
         [HttpPost]
         [Route("send-Invoice")]
         public async Task<IActionResult> SendInvoice([FromBody] InvoiceRequestDto model)
