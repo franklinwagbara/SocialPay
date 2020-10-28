@@ -47,7 +47,7 @@ namespace SocialPay.Helper.Dto.Request
     public class CustomerReceiptRequestDto
     {
         public string TransactionReference { get; set; }
-        public long CustomerTransactionId { get; set; }
+        public string CustomerTransactionReference { get; set; }
 
     }
 

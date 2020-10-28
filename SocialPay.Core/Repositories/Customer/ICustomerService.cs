@@ -46,7 +46,14 @@ namespace SocialPay.Core.Repositories.Customer
             );
         }
 
-        
+        public async Task<TransactionLog> GetTransactionLogsByReference(string refId)
+        {
+            return await _context.TransactionLog
+                .SingleOrDefaultAsync(p => p.CustomerTransactionReference
+              == refId
+            );
+        }
+
         public async Task<WebApiResponse> GetMerchantPaymentInfo(string transactionReference)
         {
             var validateReference = await GetTransactionReference(transactionReference);

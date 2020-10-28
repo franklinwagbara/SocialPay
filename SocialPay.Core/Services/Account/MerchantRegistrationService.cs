@@ -115,7 +115,7 @@ namespace SocialPay.Core.Services.Account
                         await _context.SaveChangesAsync();
                         var emailModal = new EmailRequestDto
                         {
-                            Subject = "Merchant Sign Up",
+                            Subject = "Merchant Signed Up",
                             SourceEmail = "info@sterling.ng",
                             DestinationEmail = signUpRequestDto.Email,
                             // DestinationEmail = "festypat9@gmail.com",

@@ -74,8 +74,10 @@ namespace SocialPay.Core.Services.Report
 
                 var getMerchantInfo = await _customerService.GetMerchantInfo(validateTransaction.ClientAuthenticationId);
 
-                var validateCustomer = validateTransaction.CustomerTransaction
-                    .SingleOrDefault(x => x.CustomerTransactionId == model.CustomerTransactionId);
+                var validateCustomer = await _customerService.GetTransactionLogsByReference(model.CustomerTransactionReference);
+
+                //var validateCustomer = validateTransaction.CustomerTransaction
+                //    .SingleOrDefault(x => x.CustomerTransactionId == model.CustomerTransactionId);
                 await _transactionReceipt.ReceiptTemplate(validateCustomer.CustomerEmail,
                     validateTransaction.TotalAmount, validateCustomer.TransactionDate,
                     model.TransactionReference, getMerchantInfo == null ? string.Empty : getMerchantInfo.BusinessName );
