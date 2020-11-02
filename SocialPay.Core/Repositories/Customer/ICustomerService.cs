@@ -46,6 +46,8 @@ namespace SocialPay.Core.Repositories.Customer
             );
         }
 
+   
+
         public async Task<TransactionLog> GetTransactionLogsByReference(string refId)
         {
             return await _context.TransactionLog
@@ -195,6 +197,12 @@ namespace SocialPay.Core.Repositories.Customer
         public async Task<PaymentLinkViewModel> GetTransactionDetails(string refId)
         {
             var paymentview = new PaymentLinkViewModel();
+
+            var validateLink = await GetLinkCategorybyTranref(refId);
+            if(validateLink != null && validateLink.Channel == MerchantPaymentLinkCategory.InvoiceLink)
+            {
+
+            }
             var validateReference = await GetTransactionReference(refId);
             if (validateReference == null)
                 return new PaymentLinkViewModel { };

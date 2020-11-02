@@ -223,23 +223,44 @@ namespace SocialPay.Core.Services.Transaction
                // clientId = 30043;
                 if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
+                var transactionReference = Guid.NewGuid().ToString();
                 var model = new InvoicePaymentLink
                 {
                     TransactionStatus = false, ClientAuthenticationId = clientId, CustomerEmail = invoiceRequestDto.CustomerEmail,
                     DueDate = Convert.ToDateTime(invoiceRequestDto.DueDate), InvoiceName = invoiceRequestDto.InvoiceName,
-                    Qty = invoiceRequestDto.Qty, UnitPrice = invoiceRequestDto.UnitPrice, TransactionReference = Guid.NewGuid().ToString(),
+                    Qty = invoiceRequestDto.Qty, UnitPrice = invoiceRequestDto.UnitPrice, TransactionReference = transactionReference,
                     TotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice + invoiceRequestDto.ShippingFee,
                     ShippingFee = invoiceRequestDto.ShippingFee, Description = invoiceRequestDto.Description
                 };
-
-                await _context.InvoicePaymentLink.AddAsync(model);
-                await _context.SaveChangesAsync();
-                await _invoiceService.SendInvoiceAsync(invoiceRequestDto.CustomerEmail,
-                    invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName,
-                    model.TransactionReference
-                    );
-                //send mail
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                using(var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        await _context.InvoicePaymentLink.AddAsync(model);
+                        await _context.SaveChangesAsync();
+                        var linkCatModel = new LinkCategory
+                        {
+                            ClientAuthenticationId = clientId,
+                            Channel = MerchantPaymentLinkCategory.InvoiceLink,
+                            TransactionReference = transactionReference
+                        };
+                        await _context.LinkCategory.AddAsync(linkCatModel);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        await _invoiceService.SendInvoiceAsync(invoiceRequestDto.CustomerEmail,
+                            invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName,
+                            model.TransactionReference
+                            );
+                        //send mail
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
+                
             }
             catch (Exception ex)
             {
