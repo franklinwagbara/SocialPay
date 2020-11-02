@@ -46,7 +46,16 @@ namespace SocialPay.Core.Repositories.Customer
             );
         }
 
-   
+
+        public async Task<InvoicePaymentLink> GetInvoicePaymentAsync(string refId)
+        {
+            return await _context.InvoicePaymentLink
+                .SingleOrDefaultAsync(p => p.TransactionReference
+              == refId
+            );
+        }
+
+
 
         public async Task<TransactionLog> GetTransactionLogsByReference(string refId)
         {
@@ -194,21 +203,23 @@ namespace SocialPay.Core.Repositories.Customer
            
         }
 
-        public async Task<PaymentLinkViewModel> GetTransactionDetails(string refId)
+        public async Task<dynamic> GetTransactionDetails(string refId)
         {
             var paymentview = new PaymentLinkViewModel();
 
             var validateLink = await GetLinkCategorybyTranref(refId);
-            if(validateLink != null && validateLink.Channel == MerchantPaymentLinkCategory.InvoiceLink)
+            if (validateLink == null)
+                return new PaymentLinkViewModel { };
+            var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
+            if (getMerchantInfo == null)
+                return new PaymentLinkViewModel { };
+            if (validateLink.Channel == MerchantPaymentLinkCategory.InvoiceLink)
             {
-
+                return await GetInvoiceTransactionDetails(refId);
             }
             var validateReference = await GetTransactionReference(refId);
             if (validateReference == null)
-                return new PaymentLinkViewModel { };
-            var getMerchantInfo = await GetMerchantInfo(validateReference.ClientAuthenticationId);
-            if (getMerchantInfo == null)
-                return new PaymentLinkViewModel { };
+                return new PaymentLinkViewModel { };          
             var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
             var mapper = config.CreateMapper();
             paymentview = mapper.Map<PaymentLinkViewModel>(validateReference);
@@ -226,6 +237,36 @@ namespace SocialPay.Core.Repositories.Customer
 
             return paymentview;
         }
+
+
+        public async Task<InvoiceViewModel> GetInvoiceTransactionDetails(string refId)
+        {
+            var paymentview = new InvoiceViewModel();
+
+            var validateLink = await GetLinkCategorybyTranref(refId);
+            if (validateLink == null)
+                return new InvoiceViewModel { };
+            var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);           
+            var validateReference = await GetInvoicePaymentAsync(refId);
+            if (validateReference == null)
+                return new InvoiceViewModel { };         
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<InvoicePaymentLink, InvoiceViewModel>());
+            var mapper = config.CreateMapper();
+            paymentview = mapper.Map<InvoiceViewModel>(validateReference);
+            //paymentview.MerchantDocument = validateReference == null ? string.Empty : _appSettings.BaseApiUrl + validateReference.FileLocation + "/" + validateReference.Document;
+            paymentview.MerchantInfo = new MerchantInfoViewModel
+            {
+                BusinessEmail = getMerchantInfo.BusinessEmail,
+                BusinessPhoneNumber = getMerchantInfo.BusinessPhoneNumber,
+                BusinessName = getMerchantInfo.BusinessName,
+                Chargebackemail = getMerchantInfo.Chargebackemail,
+                Country = getMerchantInfo.Country,
+                Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
+            };
+
+            return paymentview;
+        }
+
 
         public async Task<WebApiResponse> GetCustomerOrders(long clientId, string category)
         {
