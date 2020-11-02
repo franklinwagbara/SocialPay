@@ -154,25 +154,31 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
-        public async Task<bool> RedisCacheTest()
+        public async Task<UserInfoViewModel> RedisCacheTest()
         {
             try
             {
-                var cacheKey = "userlogin";
+                var cacheKey = "pat";
+                //var cacheKey = "festypat";
                 string serializedCustomerList;
-                var userInfo = new UserInfoViewModel
-                {
-                    Email = "debby",
-                    StatusCode = "076"
-                };
+                var userInfo = new UserInfoViewModel{ };
                 var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+                if(redisCustomerList != null)
+                {
+                    serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
+                    return JsonConvert.DeserializeObject<UserInfoViewModel>(serializedCustomerList);
+                }
+                await _distributedCache.RemoveAsync(cacheKey);
+                userInfo.Email = "debby";
+                userInfo.StatusCode = "076";
                 serializedCustomerList = JsonConvert.SerializeObject(userInfo);
                 redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
                 var options = new DistributedCacheEntryOptions()
-                .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
-                .SetSlidingExpiration(TimeSpan.FromMinutes(12));
+                .SetAbsoluteExpiration(DateTime.Now.AddMinutes(3))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(1));
                 await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
-                return true;
+                
+                return new UserInfoViewModel();
             }
             catch (Exception ex)
             {

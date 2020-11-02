@@ -124,7 +124,7 @@ namespace SocialPay.API
             services.AddScoped<TransactionService>();
             services.AddDistributedRedisCache(option =>
             {
-                option.Configuration = "127.0.0.1";
+                option.Configuration = "172.18.4.114:6379";
                 option.InstanceName = "master";
             });
         }

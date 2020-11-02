@@ -56,7 +56,8 @@ namespace SocialPay.Core.Services.Authentication
         {
             try
             {
-                
+                var cacheKey = string.Empty;
+                var userInfo = new UserInfoViewModel{};
                 if (string.IsNullOrEmpty(loginRequestDto.Email) || string.IsNullOrEmpty(loginRequestDto.Password))
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.Failed};
 
@@ -101,6 +102,7 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.Role = validateuserInfo.RoleName;
                     tokenResult.UserStatus = validateuserInfo.StatusCode;
                     tokenResult.ResponseCode = AppResponseCodes.Success;
+                   
                     return tokenResult;
                 }
                 // check if password is correct
@@ -125,7 +127,21 @@ namespace SocialPay.Core.Services.Authentication
                         Expires = DateTime.UtcNow.AddDays(1),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                     };
-
+                    cacheKey = Convert.ToString(validateuserInfo.ClientAuthenticationId);
+                    userInfo.Email = validateuserInfo.Email;
+                    userInfo.StatusCode = validateuserInfo.StatusCode;
+                    string serializedCustomerListGuest = string.Empty;
+                    var redisCustomerListGuest = await _distributedCache.GetAsync(cacheKey);
+                    if (redisCustomerListGuest == null)
+                    {
+                        await _distributedCache.RemoveAsync(cacheKey);
+                        serializedCustomerListGuest = JsonConvert.SerializeObject(userInfo);
+                        redisCustomerListGuest = Encoding.UTF8.GetBytes(serializedCustomerListGuest);
+                        var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+                        await _distributedCache.SetAsync(cacheKey, redisCustomerListGuest, options);
+                    }
                     var guestToken = tokenHandler.CreateToken(tokenDescriptor);
                     var guestTokenString = tokenHandler.WriteToken(guestToken);
                     tokenResult.AccessToken = guestTokenString;
@@ -151,19 +167,22 @@ namespace SocialPay.Core.Services.Authentication
                     Expires = DateTime.UtcNow.AddDays(1),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
-                var cacheKey = "userlogin";
-                var userInfo = new UserInfoViewModel
-                {
-                    Email = validateuserInfo.Email, StatusCode = validateuserInfo.StatusCode
-                };
-                string serializedCustomerList;
+                cacheKey = Convert.ToString(validateuserInfo.ClientAuthenticationId);
+                userInfo.Email = validateuserInfo.Email;
+                userInfo.StatusCode = validateuserInfo.StatusCode;
+                string serializedCustomerList = string.Empty;
                 var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
-                serializedCustomerList = JsonConvert.SerializeObject(userInfo);
+                if(redisCustomerList == null)
+                {
+                    await _distributedCache.RemoveAsync(cacheKey);
+                    serializedCustomerList = JsonConvert.SerializeObject(userInfo);
                     redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
-                var options = new DistributedCacheEntryOptions()
-                .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
-                .SetSlidingExpiration(TimeSpan.FromMinutes(12));
-                await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+                    var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+                    await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+                }
+                
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var tokenString = tokenHandler.WriteToken(token);
                 tokenResult.AccessToken = tokenString;
