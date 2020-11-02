@@ -44,7 +44,7 @@ namespace SocialPay.API.Controllers
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     var userStatus = identity.Claims.FirstOrDefault(c => c.Type == "UserStatus")?.Value;
                     var result = await _merchantPaymentLinkService
-                        .GeneratePaymentLink(model, Convert.ToInt32(clientId), userStatus);                   
+                        .GeneratePaymentLink(model, Convert.ToInt32(clientId));                   
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)

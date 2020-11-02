@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Repositories.Customer;
@@ -10,8 +12,10 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.ViewModel;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Transaction
@@ -24,9 +28,10 @@ namespace SocialPay.Core.Services.Transaction
         private readonly ICustomerService _customerService;
         private readonly InvoiceService _invoiceService;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IDistributedCache _distributedCache;
         public MerchantPaymentLinkService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             Utilities utilities, ICustomerService customerService, IHostingEnvironment environment,
-            InvoiceService invoiceService)
+            InvoiceService invoiceService, IDistributedCache distributedCache)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -34,16 +39,28 @@ namespace SocialPay.Core.Services.Transaction
             _customerService = customerService;
             _hostingEnvironment = environment;
             _invoiceService = invoiceService;
+            _distributedCache = distributedCache;
         }
 
         public async Task<WebApiResponse> GeneratePaymentLink(MerchantpaymentLinkRequestDto paymentModel,
-            long clientId, string userStatus)
+            long clientId)
         {
             try
             {
                 //clientId = 30032;
                 //userStatus = "00";
                 decimal addtionalAmount = 0;
+                var cacheKey = Convert.ToString(clientId);
+                string serializedCustomerList;
+                string userStatus = string.Empty;
+                var userInfo = new UserInfoViewModel { };
+                var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+                if (redisCustomerList != null)
+                {
+                    serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
+                    var result = JsonConvert.DeserializeObject<UserInfoViewModel>(serializedCustomerList);
+                    userStatus = result.StatusCode;
+                }
                 if (userStatus != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
                 if(paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic 
