@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Services.Account;
@@ -9,6 +11,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.ViewModel;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -24,13 +27,15 @@ namespace SocialPay.Core.Services.Authentication
         private readonly AppSettings _appSettings;
         private readonly Utilities _utilities;
         private readonly ADRepoService _aDRepoService;
+        private readonly IDistributedCache _distributedCache;
         public AuthRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
-            Utilities utilities, ADRepoService aDRepoService) : base(context)
+            Utilities utilities, ADRepoService aDRepoService, IDistributedCache distributedCache) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
             _utilities = utilities;
             _aDRepoService = aDRepoService;
+            _distributedCache = distributedCache;
         }
 
         public async Task<ClientAuthentication> GetClientDetails(string email)
@@ -146,7 +151,19 @@ namespace SocialPay.Core.Services.Authentication
                     Expires = DateTime.UtcNow.AddDays(1),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
-
+                var cacheKey = "userlogin";
+                var userInfo = new UserInfoViewModel
+                {
+                    Email = validateuserInfo.Email, StatusCode = validateuserInfo.StatusCode
+                };
+                string serializedCustomerList;
+                var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+                serializedCustomerList = JsonConvert.SerializeObject(userInfo);
+                    redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+                var options = new DistributedCacheEntryOptions()
+                .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(12));
+                await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var tokenString = tokenHandler.WriteToken(token);
                 tokenResult.AccessToken = tokenString;
@@ -243,6 +260,26 @@ namespace SocialPay.Core.Services.Authentication
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
-       
-    }
+
+    ////    var cacheKey = "customerList";
+    ////    string serializedCustomerList;
+    ////    var customerList = new List<Customer>();
+    ////    var redisCustomerList = await distributedCache.GetAsync(cacheKey);
+    ////if (redisCustomerList != null)
+    ////{
+    ////    serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
+    ////    customerList = JsonConvert.DeserializeObject<List<Customer>>(serializedCustomerList);
+    ////}
+    ////else
+    ////{
+    ////    customerList = await context.Customers.ToListAsync();
+    ////serializedCustomerList = JsonConvert.SerializeObject(customerList);
+    ////    redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+    ////    var options = new DistributedCacheEntryOptions()
+    ////        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+    ////        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+    ////await distributedCache.SetAsync(cacheKey, redisCustomerList, options);
 }
+
+}
+

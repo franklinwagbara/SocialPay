@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Repositories.Invoice;
@@ -10,6 +12,7 @@ using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Report
@@ -20,15 +23,16 @@ namespace SocialPay.Core.Services.Report
         private readonly ICustomerService _customerService;
         private readonly TransactionReceipt _transactionReceipt;
         private readonly InvoiceService _invoiceService;
-
+        private readonly IDistributedCache _distributedCache;
         public MerchantReportService(SocialPayDbContext context,
             ICustomerService customerService, TransactionReceipt transactionReceipt,
-            InvoiceService invoiceService)
+            InvoiceService invoiceService, IDistributedCache distributedCache)
         {
             _context = context;
             _customerService = customerService;
             _transactionReceipt = transactionReceipt;
             _invoiceService = invoiceService;
+            _distributedCache = distributedCache;
         }
 
         public async Task<WebApiResponse> GetMerchants()
@@ -147,6 +151,33 @@ namespace SocialPay.Core.Services.Report
             catch (Exception ex)
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<bool> RedisCacheTest()
+        {
+            try
+            {
+                var cacheKey = "userlogin";
+                string serializedCustomerList;
+                var userInfo = new UserInfoViewModel
+                {
+                    Email = "debby",
+                    StatusCode = "076"
+                };
+                var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+                serializedCustomerList = JsonConvert.SerializeObject(userInfo);
+                redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+                var options = new DistributedCacheEntryOptions()
+                .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(12));
+                await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
             }
         }
     }

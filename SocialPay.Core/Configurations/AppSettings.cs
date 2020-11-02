@@ -32,5 +32,6 @@
         public string InvoiceTemplateDescription { get; set; }
         public string receiptTemplateDescription { get; set; }
         public string paywithspectamerchanId { get; set; }
+        public string invoicePaymentlinkUrl { get; set; }
     }
 }

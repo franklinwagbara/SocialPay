@@ -235,7 +235,8 @@ namespace SocialPay.Core.Services.Transaction
                 await _context.InvoicePaymentLink.AddAsync(model);
                 await _context.SaveChangesAsync();
                 await _invoiceService.SendInvoiceAsync(invoiceRequestDto.CustomerEmail,
-                    invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName
+                    invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName,
+                    model.TransactionReference
                     );
                 //send mail
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

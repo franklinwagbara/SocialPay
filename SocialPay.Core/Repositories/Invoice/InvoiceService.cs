@@ -59,7 +59,7 @@ namespace SocialPay.Core.Repositories.Invoice
         }
 
         public async Task<WebApiResponse> SendInvoiceAsync(string destinationEmail, decimal amount, decimal totalAmount,
-            DateTime tranDate, string invoicename)
+            DateTime tranDate, string invoicename, string transactionReference)
         {
             try
             {
@@ -82,11 +82,12 @@ namespace SocialPay.Core.Repositories.Invoice
                 {
                     emailModal.EmailBody = reader.ReadToEnd();
                     var builder = new StringBuilder(emailModal.EmailBody);
-                    builder.Replace("%amount%", Convert.ToString(amount));
-                    builder.Replace("%totalamount%", Convert.ToString(totalAmount));
-                    builder.Replace("%trandate%", Convert.ToString(tranDate));
-                    builder.Replace("%invoicename%", invoicename);
-                    builder.Replace("%currentyear%", Convert.ToString(DateTime.Now.Year));
+                    builder.Replace("{amount}", Convert.ToString(amount));
+                    builder.Replace("{totalamount}", Convert.ToString(totalAmount));
+                    builder.Replace("{trandate}", Convert.ToString(tranDate));
+                    builder.Replace("{invoicename}", invoicename);
+                    builder.Replace("{paymentLink}", _appSettings.invoicePaymentlinkUrl + transactionReference);
+                    builder.Replace("{currentyear}", Convert.ToString(DateTime.Now.Year));
                     emailModal.EmailBody = builder.ToString();
                 }
 

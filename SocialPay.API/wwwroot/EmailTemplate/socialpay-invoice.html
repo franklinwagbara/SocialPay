@@ -142,7 +142,7 @@
                               <tr>
                                 <!-- font-family: Museo Sans Rounded; -->
                                   <td class="td-padding" align="left" style="color: #1D3A37!important; font-family: Museo Sans Rounded; font-size: 24px; line-height: 1.2; font-weight: 700; font-style: normal; padding-top: 25px; padding-left: 18px!important; padding-right: 18px!important; padding-bottom: 0px!important; mso-line-height-rule: exactly; mso-padding-alt: 25px 18px 0px 13px;">
-                                      Hi Dear 👋 <br />%invoicename%.
+                                      Hi Dear 👋 <br />{invoicename}.
                                   </td>
                               </tr>
                               <tr>
@@ -157,16 +157,16 @@
                                   Date
                                 </td>
                                 <td class="td-padding" align="left" style="color: #374D4A!important; font-family: Museo Sans Rounded; font-size: 20px; line-height: 1.2; font-weight: 500; padding-top: 24px; padding-left: 18px!important; padding-right: 60px!important; padding-bottom: 0px!important; mso-line-height-rule: exactly; mso-padding-alt: 24px 60px 0px 13px;">
-                                  %trandate%
+                                  {trandate}
                                 </td>
                               </tr>
                               <tr class="flexible">
                                 <!-- font-family: Museo Sans Rounded; -->
                                 <td class="td-padding" align="left" style="color: #374D4A!important; font-family: Museo Sans Rounded; font-size: 20px; line-height: 1.2; font-weight: 500; font-style: normal; padding-top: 24px; padding-left: 18px!important; padding-right: 18px!important; padding-bottom: 0px!important; mso-line-height-rule: exactly; mso-padding-alt: 24px auto 0px 13px;">
-                                  %invoicename%
+                                  {invoicename}
                                 </td>
                                 <td class="td-padding" align="left" style="color: #374D4A!important; font-family: Museo Sans Rounded; font-size: 20px; line-height: 1.2; font-weight: 500; padding-top: 24px; padding-left: 18px!important; padding-right: 60px!important; padding-bottom: 0px!important; mso-line-height-rule: exactly; mso-padding-alt: 24px 60px 0px 13px;">
-                                  %amount%
+                                  {amount}
                                 </td>
                               </tr>
                               <tr class="flexible">
@@ -184,7 +184,7 @@
                                   Total
                                 </td>
                                 <td class="td-padding" align="left" style="color: #374D4A!important; font-family: Museo Sans Rounded; font-size: 20px; line-height: 1.2; font-weight: 700; padding-top: 40px; padding-left: 18px!important; padding-right: 60px!important; padding-bottom: 40px!important; mso-line-height-rule: exactly; mso-padding-alt: 24px 60px 40px 13px;">
-                                  %totalamount%
+                                  {totalamount}
                                 </td>
                               </tr>
                               <tr>
@@ -197,7 +197,7 @@
                                         <table border="0" cellspacing="0" cellpadding="0">
                                           <tr>
                                             <td align="left" style="border-radius: 3px;" bgcolor="#00554E">
-                                              <a class="button raised" href="#" target="_blank" style="font-size: 14px; line-height: 14px; font-weight: 500; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 10px 25px; border: 1px solid #00554E; display: inline-block;">Pay Now</a>
+                                              <a class="button raised" href="{paymentLink}" target="_blank" style="font-size: 14px; line-height: 14px; font-weight: 500; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 10px 25px; border: 1px solid #00554E; display: inline-block;">Pay Now</a>
                                             </td>
                                           </tr>
                                         </table>
@@ -214,7 +214,7 @@
                               <tr>
                                 <!-- font-family: Museo Sans Rounded; -->
                                 <td class="td-padding" align="center" style="color: #849794!important; font-family: Museo Sans Rounded; font-size: 14px; line-height: 1.2; font-weight: normal; font-style: normal; padding-top: 25px; padding-left: 18px!important; padding-right: 18px!important; padding-bottom: 0px!important; mso-line-height-rule: exactly; mso-padding-alt: 25px 18px 0px 13px;">
-                                  © %currentyear% SocialPay. All rights reserved
+                                  © {currentyear} SocialPay. All rights reserved
                                 </td>
                               </tr>
                               <!-- END BODY COPY -->
