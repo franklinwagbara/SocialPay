@@ -117,7 +117,7 @@ namespace SocialPay.Core.Services.Customer
                         InvoicePaymentLinkId = getInvoiceInfo.InvoicePaymentLinkId, LastDateModified = DateTime.Now
                     };
 
-                    decimal CustomerTotalAmount = getInvoiceInfo.TotalAmount + getInvoiceInfo.ShippingFee;
+                    decimal CustomerTotalAmount = getInvoiceInfo.TotalAmount;
                     if (model.Channel == PaymentChannel.PayWithSpecta)
                     {
                         var generateToken = await _payWithSpectaService.InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference);
