@@ -3,6 +3,7 @@
     public class CustomerResponseDto
     {
         public long CustomerId { get; set; }
+        public string InvoiceReference { get; set; }
         public string PaymentLink { get; set; }
     }
 }

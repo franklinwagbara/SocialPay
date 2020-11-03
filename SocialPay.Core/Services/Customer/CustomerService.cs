@@ -110,11 +110,13 @@ namespace SocialPay.Core.Services.Customer
                     var getInvoiceInfo = await _customerService.GetInvoicePaymentAsync(model.TransactionReference);
                     if (getInvoiceInfo == null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
+                    var customerReference = Guid.NewGuid().ToString();
                     var invoicePayment = new InvoicePaymentInfo
                     {
                         TransactionReference = model.TransactionReference, Channel = model.Channel,
                         Email = model.Email, Fullname = model.Fullname, PhoneNumber = model.PhoneNumber,
-                        InvoicePaymentLinkId = getInvoiceInfo.InvoicePaymentLinkId, LastDateModified = DateTime.Now
+                        InvoicePaymentLinkId = getInvoiceInfo.InvoicePaymentLinkId, LastDateModified = DateTime.Now,
+                        CustomerTransactionReference = customerReference
                     };
 
                     decimal CustomerTotalAmount = getInvoiceInfo.TotalAmount;
@@ -123,7 +125,7 @@ namespace SocialPay.Core.Services.Customer
                         var generateToken = await _payWithSpectaService.InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference);
                         if (generateToken.ResponseCode != AppResponseCodes.Success)
                             return generateToken;
-                        paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                        paymentResponse.InvoiceReference = customerReference; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
                         await _context.InvoicePaymentInfo.AddAsync(invoicePayment);
                         await _context.SaveChangesAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
@@ -132,7 +134,7 @@ namespace SocialPay.Core.Services.Customer
                     encryptedText = _appSettings.mid + _appSettings.paymentCombination + CustomerTotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                     encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                     paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
-                    paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+                    paymentResponse.InvoiceReference = customerReference; paymentResponse.PaymentLink = paymentData;
                     await _context.InvoicePaymentInfo.AddAsync(invoicePayment);
                     await _context.SaveChangesAsync();
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };                   
@@ -245,6 +247,30 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
+                var validateLinkType = await _customerService.GetLinkCategorybyTranref(model.TransactionReference);
+                if(validateLinkType.Channel == MerchantPaymentLinkCategory.InvoiceLink)
+                {
+                    if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank)
+                    {
+                        if (model.Channel == PaymentChannel.Card)
+                        {
+                            var decodeMessage = System.Uri.UnescapeDataString(model.Message);
+                            if (decodeMessage.Contains(" "))
+                            {
+                                decodeMessage = decodeMessage.Replace(" ", "+");
+                            }
+                            var decryptResponse = DecryptAlt(decodeMessage);
+                            model.Message = decryptResponse;
+                            var result = await _customerService.LogInvoicePaymentResponse(model);
+                            return result;
+                        }
+
+                        var oneBankRequest = await _customerService.LogInvoicePaymentResponse(model);
+                        return oneBankRequest;
+
+                    }
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPamentChannel };
+                }
                 if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank)
                 {
                     if(model.Channel == PaymentChannel.Card)

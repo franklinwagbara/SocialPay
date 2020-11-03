@@ -69,6 +69,7 @@
         public const string Pending = "01";
         public const string Approved = "02";
         public const string Decline = "03";
+        public const string Failed = "04";
     }
     public class RoleDetails
     {

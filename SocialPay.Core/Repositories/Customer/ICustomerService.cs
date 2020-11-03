@@ -14,6 +14,7 @@ using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,7 +56,13 @@ namespace SocialPay.Core.Repositories.Customer
             );
         }
 
-
+        public async Task<InvoicePaymentInfo> GetInvoicePaymentInfo(string refId, string customerRef)
+        {
+            return await _context.InvoicePaymentInfo
+                .SingleOrDefaultAsync(p => p.TransactionReference
+              == refId && p.CustomerTransactionReference == customerRef
+            );
+        }
 
         public async Task<TransactionLog> GetTransactionLogsByReference(string refId)
         {
@@ -327,6 +334,96 @@ namespace SocialPay.Core.Repositories.Customer
             return paymentview;
         }
 
+
+
+        public async Task<WebApiResponse> LogInvoicePaymentResponse(PaymentValidationRequestDto model)
+        {
+            try
+            {
+                var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
+                if (linkInfo != null & linkInfo.Channel == MerchantPaymentLinkCategory.InvoiceLink)
+                {
+                    var getpaymentInfo = await GetInvoicePaymentInfo(model.TransactionReference, model.InvoiceReference);
+                    if (getpaymentInfo == null)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
+                    if (model.Message.Contains("Approve"))
+                    {
+                        var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
+                        var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
+                        getpaymentInfo.TransactionStatus = OrderStatusCode.Approved;
+                        getpaymentInfo.Status = true;
+                        getpaymentInfo.Message = model.Message;
+                        getpaymentInfo.LastDateModified = DateTime.Now;
+                        _context.Update(getpaymentInfo);
+                        await _context.SaveChangesAsync();
+                        await _transactionReceipt.ReceiptTemplate(getpaymentInfo.Email, invoiceInfo.TotalAmount,
+                          DateTime.Now, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                     }
+                    getpaymentInfo.TransactionStatus = OrderStatusCode.Failed;
+                    getpaymentInfo.Status = false;
+                    getpaymentInfo.Message = model.Message;
+                    getpaymentInfo.LastDateModified = DateTime.Now;
+                    _context.Update(getpaymentInfo);
+                    await _context.SaveChangesAsync();
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+                }
+
+                var customerInfo = await _context.ClientAuthentication
+                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == model.CustomerId);
+
+                var merhantInfo = await GetMerchantInfo(customerInfo.ClientAuthenticationId);
+
+                var getUserInfo = await GetInvoicePaymentAsync(model.TransactionReference);
+
+               
+                //var logRequest = new CustomerTransaction { };
+                var logconfirmation = new TransactionLog { };
+                logconfirmation.Category = linkInfo.Channel;
+                logconfirmation.ClientAuthenticationId = model.CustomerId;
+                logconfirmation.CustomerEmail = customerInfo.Email;
+                logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
+                logconfirmation.TransactionReference = model.TransactionReference;
+                logconfirmation.OrderStatus = OrderStatusCode.Pending;
+                logconfirmation.Message = model.Message;
+
+                var paymentSetupInfo = await _context.MerchantPaymentSetup
+               .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+
+
+                if (model.Message.Contains("Approve") || model.Message.Contains("Success"))
+                {
+                    logconfirmation.Status = true;
+                }
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
+                        await _context.TransactionLog.AddAsync(logconfirmation);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        //Send mail
+                        await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
+                            logconfirmation.TransactionDate, model.TransactionReference, merhantInfo == null ? string.Empty : merhantInfo.BusinessName);
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
         public async Task<WebApiResponse> LogPaymentResponse(PaymentValidationRequestDto model)
         {
             try
@@ -361,14 +458,6 @@ namespace SocialPay.Core.Repositories.Customer
                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
 
 
-                //logRequest.ClientAuthenticationId = model.CustomerId;
-                //logRequest.CustomerEmail = customerInfo.Email;
-                //logRequest.Channel = model.Channel;
-                //logRequest.Message = model.Message;
-                //logRequest.OrderStatus = OrderStatusCode.Pending;
-                //logRequest.MerchantPaymentSetupId = paymentSetupInfo.MerchantPaymentSetupId;
-                //logRequest.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
-                //logRequest.CustomerTransactionReference = Guid.NewGuid().ToString();                
                 if (model.Message.Contains("Approve") || model.Message.Contains("Success"))
                 {
                     logconfirmation.Status = true;
