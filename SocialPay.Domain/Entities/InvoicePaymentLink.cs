@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace SocialPay.Domain.Entities
 {
@@ -19,5 +21,6 @@ namespace SocialPay.Domain.Entities
         public DateTime DueDate { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
+        public virtual ICollection<InvoicePaymentInfo> InvoicePaymentInfo { get; set; }
     }
 }

@@ -102,14 +102,46 @@ namespace SocialPay.Core.Services.Customer
                 string encryptData = string.Empty;
                 string paymentData = string.Empty;
                 var paymentResponse = new CustomerResponseDto { };
-                var getClient = await _customerService.GetClientDetails(model.Email);
-                customerId = Convert.ToInt32(getClient.Data);
-                //var getPaymentDetails = await _context.MerchantPaymentSetup
-                //    .Include(x => x.CustomerTransaction).SingleOrDefaultAsync(p => p.TransactionReference
-                //    == model.TransactionReference);
+
+
+                var getLinkType = await _customerService.GetLinkCategorybyTranref(model.TransactionReference);
+                if(getLinkType != null && getLinkType.Channel == MerchantPaymentLinkCategory.InvoiceLink)
+                {
+                    var getInvoiceInfo = await _customerService.GetInvoicePaymentAsync(model.TransactionReference);
+                    if (getInvoiceInfo == null)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
+                    var invoicePayment = new InvoicePaymentInfo
+                    {
+                        TransactionReference = model.TransactionReference, Channel = model.Channel,
+                        Email = model.Email, Fullname = model.Fullname, PhoneNumber = model.PhoneNumber,
+                        InvoicePaymentLinkId = getInvoiceInfo.InvoicePaymentLinkId, LastDateModified = DateTime.Now
+                    };
+
+                    decimal CustomerTotalAmount = getInvoiceInfo.TotalAmount + getInvoiceInfo.ShippingFee;
+                    if (model.Channel == PaymentChannel.PayWithSpecta)
+                    {
+                        var generateToken = await _payWithSpectaService.InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference);
+                        if (generateToken.ResponseCode != AppResponseCodes.Success)
+                            return generateToken;
+                        paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                        await _context.InvoicePaymentInfo.AddAsync(invoicePayment);
+                        await _context.SaveChangesAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
+                    }
+
+                    encryptedText = _appSettings.mid + _appSettings.paymentCombination + CustomerTotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                    encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
+                    paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
+                    paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+                    await _context.InvoicePaymentInfo.AddAsync(invoicePayment);
+                    await _context.SaveChangesAsync();
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };                   
+                }
                 var getPaymentDetails = await _customerService.GetTransactionReference(model.TransactionReference);
                 if (getPaymentDetails == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
+                var getClient = await _customerService.GetClientDetails(model.Email);
+                customerId = Convert.ToInt32(getClient.Data);
                 if (getClient.ResponseCode != AppResponseCodes.Success)
                 {
                     var newCustomerAccess = Guid.NewGuid().ToString("N").Substring(0,10);
