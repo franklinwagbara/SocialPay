@@ -22,5 +22,6 @@ namespace SocialPay.Domain
         public DbSet<LinkCategory> LinkCategory { get; set; }
         public DbSet<TransactionLog> TransactionLog { get; set; }
         public DbSet<InvoicePaymentInfo> InvoicePaymentInfo { get; set; }
+        public DbSet<FailedTransactions> FailedTransactions { get; set; }
     }
 }

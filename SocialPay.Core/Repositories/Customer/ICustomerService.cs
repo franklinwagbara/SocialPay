@@ -341,6 +341,7 @@ namespace SocialPay.Core.Repositories.Customer
             try
             {
                 var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
+                var logFailedResponse = new FailedTransactions();
                 if (linkInfo != null & linkInfo.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {
                     var getpaymentInfo = await GetInvoicePaymentInfo(model.TransactionReference, model.InvoiceReference);
@@ -360,13 +361,32 @@ namespace SocialPay.Core.Repositories.Customer
                           DateTime.Now, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                      }
-                    getpaymentInfo.TransactionStatus = OrderStatusCode.Failed;
-                    getpaymentInfo.Status = false;
-                    getpaymentInfo.Message = model.Message;
-                    getpaymentInfo.LastDateModified = DateTime.Now;
-                    _context.Update(getpaymentInfo);
-                    await _context.SaveChangesAsync();
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+                    using(var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+
+                            logFailedResponse.CustomerTransactionReference = getpaymentInfo.CustomerTransactionReference;
+                            logFailedResponse.TransactionReference = getpaymentInfo.TransactionReference;
+                            logFailedResponse.Message = model.Message;                            
+                            await _context.FailedTransactions.AddAsync(logFailedResponse);
+                            await _context.SaveChangesAsync();
+                            getpaymentInfo.TransactionStatus = OrderStatusCode.Failed;
+                            getpaymentInfo.Status = false;
+                            getpaymentInfo.Message = model.Message;
+                            getpaymentInfo.LastDateModified = DateTime.Now;
+                            _context.Update(getpaymentInfo);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        }
+                    }
+                 
                 }
 
                 var customerInfo = await _context.ClientAuthentication
@@ -374,7 +394,7 @@ namespace SocialPay.Core.Repositories.Customer
 
                 var merhantInfo = await GetMerchantInfo(customerInfo.ClientAuthenticationId);
 
-                var getUserInfo = await GetInvoicePaymentAsync(model.TransactionReference);
+                //var getUserInfo = await GetInvoicePaymentAsync(model.TransactionReference);
 
                
                 //var logRequest = new CustomerTransaction { };
@@ -394,28 +414,33 @@ namespace SocialPay.Core.Repositories.Customer
                 if (model.Message.Contains("Approve") || model.Message.Contains("Success"))
                 {
                     logconfirmation.Status = true;
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
+                            await _context.TransactionLog.AddAsync(logconfirmation);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                            //Send mail
+                            await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
+                                logconfirmation.TransactionDate, model.TransactionReference, merhantInfo == null ? string.Empty : merhantInfo.BusinessName);
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        }
+                    }
                 }
 
-                using (var transaction = await _context.Database.BeginTransactionAsync())
-                {
-                    try
-                    {
-                        logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
-                        await _context.TransactionLog.AddAsync(logconfirmation);
-                        await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
-                        //Send mail
-                        await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
-                            logconfirmation.TransactionDate, model.TransactionReference, merhantInfo == null ? string.Empty : merhantInfo.BusinessName);
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-                    }
-                }
-
+                logFailedResponse.CustomerTransactionReference = "";
+                logFailedResponse.TransactionReference = paymentSetupInfo.TransactionReference;
+                logFailedResponse.Message = model.Message;
+                await _context.FailedTransactions.AddAsync(logFailedResponse);
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
             }
             catch (Exception ex)
             {
