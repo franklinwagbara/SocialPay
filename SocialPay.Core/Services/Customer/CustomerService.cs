@@ -130,11 +130,11 @@ namespace SocialPay.Core.Services.Customer
                         await _context.SaveChangesAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                     }
-
                     encryptedText = _appSettings.mid + _appSettings.paymentCombination + CustomerTotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                     encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                     paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
-                    paymentResponse.InvoiceReference = customerReference; paymentResponse.PaymentLink = paymentData;
+                    paymentResponse.InvoiceReference = customerReference; 
+                    paymentResponse.PaymentLink = paymentData;
                     await _context.InvoicePaymentInfo.AddAsync(invoicePayment);
                     await _context.SaveChangesAsync();
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };                   
@@ -212,7 +212,6 @@ namespace SocialPay.Core.Services.Customer
                         
                         encryptedText = _appSettings.mid + _appSettings.paymentCombination + CustomerTotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                         encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
-                        //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
                         paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                         paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };

@@ -448,10 +448,12 @@ namespace SocialPay.Core.Repositories.Customer
                     if (model.Message.Contains("Approve"))
                     {
                         logconfirmation.Status = true;
+                        await _context.TransactionLog.AddAsync(logconfirmation);
+                        await _context.SaveChangesAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
-                    await _context.TransactionLog.AddAsync(logconfirmation);
-                    await _context.SaveChangesAsync();
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                   
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
                 }
               
                     var paymentSetupInfo = await _context.MerchantPaymentSetup
@@ -461,27 +463,28 @@ namespace SocialPay.Core.Repositories.Customer
                 if (model.Message.Contains("Approve") || model.Message.Contains("Success"))
                 {
                     logconfirmation.Status = true;
-                }
-              
-                using(var transaction = await _context.Database.BeginTransactionAsync())
-                {
-                    try
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
-                        logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
-                        await _context.TransactionLog.AddAsync(logconfirmation);
-                        await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
-                        //Send mail
-                        await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
-                            logconfirmation.TransactionDate, model.TransactionReference, merhantInfo == null ? string.Empty : merhantInfo.BusinessName);
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        try
+                        {
+                            logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
+                            await _context.TransactionLog.AddAsync(logconfirmation);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                            //Send mail
+                            await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
+                                logconfirmation.TransactionDate, model.TransactionReference, merhantInfo == null ? string.Empty : merhantInfo.BusinessName);
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        }
                     }
                 }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
               
             }
             catch (Exception ex)

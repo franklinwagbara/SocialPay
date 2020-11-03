@@ -30,6 +30,7 @@
         public const string InvalidConfirmation = "26";               
         public const string TransactionAlreadyexit = "27";               
         public const string UserNotFound = "28";               
+        public const string TransactionFailed = "29";               
     }
 
     public class MerchantOnboardingProcess
