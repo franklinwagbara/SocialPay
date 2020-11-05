@@ -110,6 +110,9 @@ namespace SocialPay.Helper.ViewModel
         public string Channel { get; set; }
         public string TransactionStatus { get; set; }
         public string Message { get; set; }
+        public long Qty { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal TotalAmount { get; set; }
         public bool Status { get; set; }
         public DateTime DateEntered { get; set; } 
     }

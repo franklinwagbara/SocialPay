@@ -140,7 +140,8 @@ namespace SocialPay.Core.Repositories.Invoice
                                   Message = b.Message,
                                   PhoneNumber = b.PhoneNumber,
                                   TransactionReference = b.TransactionReference,
-                                  DateEntered = b.DateEntered
+                                  DateEntered = b.DateEntered, Qty = a.Qty, TotalAmount = a.TotalAmount,
+                                  UnitPrice = a.UnitPrice
                               }).ToList();
 
                 response = result;
