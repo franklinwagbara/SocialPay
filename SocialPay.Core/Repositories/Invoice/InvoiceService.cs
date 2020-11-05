@@ -36,6 +36,17 @@ namespace SocialPay.Core.Repositories.Invoice
             _emailService = emailService;
         }
 
+        public async Task<List<InvoicePaymentInfo>> GetInvoicePaymentInfosAsync()
+        {
+            return await _context.InvoicePaymentInfo.ToListAsync();
+        }
+
+
+        public async Task<List<InvoicePaymentLink>> GetInvoicePaymentLinksAsync(long clientId)
+        {
+            return await _context.InvoicePaymentLink.Where(x=>x.ClientAuthenticationId == clientId).ToListAsync();
+        }
+
         public async Task<WebApiResponse> GetInvoiceByClientId(long clientId)
         {
             var invoiceView = new List<MerchantInvoiceViewModel>();
@@ -108,5 +119,39 @@ namespace SocialPay.Core.Repositories.Invoice
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+        public async Task<WebApiResponse> GetInvoiceTransactionDetails(long clientId)
+        {
+            var response = new List<InvoicePaymentInfoViewModel>();
+
+            try
+            {
+                var getInvoice = await GetInvoicePaymentLinksAsync(clientId);
+
+                var result = (from a in getInvoice
+                              join b in _context.InvoicePaymentInfo on a.InvoicePaymentLinkId
+                              equals b.InvoicePaymentLinkId
+                              select new InvoicePaymentInfoViewModel
+                              {
+                                  Email = b.Email,
+                                  Channel = b.Channel,
+                                  CustomerTransactionReference = b.CustomerTransactionReference,
+                                  Fullname = b.Fullname,
+                                  Message = b.Message,
+                                  PhoneNumber = b.PhoneNumber,
+                                  TransactionReference = b.TransactionReference,
+                                  DateEntered = b.DateEntered
+                              }).ToList();
+
+                response = result;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = response };
+            }
+        }
+
     }
 }

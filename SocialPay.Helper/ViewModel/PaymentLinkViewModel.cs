@@ -99,4 +99,18 @@ namespace SocialPay.Helper.ViewModel
         public string Description { get; set; }
         public DateTime DueDate { get; set; }
     }
+
+    public class InvoicePaymentInfoViewModel
+    {
+        public string TransactionReference { get; set; }
+        public string CustomerTransactionReference { get; set; }
+        public string Email { get; set; }
+        public string Fullname { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Channel { get; set; }
+        public string TransactionStatus { get; set; }
+        public string Message { get; set; }
+        public bool Status { get; set; }
+        public DateTime DateEntered { get; set; } 
+    }
 }

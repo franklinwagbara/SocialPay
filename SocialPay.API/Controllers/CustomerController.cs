@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Services.Customer;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
@@ -17,11 +18,14 @@ namespace SocialPay.API.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly CustomerRepoService _customerRepoService;
+        private readonly InvoiceService _invoiceService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CustomerController));
 
-        public CustomerController(CustomerRepoService customerRepoService)
+        public CustomerController(CustomerRepoService customerRepoService,
+            InvoiceService invoiceService)
         {
             _customerRepoService = customerRepoService;
+            _invoiceService = invoiceService;
         }
 
         [HttpGet]
@@ -142,5 +146,8 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+
+        
     }
 }

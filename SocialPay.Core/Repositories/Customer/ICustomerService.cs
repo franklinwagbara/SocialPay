@@ -347,7 +347,7 @@ namespace SocialPay.Core.Repositories.Customer
                     var getpaymentInfo = await GetInvoicePaymentInfo(model.TransactionReference, model.InvoiceReference);
                     if (getpaymentInfo == null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
-                    if (model.Message.Contains("Approve"))
+                    if (model.Message.Contains("Approve") || model.Message.Contains("success"))
                     {
                         var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                         var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
