@@ -361,7 +361,7 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
-
+        //[AllowAnonymous]
         [HttpGet]
         [Route("invoice-payment-details")]
         public async Task<IActionResult> GetInvoiceTransaction()

@@ -123,7 +123,7 @@ namespace SocialPay.Core.Repositories.Invoice
         public async Task<WebApiResponse> GetInvoiceTransactionDetails(long clientId)
         {
             var response = new List<InvoicePaymentInfoViewModel>();
-
+            //clientId = 30043;
             try
             {
                 var getInvoice = await GetInvoicePaymentLinksAsync(clientId);
@@ -141,8 +141,8 @@ namespace SocialPay.Core.Repositories.Invoice
                                   PhoneNumber = b.PhoneNumber,
                                   TransactionReference = b.TransactionReference,
                                   DateEntered = b.DateEntered, Qty = a.Qty, TotalAmount = a.TotalAmount,
-                                  UnitPrice = a.UnitPrice
-                              }).ToList();
+                                  UnitPrice = a.UnitPrice, TransactionStatus = b.TransactionStatus
+                              }).OrderByDescending(x=>x.DateEntered).ToList();
 
                 response = result;
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
