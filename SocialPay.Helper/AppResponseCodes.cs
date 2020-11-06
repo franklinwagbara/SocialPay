@@ -31,6 +31,7 @@
         public const string TransactionAlreadyexit = "27";               
         public const string UserNotFound = "28";               
         public const string TransactionFailed = "29";               
+        public const string DuplicateTransaction = "30";               
     }
 
     public class MerchantOnboardingProcess

@@ -109,6 +109,13 @@ namespace SocialPay.Core.Repositories.Customer
              == tranRef
            );
         }
+
+        public async Task<TransactionLog> GetTransactionLogAsync(string tranRef, string customerRef)
+        {
+            return await _context.TransactionLog.SingleOrDefaultAsync(p => p.TransactionReference
+             == tranRef && p.CustomerTransactionReference == customerRef
+           );
+        }
         public async Task<WebApiResponse> GetCustomerPaymentsByMerchantPayRef(long clientId)
         {
             var result = new List<CustomerPaymentViewModel>();
@@ -347,6 +354,8 @@ namespace SocialPay.Core.Repositories.Customer
                     var getpaymentInfo = await GetInvoicePaymentInfo(model.TransactionReference, model.InvoiceReference);
                     if (getpaymentInfo == null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
+                    if(getpaymentInfo.TransactionStatus == OrderStatusCode.Approved)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                     if (model.Message.Contains("Approve") || model.Message.Contains("success"))
                     {
                         var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
