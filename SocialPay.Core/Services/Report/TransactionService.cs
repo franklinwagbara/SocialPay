@@ -101,5 +101,27 @@ namespace SocialPay.Core.Services.Report
           
         }
 
+
+        public async Task<WebApiResponse> ClearUserAccount(string email)
+        {
+            try
+            {
+                var validateUser = await _context.ClientAuthentication
+                    .SingleOrDefaultAsync(x => x.Email == email);
+                if(validateUser !=null)
+                {
+                    _context.Remove(validateUser);
+                    await _context.SaveChangesAsync();
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
     }
 }
