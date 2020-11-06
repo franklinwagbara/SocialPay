@@ -485,7 +485,7 @@ namespace SocialPay.Core.Repositories.Customer
                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
 
 
-                if (model.Message.Contains("Approve") || model.Message.Contains("Success"))
+                if (model.Message.Contains("Approve") || model.Message.Contains("success"))
                 {
                     logconfirmation.Status = true;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
