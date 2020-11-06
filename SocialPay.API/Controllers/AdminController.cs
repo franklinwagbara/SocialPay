@@ -180,7 +180,7 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
-
+        [AllowAnonymous]
         [HttpPost]
         [Route("clear-user-account")]
         public async Task<IActionResult> ClearUserDetails(string email)
