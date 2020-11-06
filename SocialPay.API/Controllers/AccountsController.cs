@@ -109,6 +109,58 @@ namespace SocialPay.API.Controllers
         }
 
 
-       
+
+        [HttpPost]
+        [Route("generate-password")]
+        public async Task<IActionResult> GenerateNewPassword([FromBody] string email)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                   // var result = await _authRepoService.Authenticate(model);
+                    return Ok();
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("password-reset")]
+        public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    //var result = await _authRepoService.Authenticate(model);
+                    return Ok();
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
     }
 }
