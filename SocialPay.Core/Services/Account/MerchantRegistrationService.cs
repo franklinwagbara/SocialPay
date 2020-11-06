@@ -467,7 +467,7 @@ namespace SocialPay.Core.Services.Account
                                     mobile = getUserInfo.PhoneNumber,
                                 };
                                 var walletResponse = new CreateWalletResponse { };
-                                getUserInfo.StatusCode = AppResponseCodes.Success;
+                                getUserInfo.StatusCode = MerchantOnboardingProcess.Wallet;
                                 _context.ClientAuthentication.Update(getUserInfo);
                                     await _context.SaveChangesAsync();
                                     //_context.MerchantWallet.Update(walletInfo);

@@ -122,6 +122,7 @@ namespace SocialPay.API
             services.AddScoped<InvoiceService>();
             services.AddScoped<PayWithSpectaService>();
             services.AddScoped<TransactionService>();
+            services.AddScoped<CreateMerchantWalletService>();
             services.AddDistributedRedisCache(option =>
             {
                 option.Configuration = "172.18.4.114:6379";

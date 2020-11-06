@@ -9,6 +9,7 @@ using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Transaction;
+using SocialPay.Core.Services.Wallet;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
@@ -24,14 +25,16 @@ namespace SocialPay.API.Controllers
         private readonly MerchantPaymentLinkService _merchantPaymentLinkService;
         private readonly MerchantReportService _merchantReportService;
         private readonly InvoiceService _invoiceService;
+        private readonly CreateMerchantWalletService _createMerchantWalletService;
         public MerchantsController(MerchantRegistrationService merchantRegistrationService,
             MerchantPaymentLinkService merchantPaymentLinkService, MerchantReportService merchantReportService,
-            InvoiceService invoiceService)
+            InvoiceService invoiceService, CreateMerchantWalletService createMerchantWalletService)
         {
             _merchantRegistrationService = merchantRegistrationService;
             _merchantPaymentLinkService = merchantPaymentLinkService;
             _merchantReportService = merchantReportService;
             _invoiceService = invoiceService;
+            _createMerchantWalletService = createMerchantWalletService;
         }
 
         [HttpPost]
@@ -165,7 +168,42 @@ namespace SocialPay.API.Controllers
             }
         }
 
-       // [AllowAnonymous]
+
+        [HttpPost]
+        [Route("create-merchant-wallet")]
+        public async Task<IActionResult> CreateWallet([FromBody] string model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _createMerchantWalletService.CreateWallet(Convert.ToInt32(clientId));
+                    //if (result.ResponseCode != AppResponseCodes.Success)
+                    //    return BadRequest(result);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+
+        // [AllowAnonymous]
         [HttpGet]
         [Route("payment-links")]
         public async Task<IActionResult> GetPaymentDetails()

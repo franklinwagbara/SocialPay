@@ -68,5 +68,32 @@ namespace SocialPay.Core.Services.Wallet
                 return apiResponse;
             }
         }
+
+        public async Task<WalletResponseDto> ClearMerchantWallet(string phoneNumber)
+        {
+            var apiResponse = new WalletResponseDto { };
+            try
+            {
+
+                var response = await _client.GetAsync(_appSettings.walletExtensionUrl 
+                    + _appSettings.clearwalletUrl + phoneNumber);
+                var result = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    apiResponse = JsonConvert.DeserializeObject<WalletResponseDto>(result);
+                    apiResponse.responsedata = result;
+                    return apiResponse;
+                }
+                apiResponse.response = AppResponseCodes.Failed;
+                apiResponse.responsedata = result;
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.response = AppResponseCodes.InternalError;
+                apiResponse.responsedata = "An error occured while creating wallet";
+                return apiResponse;
+            }
+        }
     }
 }

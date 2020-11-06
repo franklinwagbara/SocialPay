@@ -32,6 +32,7 @@
         public const string UserNotFound = "28";               
         public const string TransactionFailed = "29";               
         public const string DuplicateTransaction = "30";               
+        public const string WalletExist = "31";               
     }
 
     public class MerchantOnboardingProcess
@@ -40,7 +41,8 @@
         public const string SignUp = "02";
         public const string BusinessInfo = "03";
         public const string BankInfo = "04";
-        public const string Customer = "05";
+        public const string GuestAccount = "05";
+        public const string Wallet = "06";
     }
 
     public class MerchantWalletProcess

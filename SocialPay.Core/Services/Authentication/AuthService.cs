@@ -241,7 +241,7 @@ namespace SocialPay.Core.Services.Authentication
                     ClientSecretHash = passwordHash,
                     ClientSecretSalt = passwordSalt,
                     Email = email,
-                    StatusCode = MerchantOnboardingProcess.Customer,
+                    StatusCode = MerchantOnboardingProcess.GuestAccount,
                     FullName = fullname,
                     IsDeleted = false,
                     PhoneNumber = phoneNumber,
