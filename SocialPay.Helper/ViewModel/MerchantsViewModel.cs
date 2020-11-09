@@ -30,4 +30,15 @@ namespace SocialPay.Helper.ViewModel
         public string Chargebackemail { get; set; }
         public string Logo { get; set; }
     }
+
+    public class MerchantBusinessInfoViewModel
+    {
+        public string BusinessName { get; set; }
+        public string BusinessPhoneNumber { get; set; }
+        public string BusinessEmail { get; set; }
+        public string Country { get; set; }
+        public string Chargebackemail { get; set; }
+        public string Logo { get; set; }
+        public BankInfoViewModel BankInfo { get; set; }
+    }
 }

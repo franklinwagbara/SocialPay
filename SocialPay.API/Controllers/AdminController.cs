@@ -96,7 +96,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpGet]
         [Route("get-merchants")]
         public async Task<IActionResult> GetMerchants()
