@@ -30,3 +30,6 @@ INFO  2020-10-09 10:05:27,653 1348808ms CustomerRepoService    ?                
 INFO  2020-10-25 18:38:30,306 116368ms AdminController        ?                  - Tasks starts to disable account | festus.patrick@sterling.ng | 10/25/2020 6:38:30 PM
 INFO  2020-10-25 18:48:54,447 191606ms AdminController        ?                  - Tasks starts to disable account | festus.patrick@sterling.ng | 10/25/2020 6:48:54 PM
 INFO  2020-11-09 17:23:24,273 265659ms AdminController        ?                  - Tasks starts to clear user account | 07038881616 | 11/9/2020 5:23:24 PM
+INFO  2020-11-09 21:20:22,754 161743ms AdminController        ?                  - Tasks starts to clear user account | 08076683150 | 11/9/2020 9:20:22 PM
+INFO  2020-11-09 21:21:01,233 200222ms AdminController        ?                  - Tasks starts to clear user account | 08076683150 | 11/9/2020 9:21:01 PM
+INFO  2020-11-09 21:24:25,083 61529ms AdminController        ?                  - Tasks starts to clear user account | 08076683150 | 11/9/2020 9:24:25 PM
