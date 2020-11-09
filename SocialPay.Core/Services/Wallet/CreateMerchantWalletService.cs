@@ -29,6 +29,7 @@ namespace SocialPay.Core.Services.Wallet
         {
 			try
 			{
+				//clientId = 40053;
 				var getUserInfo = await _context.ClientAuthentication
 				  .Include(x => x.MerchantWallet)
 				  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);

@@ -10,18 +10,31 @@ namespace SocialPay.Domain
     {
         public static void Seed(SocialPayDbContext _context)
         {
-              if (!_context.ClientAuthentication.Any(x => x.Email == "festus.patrick@sterling.ng"))
+            //if (!_context.ClientAuthentication.Any(x => x.Email == "festus.patrick@sterling.ng"))
+            //  {
+            //          var createuser = new ClientAuthentication[]
+            //          {
+            //           new ClientAuthentication { FullName = "Festus Patrick", Email= "festus.patrick@sterling.ng",
+            //          IsDeleted = false, PhoneNumber = "08030523654", LastDateModified = DateTime.Now, UserName = "patricksf",
+            //          RoleName ="Super Administrator", StatusCode = "00"
+            //          },
+            //          };
+            //          _context.ClientAuthentication.AddRange(createuser);
+            //          _context.SaveChanges();
+            //  }
+
+            if (!_context.ClientAuthentication.Any(x => x.Email == "Pelumi.Majolagbe@sterling.ng"))
+            {
+                var createuser = new ClientAuthentication[]
                 {
-                        var createuser = new ClientAuthentication[]
-                        {
-                         new ClientAuthentication { FullName = "Festus Patrick", Email= "festus.patrick@sterling.ng",
-                        IsDeleted = false, PhoneNumber = "08030523654", LastDateModified = DateTime.Now, UserName = "patricksf",
+                         new ClientAuthentication { FullName = "Pelumi Majolagbe", Email= "Pelumi.Majolagbe@sterling.ng",
+                        IsDeleted = false, PhoneNumber = "08045646334", LastDateModified = DateTime.Now, UserName = "majolagbeip",
                         RoleName ="Super Administrator", StatusCode = "00"
                         },
-                        };
-                        _context.ClientAuthentication.AddRange(createuser);
-                        _context.SaveChanges();
-                }
+                };
+                _context.ClientAuthentication.AddRange(createuser);
+                _context.SaveChanges();
+            }
         }
     }
 }

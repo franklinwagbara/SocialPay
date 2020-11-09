@@ -62,6 +62,12 @@ namespace SocialPay.Helper.Dto.Request
         //public decimal customField { get; set; }
     }
 
+    public class WalletRequestDto
+    {
+        public string UserId { get; set; }
+      
+    }
+
 
     public class MerchantpaymentLinkRequestDto
     {
