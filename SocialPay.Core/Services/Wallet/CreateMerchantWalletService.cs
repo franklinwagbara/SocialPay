@@ -29,13 +29,13 @@ namespace SocialPay.Core.Services.Wallet
         {
 			try
 			{
-				//clientId = 40053;
+				//clientId = 40061;
 				var getUserInfo = await _context.ClientAuthentication
 				  .Include(x => x.MerchantWallet)
 				  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-				if(getUserInfo.MerchantWallet.Count > 0)
-					return new WebApiResponse { ResponseCode = AppResponseCodes.WalletExist };
+				if(getUserInfo.MerchantWallet.Count == 0)
+					return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBusinessInfoRequired };
 
 				var walletModel = new MerchantWalletRequestDto
 				{
@@ -47,14 +47,31 @@ namespace SocialPay.Core.Services.Wallet
 					mobile = getUserInfo.PhoneNumber,
 				};
 				var result = await _walletRepoService.CreateMerchantWallet(walletModel);
-				if(result.response == AppResponseCodes.Success)
+				using(var transaction = await _context.Database.BeginTransactionAsync())
 				{
-					getUserInfo.StatusCode = AppResponseCodes.Success;
-					_context.Update(getUserInfo);
-					await _context.SaveChangesAsync();
-					return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+					try
+					{
+						if (result.response == AppResponseCodes.Success)
+						{
+							var getWalletInfo = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+							getWalletInfo.status = AppResponseCodes.Success;
+							_context.Update(getWalletInfo);
+							await _context.SaveChangesAsync();
+							getUserInfo.StatusCode = AppResponseCodes.Success;
+							_context.Update(getUserInfo);
+							await _context.SaveChangesAsync();
+							await transaction.CommitAsync();
+							return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+						}
+						return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+					}
+					catch (Exception ex)
+					{
+						await transaction.RollbackAsync();
+						return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+					}
 				}
-				return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+			
 			}
 			catch (Exception ex)
 			{
@@ -71,8 +88,7 @@ namespace SocialPay.Core.Services.Wallet
 				
 				var result = await _walletRepoService.ClearMerchantWallet(phoneNumber);
 				if (result.response == AppResponseCodes.Success)
-				{
-				
+				{				
 					return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
 				}
 				return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };

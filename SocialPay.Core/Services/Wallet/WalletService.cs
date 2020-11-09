@@ -80,8 +80,8 @@ namespace SocialPay.Core.Services.Wallet
                 var result = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
-                    apiResponse = JsonConvert.DeserializeObject<WalletResponseDto>(result);
-                    apiResponse.responsedata = result;
+                    //apiResponse = JsonConvert.DeserializeObject<WalletResponseDto>(result);
+                    apiResponse.responsedata = AppResponseCodes.Success;
                     return apiResponse;
                 }
                 apiResponse.response = AppResponseCodes.Failed;

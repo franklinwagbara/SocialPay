@@ -43,6 +43,7 @@
         public const string BankInfo = "04";
         public const string GuestAccount = "05";
         public const string Wallet = "06";
+        public const string SuperAdmin = "07";
     }
 
     public class MerchantWalletProcess

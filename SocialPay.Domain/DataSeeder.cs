@@ -29,7 +29,7 @@ namespace SocialPay.Domain
                 {
                          new ClientAuthentication { FullName = "Pelumi Majolagbe", Email= "Pelumi.Majolagbe@sterling.ng",
                         IsDeleted = false, PhoneNumber = "08045646334", LastDateModified = DateTime.Now, UserName = "majolagbeip",
-                        RoleName ="Super Administrator", StatusCode = "00"
+                        RoleName ="Super Administrator", StatusCode = "07"
                         },
                 };
                 _context.ClientAuthentication.AddRange(createuser);
