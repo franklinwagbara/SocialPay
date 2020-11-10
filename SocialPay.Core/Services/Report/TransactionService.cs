@@ -62,35 +62,19 @@ namespace SocialPay.Core.Services.Report
 
         public async Task<WebApiResponse> GetOnboardingJourney()
         {
-            var request = new List<OrdersViewModel>();
+            var request = new List<UserJourneyViewModel>();
             try
             {
                 var getUsers = await _context.ClientAuthentication.Where(x=>x.RoleName !="Guest").ToListAsync();
-                //if (getCustomerOrders == null)
-                //    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                //if(category == MerchantPaymentLinkCategory.InvoiceLink )
-                //{
-                //     var invoiceResponse = (from c in getCustomerOrders
-                //                join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
-                //                select new OrdersViewModel { MerchantAmount = m.UnitPrice, DeliveryTime = c.DeliveryDate, 
-                //                ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                //                 Description = m.Description, ClientId = c.ClientAuthenticationId, CustomerTransactionReference = c.CustomerTransactionReference,
-                //                TotalAmount = m.TotalAmount, PaymentCategory = category,
-                //                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
-                //    request = invoiceResponse;
-                //    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
-                //}
-
-                //var otherLinksresponse = (from c in getCustomerOrders
-                //                join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
-                //                select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
-                //                ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                //                DeliveryMethod = m.DeliveryMethod, Description = m.MerchantDescription,
-                //                TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory, ClientId = c.ClientAuthenticationId,
-                //                CustomerTransactionReference = c.CustomerTransactionReference,
-                //                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
-                //request = otherLinksresponse;
+                var response = (from c in getUsers
+                                //join b in _context.MerchantBusinessInfo on c.ClientAuthenticationId equals b.ClientAuthenticationId
+                                select new UserJourneyViewModel
+                                {
+                                    Email = c.Email, Status = c.StatusCode, PhoneNumber = c.PhoneNumber,
+                                    FullName = c.FullName
+                                }).ToList();
+                request = response;
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
             }
             catch (Exception ex)

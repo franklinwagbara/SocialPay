@@ -155,7 +155,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
+       //[AllowAnonymous]
         [HttpGet]
         [Route("get-user-signup-status")]
         public async Task<IActionResult> GetSignUpStatus()
