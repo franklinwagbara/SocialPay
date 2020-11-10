@@ -34,5 +34,6 @@
         public string paywithspectamerchanId { get; set; }
         public string invoicePaymentlinkUrl { get; set; }
         public string clearwalletUrl { get; set; }
+        public string accountResetToken { get; set; }
     }
 }

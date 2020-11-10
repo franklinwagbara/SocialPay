@@ -4,12 +4,20 @@ namespace SocialPay.Helper.Dto.Request
 {
     public class SignUpRequestDto
     {
+        [Required(ErrorMessage = "Email")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "Phone Number")]
         public string PhoneNumber { get; set; }
+        [Required(ErrorMessage = "FullName")]
         public string Fullname { get; set; }
+        [Required(ErrorMessage = "Date of birth")]
         public string DateOfBirth { get; set; }
+        [Required(ErrorMessage = "Gender")]
         public string Gender { get; set; }
+        [Required(ErrorMessage = "Password")]
         public string Password { get; set; }
+        [Required(ErrorMessage = "Confirm Password")]
+        [Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
         public string ConfirmPassword { get; set; }
     }
 

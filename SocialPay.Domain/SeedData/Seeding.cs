@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain.Entities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SocialPay.Domain.SeedData
 {

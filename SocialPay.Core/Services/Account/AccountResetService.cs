@@ -2,12 +2,10 @@
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.UserService;
-using SocialPay.Domain;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +16,7 @@ namespace SocialPay.Core.Services.Account
         private readonly UserRepoService _userRepoService;
         private readonly EmailService _emailService;
         private readonly AppSettings _appSettings;
+        
         public AccountResetService(UserRepoService userRepoService, EmailService emailService,
             IOptions<AppSettings> appSettings)
         {
@@ -69,8 +68,8 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                return await _userRepoService.ChangeUserPassword(passwordResetDto,
+                    Convert.ToInt32(_appSettings.accountResetToken), _appSettings.appKey);
             }
             catch (Exception)
             {
