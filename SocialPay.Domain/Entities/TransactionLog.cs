@@ -13,6 +13,7 @@ namespace SocialPay.Domain.Entities
         public string TransactionReference { get; set; }
         public string CustomerTransactionReference { get; set; }
         public bool Status { get; set; }
+        public bool IsApproved { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
