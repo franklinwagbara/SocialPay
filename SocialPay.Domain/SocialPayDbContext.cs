@@ -23,5 +23,6 @@ namespace SocialPay.Domain
         public DbSet<TransactionLog> TransactionLog { get; set; }
         public DbSet<InvoicePaymentInfo> InvoicePaymentInfo { get; set; }
         public DbSet<FailedTransactions> FailedTransactions { get; set; }
+        public DbSet<AccountResetRequest> AccountResetRequest { get; set; }
     }
 }

@@ -15,6 +15,7 @@ using SocialPay.Core.Extensions.Utilities;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Repositories.Invoice;
+using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
@@ -123,6 +124,8 @@ namespace SocialPay.API
             services.AddScoped<PayWithSpectaService>();
             services.AddScoped<TransactionService>();
             services.AddScoped<CreateMerchantWalletService>();
+            services.AddScoped<UserRepoService>();
+            services.AddScoped<AccountResetService>();
             services.AddDistributedRedisCache(option =>
             {
                 option.Configuration = "172.18.4.114:6379";

@@ -28,5 +28,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<InvoicePaymentLink> InvoicePaymentLink { get; set; }
         public virtual ICollection<LinkCategory> LinkCategory { get; set; }
         public virtual ICollection<TransactionLog> TransactionLog { get; set; }
+        public virtual ICollection<AccountResetRequest> AccountResetRequest { get; set; }
     }
 }

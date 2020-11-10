@@ -16,13 +16,15 @@ namespace SocialPay.API.Controllers
     {
         private readonly MerchantRegistrationService _merchantRegistrationService;      
         private readonly AuthRepoService _authRepoService;
+        private readonly AccountResetService _accountResetService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AccountsController));
 
         public AccountsController(MerchantRegistrationService merchantRegistrationService,
-            AuthRepoService authRepoService)
+            AuthRepoService authRepoService, AccountResetService accountResetService)
         {
             _merchantRegistrationService = merchantRegistrationService;
             _authRepoService = authRepoService;
+            _accountResetService = accountResetService;
         }
 
         [HttpPost]
@@ -111,16 +113,16 @@ namespace SocialPay.API.Controllers
 
 
         [HttpPost]
-        [Route("generate-password")]
-        public async Task<IActionResult> GenerateNewPassword([FromBody] string email)
+        [Route("generate-reset-token")]
+        public async Task<IActionResult> GenerateNewPassword([FromBody] AccountResetDto model)
         {
             var response = new WebApiResponse { };
             try
             {
                 if (ModelState.IsValid)
                 {
-                   // var result = await _authRepoService.Authenticate(model);
-                    return Ok();
+                    var result = await _accountResetService.GenerateResetToken(model.Email);
+                    return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
@@ -138,16 +140,16 @@ namespace SocialPay.API.Controllers
 
 
         [HttpPost]
-        [Route("password-reset")]
-        public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDto model)
+        [Route("change-password")]
+        public async Task<IActionResult> ChnagePassword([FromBody] PasswordResetDto model)
         {
             var response = new WebApiResponse { };
             try
             {
                 if (ModelState.IsValid)
                 {
-                    //var result = await _authRepoService.Authenticate(model);
-                    return Ok();
+                    var result = await _accountResetService.ChangePassword(model);
+                    return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
