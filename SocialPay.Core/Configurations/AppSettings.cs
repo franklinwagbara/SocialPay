@@ -40,5 +40,16 @@
         public string walletcurrencyCode { get; set; }
         public string SterlingWalletPoolAccount { get; set; }
         public string getwalletDetailsUrl { get; set; }
+        public string fioranoBaseUrl { get; set; }
+        public string fioranoFundsTransferUrl { get; set; }
+        public string fioranoCommisionCode { get; set; }
+        public string fioranoVtellerAppID { get; set; }
+        public string fioranoTrxnLocation { get; set; }
+        public string fioranoTransactionType { get; set; }
+        public string fioranoDebitCurrency { get; set; }
+        public string fioranoCreditCurrency { get; set; }
+        public string transactionNarration { get; set; }
+        public string socialPayNominatedAccountNo { get; set; }
+        public string socialT24AccountNo { get; set; }
     }
 }

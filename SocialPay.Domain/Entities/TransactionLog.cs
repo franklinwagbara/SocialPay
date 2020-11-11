@@ -16,6 +16,8 @@ namespace SocialPay.Domain.Entities
         public bool Status { get; set; }
         public bool IsApproved { get; set; }
         public bool IsQueued { get; set; }
+        public bool IsQueuedPayWithSpecta { get; set; }
+        public bool IsCompletedPayWithSpecta { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;

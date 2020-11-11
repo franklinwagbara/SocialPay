@@ -1,33 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using SocialPay.Core.Configurations;
-using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
-using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Job.Repository.Fiorano;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository
+namespace SocialPay.Job.Repository.PayWithSpecta
 {
-    public class PendingWalletRequestService
+    public class PendingPayWithSpectaTransaction
     {
-        private readonly WalletRepoService _walletRepoService;
-        private readonly AppSettings _appSettings;
-        public PendingWalletRequestService(IServiceProvider services, WalletRepoService walletRepoService,
-            IOptions<AppSettings> appSettings)
+        private readonly FioranoTransferRepository _fioranoTransferRepository;
+        public PendingPayWithSpectaTransaction(IServiceProvider services, 
+            FioranoTransferRepository fioranoTransferRepository)
         {
             Services = services;
-            _walletRepoService = walletRepoService;
-            _appSettings = appSettings.Value;
+            _fioranoTransferRepository = fioranoTransferRepository;
         }
         public IServiceProvider Services { get; }
-        public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
+
+        public async Task<WebApiResponse> InitiateTransactions(List<TransactionLog> pendingRequest)
         {
             try
             {
@@ -38,27 +34,19 @@ namespace SocialPay.Job.Repository
                     {
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
-
-                        getTransInfo.IsQueued = true;
+                        getTransInfo.IsQueuedPayWithSpecta = true;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
 
                         var getWalletInfo = await context.MerchantWallet
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.MerchantClientInfo);
-                        if(getWalletInfo == null)
+                        if (getWalletInfo == null)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                        var walletModel = new WalletTransferRequestDto
-                        {
-                            CURRENCYCODE = _appSettings.walletcurrencyCode, amt = Convert.ToString(item.TotalAmount),
-                            toacct = getWalletInfo.Mobile, channelID = 1, TransferType = 1,
-                            frmacct = _appSettings.SterlingWalletPoolAccount, paymentRef = Guid.NewGuid().ToString(),
-                            remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
-                        };
-
-                        var initiateRequest = await _walletRepoService.WalletToWalletTransferAsync(walletModel);
-                        if(initiateRequest.response == AppResponseCodes.Success)
+                        var initiateRequest = await _fioranoTransferRepository
+                            .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount));
+                        if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                         {
                             getTransInfo.IsApproved = true;
                             getTransInfo.LastDateModified = DateTime.Now;
@@ -76,5 +64,6 @@ namespace SocialPay.Job.Repository
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
     }
 }
