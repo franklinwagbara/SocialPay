@@ -50,7 +50,7 @@ namespace SocialPay.Core.Services.Account
                 mailBuilder.AppendLine("Dear" + " " + email + "," + "<br />");
                 mailBuilder.AppendLine("<br />");
                 mailBuilder.AppendLine("You have successfully requested a password reset. Please complete this request by clicking the link below.<br />");
-                mailBuilder.AppendLine("Kindly use this token" + "  " + token + "  " + "and" + " " + "http://socialpay-web.sterlingapps.p.azurewebsites.net" + "<br />");
+                mailBuilder.AppendLine("Kindly use this token" + "  " + token + "  " + "and" + " " + _appSettings.newpasswordUrl + "<br />");
                 // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
                 mailBuilder.AppendLine("Best Regards,");
                 emailModal.EmailBody = mailBuilder.ToString();

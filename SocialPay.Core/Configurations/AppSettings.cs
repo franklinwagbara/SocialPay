@@ -35,5 +35,6 @@
         public string invoicePaymentlinkUrl { get; set; }
         public string clearwalletUrl { get; set; }
         public string accountResetToken { get; set; }
+        public string newpasswordUrl { get; set; }
     }
 }
