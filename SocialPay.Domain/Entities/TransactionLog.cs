@@ -16,6 +16,7 @@ namespace SocialPay.Domain.Entities
         public bool IsApproved { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
+        public DateTime LastDateModified { get; set; }
         public virtual ClientAuthentication ClientAuthentication { get; set; }
     }
 }
