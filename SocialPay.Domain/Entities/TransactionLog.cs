@@ -6,6 +6,7 @@ namespace SocialPay.Domain.Entities
     {
         public long TransactionLogId { get; set; }
         public long ClientAuthenticationId { get; set; }
+        public long MerchantClientInfo { get; set; }
         public string CustomerEmail { get; set; }
         public string Category { get; set; }
         public string OrderStatus { get; set; }
@@ -14,6 +15,8 @@ namespace SocialPay.Domain.Entities
         public string CustomerTransactionReference { get; set; }
         public bool Status { get; set; }
         public bool IsApproved { get; set; }
+        public bool IsQueued { get; set; }
+        public decimal TotalAmount { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }

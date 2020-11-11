@@ -95,5 +95,58 @@ namespace SocialPay.Core.Services.Wallet
                 return apiResponse;
             }
         }
+
+
+        public async Task<GetWalletInfoResponseDto> GetWalletDetailsAsync(string phoneNumber)
+        {
+            var apiResponse = new GetWalletInfoResponseDto { };
+            try
+            {
+
+                var response = await _client.GetAsync(_appSettings.walletExtensionUrl
+                    + _appSettings.getwalletDetailsUrl + phoneNumber);
+                var result = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    apiResponse = JsonConvert.DeserializeObject<GetWalletInfoResponseDto>(result);
+                    apiResponse.response = AppResponseCodes.Success;
+                    return apiResponse;
+                }
+                apiResponse.response = AppResponseCodes.Failed;
+                apiResponse.responsedata = result;
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.response = AppResponseCodes.InternalError;
+                apiResponse.responsedata = "An error occured while creating wallet";
+                return apiResponse;
+            }
+        }
+
+        public async Task<WalletToWalletResponseDto> WalletToWalletTransferAsync(WalletTransferRequestDto model)
+        {
+            var apiResponse = new WalletToWalletResponseDto { };
+            try
+            {
+                var request = JsonConvert.SerializeObject(model);
+                var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.walletTowalletUrl,
+                  new StringContent(request, Encoding.UTF8, "application/json"));
+                var result = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    apiResponse = JsonConvert.DeserializeObject<WalletToWalletResponseDto>(result);
+                    apiResponse.responsedata = result;
+                    return apiResponse;
+                }
+                apiResponse.response = AppResponseCodes.Failed;
+                apiResponse.responsedata = result;
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return new WalletToWalletResponseDto { response = AppResponseCodes.InternalError };
+            }
+        }
     }
 }

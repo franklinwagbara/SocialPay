@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SocialPay.Core\SocialPay.Core.csproj" />
     <ProjectReference Include="..\SocialPay.Domain\SocialPay.Domain.csproj" />
     <ProjectReference Include="..\SocialPay.Helper\SocialPay.Helper.csproj" />
   </ItemGroup>

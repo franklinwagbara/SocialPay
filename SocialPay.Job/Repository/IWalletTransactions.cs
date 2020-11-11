@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository
 {
-    public interface ITransactions
+    public interface IWalletTransactions
     {
         Task<string> GetPendingTransactions();
     }

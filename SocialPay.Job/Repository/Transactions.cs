@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository
 {
-    public class Transactions : ITransactions
+    public class Transactions : IWalletTransactions
     {
-        private readonly PendingRequestService _transactions;
-        public Transactions(IServiceProvider services, PendingRequestService transactions)
+        private readonly PendingWalletRequestService _transactions;
+        public Transactions(IServiceProvider services, PendingWalletRequestService transactions)
         {
             Services = services;
             _transactions = transactions;
@@ -29,7 +29,8 @@ namespace SocialPay.Job.Repository
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime today = DateTime.Now.Date;
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.Status == true && x.OrderStatus == "34").ToListAsync();                 
+                        .Where(x => x.Status == true && x.IsApproved == false
+                        && x.IsQueued == false).ToListAsync();                 
 
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)

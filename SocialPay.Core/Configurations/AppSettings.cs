@@ -19,6 +19,7 @@
         public string createwalletUrl { get; set; }
         public string paymentlinkUrl { get; set; }
         public string walletExtensionUrl { get; set; }
+        public string walletTowalletUrl { get; set; }
         public string sterlingpaymentGatewayRequestUrl { get; set; }
         public string paywithSpectaBaseUrl { get; set; }
         public string paywithSpectaCallBackUrl { get; set; }
@@ -36,5 +37,8 @@
         public string clearwalletUrl { get; set; }
         public string accountResetToken { get; set; }
         public string newpasswordUrl { get; set; }
+        public string walletcurrencyCode { get; set; }
+        public string SterlingWalletPoolAccount { get; set; }
+        public string getwalletDetailsUrl { get; set; }
     }
 }

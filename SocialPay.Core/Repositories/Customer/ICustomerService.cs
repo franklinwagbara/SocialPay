@@ -370,6 +370,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.OrderStatus = OrderStatusCode.Pending;
                                 logconfirmation.Message = model.Message;
                                 logconfirmation.LastDateModified = DateTime.Now;
+                                logconfirmation.MerchantClientInfo = linkInfo.ClientAuthenticationId;
                                 logconfirmation.Status = true;
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                                 var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
@@ -528,6 +529,7 @@ namespace SocialPay.Core.Repositories.Customer
                         try
                         {
                             logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
+                            logconfirmation.MerchantClientInfo = paymentSetupInfo.ClientAuthenticationId;
                             await _context.TransactionLog.AddAsync(logconfirmation);
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
