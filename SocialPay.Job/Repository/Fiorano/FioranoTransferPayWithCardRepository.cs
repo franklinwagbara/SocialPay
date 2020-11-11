@@ -14,11 +14,11 @@ using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.Fiorano
 {
-    public class FioranoTransferRepository
+    public class FioranoTransferPayWithCardRepository
     {
         private readonly CreditDebitService _creditDebitService;
         private readonly AppSettings _appSettings;
-        public FioranoTransferRepository(IOptions<AppSettings> appSettings, CreditDebitService creditDebitService,
+        public FioranoTransferPayWithCardRepository(IOptions<AppSettings> appSettings, CreditDebitService creditDebitService,
             IServiceProvider services)
         {
             _appSettings = appSettings.Value;
@@ -77,6 +77,20 @@ namespace SocialPay.Job.Repository.Fiorano
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
                     if(postTransaction.ResponseCode == AppResponseCodes.Success)
                     {
+                        var logFioranoResponse = new FioranoT24TransactionResponse
+                        {
+                            FioranoT24RequestId = logRequest.FioranoT24RequestId,
+                            Balance = postTransaction.FTResponse.Balance,
+                            CHARGEAMT = postTransaction.FTResponse.CHARGEAMT,
+                            COMMAMT = postTransaction.FTResponse.COMMAMT,
+                            FTID = postTransaction.FTResponse.FTID,
+                            JsonResponse = postTransaction.Message,
+                            ReferenceID = postTransaction.FTResponse.ReferenceID,
+                            ResponseCode = postTransaction.FTResponse.ResponseCode,
+                            ResponseText = postTransaction.FTResponse.ResponseText
+                        };
+                        await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
+                        await context.SaveChangesAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };

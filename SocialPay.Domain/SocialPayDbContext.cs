@@ -27,5 +27,6 @@ namespace SocialPay.Domain
         public DbSet<FundsTransferLog> FundsTransferLog { get; set; }
         public DbSet<FioranoT24Request> FioranoT24Request { get; set; }
         public DbSet<FioranoT24TransactionResponse> FioranoT24TransactionResponse { get; set; }
+        public DbSet<WalletTransferRequestLog> WalletTransferRequestLog { get; set; }
     }
 }

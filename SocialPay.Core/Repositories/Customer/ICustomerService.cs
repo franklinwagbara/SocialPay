@@ -596,11 +596,12 @@ namespace SocialPay.Core.Repositories.Customer
                                 if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
                                     return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
 
-
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
                                 getTransactionLogs.OrderStatus = model.Status;
                                 getTransactionLogs.Status = true;
+                                getTransactionLogs.IsAccepted = false;
+                                getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
                                 await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
                                 var emailModal = new EmailRequestDto
@@ -623,19 +624,21 @@ namespace SocialPay.Core.Repositories.Customer
                                 var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                             }
-
                             await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                             await _context.SaveChangesAsync();
                             getTransactionLogs.OrderStatus = model.Status;
                             getTransactionLogs.Status = true;
+                            getTransactionLogs.IsAccepted = true;
+                            getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
+                            _context.Update(getTransactionLogs);
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                         }
                         catch (Exception ex)
                         {
-
                             await transaction.RollbackAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                         }
                     }
                    

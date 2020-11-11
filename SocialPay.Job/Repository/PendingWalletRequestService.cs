@@ -39,7 +39,7 @@ namespace SocialPay.Job.Repository
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
-                        getTransInfo.IsQueued = true;
+                        getTransInfo.IsWalletQueued = true;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -47,7 +47,7 @@ namespace SocialPay.Job.Repository
                         var getWalletInfo = await context.MerchantWallet
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.MerchantClientInfo);
                         if(getWalletInfo == null)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                            return null;
 
                         var walletModel = new WalletTransferRequestDto
                         {
@@ -57,10 +57,21 @@ namespace SocialPay.Job.Repository
                             remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
+                        var walletRequestModel = new WalletTransferRequestLog
+                        {
+                            amt = walletModel.amt, channelID = walletModel.channelID, CURRENCYCODE = walletModel.CURRENCYCODE,
+                            frmacct = walletModel.frmacct, paymentRef = walletModel.paymentRef, remarks = walletModel.remarks,
+                            toacct = walletModel.toacct, TransactionReference = item.TransactionReference,
+                            CustomerTransactionReference = item.CustomerTransactionReference, TransferType = walletModel.TransferType,
+                        };
+
+                        await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
+                        await context.SaveChangesAsync();
+
                         var initiateRequest = await _walletRepoService.WalletToWalletTransferAsync(walletModel);
                         if(initiateRequest.response == AppResponseCodes.Success)
                         {
-                            getTransInfo.IsApproved = true;
+                            getTransInfo.IsWalletCompleted = true;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();

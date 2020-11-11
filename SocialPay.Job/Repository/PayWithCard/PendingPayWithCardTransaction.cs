@@ -10,13 +10,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.PayWithSpecta
+namespace SocialPay.Job.Repository.PayWithCard
 {
-    public class PendingPayWithSpectaTransaction
+    public class PendingPayWithCardTransaction
     {
-        private readonly FioranoTransferRepository _fioranoTransferRepository;
-        public PendingPayWithSpectaTransaction(IServiceProvider services, 
-            FioranoTransferRepository fioranoTransferRepository)
+        private readonly FioranoTransferPayWithCardRepository _fioranoTransferRepository;
+        public PendingPayWithCardTransaction(IServiceProvider services, 
+            FioranoTransferPayWithCardRepository fioranoTransferRepository)
         {
             Services = services;
             _fioranoTransferRepository = fioranoTransferRepository;
@@ -34,7 +34,7 @@ namespace SocialPay.Job.Repository.PayWithSpecta
                     {
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
-                        getTransInfo.IsQueuedPayWithSpecta = true;
+                        getTransInfo.IsQueued = true;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -42,17 +42,25 @@ namespace SocialPay.Job.Repository.PayWithSpecta
                         var getWalletInfo = await context.MerchantWallet
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.MerchantClientInfo);
                         if (getWalletInfo == null)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                            return null;
 
                         var initiateRequest = await _fioranoTransferRepository
                             .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount));
                         if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                         {
                             getTransInfo.IsApproved = true;
+                            getTransInfo.IsCompleted = true;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
+                            return null;
                         }
+
+                        getTransInfo.IsQueued = false;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
+                        await context.SaveChangesAsync();
+                        return null;
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
