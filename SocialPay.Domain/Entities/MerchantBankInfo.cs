@@ -7,6 +7,7 @@ namespace SocialPay.Domain.Entities
         public long MerchantBankInfoId { get; set; }
         public long ClientAuthenticationId { get; set; }        
         public string BankName { get; set; }
+        public string BankCode { get; set; }
         public string Nuban { get; set; }
         public string AccountName { get; set; }
         public string Currency { get; set; }

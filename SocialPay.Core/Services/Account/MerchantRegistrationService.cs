@@ -356,6 +356,7 @@ namespace SocialPay.Core.Services.Account
                     Country = model.Country,
                     Nuban = model.Nuban,
                     DefaultAccount = model.DefaultAccount,
+                    BankCode = model.BankCode
                 };
 
                 if (model.BankCode == _appSettings.SterlingBankCode)
