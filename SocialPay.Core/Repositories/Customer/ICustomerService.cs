@@ -379,6 +379,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 getpaymentInfo.Status = true;
                                 getpaymentInfo.Message = model.Message;
                                 getpaymentInfo.LastDateModified = DateTime.Now;
+                                logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
                                 _context.Update(getpaymentInfo);
                                 await _context.SaveChangesAsync();
                                 await _context.TransactionLog.AddAsync(logconfirmation);
@@ -511,6 +512,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
+                    logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
 
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
@@ -553,6 +555,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
+                    logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try

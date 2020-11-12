@@ -10,6 +10,7 @@ namespace SocialPay.Domain.Entities
         public string CustomerEmail { get; set; }
         public string Category { get; set; }
         public string OrderStatus { get; set; }
+        public string DeliveryDayTransferStatus { get; set; }
         public string Message { get; set; }
         public string TransactionReference { get; set; }
         public string CustomerTransactionReference { get; set; }
