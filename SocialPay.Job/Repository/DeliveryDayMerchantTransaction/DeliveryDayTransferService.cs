@@ -10,17 +10,18 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.BasicWalletFundService
+namespace SocialPay.Job.Repository.DeliveryDayMerchantTransaction
 {
-    public class CreditMerchantWalletTransactions
+    public class DeliveryDayTransferService
     {
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
 
-     
-        public CreditMerchantWalletTransactions(IServiceProvider service, IOptions<AppSettings> appSettings,
+
+        public DeliveryDayTransferService(IServiceProvider service, IOptions<AppSettings> appSettings,
          WalletRepoJobService walletRepoJobService)
         {
             Services = service;
@@ -46,20 +47,20 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
-                        getTransInfo.OrderStatus = OrderStatusCode.WalletFundingProgress;
+                        getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
-                                              
+
 
                         var walletModel = new WalletTransferRequestDto
                         {
                             CURRENCYCODE = _appSettings.walletcurrencyCode,
                             amt = Convert.ToString(item.TotalAmount),
-                            toacct = getWalletInfo.Mobile,
+                            toacct = _appSettings.SterlingWalletPoolAccount,
                             channelID = 1,
                             TransferType = 1,
-                            frmacct = _appSettings.SterlingWalletPoolAccount,
+                            frmacct = getWalletInfo.Mobile,
                             paymentRef = Guid.NewGuid().ToString(),
                             remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
@@ -76,21 +77,46 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             TransactionReference = item.TransactionReference,
                             CustomerTransactionReference = item.CustomerTransactionReference,
                             TransferType = walletModel.TransferType,
-                            ChannelMode = WalletTransferMode.SocialPayToMerchant,
+                            ChannelMode = WalletTransferMode.MerchantToSocialPay,
                         };
 
                         await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
 
+                        var walletResponseModel = new WalletTransferResponse();
+          
+
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {
-                            getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
-                            getTransInfo.LastDateModified = DateTime.Now;
-                            getTransInfo.WalletFundDate = DateTime.Now;
-                            context.Update(getTransInfo);
-                            await context.SaveChangesAsync();
+                            using(var transaction = await context.Database.BeginTransactionAsync())
+                            {
+                                try
+                                {
+                                    walletResponseModel.message = initiateRequest.message;
+                                    walletResponseModel.response = initiateRequest.response;
+                                    walletResponseModel.sent = initiateRequest.data.sent;
+                                    walletResponseModel.WalletTransferRequestLogId = walletRequestModel.WalletTransferRequestLogId;
+                                    walletResponseModel.responsedata = Convert.ToString(initiateRequest.responsedata);
+                                    getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.LastDateModified = DateTime.Now;
+                                    getTransInfo.WalletFundDate = DateTime.Now;
+                                    context.Update(getTransInfo);
+                                    await context.SaveChangesAsync();
+                                    await context.WalletTransferResponse.AddAsync(walletResponseModel);
+                                    await context.SaveChangesAsync();
+                                    await transaction.CommitAsync();
+                                    return null;
+                                }
+                                catch (Exception ex)
+                                {
+                                    await transaction.RollbackAsync();
+                                    return null;
+                                }
+                            }
+                           
                         }
+                        return null;
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
@@ -102,6 +128,5 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
-
     }
 }

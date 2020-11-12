@@ -28,6 +28,7 @@ using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Helper.Cryptography;
 using SocialPay.Job.Repository.BasicWalletFundService;
+using SocialPay.Job.Repository.DeliveryDayMerchantTransaction;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.TaskSchedules;
@@ -158,6 +159,14 @@ namespace SocialPay.API
             services.AddSingleton<FioranoTransferPayWithCardRepository>();
             services.AddSingleton<PendingPayWithCardTransaction>();
             services.AddSingleton<CreditDebitService>();
+
+
+            //Credit Social pay wallet from merchant wallet
+
+            services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
+            services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
+            services.AddSingleton<DeliveryDayTransferService>();
+            //services.AddSingleton<PendingPayWithCardTransaction>();
 
         }
 

@@ -70,6 +70,11 @@
         public const string InvoiceLink = "05";
     }
 
+    public class WalletTransferMode
+    {
+        public const string MerchantToSocialPay = "01";
+        public const string SocialPayToMerchant = "02";
+    }
 
     public class OrderStatusCode
     {

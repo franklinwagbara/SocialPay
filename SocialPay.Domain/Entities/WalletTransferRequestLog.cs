@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace SocialPay.Domain.Entities
 {
@@ -15,6 +17,8 @@ namespace SocialPay.Domain.Entities
         public int channelID { get; set; }
         public string CURRENCYCODE { get; set; }
         public int TransferType { get; set; }
+        public string ChannelMode { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
+        public virtual ICollection<WalletTransferResponse> WalletTransferResponse { get; set; }
     }
 }
