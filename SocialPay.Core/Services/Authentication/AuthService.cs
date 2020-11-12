@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Services.Account;
+using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -27,15 +28,18 @@ namespace SocialPay.Core.Services.Authentication
         private readonly AppSettings _appSettings;
         private readonly Utilities _utilities;
         private readonly ADRepoService _aDRepoService;
+        private readonly WalletRepoService _walletRepoService;
         private readonly IDistributedCache _distributedCache;
         public AuthRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
-            Utilities utilities, ADRepoService aDRepoService, IDistributedCache distributedCache) : base(context)
+            Utilities utilities, ADRepoService aDRepoService, IDistributedCache distributedCache,
+            WalletRepoService walletRepoService) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
             _utilities = utilities;
             _aDRepoService = aDRepoService;
             _distributedCache = distributedCache;
+            _walletRepoService = walletRepoService;
         }
 
         public async Task<ClientAuthentication> GetClientDetails(string email)
@@ -152,6 +156,14 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
                     return tokenResult;
                 }
+
+                double availableWalletBalance = 0;
+                var getwalletInfo = await _walletRepoService.GetWalletDetailsAsync(validateuserInfo.PhoneNumber);
+                if(getwalletInfo != null)
+                {
+                    availableWalletBalance = getwalletInfo.data.availablebalance;
+                }
+
                 tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
@@ -198,6 +210,7 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.Nuban = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.Nuban).FirstOrDefault();
                 tokenResult.AccountName = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.AccountName).FirstOrDefault();
                 tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
+                tokenResult.MerchantWalletBalance = availableWalletBalance;
                 return tokenResult;
             }
             catch (Exception ex)
