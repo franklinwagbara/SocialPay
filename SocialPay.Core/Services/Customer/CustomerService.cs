@@ -142,34 +142,39 @@ namespace SocialPay.Core.Services.Customer
                 var getPaymentDetails = await _customerService.GetTransactionReference(model.TransactionReference);
                 if (getPaymentDetails == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
-                var getClient = await _customerService.GetClientDetails(model.Email);
-                customerId = Convert.ToInt32(getClient.Data);
-                if (getClient.ResponseCode != AppResponseCodes.Success)
+
+                if(getLinkType.Channel == MerchantPaymentLinkCategory.Escrow || getLinkType.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
                 {
-                    var newCustomerAccess = Guid.NewGuid().ToString("N").Substring(0,10);
-                    var createCustomer = await _customerService.CreateNewCustomer(model.Email, newCustomerAccess, model.Fullname,
-                       model.PhoneNumber);
-                    if (createCustomer.ResponseCode != AppResponseCodes.Success)
-                        return new WebApiResponse { ResponseCode = createCustomer.ResponseCode };
-                    customerId = Convert.ToInt32(createCustomer.Data);
-
-                    var emailModal = new EmailRequestDto
+                    var getClient = await _customerService.GetClientDetails(model.Email);
+                    customerId = Convert.ToInt32(getClient.Data);
+                    if (getClient.ResponseCode != AppResponseCodes.Success)
                     {
-                        Subject = "Guest Account Access",
-                        SourceEmail = "info@sterling.ng",
-                        DestinationEmail = model.Email,
-                        // DestinationEmail = "festypat9@gmail.com",
-                    };
-                    var mailBuilder = new StringBuilder();
-                    mailBuilder.AppendLine("Dear" + " " + model.Email + "," + "<br />");
-                    mailBuilder.AppendLine("<br />");
-                    mailBuilder.AppendLine("You have successfully sign up as a Guest.<br />");
-                    mailBuilder.AppendLine("Kindly use this token" + "  " + newCustomerAccess + "  " + "to login" + " " + "" + "<br />");
-                    mailBuilder.AppendLine("Best Regards,");
-                    emailModal.EmailBody = mailBuilder.ToString();
+                        var newCustomerAccess = Guid.NewGuid().ToString("N").Substring(0, 10);
+                        var createCustomer = await _customerService.CreateNewCustomer(model.Email, newCustomerAccess, model.Fullname,
+                           model.PhoneNumber);
+                        if (createCustomer.ResponseCode != AppResponseCodes.Success)
+                            return new WebApiResponse { ResponseCode = createCustomer.ResponseCode };
+                        customerId = Convert.ToInt32(createCustomer.Data);
 
-                    var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        var emailModal = new EmailRequestDto
+                        {
+                            Subject = "Guest Account Access",
+                            SourceEmail = "info@sterling.ng",
+                            DestinationEmail = model.Email,
+                            // DestinationEmail = "festypat9@gmail.com",
+                        };
+                        var mailBuilder = new StringBuilder();
+                        mailBuilder.AppendLine("Dear" + " " + model.Email + "," + "<br />");
+                        mailBuilder.AppendLine("<br />");
+                        mailBuilder.AppendLine("You have successfully sign up as a Guest.<br />");
+                        mailBuilder.AppendLine("Kindly use this token" + "  " + newCustomerAccess + "  " + "to login" + " " + "" + "<br />");
+                        mailBuilder.AppendLine("Best Regards,");
+                        emailModal.EmailBody = mailBuilder.ToString();
+
+                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                    }
                 }
+                
                
                 if(getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink
                     || getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)

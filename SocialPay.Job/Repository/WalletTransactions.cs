@@ -8,12 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.NotificationService
+namespace SocialPay.Job.Repository
 {
-    public class NotificationService : INotificationServices
+    public class WalletTransactions : IWalletTransactions
     {
-        private readonly NotificationTransactions _transactions;
-        public NotificationService(NotificationTransactions transactions, IServiceProvider services)
+        private readonly PendingWalletRequestService _transactions;
+        public WalletTransactions(IServiceProvider services, PendingWalletRequestService transactions)
         {
             Services = services;
             _transactions = transactions;
@@ -28,16 +28,17 @@ namespace SocialPay.Job.Repository.NotificationService
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    DateTime nextDay = DateTime.Now.Date.AddDays(1);
+                    DateTime today = DateTime.Now.Date;
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.OrderStatus == OrderStatusCode.Pending 
+                        .Where(x => x.Status == true && x.OrderStatus == OrderStatusCode.Approved
                         && x.Category == MerchantPaymentLinkCategory.Escrow
                         || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink
-                        && x.IsNotified == false && x.DeliveryDate.Day == nextDay.Day).ToListAsync();
+                        && x.IsWalletQueued == false
+                        && x.IsWalletCompleted == false).ToListAsync();              
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)
-                        return "No record";
-                    await _transactions.InitiatePendingNotifications(pendingTransactions);
+                        return "No record";                  
+                    await _transactions.ProcessTransactions(pendingTransactions);
                     //return "No record";
                 }
 

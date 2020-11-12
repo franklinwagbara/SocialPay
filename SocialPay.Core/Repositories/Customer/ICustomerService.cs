@@ -355,7 +355,7 @@ namespace SocialPay.Core.Repositories.Customer
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
                     if(getpaymentInfo.TransactionStatus == OrderStatusCode.Approved)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
-                    if (model.Message.Contains("Approve") || model.Message.Contains("success"))
+                    if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
                         using(var transaction = await _context.Database.BeginTransactionAsync())
                         {
@@ -520,7 +520,7 @@ namespace SocialPay.Core.Repositories.Customer
                     var paymentSetupInfo = await _context.MerchantPaymentSetup
                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
 
-                if (model.Message.Contains("approve") || model.Message.Contains("success"))
+                if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                 {
                     logconfirmation.Status = true;
                     logconfirmation.LastDateModified = DateTime.Now;
@@ -529,6 +529,7 @@ namespace SocialPay.Core.Repositories.Customer
                         try
                         {
                             logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
+                            logconfirmation.DeliveryFinalDate = logconfirmation.DeliveryDate.AddDays(2);
                             logconfirmation.MerchantClientInfo = paymentSetupInfo.ClientAuthenticationId;
                             await _context.TransactionLog.AddAsync(logconfirmation);
                             await _context.SaveChangesAsync();

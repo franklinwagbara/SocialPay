@@ -77,6 +77,7 @@
         public const string Approved = "02";
         public const string Decline = "03";
         public const string Failed = "04";
+        public const string InProgress = "05";
     }
     public class RoleDetails
     {

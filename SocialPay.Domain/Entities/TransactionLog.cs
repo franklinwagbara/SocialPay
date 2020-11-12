@@ -20,11 +20,14 @@ namespace SocialPay.Domain.Entities
         public bool IsWalletQueued { get; set; }
         public bool IsWalletCompleted { get; set; }
         public bool IsAccepted { get; set; }
+        public bool IsNotified { get; set; }
         public bool TransactionCompleted { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime DeliveryDate { get; set; }
+        public DateTime DeliveryFinalDate { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
+        public DateTime DateNotified { get; set; }
         public DateTime AcceptRejectLastDateModified { get; set; }
         public virtual ClientAuthentication ClientAuthentication { get; set; }
     }

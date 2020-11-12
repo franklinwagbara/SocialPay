@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Extentions\" />
-    <Folder Include="TaskSchedules\" />
   </ItemGroup>
 
   <ItemGroup>

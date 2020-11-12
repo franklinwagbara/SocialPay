@@ -27,6 +27,9 @@ using SocialPay.Core.Services.Validations;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Helper.Cryptography;
+using SocialPay.Job.Repository;
+using SocialPay.Job.Repository.NotificationService;
+using SocialPay.Job.TaskSchedules;
 
 namespace SocialPay.API
 {
@@ -131,6 +134,20 @@ namespace SocialPay.API
                 option.Configuration = "172.18.4.114:6379";
                 option.InstanceName = "master";
             });
+
+            //services.AddScoped<INotificationServices, NotificationService>();
+            //services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
+            //services.AddSingleton<JobEmailService>();
+            //services.AddSingleton<NotificationTransactions>();
+
+            ///Wallet tranaction
+            ////services.AddScoped<IWalletTransactions, WalletTransactions>();
+            ////services.AddSingleton<IHostedService, FundMerchantWalletTask>();
+            ////services.AddSingleton<WalletRepoJobService>();
+            ////services.AddSingleton<PendingWalletRequestService>();
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

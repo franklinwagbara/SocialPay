@@ -1,32 +1,34 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using SocialPay.Core.Configurations;
-using SocialPay.Core.Services.Wallet;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
-using SocialPay.Helper;
-using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SocialPay.Helper.Dto.Request;
+using SocialPay.Core.Configurations;
+using Microsoft.Extensions.Options;
+using SocialPay.Helper;
+using SocialPay.Core.Services.Wallet;
 
-namespace SocialPay.Job.Repository
+namespace SocialPay.Job.Repository.AcceptedOrders
 {
-    public class PendingWalletRequestService
+    public class AcceptedOrderTransactions
     {
-        private readonly WalletRepoJobService _walletRepoService;
         private readonly AppSettings _appSettings;
-        public PendingWalletRequestService(IServiceProvider services, WalletRepoJobService walletRepoService,
-            IOptions<AppSettings> appSettings)
+        private readonly WalletRepoJobService _walletRepoJobService;
+        public AcceptedOrderTransactions(IServiceProvider service, IOptions<AppSettings> appSettings,
+            WalletRepoJobService walletRepoJobService)
         {
-            Services = services;
-            _walletRepoService = walletRepoService;
+            Services = service;
             _appSettings = appSettings.Value;
+            _walletRepoJobService = walletRepoJobService;
         }
         public IServiceProvider Services { get; }
+
+
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
             try
@@ -46,30 +48,40 @@ namespace SocialPay.Job.Repository
 
                         var getWalletInfo = await context.MerchantWallet
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.MerchantClientInfo);
-                        if(getWalletInfo == null)
+                        if (getWalletInfo == null)
                             return null;
 
                         var walletModel = new WalletTransferRequestDto
                         {
-                            CURRENCYCODE = _appSettings.walletcurrencyCode, amt = Convert.ToString(item.TotalAmount),
-                            toacct = getWalletInfo.Mobile, channelID = 1, TransferType = 1,
-                            frmacct = _appSettings.SterlingWalletPoolAccount, paymentRef = Guid.NewGuid().ToString(),
+                            CURRENCYCODE = _appSettings.walletcurrencyCode,
+                            amt = Convert.ToString(item.TotalAmount),
+                            toacct = getWalletInfo.Mobile,
+                            channelID = 1,
+                            TransferType = 1,
+                            frmacct = _appSettings.SterlingWalletPoolAccount,
+                            paymentRef = Guid.NewGuid().ToString(),
                             remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
                         var walletRequestModel = new WalletTransferRequestLog
                         {
-                            amt = walletModel.amt, channelID = walletModel.channelID, CURRENCYCODE = walletModel.CURRENCYCODE,
-                            frmacct = walletModel.frmacct, paymentRef = walletModel.paymentRef, remarks = walletModel.remarks,
-                            toacct = walletModel.toacct, TransactionReference = item.TransactionReference,
-                            CustomerTransactionReference = item.CustomerTransactionReference, TransferType = walletModel.TransferType,
+                            amt = walletModel.amt,
+                            channelID = walletModel.channelID,
+                            CURRENCYCODE = walletModel.CURRENCYCODE,
+                            frmacct = walletModel.frmacct,
+                            paymentRef = walletModel.paymentRef,
+                            remarks = walletModel.remarks,
+                            toacct = walletModel.toacct,
+                            TransactionReference = item.TransactionReference,
+                            CustomerTransactionReference = item.CustomerTransactionReference,
+                            TransferType = walletModel.TransferType,
                         };
 
                         await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
 
-                        var initiateRequest = await _walletRepoService.WalletToWalletTransferAsync(walletModel);
-                        if(initiateRequest.response == AppResponseCodes.Success)
+                        var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
+                        if (initiateRequest.response == AppResponseCodes.Success)
                         {
                             getTransInfo.IsWalletCompleted = true;
                             getTransInfo.LastDateModified = DateTime.Now;
@@ -87,5 +99,6 @@ namespace SocialPay.Job.Repository
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
     }
 }

@@ -1,22 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
+using SocialPay.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository
+namespace SocialPay.Job.Repository.AcceptedOrders
 {
-    public class Transactions : IWalletTransactions
+    public class AcceptedOrders : IAcceptedOrders
     {
-        private readonly PendingWalletRequestService _transactions;
-        public Transactions(IServiceProvider services, PendingWalletRequestService transactions)
+        private readonly AcceptedOrderTransactions _transactions;
+        public AcceptedOrders(AcceptedOrderTransactions transactions, IServiceProvider services)
         {
             Services = services;
             _transactions = transactions;
         }
+
         public IServiceProvider Services { get; }
 
         public async Task<string> GetPendingTransactions()
@@ -27,15 +29,15 @@ namespace SocialPay.Job.Repository
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    DateTime today = DateTime.Now.Date;
+                    DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.Status == true && x.IsWalletQueued == false
-                        && x.IsWalletCompleted == false).ToListAsync();                 
-
+                        .Where(x => x.OrderStatus == OrderStatusCode.Approved
+                        && x.Category == MerchantPaymentLinkCategory.Escrow
+                        || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink
+                        ).ToListAsync();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)
                         return "No record";
-                  
                     await _transactions.ProcessTransactions(pendingTransactions);
                     //return "No record";
                 }
@@ -51,6 +53,5 @@ namespace SocialPay.Job.Repository
             }
 
         }
-
     }
 }
