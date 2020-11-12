@@ -363,7 +363,6 @@ namespace SocialPay.Core.Repositories.Customer
                             {
                                 var logconfirmation = new TransactionLog { };
                                 logconfirmation.Category = linkInfo.Channel;
-                                logconfirmation.ClientAuthenticationId = model.CustomerId;
                                 logconfirmation.CustomerEmail = getpaymentInfo.Email;
                                 logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
                                 logconfirmation.TransactionReference = model.TransactionReference;
@@ -371,9 +370,11 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.Message = model.Message;
                                 logconfirmation.LastDateModified = DateTime.Now;
                                 logconfirmation.CustomerInfo = linkInfo.ClientAuthenticationId;
-                                logconfirmation.Status = true;
+                                logconfirmation.Status = true;                               
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                                 var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
+                                logconfirmation.TotalAmount = invoiceInfo.TotalAmount;
+                                logconfirmation.ClientAuthenticationId = invoiceInfo.ClientAuthenticationId;
                                 getpaymentInfo.TransactionStatus = OrderStatusCode.Approved;
                                 getpaymentInfo.Status = true;
                                 getpaymentInfo.Message = model.Message;
@@ -509,6 +510,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.OrderStatus = OrderStatusCode.Pending;
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
+                    logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
 
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
@@ -550,6 +552,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.OrderStatus = OrderStatusCode.Pending;
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
+                    logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try

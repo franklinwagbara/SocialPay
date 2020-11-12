@@ -145,10 +145,10 @@ namespace SocialPay.API
             ////services.AddSingleton<WalletRepoJobService>();
             ////services.AddSingleton<PendingWalletRequestService>();
 
-            ////services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
-            ////services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
-            ////services.AddSingleton<WalletRepoJobService>();
-            ////services.AddSingleton<CreditMerchantWalletTransactions>();
+            //services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
+            //services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            //services.AddSingleton<WalletRepoJobService>();
+            //services.AddSingleton<CreditMerchantWalletTransactions>();
 
         }
 
