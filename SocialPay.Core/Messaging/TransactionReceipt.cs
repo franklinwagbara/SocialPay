@@ -35,18 +35,10 @@ namespace SocialPay.Core.Messaging
                     //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
                 };
                 var mailBuilder = new StringBuilder();
-                //mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
-                //mailBuilder.AppendLine("<br />");
-                //mailBuilder.AppendLine("An order has been rejected by" + "" + response.CustomerEmail + " " + ".<br />");
-                ////mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
-                //// mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
-                //mailBuilder.AppendLine("Best Regards,");
+               
                 emailModal.EmailBody = mailBuilder.ToString();
                 var path = env.WebRootFileProvider.GetFileInfo("socialpay-receipt.html")?.PhysicalPath;
-                //Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
                 using (StreamReader reader = new StreamReader(path))
-               // using (StreamReader reader = new StreamReader("C:/stmt/socialpay-receipt.html"))
-                //using (StreamReader reader = new StreamReader("C:/stmt/intro.html"))
                 {
                     emailModal.EmailBody = reader.ReadToEnd();
                     StringBuilder b = new StringBuilder(emailModal.EmailBody);

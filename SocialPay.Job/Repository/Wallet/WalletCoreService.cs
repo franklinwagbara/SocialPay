@@ -1,11 +1,7 @@
-﻿using SocialPay.Core.Configurations;
-using SocialPay.Core.Services.Wallet;
+﻿using SocialPay.Core.Services.Wallet;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.Wallet

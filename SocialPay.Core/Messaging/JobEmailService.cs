@@ -1,8 +1,5 @@
 ﻿using EwService;
 using SocialPay.Helper.Dto.Request;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Messaging
