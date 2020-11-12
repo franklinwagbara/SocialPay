@@ -1,12 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Domain;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.ViewModel;
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Wallet
@@ -16,12 +20,15 @@ namespace SocialPay.Core.Services.Wallet
 		private readonly SocialPayDbContext _context;
 		private readonly AppSettings _appSettings;
 		private readonly WalletRepoService _walletRepoService;
+		private readonly IDistributedCache _distributedCache;
 		public CreateMerchantWalletService(SocialPayDbContext context,
-			 IOptions<AppSettings> appSettings, WalletRepoService walletRepoService)
+			 IOptions<AppSettings> appSettings, WalletRepoService walletRepoService,
+			  IDistributedCache distributedCache)
 		{
 			_context = context;
 			_appSettings = appSettings.Value;
 			_walletRepoService = walletRepoService;
+			_distributedCache = distributedCache;
 		}
 		public async Task<WebApiResponse> CreateWallet(long clientId)
         {
@@ -59,6 +66,32 @@ namespace SocialPay.Core.Services.Wallet
 							_context.Update(getUserInfo);
 							await _context.SaveChangesAsync();
 							await transaction.CommitAsync();
+							var cacheKey = Convert.ToString(clientId);
+							string serializedCustomerList;
+							var userInfo = new UserInfoViewModel { };
+							var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+							if (redisCustomerList != null)
+							{
+								await _distributedCache.RemoveAsync(cacheKey);
+								userInfo.Email = getUserInfo.Email;
+								userInfo.StatusCode = AppResponseCodes.Success;
+								serializedCustomerList = JsonConvert.SerializeObject(userInfo);
+								redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+								var options1 = new DistributedCacheEntryOptions()
+								.SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
+								.SetSlidingExpiration(TimeSpan.FromMinutes(15));
+								await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
+								return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.Wallet };
+							}
+							await _distributedCache.RemoveAsync(cacheKey);
+							userInfo.Email = getUserInfo.Email;
+							userInfo.StatusCode = AppResponseCodes.Success;
+							serializedCustomerList = JsonConvert.SerializeObject(userInfo);
+							redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+							var options = new DistributedCacheEntryOptions()
+							.SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
+							.SetSlidingExpiration(TimeSpan.FromMinutes(15));
+							await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
 							return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
 						}
 						return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
