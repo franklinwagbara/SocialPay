@@ -25,7 +25,8 @@ namespace SocialPay.Job.Repository.Fiorano
         }
 
         public IServiceProvider Services { get; }
-        public async Task<WebApiResponse> InititiateDebit(string debitAmount, string narration, string transactionRef)
+        public async Task<WebApiResponse> InititiateDebit(string debitAmount, string narration,
+            string transactionRef, string creditAccountNo, bool tranType)
         {
             try
             {
@@ -50,6 +51,11 @@ namespace SocialPay.Job.Repository.Fiorano
                        // DebitAmount = totalAmount.ToString(),
                         //CreditAccountNo = _appSettings.altmallCollectionAccount
                     };
+                    if(tranType)
+                    {
+                        fioranoRequestBody.CreditAccountNo = creditAccountNo;
+                        fioranoRequestBody.DebitAcctNo = _appSettings.socialT24AccountNo;
+                    }
                     var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
                     var jsonRequest = JsonConvert.SerializeObject(request);
                     var logRequest = new FioranoT24Request
@@ -74,22 +80,22 @@ namespace SocialPay.Job.Repository.Fiorano
                     await context.FioranoT24Request.AddAsync(logRequest);
                     await context.SaveChangesAsync();
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
-                    if(postTransaction.ResponseCode == AppResponseCodes.Success)
+                    var logFioranoResponse = new FioranoT24TransactionResponse
                     {
-                        var logFioranoResponse = new FioranoT24TransactionResponse
-                        {
-                            FioranoT24RequestId = logRequest.FioranoT24RequestId,
-                            Balance = postTransaction.FTResponse.Balance,
-                            CHARGEAMT = postTransaction.FTResponse.CHARGEAMT,
-                            COMMAMT = postTransaction.FTResponse.COMMAMT,
-                            FTID = postTransaction.FTResponse.FTID,
-                            JsonResponse = postTransaction.Message,
-                            ReferenceID = postTransaction.FTResponse.ReferenceID,
-                            ResponseCode = postTransaction.FTResponse.ResponseCode,
-                            ResponseText = postTransaction.FTResponse.ResponseText
-                        };
-                        await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
-                        await context.SaveChangesAsync();
+                        FioranoT24RequestId = logRequest.FioranoT24RequestId,
+                        Balance = postTransaction.FTResponse.Balance,
+                        CHARGEAMT = postTransaction.FTResponse.CHARGEAMT,
+                        COMMAMT = postTransaction.FTResponse.COMMAMT,
+                        FTID = postTransaction.FTResponse.FTID,
+                        JsonResponse = postTransaction.Message,
+                        ReferenceID = postTransaction.FTResponse.ReferenceID,
+                        ResponseCode = postTransaction.FTResponse.ResponseCode,
+                        ResponseText = postTransaction.FTResponse.ResponseText
+                    };
+                    await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
+                    await context.SaveChangesAsync();
+                    if (postTransaction.ResponseCode == AppResponseCodes.Success)
+                    {                        
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };

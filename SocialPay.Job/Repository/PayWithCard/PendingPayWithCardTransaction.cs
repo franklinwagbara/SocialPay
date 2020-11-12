@@ -46,7 +46,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                         var initiateRequest = await _fioranoTransferRepository
                             .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount), 
                             "Card-Payment" + " - " + item.TransactionReference +
-                            " - "+ item.CustomerTransactionReference, item.TransactionReference);
+                            " - "+ item.CustomerTransactionReference, item.TransactionReference,
+                            "", false);
                         if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                         {
                             getTransInfo.IsApproved = true;

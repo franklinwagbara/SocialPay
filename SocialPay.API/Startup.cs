@@ -30,6 +30,7 @@ using SocialPay.Helper.Cryptography;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.DeliveryDayMerchantTransaction;
 using SocialPay.Job.Repository.Fiorano;
+using SocialPay.Job.Repository.IntraBankService;
 using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.TaskSchedules;
 
@@ -166,7 +167,12 @@ namespace SocialPay.API
             services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
             services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
             services.AddSingleton<DeliveryDayTransferService>();
-            //services.AddSingleton<PendingPayWithCardTransaction>();
+
+
+            //Intrabank transactions
+            services.AddScoped<IIntraBankTransferService, IntraBankTransferService>();
+            services.AddSingleton<IHostedService, IntraBankTask>();
+            services.AddSingleton<IntraBankPendingTransactions>();
 
         }
 

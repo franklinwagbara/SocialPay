@@ -34,6 +34,12 @@ namespace SocialPay.Job.Repository.Fiorano
                 if (response.IsSuccessStatusCode)
                 {
                     var responseBody = JsonConvert.DeserializeObject<FTResponseDto>(result);
+                    if(responseBody.FTResponse.ResponseCode != AppResponseCodes.Success)
+                    {
+                        responseBody.Message = result;
+                        responseBody.ResponseCode = AppResponseCodes.TransactionFailed;
+                        return responseBody;
+                    }
                     responseBody.Message = result;
                     responseBody.ResponseCode = AppResponseCodes.Success;
                     return responseBody;

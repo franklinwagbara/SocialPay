@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.IntraBankService
 {
-    public interface IintraBankTransferService
+    public interface IIntraBankTransferService
     {
         Task<string> GetPendingTransactions();
     }

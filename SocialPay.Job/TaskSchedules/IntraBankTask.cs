@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SocialPay.Job.Repository.DeliveryDayMerchantTransaction;
+using SocialPay.Job.Repository.IntraBankService;
 using SocialPay.Job.Services;
 using System;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.TaskSchedules
 {
-    public class MerchantToSocialPayWalletTask : ScheduledProcessor
+    public class IntraBankTask : ScheduledProcessor
     {
-        public MerchantToSocialPayWalletTask(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
+        public IntraBankTask(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
         {
         }
 
@@ -16,7 +16,7 @@ namespace SocialPay.Job.TaskSchedules
 
         public override Task ProcessInScope(IServiceProvider scopeServiceProvider)
         {
-            IDeliveryDayMerchantTransfer reportGenerator = scopeServiceProvider.GetRequiredService<IDeliveryDayMerchantTransfer>();
+            IIntraBankTransferService reportGenerator = scopeServiceProvider.GetRequiredService<IIntraBankTransferService>();
             reportGenerator.GetPendingTransactions();
             return Task.CompletedTask;
         }

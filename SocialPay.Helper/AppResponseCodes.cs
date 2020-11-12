@@ -84,6 +84,7 @@
         public const string Failed = "04";
         public const string WalletFundingProgress = "05";
         public const string CompletedWalletFunding = "06";
+        public const string CompletedDirectFundTransfer = "07";
     }
     public class RoleDetails
     {
