@@ -81,7 +81,7 @@ namespace SocialPay.Core.Services.Wallet
 								.SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
 								.SetSlidingExpiration(TimeSpan.FromMinutes(15));
 								await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
-								return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.Wallet };
+								return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = AppResponseCodes.Success };
 							}
 							await _distributedCache.RemoveAsync(cacheKey);
 							userInfo.Email = getUserInfo.Email;
@@ -92,7 +92,7 @@ namespace SocialPay.Core.Services.Wallet
 							.SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
 							.SetSlidingExpiration(TimeSpan.FromMinutes(15));
 							await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
-							return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+							return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = AppResponseCodes.Success };
 						}
 						return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
 					}
