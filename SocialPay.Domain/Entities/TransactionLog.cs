@@ -28,6 +28,7 @@ namespace SocialPay.Domain.Entities
         public DateTime TransactionDate { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
         public DateTime DateNotified { get; set; }
+        public DateTime WalletFundDate { get; set; }
         public DateTime AcceptRejectLastDateModified { get; set; }
         public virtual ClientAuthentication ClientAuthentication { get; set; }
     }
