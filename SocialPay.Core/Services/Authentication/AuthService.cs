@@ -161,7 +161,7 @@ namespace SocialPay.Core.Services.Authentication
                 var getwalletInfo = await _walletRepoService.GetWalletDetailsAsync(validateuserInfo.PhoneNumber);
                 if(getwalletInfo != null)
                 {
-                    availableWalletBalance = getwalletInfo.data.availablebalance;
+                    availableWalletBalance = getwalletInfo.Data.Availablebalance;
                 }
 
                 tokenDescriptor = new SecurityTokenDescriptor

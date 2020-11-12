@@ -109,17 +109,17 @@ namespace SocialPay.Core.Services.Wallet
                 if (response.IsSuccessStatusCode)
                 {
                     apiResponse = JsonConvert.DeserializeObject<GetWalletInfoResponseDto>(result);
-                    apiResponse.response = AppResponseCodes.Success;
+                    apiResponse.Response = AppResponseCodes.Success;
                     return apiResponse;
                 }
-                apiResponse.response = AppResponseCodes.Failed;
-                apiResponse.responsedata = result;
+                apiResponse.Response = AppResponseCodes.Failed;
+                apiResponse.Responsedata = result;
                 return apiResponse;
             }
             catch (Exception ex)
             {
-                apiResponse.response = AppResponseCodes.InternalError;
-                apiResponse.responsedata = "An error occured while creating wallet";
+                apiResponse.Response = AppResponseCodes.InternalError;
+                apiResponse.Responsedata = "An error occured while creating wallet";
                 return apiResponse;
             }
         }
