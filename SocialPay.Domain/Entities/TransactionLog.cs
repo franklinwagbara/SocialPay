@@ -15,8 +15,8 @@ namespace SocialPay.Domain.Entities
         public string CustomerTransactionReference { get; set; }
         public bool Status { get; set; }
         public bool IsApproved { get; set; }
-        public bool IsQueued { get; set; }
-        public bool IsCompleted { get; set; }
+        public bool IsQueuedPayWithCard { get; set; }
+        public bool IsCompletedPayWithCard { get; set; }
         public bool IsWalletQueued { get; set; }
         public bool IsWalletCompleted { get; set; }
         public bool IsAccepted { get; set; }

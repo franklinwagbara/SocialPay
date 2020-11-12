@@ -33,29 +33,30 @@ namespace SocialPay.Job.Repository.PayWithCard
                     {
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
-                        getTransInfo.IsQueued = true;
+                        getTransInfo.IsQueuedPayWithCard = true;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
 
                         var getWalletInfo = await context.MerchantWallet
-                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.CustomerInfo);
+                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
                         if (getWalletInfo == null)
                             return null;
 
                         var initiateRequest = await _fioranoTransferRepository
-                            .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount));
+                            .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount), 
+                            "Card-Payment" + " - " +item.TransactionReference + " - "+ item.CustomerTransactionReference);
                         if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                         {
                             getTransInfo.IsApproved = true;
-                            getTransInfo.IsCompleted = true;
+                            getTransInfo.IsCompletedPayWithCard = true;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
                             return null;
                         }
 
-                        getTransInfo.IsQueued = false;
+                        getTransInfo.IsQueuedPayWithCard = false;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();

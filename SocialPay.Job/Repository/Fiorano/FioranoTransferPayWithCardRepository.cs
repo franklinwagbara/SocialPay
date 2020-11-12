@@ -25,7 +25,7 @@ namespace SocialPay.Job.Repository.Fiorano
         }
 
         public IServiceProvider Services { get; }
-        public async Task<WebApiResponse> InititiateDebit(string debitAmount)
+        public async Task<WebApiResponse> InititiateDebit(string debitAmount, string narration)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace SocialPay.Job.Repository.Fiorano
                         TransactionType = _appSettings.fioranoTransactionType,
                         DebitAcctNo = _appSettings.socialPayNominatedAccountNo,
                         TransactionBranch = "NG0020006",
-                        narrations = _appSettings.transactionNarration,
+                        narrations = narration,
                         DebitAmount = debitAmount,
                         CreditAccountNo = _appSettings.socialT24AccountNo
                         // DebitAmount = shippingInfo.TotalAmount.ToString(), CreditAccountNo = _appSettings.altmallCollectionAccount
@@ -65,7 +65,7 @@ namespace SocialPay.Job.Repository.Fiorano
                         DebitAmount = Convert.ToDouble(fioranoRequestBody.DebitAmount),
                         //DebitAmount = shippingInfo.TotalAmount, narrations = _appSettings.transactionNarration,
                         //DebitAmount = totalAmount,
-                        narrations = _appSettings.transactionNarration,
+                        narrations = narration,
                         TransactionType = _appSettings.fioranoTransactionType,
                         TrxnLocation = _appSettings.fioranoTrxnLocation,
                         VtellerAppID = _appSettings.fioranoVtellerAppID,

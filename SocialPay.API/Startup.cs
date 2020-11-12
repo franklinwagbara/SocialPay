@@ -28,6 +28,8 @@ using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Helper.Cryptography;
 using SocialPay.Job.Repository.BasicWalletFundService;
+using SocialPay.Job.Repository.Fiorano;
+using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.TaskSchedules;
 
 namespace SocialPay.API
@@ -149,6 +151,13 @@ namespace SocialPay.API
             services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
+
+            ////Credit T24 account for card payments
+            services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
+            services.AddSingleton<IHostedService, CardPaymentTask>();
+            services.AddSingleton<FioranoTransferPayWithCardRepository>();
+            services.AddSingleton<PendingPayWithCardTransaction>();
+            services.AddSingleton<CreditDebitService>();
 
         }
 

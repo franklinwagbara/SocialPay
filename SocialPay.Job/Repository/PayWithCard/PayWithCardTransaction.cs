@@ -28,13 +28,12 @@ namespace SocialPay.Job.Repository.PayWithCard
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime today = DateTime.Now.Date;
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.Status == true && x.IsQueued == false
-                        && x.IsCompleted == false && x.Category == PaymentChannel.Card).ToListAsync();
+                        .Where(x => x.Status == true && x.IsQueuedPayWithCard == false
+                        && x.IsCompletedPayWithCard == false && x.Category == PaymentChannel.Card).ToListAsync();
 
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)
                         return "No record";
-
                     await _transactions.InitiateTransactions(pendingTransactions);
                     //return "No record";
                 }
