@@ -239,6 +239,8 @@ namespace SocialPay.Core.Services.Customer
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                 }
                 //encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
+                await _context.SaveChangesAsync();
                 encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                 encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                 //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
