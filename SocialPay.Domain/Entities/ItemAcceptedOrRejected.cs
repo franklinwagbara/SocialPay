@@ -13,6 +13,7 @@ namespace SocialPay.Domain.Entities
         public string CustomerTransactionReference { get; set; }
         public string Comment { get; set; }
         public string Status { get; set; }
+        public string ProcessedBy { get; set; }
         public string OrderStatus { get; set; }
         public bool IsReturned { get; set; }
         public DateTime ReturnedDate { get; set; }

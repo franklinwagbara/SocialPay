@@ -6,7 +6,7 @@ namespace SocialPay.Domain.Entities
     {
         public long TransactionLogId { get; set; }
         public long ClientAuthenticationId { get; set; }
-        public long CustomerInfo { get; set; }
+        public long MerchantInfo { get; set; }
         public string CustomerEmail { get; set; }
         public string Category { get; set; }
         public string OrderStatus { get; set; }

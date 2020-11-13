@@ -76,6 +76,12 @@
         public const string SocialPayToMerchant = "02";
     }
 
+
+    public class AcceptRejectRequest
+    {
+        public const string Guest = "01";
+        public const string Merchant = "02";
+    }
     public class OrderStatusCode
     {
         public const string Pending = "01";

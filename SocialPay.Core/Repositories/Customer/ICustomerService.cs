@@ -369,7 +369,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.OrderStatus = OrderStatusCode.Pending;
                                 logconfirmation.Message = model.Message;
                                 logconfirmation.LastDateModified = DateTime.Now;
-                                logconfirmation.CustomerInfo = linkInfo.ClientAuthenticationId;
+                                logconfirmation.MerchantInfo = linkInfo.ClientAuthenticationId;
                                 logconfirmation.Status = true;                               
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                                 var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
@@ -504,15 +504,17 @@ namespace SocialPay.Core.Repositories.Customer
                     var customerInfo = await _context.ClientAuthentication
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == model.CustomerId);
                     logconfirmation.Category = linkInfo.Channel;
-                    logconfirmation.ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId;
+                    logconfirmation.ClientAuthenticationId = model.CustomerId;
                     logconfirmation.CustomerEmail = customerInfo.Email;
                     logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
                     logconfirmation.TransactionReference = model.TransactionReference;
                     logconfirmation.OrderStatus = OrderStatusCode.Pending;
                     logconfirmation.Message = model.Message;
+                    logconfirmation.MerchantInfo = paymentSetupInfo.ClientAuthenticationId;
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
+                    logconfirmation.MerchantInfo = model.CustomerId;
 
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
@@ -524,7 +526,6 @@ namespace SocialPay.Core.Repositories.Customer
                             {
                                 logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
                                 logconfirmation.DeliveryFinalDate = logconfirmation.DeliveryDate.AddDays(2);
-                                logconfirmation.CustomerInfo = paymentSetupInfo.ClientAuthenticationId;
                                 await _context.TransactionLog.AddAsync(logconfirmation);
                                 await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
@@ -548,7 +549,8 @@ namespace SocialPay.Core.Repositories.Customer
                 if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                 {
                     logconfirmation.Category = linkInfo.Channel;
-                    logconfirmation.ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId;
+                    logconfirmation.ClientAuthenticationId = model.CustomerId;
+                    logconfirmation.MerchantInfo = paymentSetupInfo.ClientAuthenticationId;
                     logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
                     logconfirmation.TransactionReference = model.TransactionReference;
                     logconfirmation.OrderStatus = OrderStatusCode.Pending;
@@ -562,7 +564,6 @@ namespace SocialPay.Core.Repositories.Customer
                         {
                             logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
                             logconfirmation.DeliveryFinalDate = logconfirmation.DeliveryDate.AddDays(2);
-                            logconfirmation.CustomerInfo = paymentSetupInfo.ClientAuthenticationId;
                             await _context.TransactionLog.AddAsync(logconfirmation);
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
@@ -614,6 +615,7 @@ namespace SocialPay.Core.Repositories.Customer
                         ClientAuthenticationId = clientId,
                         Status = model.Status,
                         Comment = model.Comment,
+                        ProcessedBy = model.ProcessedBy,
                         TransactionReference = model.TransactionReference,
                         CustomerTransactionId = model.RequestId,
                         CustomerTransactionReference = model.CustomerTransactionReference
