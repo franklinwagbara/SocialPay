@@ -1,4 +1,7 @@
-﻿namespace SocialPay.Helper.ViewModel
+﻿using Microsoft.VisualBasic;
+using System;
+
+namespace SocialPay.Helper.ViewModel
 {
     public class EscrowViewModel
     {
@@ -27,5 +30,12 @@
         public string Message { get; set; }
         public long ClientId { get; set; }
         public string CustomerTransactionReference { get; set; }
+    }
+
+    public class ItemDisputeViewModel
+    {
+        public string TransactionReference { get; set; }
+        public string Comment { get; set; }
+        public DateTime DateEntered { get; set; }
     }
 }

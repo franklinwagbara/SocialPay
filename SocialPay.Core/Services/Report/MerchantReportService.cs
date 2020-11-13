@@ -129,6 +129,35 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
+
+        public async Task<WebApiResponse> GetAllLoggedDisputes(long clientId)
+        {
+            var result = new List<ItemDisputeViewModel>();
+            try
+            {
+                //clientId = 30032;
+
+                var getDisputes = await _context.ItemDispute
+                    .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
+
+                var response = (from a in getDisputes
+                              join i in _context.ItemAcceptedOrRejected on a.ItemAcceptedOrRejectedId equals i.ItemAcceptedOrRejectedId
+                              select new ItemDisputeViewModel
+                              {
+                                  Comment = a.DisputeComment, TransactionReference = i.TransactionReference,
+                                  DateEntered = a.DateEntered
+                              }).ToList();
+
+                result = response;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> GetAllInvoiceByMerchantId(long clientId)
         {
             try

@@ -103,7 +103,6 @@ namespace SocialPay.Core.Services.Customer
                 string paymentData = string.Empty;
                 var paymentResponse = new CustomerResponseDto { };
 
-
                 var getLinkType = await _customerService.GetLinkCategorybyTranref(model.TransactionReference);
                 if(getLinkType != null && getLinkType.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {

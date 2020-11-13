@@ -639,6 +639,14 @@ namespace SocialPay.Core.Repositories.Customer
                                 getTransactionLogs.IsAccepted = false;
                                 getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
                                 await _context.SaveChangesAsync();
+                                var disputeModel = new ItemDispute
+                                {
+                                    ItemAcceptedOrRejectedId = logRequest.ItemAcceptedOrRejectedId,
+                                    DisputeComment = model.Comment, 
+                                    ClientAuthenticationId = validateOrder.ClientAuthenticationId
+                                };
+                                await _context.ItemDispute.AddAsync(disputeModel);
+                                await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
                                 var emailModal = new EmailRequestDto
                                 {
