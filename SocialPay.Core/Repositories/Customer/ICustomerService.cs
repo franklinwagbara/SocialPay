@@ -117,10 +117,10 @@ namespace SocialPay.Core.Repositories.Customer
         }
         public async Task<WebApiResponse> GetCustomerPaymentsByMerchantPayRef(long clientId)
         {
-            var result = new List<CustomerPaymentViewModel>();
-            ////var getPaymentSetupInfo = await _context.MerchantPaymentSetup.Include(x=>x.CustomerTransaction)
-            ////    .SingleOrDefaultAsync(x => x.TransactionReference == tranId);
-
+            try
+            {
+                 var result = new List<CustomerPaymentViewModel>();
+           
             var getPaymentSetupInfo = await _context.MerchantPaymentSetup
                 .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
 
@@ -129,7 +129,7 @@ namespace SocialPay.Core.Repositories.Customer
 
             var response =  (from c in getPaymentSetupInfo
                              join p in _context.TransactionLog on c.TransactionReference  equals p.TransactionReference
-                         join a in _context.ClientAuthentication on p.ClientAuthenticationId equals a.ClientAuthenticationId
+                         join a in _context.ClientAuthentication on p.MerchantInfo equals a.ClientAuthenticationId
                          select new CustomerPaymentViewModel { MerchantAmount = c.MerchantAmount, CustomerEmail = a.Email,
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
@@ -138,6 +138,12 @@ namespace SocialPay.Core.Repositories.Customer
                          CustomerTransactionReference = p.CustomerTransactionReference}).ToList();
             result = response;
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
         }
 
 
