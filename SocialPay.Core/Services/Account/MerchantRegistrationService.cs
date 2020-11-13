@@ -409,6 +409,8 @@ namespace SocialPay.Core.Services.Account
                     try
                     {
                         bankInfoModel.AccountName = ibsRequest.AccountName;
+                        bankInfoModel.KycLevel = ibsRequest.KYCLevel;
+                        bankInfoModel.BankCode = model.BankCode;
                         await _context.MerchantBankInfo.AddAsync(bankInfoModel);
                         await _context.SaveChangesAsync();
                         getUserInfo.StatusCode = MerchantOnboardingProcess.BankInfo;

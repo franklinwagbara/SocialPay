@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Extentions\" />
-    <Folder Include="Repository\InterBankService\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -16,6 +16,7 @@ namespace SocialPay.Domain.Entities
         public string BVN { get; set; }
         public string Country { get; set; }
         public string CusNum { get; set; }
+        public string KycLevel { get; set; }
         public bool DefaultAccount { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }

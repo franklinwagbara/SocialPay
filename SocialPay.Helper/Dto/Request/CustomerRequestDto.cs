@@ -39,6 +39,7 @@ namespace SocialPay.Helper.Dto.Request
     {
         public string TransactionReference { get; set; }
         public string Comment { get; set; }
+        public string ProcessedBy { get; set; }
         public long RequestId { get; set; }
         public string Status { get; set; }
         [Required(ErrorMessage = "Customer Transaction Reference")]
