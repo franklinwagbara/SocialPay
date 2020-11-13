@@ -406,38 +406,6 @@ namespace SocialPay.API.Controllers
         }
 
 
-        [HttpGet]
-        [Route("get-merchant-disputes")]
-        public async Task<IActionResult> GetLoggedDisputes()
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var identity = User.Identity as ClaimsIdentity;
-                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _merchantReportService.GetAllLoggedDisputes(Convert.ToInt32(clientId), false);
-
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
-
-
         // [AllowAnonymous]
         [HttpGet]
         [Route("get-escrow-transactions")]

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Customer;
+using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Transaction;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
@@ -20,11 +21,13 @@ namespace SocialPay.API.Controllers
     {
         private readonly MerchantPaymentLinkService _merchantPaymentLinkService;
         private readonly CustomerRepoService _customerRepoService;
+        private readonly MerchantReportService _merchantReportService;
         public TransactionsController(MerchantPaymentLinkService merchantPaymentLinkService,
-            CustomerRepoService customerRepoService)
+            CustomerRepoService customerRepoService, MerchantReportService merchantReportService)
         {
             _merchantPaymentLinkService = merchantPaymentLinkService;
             _customerRepoService = customerRepoService;
+            _merchantReportService = merchantReportService;
         }
 
        // [AllowAnonymous]
@@ -107,6 +110,37 @@ namespace SocialPay.API.Controllers
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     var result = await _customerRepoService.AcceptOrRejectItem(model, Convert.ToInt32(clientId));
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-disputes")]
+        public async Task<IActionResult> GetLoggedDisputes()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _merchantReportService.GetAllLoggedDisputes(Convert.ToInt32(clientId), false);
+
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
