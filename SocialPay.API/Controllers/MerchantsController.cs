@@ -16,7 +16,7 @@ using SocialPay.Helper.Dto.Response;
 
 namespace SocialPay.API.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Merchant")]
     [Route("api/socialpay/merchant")]
     [ApiController]
     public class MerchantsController : ControllerBase
