@@ -38,6 +38,8 @@ namespace SocialPay.Core.Services.Validations
                         CUR_CODE = b.Element("CUR_CODE")?.Value,
                         STA_CODE = b.Element("STA_CODE")?.Value,
                         REST_FLAG = b.Element("REST_FLAG")?.Value,
+                        T24_LED_CODE = b.Element("T24_LED_CODE")?.Value,
+                        CUS_NUM = b.Element("CUS_NUM")?.Value,
                     }).FirstOrDefault();
 
                 if (accountDetail == null)

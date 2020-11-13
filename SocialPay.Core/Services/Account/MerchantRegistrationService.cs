@@ -370,6 +370,9 @@ namespace SocialPay.Core.Services.Account
                         try
                         {
                             bankInfoModel.AccountName = result.CUS_SHO_NAME;
+                            bankInfoModel.BranchCode = result.BRA_CODE;
+                            bankInfoModel.LedCode = result.T24_BRA_CODE;
+                            bankInfoModel.CusNum = result.CUS_NUM;
                             await _context.MerchantBankInfo.AddAsync(bankInfoModel);
                             await _context.SaveChangesAsync();
                             getUserInfo.StatusCode = MerchantOnboardingProcess.BankInfo;
