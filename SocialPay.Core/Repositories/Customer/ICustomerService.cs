@@ -129,12 +129,13 @@ namespace SocialPay.Core.Repositories.Customer
 
             var response =  (from c in getPaymentSetupInfo
                              join p in _context.TransactionLog on c.TransactionReference  equals p.TransactionReference
-                         join a in _context.ClientAuthentication on p.ClientAuthenticationId equals a.ClientAuthenticationId
+                         join a in _context.CustomerOtherPaymentsInfo on p.ClientAuthenticationId equals a.ClientAuthenticationId
                          select new CustomerPaymentViewModel { MerchantAmount = c.MerchantAmount, CustomerEmail = a.Email,
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
                          DeliveryTime = c.DeliveryTime, MerchantDescription = c.MerchantDescription, CustomerDescription = c.CustomerDescription,
                          TransactionReference = c.TransactionReference,
+                         Document = a.Document == null ? string.Empty : _appSettings.BaseApiUrl + a.FileLocation + "/" + a.Document,
                          CustomerTransactionReference = p.CustomerTransactionReference}).ToList();
             result = response;
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };

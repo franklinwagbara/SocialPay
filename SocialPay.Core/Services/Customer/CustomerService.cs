@@ -142,7 +142,19 @@ namespace SocialPay.Core.Services.Customer
                 if (getPaymentDetails == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
 
-                if(getLinkType.Channel == MerchantPaymentLinkCategory.Escrow || getLinkType.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
+                var logCustomerInfo = new CustomerOtherPaymentsInfo
+                {
+                    Amount = model.CustomerAmount,
+                    ClientAuthenticationId = getPaymentDetails.ClientAuthenticationId,
+                    CustomerDescription = model.CustomerDescription,
+                    MerchantPaymentSetupId = getPaymentDetails.MerchantPaymentSetupId,
+                    Channel = model.Channel,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    Fullname = model.Fullname,
+                };
+
+                if (getLinkType.Channel == MerchantPaymentLinkCategory.Escrow || getLinkType.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
                 {
                     var getClient = await _customerService.GetClientDetails(model.Email);
                     customerId = Convert.ToInt32(getClient.Data);
@@ -190,14 +202,9 @@ namespace SocialPay.Core.Services.Customer
                     var filePath = Path.Combine(fileName, newFileName);
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
-                        var logCustomerInfo = new CustomerOtherPaymentsInfo
-                        {
-                            Amount = model.CustomerAmount, ClientAuthenticationId = customerId,
-                            CustomerDescription = model.CustomerDescription,
-                            MerchantPaymentSetupId = getPaymentDetails.MerchantPaymentSetupId,
-                            Document = newFileName, Channel = model.Channel,
-                            FileLocation = "CustomerDocuments"
-                        };
+                        logCustomerInfo.CustomerId = customerId;
+                        logCustomerInfo.Document = newFileName;
+                        logCustomerInfo.FileLocation = "CustomerDocuments";
                         await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                         await _context.SaveChangesAsync();
                         _log4net.Info("About to save uploaded document" + " | " + model.TransactionReference + " | " + DateTime.Now);
@@ -221,9 +228,10 @@ namespace SocialPay.Core.Services.Customer
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                     }
                 }
-                //decimal totalAmount = getPaymentDetails.TotalAmount + getPaymentDetails.ShippingFee;
                 if (model.Channel == PaymentChannel.PayWithSpecta)
                 {
+                    await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
+                    await _context.SaveChangesAsync();
                     var generateToken = await _payWithSpectaService.InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", model.TransactionReference);
                     if (generateToken.ResponseCode != AppResponseCodes.Success)
                         return generateToken;
