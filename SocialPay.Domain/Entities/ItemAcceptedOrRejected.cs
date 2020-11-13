@@ -11,7 +11,11 @@ namespace SocialPay.Domain.Entities
         public string CustomerTransactionReference { get; set; }
         public string Comment { get; set; }
         public string Status { get; set; }
+        public string OrderStatus { get; set; }
+        public bool IsReturned { get; set; }
+        public DateTime ReturnedDate { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
+        public DateTime LastDateModified { get; set; }
         public virtual ClientAuthentication ClientAuthentication { get; set; }
     }
 }

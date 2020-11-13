@@ -51,5 +51,6 @@
         public string transactionNarration { get; set; }
         public string socialPayNominatedAccountNo { get; set; }
         public string socialT24AccountNo { get; set; }
+        public string returnedDateSLA { get; set; }
     }
 }

@@ -629,6 +629,9 @@ namespace SocialPay.Core.Repositories.Customer
                                 if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
                                     return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
 
+                                logRequest.OrderStatus = OrderStatusCode.Decline;
+                                logRequest.LastDateModified = DateTime.Now;
+                                logRequest.ReturnedDate = DateTime.Now.AddDays(Convert.ToInt32(_appSettings.returnedDateSLA));
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
                                 getTransactionLogs.OrderStatus = model.Status;
@@ -657,6 +660,8 @@ namespace SocialPay.Core.Repositories.Customer
                                 var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                             }
+                            logRequest.OrderStatus = OrderStatusCode.Approved;
+                            logRequest.LastDateModified = DateTime.Now;
                             await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                             await _context.SaveChangesAsync();
                             getTransactionLogs.OrderStatus = model.Status;

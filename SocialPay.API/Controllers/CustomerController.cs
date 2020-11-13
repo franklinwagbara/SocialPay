@@ -148,6 +148,37 @@ namespace SocialPay.API.Controllers
         }
 
 
-        
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[HttpGet]
+        //[Route("get-orders")]
+        //public async Task<IActionResult> RejectOrder([FromQuery] string category)
+        //{
+        //    var response = new WebApiResponse { };
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var identity = User.Identity as ClaimsIdentity;
+        //            var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        //            var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        //            var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        //            var result = await _customerRepoService
+        //                .GetAllCustomerOrders(Convert.ToInt32(clientId), category);
+        //            return Ok(result);
+        //        }
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //            .Select(e => e.ErrorMessage));
+        //        response.ResponseCode = AppResponseCodes.Failed;
+        //        response.Data = message;
+        //        return BadRequest(response);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.ResponseCode = AppResponseCodes.InternalError;
+        //        return BadRequest(response);
+        //    }
+        //}
+
     }
 }
