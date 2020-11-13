@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -240,6 +241,37 @@ namespace SocialPay.API.Controllers
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("get-all-logged-disputes")]
+        public async Task<IActionResult> GetLoggedDisputes()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _merchantReportService.GetAllLoggedDisputes(Convert.ToInt32(clientId), true);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
                 response.ResponseCode = AppResponseCodes.InternalError;
                 return BadRequest(response);
             }

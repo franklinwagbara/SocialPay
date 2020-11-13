@@ -20,6 +20,5 @@ namespace SocialPay.Domain.Entities
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
         public virtual ClientAuthentication ClientAuthentication { get; set; }
-        public virtual ICollection<ItemDispute> ItemDispute { get; set; }
     }
 }

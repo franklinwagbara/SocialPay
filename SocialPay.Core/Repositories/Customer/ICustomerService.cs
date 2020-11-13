@@ -636,19 +636,19 @@ namespace SocialPay.Core.Repositories.Customer
                                 logRequest.ReturnedDate = DateTime.Now.AddDays(Convert.ToInt32(_appSettings.returnedDateSLA));
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
-                                getTransactionLogs.OrderStatus = model.Status;
+                                getTransactionLogs.OrderStatus = OrderStatusCode.Decline;
                                 getTransactionLogs.Status = true;
                                 getTransactionLogs.IsAccepted = false;
                                 getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
                                 await _context.SaveChangesAsync();
-                                var disputeModel = new ItemDispute
-                                {
-                                    ItemAcceptedOrRejectedId = logRequest.ItemAcceptedOrRejectedId,
-                                    DisputeComment = model.Comment, 
-                                    ClientAuthenticationId = validateOrder.ClientAuthenticationId
-                                };
-                                await _context.ItemDispute.AddAsync(disputeModel);
-                                await _context.SaveChangesAsync();
+                                ////var disputeModel = new DisputeRequestLog
+                                ////{
+                                ////    ItemAcceptedOrRejectedId = logRequest.ItemAcceptedOrRejectedId,
+                                ////    DisputeComment = model.Comment, 
+                                ////    ClientAuthenticationId = validateOrder.ClientAuthenticationId
+                                ////};
+                                ////await _context.ItemDispute.AddAsync(disputeModel);
+                                ////await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
                                 var emailModal = new EmailRequestDto
                                 {

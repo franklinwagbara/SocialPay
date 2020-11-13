@@ -26,15 +26,18 @@ namespace SocialPay.API.Controllers
         private readonly MerchantReportService _merchantReportService;
         private readonly InvoiceService _invoiceService;
         private readonly CreateMerchantWalletService _createMerchantWalletService;
+        private readonly DisputeRepoService _disputeRepoService;
         public MerchantsController(MerchantRegistrationService merchantRegistrationService,
             MerchantPaymentLinkService merchantPaymentLinkService, MerchantReportService merchantReportService,
-            InvoiceService invoiceService, CreateMerchantWalletService createMerchantWalletService)
+            InvoiceService invoiceService, CreateMerchantWalletService createMerchantWalletService,
+            DisputeRepoService disputeRepoService)
         {
             _merchantRegistrationService = merchantRegistrationService;
             _merchantPaymentLinkService = merchantPaymentLinkService;
             _merchantReportService = merchantReportService;
             _invoiceService = invoiceService;
             _createMerchantWalletService = createMerchantWalletService;
+            _disputeRepoService = disputeRepoService;
         }
 
         [HttpPost]
@@ -337,7 +340,40 @@ namespace SocialPay.API.Controllers
             }
         }
 
-       // [AllowAnonymous]
+
+        [HttpPost]
+        [Route("log-dispute")]
+        public async Task<IActionResult> LogDispute([FromBody] DisputeItemRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var businessName = identity.Claims.FirstOrDefault(c => c.Type == "businessName")?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _disputeRepoService.LogDisputeRequest(model, Convert.ToInt32(clientId));
+                  
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+        // [AllowAnonymous]
         [HttpGet]
         [Route("get-invoice")]
         public async Task<IActionResult> GetMerchantInvoices()
@@ -371,7 +407,7 @@ namespace SocialPay.API.Controllers
 
 
         [HttpGet]
-        [Route("get-reject-disputes")]
+        [Route("get-merchant-disputes")]
         public async Task<IActionResult> GetLoggedDisputes()
         {
             var response = new WebApiResponse { };
@@ -383,7 +419,7 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _merchantReportService.GetAllLoggedDisputes(Convert.ToInt32(clientId));
+                    var result = await _merchantReportService.GetAllLoggedDisputes(Convert.ToInt32(clientId), false);
 
                     return Ok(result);
                 }

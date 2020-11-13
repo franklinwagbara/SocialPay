@@ -130,22 +130,41 @@ namespace SocialPay.Core.Services.Report
         }
 
 
-        public async Task<WebApiResponse> GetAllLoggedDisputes(long clientId)
+        public async Task<WebApiResponse> GetAllLoggedDisputes(long clientId, bool IsAdmin)
         {
             var result = new List<ItemDisputeViewModel>();
             try
             {
                 //clientId = 30032;
+                if(IsAdmin)
+                {
+                    var getallDisputes = await _context.DisputeRequestLog.ToListAsync();
 
-                var getDisputes = await _context.ItemDispute
-                    .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
+                    var dataResponse = (from d in getallDisputes
+                                       join t in _context.TransactionLog on d.TransactionReference equals t.TransactionReference
+                                        select new ItemDisputeViewModel
+                                        {
+                                            Comment = d.DisputeComment,
+                                            TransactionReference = t.TransactionReference,
+                                            CustomerTransactionReference = t.CustomerTransactionReference,
+                                            DateEntered = d.DateEntered,
+                                            Document = _appSettings.BaseApiUrl + d.FileLocation + "/" + d.DisputeFile
+                                        }).ToList();
 
-                var response = (from a in getDisputes
-                              join i in _context.ItemAcceptedOrRejected on a.ItemAcceptedOrRejectedId equals i.ItemAcceptedOrRejectedId
+                    result = dataResponse;
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+
+                }
+                var getTransactions = await _context.TransactionLog
+                    .Where(x => x.MerchantInfo == clientId).ToListAsync();
+              
+                var response = (from t in getTransactions
+                                join d in _context.DisputeRequestLog on t.TransactionReference equals d.TransactionReference
                               select new ItemDisputeViewModel
                               {
-                                  Comment = a.DisputeComment, TransactionReference = i.TransactionReference,
-                                  DateEntered = a.DateEntered
+                                  Comment = d.DisputeComment, TransactionReference = t.TransactionReference,
+                                  CustomerTransactionReference = t.CustomerTransactionReference,
+                                  DateEntered = d.DateEntered, Document = _appSettings.BaseApiUrl + d.FileLocation + "/" + d.DisputeFile
                               }).ToList();
 
                 result = response;
@@ -157,6 +176,8 @@ namespace SocialPay.Core.Services.Report
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+
 
         public async Task<WebApiResponse> GetAllInvoiceByMerchantId(long clientId)
         {
