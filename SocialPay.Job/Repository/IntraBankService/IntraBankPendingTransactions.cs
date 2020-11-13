@@ -7,6 +7,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
 using SocialPay.Job.Repository.Fiorano;
+using SocialPay.Job.Repository.InterBankService;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,14 +18,16 @@ namespace SocialPay.Job.Repository.IntraBankService
     {
         private readonly AppSettings _appSettings;
         private readonly FioranoTransferPayWithCardRepository _fioranoTransferRepository;
-
-
+        private readonly InterBankPendingTransferService _interBankPendingTransferService;
+ 
         public IntraBankPendingTransactions(IServiceProvider service, IOptions<AppSettings> appSettings,
-         FioranoTransferPayWithCardRepository fioranoTransferRepository)
+         FioranoTransferPayWithCardRepository fioranoTransferRepository,
+         InterBankPendingTransferService interBankPendingTransferService)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _fioranoTransferRepository = fioranoTransferRepository;
+            _interBankPendingTransferService = interBankPendingTransferService;
         }
         public IServiceProvider Services { get; }
 
@@ -75,6 +78,8 @@ namespace SocialPay.Job.Repository.IntraBankService
                             await context.SaveChangesAsync();
                             //return null;
                         }
+
+                       // await _interBankPendingTransferService.ProcessTransactions
 
                        //Other banks transfer
                       //  return null;

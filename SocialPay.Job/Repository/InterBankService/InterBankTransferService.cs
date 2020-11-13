@@ -34,7 +34,7 @@ namespace SocialPay.Job.Repository.InterBankService
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)
                         return "No record";
-                    await _transactions.ProcessTransactions(pendingTransactions);
+                    await _transactions.ProcessTransactionsOld(pendingTransactions);
                     //return "No record";
                 }
 

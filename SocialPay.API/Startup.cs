@@ -19,6 +19,7 @@ using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
+using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
@@ -174,6 +175,15 @@ namespace SocialPay.API
             //services.AddScoped<IIntraBankTransferService, IntraBankTransferService>();
             //services.AddSingleton<IHostedService, IntraBankTask>();
             //services.AddSingleton<IntraBankPendingTransactions>();
+
+            //Interbank transactions
+
+            //services.AddScoped<IIntraBankTransferService, IntraBankTransferService>();
+            //services.AddSingleton<IHostedService, IntraBankTask>();
+            //services.AddSingleton<IntraBankPendingTransactions>();
+            //services.AddSingleton<SqlRepository>();
+            //services.AddSingleton<BankServiceRepositoryJobService>();
+            //services.AddSingleton<IBSReposerviceJob>();
 
         }
 

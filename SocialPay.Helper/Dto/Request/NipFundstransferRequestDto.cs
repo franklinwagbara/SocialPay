@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace SocialPay.Helper.Dto.Request
@@ -21,8 +22,8 @@ namespace SocialPay.Helper.Dto.Request
         public string LedCodeVal { get; set; }    
         public string CurCodeVal { get; set; }    
         public string CusNumVal { get; set; }    
-        public string BraCodeVal { get; set; }            
-        public decimal Vat { get; set; }            
+        public string BraCodeVal { get; set; }
+        public double Vat { get; set; }            
         public decimal Fee { get; set; }            
         public decimal Amount { get; set; }            
         public string PaymentRef { get; set; }            

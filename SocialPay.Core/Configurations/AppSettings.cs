@@ -52,9 +52,13 @@
         public string transactionNarration { get; set; }
         public string socialPayNominatedAccountNo { get; set; }
         public string socialT24AccountNo { get; set; }
+        public string socialT24Bracode { get; set; }
         public string returnedDateSLA { get; set; }
         public string socialPayT24CustomerNum { get; set; }
         public string socialPayT24CustomerLedCode { get; set; }
         public string nipdbConnectionString { get; set; }
+        public string socialPayAppID { get; set; }
+        public string socialPayT24CurCode { get; set; }
+        public string socialT24BVN { get; set; }
     }
 }
