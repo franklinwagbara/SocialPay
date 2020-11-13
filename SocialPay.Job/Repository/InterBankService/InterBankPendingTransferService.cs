@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
+using SocialPay.Core.Services.Validations;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -16,7 +17,9 @@ namespace SocialPay.Job.Repository.InterBankService
     public class InterBankPendingTransferService
     {
         private readonly AppSettings _appSettings;
-        public InterBankPendingTransferService(IServiceProvider service, IOptions<AppSettings> appSettings)
+        private readonly BankServiceRepositoryJobService _bankServiceRepositoryJobService;
+        public InterBankPendingTransferService(IServiceProvider service, IOptions<AppSettings> appSettings,
+            BankServiceRepositoryJobService bankServiceRepositoryJobService)
         {
             Services = service;
             _appSettings = appSettings.Value;
@@ -84,5 +87,7 @@ namespace SocialPay.Job.Repository.InterBankService
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+
     }
 }

@@ -150,30 +150,30 @@ namespace SocialPay.API
             ////services.AddSingleton<WalletRepoJobService>();
             ////services.AddSingleton<PendingWalletRequestService>();
 
-            services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
-            services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
-            services.AddSingleton<WalletRepoJobService>();
-            services.AddSingleton<CreditMerchantWalletTransactions>();
+            //services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
+            //services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            //services.AddSingleton<WalletRepoJobService>();
+            //services.AddSingleton<CreditMerchantWalletTransactions>();
 
-            ////Credit T24 account for card payments
-            services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
-            services.AddSingleton<IHostedService, CardPaymentTask>();
-            services.AddSingleton<FioranoTransferPayWithCardRepository>();
-            services.AddSingleton<PendingPayWithCardTransaction>();
-            services.AddSingleton<CreditDebitService>();
-
-
-            //Credit Social pay wallet from merchant wallet
-
-            services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
-            services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
-            services.AddSingleton<DeliveryDayTransferService>();
+            //////Credit T24 account for card payments
+            //services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
+            //services.AddSingleton<IHostedService, CardPaymentTask>();
+            //services.AddSingleton<FioranoTransferPayWithCardRepository>();
+            //services.AddSingleton<PendingPayWithCardTransaction>();
+            //services.AddSingleton<CreditDebitService>();
 
 
-            //Intrabank transactions
-            services.AddScoped<IIntraBankTransferService, IntraBankTransferService>();
-            services.AddSingleton<IHostedService, IntraBankTask>();
-            services.AddSingleton<IntraBankPendingTransactions>();
+            ////Credit Social pay wallet from merchant wallet
+
+            //services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
+            //services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
+            //services.AddSingleton<DeliveryDayTransferService>();
+
+
+            ////Intrabank transactions
+            //services.AddScoped<IIntraBankTransferService, IntraBankTransferService>();
+            //services.AddSingleton<IHostedService, IntraBankTask>();
+            //services.AddSingleton<IntraBankPendingTransactions>();
 
         }
 

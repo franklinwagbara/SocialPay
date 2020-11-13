@@ -129,7 +129,7 @@ namespace SocialPay.Core.Repositories.Customer
 
             var response =  (from c in getPaymentSetupInfo
                              join p in _context.TransactionLog on c.TransactionReference  equals p.TransactionReference
-                         join a in _context.ClientAuthentication on p.MerchantInfo equals a.ClientAuthenticationId
+                         join a in _context.ClientAuthentication on p.CustomerInfo equals a.ClientAuthenticationId
                          select new CustomerPaymentViewModel { MerchantAmount = c.MerchantAmount, CustomerEmail = a.Email,
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
@@ -375,7 +375,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.OrderStatus = OrderStatusCode.Pending;
                                 logconfirmation.Message = model.Message;
                                 logconfirmation.LastDateModified = DateTime.Now;
-                                logconfirmation.MerchantInfo = linkInfo.ClientAuthenticationId;
+                                logconfirmation.CustomerInfo = linkInfo.ClientAuthenticationId;
                                 logconfirmation.Status = true;                               
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                                 var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
@@ -510,17 +510,17 @@ namespace SocialPay.Core.Repositories.Customer
                     var customerInfo = await _context.ClientAuthentication
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == model.CustomerId);
                     logconfirmation.Category = linkInfo.Channel;
-                    logconfirmation.ClientAuthenticationId = model.CustomerId;
+                    logconfirmation.ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId;
+                    logconfirmation.CustomerInfo = model.CustomerId;
                     logconfirmation.CustomerEmail = customerInfo.Email;
                     logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
                     logconfirmation.TransactionReference = model.TransactionReference;
                     logconfirmation.OrderStatus = OrderStatusCode.Pending;
                     logconfirmation.Message = model.Message;
-                    logconfirmation.MerchantInfo = paymentSetupInfo.ClientAuthenticationId;
+                    logconfirmation.CustomerInfo = paymentSetupInfo.ClientAuthenticationId;
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
-                    logconfirmation.MerchantInfo = model.CustomerId;
 
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
@@ -555,8 +555,8 @@ namespace SocialPay.Core.Repositories.Customer
                 if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                 {
                     logconfirmation.Category = linkInfo.Channel;
-                    logconfirmation.ClientAuthenticationId = model.CustomerId;
-                    logconfirmation.MerchantInfo = paymentSetupInfo.ClientAuthenticationId;
+                    logconfirmation.ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId;
+                    logconfirmation.CustomerInfo = model.CustomerId;
                     logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
                     logconfirmation.TransactionReference = model.TransactionReference;
                     logconfirmation.OrderStatus = OrderStatusCode.Pending;

@@ -55,5 +55,6 @@
         public string returnedDateSLA { get; set; }
         public string socialPayT24CustomerNum { get; set; }
         public string socialPayT24CustomerLedCode { get; set; }
+        public string nipdbConnectionString { get; set; }
     }
 }

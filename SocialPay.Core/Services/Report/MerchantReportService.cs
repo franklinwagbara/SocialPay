@@ -156,7 +156,7 @@ namespace SocialPay.Core.Services.Report
 
                 }
                 var getTransactions = await _context.TransactionLog
-                    .Where(x => x.MerchantInfo == clientId || x.ClientAuthenticationId == clientId).ToListAsync();
+                    .Where(x => x.CustomerInfo == clientId || x.ClientAuthenticationId == clientId).ToListAsync();
               
                 var response = (from t in getTransactions
                                 join d in _context.DisputeRequestLog on t.TransactionReference equals d.TransactionReference
