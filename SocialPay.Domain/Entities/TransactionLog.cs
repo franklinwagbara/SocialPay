@@ -24,6 +24,7 @@ namespace SocialPay.Domain.Entities
         public bool IsAccepted { get; set; }
         public bool IsNotified { get; set; }
         public bool TransactionCompleted { get; set; }
+        public string PaymentReference { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime DeliveryFinalDate { get; set; }

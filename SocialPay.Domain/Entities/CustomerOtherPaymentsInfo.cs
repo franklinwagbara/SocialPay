@@ -17,6 +17,8 @@ namespace SocialPay.Domain.Entities
         public string Document { get; set; }
         public string Channel { get; set; }
         public string FileLocation { get; set; }
+        public string PaymentReference { get; set; }
+        public bool PaymentStatus { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual MerchantPaymentSetup MerchantPaymentSetup { get; set; }
     }

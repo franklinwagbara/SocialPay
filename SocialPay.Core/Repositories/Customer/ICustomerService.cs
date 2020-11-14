@@ -129,7 +129,7 @@ namespace SocialPay.Core.Repositories.Customer
 
             var response =  (from c in getPaymentSetupInfo
                              join p in _context.TransactionLog on c.TransactionReference  equals p.TransactionReference
-                         join a in _context.CustomerOtherPaymentsInfo on p.ClientAuthenticationId equals a.ClientAuthenticationId
+                         join a in _context.CustomerOtherPaymentsInfo on p.PaymentReference equals a.PaymentReference
                          select new CustomerPaymentViewModel { MerchantAmount = c.MerchantAmount, CustomerEmail = a.Email,
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
@@ -160,7 +160,7 @@ namespace SocialPay.Core.Repositories.Customer
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
 
             var response =  (from a in getPaymentSetupInfo                             
-                         join p in _context.TransactionLog on a.ClientAuthenticationId equals p.ClientAuthenticationId
+                         join p in _context.TransactionLog on a.PaymentReference equals p.PaymentReference
                          select new CustomerInfoViewModel { CustomerEmail = a.Email, Fullname = a.Fullname,
                              CustomerPhoneNumber = a.PhoneNumber, DateRegistered = a.DateEntered, 
                              ClientAuthenticationId = p.CustomerInfo}).ToList();
@@ -523,6 +523,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
+                    logconfirmation.PaymentReference = model.PaymentReference;
 
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {

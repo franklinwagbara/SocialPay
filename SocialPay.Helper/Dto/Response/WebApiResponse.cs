@@ -10,6 +10,13 @@ namespace SocialPay.Helper.Dto.Response
     }
 
 
+    public class InitiatePaymentResponse
+    {
+        public string ResponseCode { get; set; }
+        public string PaymentRef { get; set; }
+        public Object Data { get; set; }
+    }
+
     public class LoginAPIResponse
     {
         public string ClientId { get; set; }

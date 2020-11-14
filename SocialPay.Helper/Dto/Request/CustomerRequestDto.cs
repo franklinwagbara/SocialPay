@@ -31,6 +31,7 @@ namespace SocialPay.Helper.Dto.Request
         public string Channel { get; set; }
         public long CustomerId { get; set; }
         public string InvoiceReference { get; set; }
+        public string PaymentReference { get; set; }
         public string Message { get; set; }
      
     }
