@@ -39,7 +39,7 @@ namespace SocialPay.Helper.ViewModel
         public string CustomerEmail { get; set; }
         public string CustomerPhoneNumber { get; set; }
         public string Document { get; set; }
-        //public string PaymentLinkUrl { get; set; }
+        public string Fullname { get; set; }
         public DateTime TransactionDate { get; set; }
     }
 

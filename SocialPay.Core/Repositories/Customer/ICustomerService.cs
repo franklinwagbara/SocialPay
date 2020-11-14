@@ -134,7 +134,7 @@ namespace SocialPay.Core.Repositories.Customer
                          TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
                          DeliveryTime = c.DeliveryTime, MerchantDescription = c.MerchantDescription, CustomerDescription = c.CustomerDescription,
-                         TransactionReference = c.TransactionReference,
+                         TransactionReference = c.TransactionReference, Fullname = a.Fullname,
                          Document = a.Document == null ? string.Empty : _appSettings.BaseApiUrl + a.FileLocation + "/" + a.Document,
                          CustomerTransactionReference = p.CustomerTransactionReference}).ToList();
             result = response;

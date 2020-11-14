@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.Test", "API.Test\API.Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Job", "Job", "{B7CC0734-2903-4CD8-B810-6C9B590176C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialPay.Job", "SocialPay.Job\SocialPay.Job.csproj", "{0053C2D4-D695-4072-90E9-067435133544}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialPay.Job", "SocialPay.Job\SocialPay.Job.csproj", "{0053C2D4-D695-4072-90E9-067435133544}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
