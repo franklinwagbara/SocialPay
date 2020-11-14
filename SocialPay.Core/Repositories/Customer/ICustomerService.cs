@@ -136,7 +136,7 @@ namespace SocialPay.Core.Repositories.Customer
                          DeliveryTime = c.DeliveryTime, MerchantDescription = c.MerchantDescription, CustomerDescription = c.CustomerDescription,
                          TransactionReference = c.TransactionReference, Fullname = a.Fullname,
                          Document = a.Document == null ? string.Empty : _appSettings.BaseApiUrl + a.FileLocation + "/" + a.Document,
-                         CustomerTransactionReference = p.CustomerTransactionReference}).ToList();
+                         CustomerTransactionReference = p.CustomerTransactionReference}).OrderByDescending(x=>x.TransactionDate).ToList();
             result = response;
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
@@ -163,7 +163,7 @@ namespace SocialPay.Core.Repositories.Customer
                          join p in _context.TransactionLog on a.PaymentReference equals p.PaymentReference
                          select new CustomerInfoViewModel { CustomerEmail = a.Email, Fullname = a.Fullname,
                              CustomerPhoneNumber = a.PhoneNumber, DateRegistered = a.DateEntered, 
-                             ClientAuthenticationId = p.CustomerInfo}).ToList();
+                             ClientAuthenticationId = p.CustomerInfo}).OrderByDescending(x=>x.DateRegistered).ToList();
             result = response;
 
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
