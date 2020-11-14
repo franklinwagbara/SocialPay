@@ -33,7 +33,6 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                     if (pendingTransactions.Count == 0)
                         return "No record";
                     await _transactions.ProcessTransactions(pendingTransactions);
-                    //return "No record";
                 }
 
                 Console.WriteLine("GenerateDailyReport : " + DateTime.Now.ToString());

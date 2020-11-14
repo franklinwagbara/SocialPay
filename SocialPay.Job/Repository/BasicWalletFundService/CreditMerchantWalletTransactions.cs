@@ -99,7 +99,6 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
             }
             catch (Exception ex)
             {
-
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
