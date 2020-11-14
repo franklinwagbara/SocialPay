@@ -1,6 +1,7 @@
 ﻿using bankService;
 using System;
 using System.Diagnostics;
+using System.ServiceModel.Channels;
 
 namespace API.Test
 {
@@ -8,6 +9,15 @@ namespace API.Test
     {
         static void Main(string[] args)
         {
+            DateTime nextDay = DateTime.Now.Date;
+            String myDate = "05-12-2020";
+            DateTime sdate = DateTime.Parse(myDate);
+           
+            var lockAccountModel = new TestApps
+            {
+                eDate = DateTime.Today
+            };
+
             var myUrl = "http://socialpay-web.sterlingapps.p.azurewebsites.net/#/confirm-payments?q=3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
             var decodeUrl = System.Uri.UnescapeDataString(myUrl);
 
@@ -70,5 +80,9 @@ namespace API.Test
             Process.Start(psi);
         }
         
+        public class TestApps
+        {
+            public DateTime? eDate { get; set; }
+        }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
+using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Validations;
 using SocialPay.Domain;
@@ -21,14 +22,16 @@ namespace SocialPay.Job.Repository.InterBankService
         private readonly AppSettings _appSettings;
         private readonly BankServiceRepositoryJobService _bankServiceRepositoryJobService;
         private readonly IBSReposerviceJob _iBSReposerviceJob;
+        private readonly SqlRepository _sqlRepository;
         public InterBankPendingTransferService(IServiceProvider service, IOptions<AppSettings> appSettings,
             BankServiceRepositoryJobService bankServiceRepositoryJobService,
-            IBSReposerviceJob iBSReposerviceJob)
+            IBSReposerviceJob iBSReposerviceJob, SqlRepository sqlRepository)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _bankServiceRepositoryJobService = bankServiceRepositoryJobService;
             _iBSReposerviceJob = iBSReposerviceJob;
+            _sqlRepository = sqlRepository;
         }
         public IServiceProvider Services { get; }
 
@@ -108,7 +111,15 @@ namespace SocialPay.Job.Repository.InterBankService
                         DestinationBankCode = desBankCode, ToAccount = destinationAccount,
                         RequestType = _appSettings.nameEnquiryRequestType, ReferenceID = Guid.NewGuid().ToString()
                     };
-
+                  
+                    var lockAccountModel = new LockAccountRequestDto
+                    {
+                        sDate = DateTime.Today, eDate = DateTime.Today.AddMinutes(10),
+                        acct = sourceAccount, amt = amount, reasonForLocking ="Funds transfer"
+                    };
+                    var lockAccount = await _bankServiceRepositoryJobService.LockAccountWithReasonAsync(lockAccountModel);
+                    //if (lockAccount.Contains(""))
+                    //    return new WebApiResponse { ResponseCode = AppResponseCodes.AccountLockFailed }; 
                     var nipEnquiry = await _iBSReposerviceJob.InitiateNameEnquiry(nameEnquiryModel);
                     if(nipEnquiry.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
@@ -121,8 +132,12 @@ namespace SocialPay.Job.Repository.InterBankService
                         NESessionID = "999377373673736", AccountName = nipEnquiry.AccountName, AccountNumber = destinationAccount,
                         BeneficiaryKYCLevel = nipEnquiry.KYCLevel, BeneficiaryBankVerificationNumber = nipEnquiry.BVN,
                         OriginatorAccountNumber = sourceAccount, OriginatorKYCLevel =nipEnquiry.KYCLevel,
-                        OriginatorBankVerificationNumber = _appSettings.socialT24BVN
+                        OriginatorBankVerificationNumber = _appSettings.socialT24BVN, 
+                        PaymentRef = "Social-Pay-Merchant-Payment" + ""+ Guid.NewGuid().ToString().Substring(0,6),
+                        AccountLockID = lockAccount, OrignatorName = _appSettings.socialPayT24AccountName, SubAcctVal = "0"
                     };
+
+                    var insertRequest = await _sqlRepository.InsertNipTransferRequest(nipRequestModel);
 
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }

@@ -35,6 +35,7 @@
         public const string WalletExist = "31";               
         public const string TokenExpired = "32";               
         public const string FiranoDebitError = "33";               
+        public const string AccountLockFailed = "34";               
     }
 
     public class MerchantOnboardingProcess
