@@ -1,11 +1,8 @@
 ﻿using BanksServices;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
-using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
-using SocialPay.Helper.ViewModel;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Validations

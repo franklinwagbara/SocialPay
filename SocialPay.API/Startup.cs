@@ -19,7 +19,6 @@ using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
-using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
@@ -28,12 +27,7 @@ using SocialPay.Core.Services.Validations;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Helper.Cryptography;
-using SocialPay.Job.Repository;
 using SocialPay.Job.Repository.BasicWalletFundService;
-using SocialPay.Job.Repository.DeliveryDayMerchantTransaction;
-using SocialPay.Job.Repository.Fiorano;
-using SocialPay.Job.Repository.IntraBankService;
-using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.TaskSchedules;
 
 namespace SocialPay.API

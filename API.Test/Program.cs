@@ -1,7 +1,6 @@
 ﻿using bankService;
 using System;
 using System.Diagnostics;
-using System.ServiceModel.Channels;
 
 namespace API.Test
 {
