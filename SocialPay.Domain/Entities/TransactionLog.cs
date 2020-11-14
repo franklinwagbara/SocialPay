@@ -9,6 +9,7 @@ namespace SocialPay.Domain.Entities
         public long CustomerInfo { get; set; }
         public string CustomerEmail { get; set; }
         public string Category { get; set; }
+        public string PaymentChannel { get; set; }
         public string OrderStatus { get; set; }
         public string DeliveryDayTransferStatus { get; set; }
         public string Message { get; set; }

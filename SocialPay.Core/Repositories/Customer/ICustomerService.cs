@@ -512,6 +512,7 @@ namespace SocialPay.Core.Repositories.Customer
                     var customerInfo = await _context.ClientAuthentication
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == model.CustomerId);
                     logconfirmation.Category = linkInfo.Channel;
+                    logconfirmation.PaymentChannel = model.Channel;
                     logconfirmation.ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId;
                     logconfirmation.CustomerInfo = model.CustomerId;
                     logconfirmation.CustomerEmail = customerInfo.Email;
@@ -557,6 +558,7 @@ namespace SocialPay.Core.Repositories.Customer
                 if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                 {
                     logconfirmation.Category = linkInfo.Channel;
+                    logconfirmation.PaymentChannel = model.Channel;
                     logconfirmation.ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId;
                     logconfirmation.CustomerInfo = model.CustomerId;
                     logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
