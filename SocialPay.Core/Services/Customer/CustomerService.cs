@@ -214,7 +214,7 @@ namespace SocialPay.Core.Services.Customer
                         model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
                         await transaction.CommitAsync();
                         _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
-                        decimal CustomerTotalAmount = model.CustomerAmount + getPaymentDetails.ShippingFee;
+                        decimal CustomerTotalAmount = model.CustomerAmount;// + getPaymentDetails.ShippingFee;
                         if (model.Channel == PaymentChannel.PayWithSpecta)
                         {
                             var generateToken = await _payWithSpectaService.InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference);
