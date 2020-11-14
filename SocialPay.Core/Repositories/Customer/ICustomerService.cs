@@ -568,6 +568,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
+                    logconfirmation.PaymentReference = model.PaymentReference;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
