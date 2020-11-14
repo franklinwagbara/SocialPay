@@ -109,13 +109,13 @@ namespace SocialPay.Core.Services.Customer
                     var getInvoiceInfo = await _customerService.GetInvoicePaymentAsync(model.TransactionReference);
                     if (getInvoiceInfo == null)                 
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
-                    var customerReference = Guid.NewGuid().ToString();
+                    //var customerReference = Guid.NewGuid().ToString();
                     var invoicePayment = new InvoicePaymentInfo
                     {
                         TransactionReference = model.TransactionReference, Channel = model.Channel,
                         Email = model.Email, Fullname = model.Fullname, PhoneNumber = model.PhoneNumber,
                         InvoicePaymentLinkId = getInvoiceInfo.InvoicePaymentLinkId, LastDateModified = DateTime.Now,
-                        CustomerTransactionReference = customerReference
+                        CustomerTransactionReference = paymentRef
                     };
                     decimal CustomerTotalAmount = getInvoiceInfo.TotalAmount;
                     if (model.Channel == PaymentChannel.PayWithSpecta)
@@ -125,7 +125,7 @@ namespace SocialPay.Core.Services.Customer
                         {
                             return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
                         }
-                        paymentResponse.InvoiceReference = customerReference; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                        paymentResponse.InvoiceReference = paymentRef; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
                         await _context.InvoicePaymentInfo.AddAsync(invoicePayment);
                         await _context.SaveChangesAsync();
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef };
@@ -133,7 +133,7 @@ namespace SocialPay.Core.Services.Customer
                     encryptedText = _appSettings.mid + _appSettings.paymentCombination + CustomerTotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                     encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                     paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
-                    paymentResponse.InvoiceReference = customerReference; 
+                    paymentResponse.InvoiceReference = paymentRef; 
                     paymentResponse.PaymentLink = paymentData;
                     await _context.InvoicePaymentInfo.AddAsync(invoicePayment);
                     await _context.SaveChangesAsync();

@@ -152,10 +152,10 @@ namespace SocialPay.API
             ////services.AddSingleton<WalletRepoJobService>();
             ////services.AddSingleton<PendingWalletRequestService>();
 
-            //services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
-            //services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
-            //services.AddSingleton<WalletRepoJobService>();
-            //services.AddSingleton<CreditMerchantWalletTransactions>();
+            services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
+            services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            services.AddSingleton<WalletRepoJobService>();
+            services.AddSingleton<CreditMerchantWalletTransactions>();
 
             //////Credit T24 account for card payments
             //services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
