@@ -77,6 +77,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             CustomerTransactionReference = item.CustomerTransactionReference,
                             TransferType = walletModel.TransferType,
                             ChannelMode = WalletTransferMode.SocialPayToMerchant,
+                            ClientAuthenticationId = item.ClientAuthenticationId
                         };
 
                         await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
