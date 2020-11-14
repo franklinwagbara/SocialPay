@@ -152,6 +152,7 @@ namespace SocialPay.Core.Services.Customer
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
                     Fullname = model.Fullname,
+                    TransactionReference = model.TransactionReference
                 };
 
                 if (getLinkType.Channel == MerchantPaymentLinkCategory.Escrow || getLinkType.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)

@@ -153,15 +153,14 @@ namespace SocialPay.Core.Repositories.Customer
         {
             var result = new List<CustomerInfoViewModel>();
           
-            var getPaymentSetupInfo = await _context.MerchantPaymentSetup
+            var getPaymentSetupInfo = await _context.CustomerOtherPaymentsInfo
                 .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
 
             if (getPaymentSetupInfo.Count == 0)
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
 
-            var response =  (from c in getPaymentSetupInfo
-                             join p in _context.TransactionLog on c.TransactionReference  equals p.TransactionReference
-                         join a in _context.CustomerOtherPaymentsInfo on p.ClientAuthenticationId equals a.ClientAuthenticationId
+            var response =  (from a in getPaymentSetupInfo                             
+                         join p in _context.TransactionLog on a.ClientAuthenticationId equals p.ClientAuthenticationId
                          select new CustomerInfoViewModel { CustomerEmail = a.Email, Fullname = a.Fullname,
                              CustomerPhoneNumber = a.PhoneNumber, DateRegistered = a.DateEntered, 
                              ClientAuthenticationId = p.CustomerInfo}).ToList();

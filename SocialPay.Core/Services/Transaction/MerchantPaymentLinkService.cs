@@ -206,7 +206,7 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-                 //clientId = 40072;
+                // clientId = 40072;
                 var result = await _customerService.GetCustomerPaymentsByMerchantPayRef(clientId);
                 return result;
             }
@@ -221,7 +221,7 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-                 //clientId = 30043;
+                 //clientId = 40072;
                 var result = await _customerService.GetCustomerByMerchantId(clientId);
                 return result;
             }
