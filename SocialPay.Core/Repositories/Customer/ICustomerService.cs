@@ -610,14 +610,24 @@ namespace SocialPay.Core.Repositories.Customer
         {
             try
             {
+
                 var getTransactionLogs = await _context.TransactionLog
                     .SingleOrDefaultAsync(x => x.CustomerTransactionReference == 
                     model.CustomerTransactionReference);
-                if(getTransactionLogs != null && getTransactionLogs.TransactionStatus != OrderStatusCode.Pending)
+
+                //if (model.ProcessedBy == AcceptRejectRequest.Merchant)
+                //{
+                //    if(getTransactionLogs.TransactionStatus == OrderStatusCode.Decline)
+                //    {
+
+                //    }
+                //}
+
+                if (getTransactionLogs != null && getTransactionLogs.TransactionStatus != OrderStatusCode.Pending)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionProcessed};
 
                 if(getTransactionLogs.DeliveryDate < DateTime.Now)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };                                
 
                 if (await _context.ItemAcceptedOrRejected
                     .AnyAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference))
