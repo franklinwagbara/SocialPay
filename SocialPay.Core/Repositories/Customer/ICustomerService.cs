@@ -612,16 +612,25 @@ namespace SocialPay.Core.Repositories.Customer
             {
 
                 var getTransactionLogs = await _context.TransactionLog
-                    .SingleOrDefaultAsync(x => x.CustomerTransactionReference == 
-                    model.CustomerTransactionReference);
-
-                //if (model.ProcessedBy == AcceptRejectRequest.Merchant)
-                //{
-                //    if(getTransactionLogs.TransactionStatus == OrderStatusCode.Decline)
-                //    {
-
-                //    }
-                //}
+                    .SingleOrDefaultAsync(x => x.PaymentReference == 
+                    model.PaymentReference);
+                var logRequest = new ItemAcceptedOrRejected();
+                logRequest.ClientAuthenticationId = clientId;
+                logRequest.Comment = model.Comment;
+                logRequest.CustomerTransactionReference = getTransactionLogs.CustomerTransactionReference;
+                logRequest.PaymentReference = model.PaymentReference;
+                logRequest.ProcessedBy = model.ProcessedBy;
+                logRequest.OrderStatus = model.Status;
+                logRequest.TransactionReference = model.TransactionReference;
+                if (model.ProcessedBy == AcceptRejectRequest.Merchant)
+                {
+                    if (getTransactionLogs.TransactionStatus == OrderStatusCode.Decline)
+                    {
+                        await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
+                        await _context.SaveChangesAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+                }
 
                 if (getTransactionLogs != null && getTransactionLogs.TransactionStatus != OrderStatusCode.Pending)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionProcessed};
@@ -629,31 +638,28 @@ namespace SocialPay.Core.Repositories.Customer
                 if(getTransactionLogs.DeliveryDate < DateTime.Now)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };                                
 
-                if (await _context.ItemAcceptedOrRejected
-                    .AnyAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference))
-                return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionAlreadyexit };
+                //if (await _context.ItemAcceptedOrRejected
+                //    .AnyAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference))
+                //return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionAlreadyexit };
                 if (model.Status == OrderStatusCode.Decline || model.Status == OrderStatusCode.Approved)
                 {
-                   // var validateOrder = await _context.MerchantPaymentSetup
-                   //.SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
-                   // if (validateOrder == null)
-                   //     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                    // var validateOrder = await _context.MerchantPaymentSetup
+                    //.SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+                    // if (validateOrder == null)
+                    //     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                   // var response = await _context.CustomerTransaction
-                   //     .SingleOrDefaultAsync(x => x.CustomerTransactionId == model.RequestId);
+                    // var response = await _context.CustomerTransaction
+                    //     .SingleOrDefaultAsync(x => x.CustomerTransactionId == model.RequestId);
 
-                   // int sla = Convert.ToInt32(_appSettings.deliverySLA);
-
-                    var logRequest = new ItemAcceptedOrRejected
-                    {
-                        ClientAuthenticationId = clientId,
-                        Status = model.Status,
-                        Comment = model.Comment,
-                        ProcessedBy = model.ProcessedBy,
-                        TransactionReference = model.TransactionReference,
-                        CustomerTransactionId = model.RequestId,
-                        CustomerTransactionReference = model.CustomerTransactionReference
-                    };
+                    // int sla = Convert.ToInt32(_appSettings.deliverySLA);
+                    logRequest.ClientAuthenticationId = clientId;
+                    logRequest.Comment = model.Comment;
+                    logRequest.CustomerTransactionReference = getTransactionLogs.CustomerTransactionReference;
+                    logRequest.PaymentReference = model.PaymentReference;
+                    logRequest.ProcessedBy = model.ProcessedBy;
+                    logRequest.OrderStatus = model.Status;
+                    logRequest.TransactionReference = model.TransactionReference;
+                  
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try

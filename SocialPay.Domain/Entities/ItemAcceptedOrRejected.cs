@@ -9,6 +9,7 @@ namespace SocialPay.Domain.Entities
         public long CustomerTransactionId { get; set; }
         public string TransactionReference { get; set; }
         public string CustomerTransactionReference { get; set; }
+        public string PaymentReference { get; set; }
         public string Comment { get; set; }
         public string Status { get; set; }
         public string ProcessedBy { get; set; }
