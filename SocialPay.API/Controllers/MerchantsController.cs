@@ -341,37 +341,37 @@ namespace SocialPay.API.Controllers
         }
 
 
-        [HttpPost]
-        [Route("log-dispute")]
-        public async Task<IActionResult> LogDispute([FromBody] DisputeItemRequestDto model)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var identity = User.Identity as ClaimsIdentity;
-                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                    var businessName = identity.Claims.FirstOrDefault(c => c.Type == "businessName")?.Value;
-                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _disputeRepoService.LogDisputeRequest(model, Convert.ToInt32(clientId));
+        //[HttpPost]
+        //[Route("log-dispute")]
+        //public async Task<IActionResult> LogDispute([FromBody] DisputeItemRequestDto model)
+        //{
+        //    var response = new WebApiResponse { };
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var identity = User.Identity as ClaimsIdentity;
+        //            var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        //            var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        //            var businessName = identity.Claims.FirstOrDefault(c => c.Type == "businessName")?.Value;
+        //            var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        //            var result = await _disputeRepoService.LogDisputeRequest(model, Convert.ToInt32(clientId));
                   
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        //            return Ok(result);
+        //        }
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //            .Select(e => e.ErrorMessage));
+        //        response.ResponseCode = AppResponseCodes.Failed;
+        //        response.Data = message;
+        //        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.ResponseCode = AppResponseCodes.InternalError;
+        //        return BadRequest(response);
+        //    }
+        //}
 
         // [AllowAnonymous]
         [HttpGet]
