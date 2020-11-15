@@ -5,7 +5,7 @@ namespace SocialPay.Domain.Entities
     public class FioranoT24TransactionResponse
     {
         public long FioranoT24TransactionResponseId { get; set; }
-        public string RequestId { get; set; }
+        public string PaymentReference { get; set; }
         public string ReferenceID { get; set; }
         public string ResponseCode { get; set; }
         public string ResponseText { get; set; }

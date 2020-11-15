@@ -79,14 +79,14 @@ namespace SocialPay.Job.Repository.Fiorano
                         TrxnLocation = _appSettings.fioranoTrxnLocation,
                         VtellerAppID = _appSettings.fioranoVtellerAppID,
                         Channel = channel, Message = message,
-                        RequestId = requestId
+                        PaymentReference = requestId
                     };
                     await context.FioranoT24Request.AddAsync(logRequest);
                     await context.SaveChangesAsync();
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
                     var logFioranoResponse = new FioranoT24TransactionResponse
                     {
-                        RequestId = logRequest.RequestId,
+                        PaymentReference = logRequest.PaymentReference,
                         Balance = postTransaction.FTResponse.Balance,
                         CHARGEAMT = postTransaction.FTResponse.CHARGEAMT,
                         COMMAMT = postTransaction.FTResponse.COMMAMT,

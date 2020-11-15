@@ -11,6 +11,6 @@ namespace SocialPay.Domain.Entities
         public string responsedata { get; set; }
         public bool sent { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
-        public virtual WalletTransferRequestLog WalletTransferRequestLog { get; set; }
+       // public virtual WalletTransferRequestLog WalletTransferRequestLog { get; set; }
     }
 }
