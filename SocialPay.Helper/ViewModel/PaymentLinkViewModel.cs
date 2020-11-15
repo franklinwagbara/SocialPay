@@ -69,6 +69,7 @@ namespace SocialPay.Helper.ViewModel
         public string PaymentMethod { get; set; }
         public string AdditionalDetails { get; set; }
         public string OrderStatus { get; set; }
+        public string PaymentReference { get; set; }
         public long RequestId { get; set; }
         public long ClientId { get; set; }
         public string CustomerTransactionReference { get; set; }

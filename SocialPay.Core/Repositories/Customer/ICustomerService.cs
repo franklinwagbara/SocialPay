@@ -312,11 +312,12 @@ namespace SocialPay.Core.Repositories.Customer
 
                 var otherLinksresponse = (from c in getCustomerOrders
                                 join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
+                                join v in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals v.PaymentReference
                                 select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
                                 DeliveryMethod = m.DeliveryMethod, Description = m.MerchantDescription,
-                                TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory, ClientId = clientId,
-                                CustomerTransactionReference = c.CustomerTransactionReference,
+                                TotalAmount = v.Amount, PaymentCategory = m.PaymentCategory, ClientId = clientId,
+                                CustomerTransactionReference = c.CustomerTransactionReference, PaymentReference = v.PaymentReference,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
                 request = otherLinksresponse;
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
