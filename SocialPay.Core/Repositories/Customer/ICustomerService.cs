@@ -303,7 +303,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
                                 select new OrdersViewModel { MerchantAmount = m.UnitPrice, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                                 Description = m.Description, ClientId = clientId, CustomerTransactionReference = c.CustomerTransactionReference,
+                                 MerchantDescription = m.Description, ClientId = clientId, CustomerTransactionReference = c.CustomerTransactionReference,
                                 TotalAmount = m.TotalAmount, PaymentCategory = category,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
                     request = invoiceResponse;
@@ -315,8 +315,8 @@ namespace SocialPay.Core.Repositories.Customer
                                 join v in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals v.PaymentReference
                                 select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                                DeliveryMethod = m.DeliveryMethod, Description = m.MerchantDescription,
-                                TransactionStatus = c.TransactionStatus,
+                                DeliveryMethod = m.DeliveryMethod, MerchantDescription = m.MerchantDescription,
+                                TransactionStatus = c.TransactionStatus, CustomerDescription = v.CustomerDescription,
                                 TotalAmount = v.Amount, PaymentCategory = m.PaymentCategory, ClientId = clientId,
                                 CustomerTransactionReference = c.CustomerTransactionReference, PaymentReference = v.PaymentReference,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
