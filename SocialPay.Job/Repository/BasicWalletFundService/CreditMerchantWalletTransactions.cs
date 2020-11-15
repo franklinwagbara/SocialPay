@@ -33,25 +33,27 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
         {
             try
             {
+                
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
-                        var getWalletInfo = await context.MerchantWallet
-                           .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
-                        if (getWalletInfo == null)
-                            return null;
-
                         var getTransInfo = await context.TransactionLog
-                            .SingleOrDefaultAsync(x => x.PaymentReference == item.PaymentReference
-                            && x.OrderStatus == OrderStatusCode.Pending);
+                           .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                           && x.OrderStatus == OrderStatusCode.Pending);
                         if (getTransInfo == null)
                             return null;
                         getTransInfo.OrderStatus = OrderStatusCode.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
+
+                        var getWalletInfo = await context.MerchantWallet
+                           .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+                        if (getWalletInfo == null)
+                            return null;
+
 
                         var walletModel = new WalletTransferRequestDto
                         {
@@ -83,7 +85,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
 
                         await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
-
+                      //  if(getTransInfo.OrderStatus == )
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {
