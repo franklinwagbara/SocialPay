@@ -7,6 +7,7 @@ namespace SocialPay.Domain.Entities
         public long InvoicePaymentInfoId { get; set; }
         public long InvoicePaymentLinkId { get; set; }
         public string TransactionReference { get; set; }
+        public string PaymentReference { get; set; }
         public string CustomerTransactionReference { get; set; }
         public string Email { get; set; }
         public string Fullname { get; set; }

@@ -371,13 +371,14 @@ namespace SocialPay.Core.Repositories.Customer
                                 var logconfirmation = new TransactionLog { };
                                 logconfirmation.Category = linkInfo.Channel;
                                 logconfirmation.CustomerEmail = getpaymentInfo.Email;
-                                logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
+                                logconfirmation.CustomerTransactionReference = getpaymentInfo.CustomerTransactionReference;
                                 logconfirmation.TransactionReference = model.TransactionReference;
                                 logconfirmation.OrderStatus = OrderStatusCode.Pending;
                                 logconfirmation.Message = model.Message;
                                 logconfirmation.LastDateModified = DateTime.Now;
                                 logconfirmation.CustomerInfo = linkInfo.ClientAuthenticationId;
                                 logconfirmation.Status = true;                               
+                                logconfirmation.PaymentReference = model.InvoiceReference;                               
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                                 var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
                                 logconfirmation.TotalAmount = invoiceInfo.TotalAmount;
