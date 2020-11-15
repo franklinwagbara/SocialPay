@@ -145,7 +145,6 @@ namespace SocialPay.Core.Services.Customer
 
                 var logCustomerInfo = new CustomerOtherPaymentsInfo
                 {
-                    Amount = model.CustomerAmount,
                     ClientAuthenticationId = getPaymentDetails.ClientAuthenticationId,
                     CustomerDescription = model.CustomerDescription,
                     MerchantPaymentSetupId = getPaymentDetails.MerchantPaymentSetupId,
@@ -205,6 +204,7 @@ namespace SocialPay.Core.Services.Customer
                     var filePath = Path.Combine(fileName, newFileName);
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
+                        logCustomerInfo.Amount = model.CustomerAmount;
                         logCustomerInfo.CustomerId = customerId;
                         logCustomerInfo.Document = newFileName;
                         logCustomerInfo.FileLocation = "CustomerDocuments";
@@ -214,10 +214,10 @@ namespace SocialPay.Core.Services.Customer
                         model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
                         await transaction.CommitAsync();
                         _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
-                        decimal CustomerTotalAmount = model.CustomerAmount;// + getPaymentDetails.ShippingFee;
+                        //decimal CustomerTotalAmount = model.CustomerAmount;// + getPaymentDetails.ShippingFee;
                         if (model.Channel == PaymentChannel.PayWithSpecta)
                         {
-                            var generateToken = await _payWithSpectaService.InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference);
+                            var generateToken = await _payWithSpectaService.InitiatePayment(logCustomerInfo.Amount, "Social pay", model.TransactionReference);
                             if (generateToken.ResponseCode != AppResponseCodes.Success)
                             {
                                 return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
@@ -226,7 +226,7 @@ namespace SocialPay.Core.Services.Customer
                             return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                         }
                         
-                        encryptedText = _appSettings.mid + _appSettings.paymentCombination + CustomerTotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                        encryptedText = _appSettings.mid + _appSettings.paymentCombination + logCustomerInfo.Amount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                         encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                         paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                         paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
@@ -235,6 +235,7 @@ namespace SocialPay.Core.Services.Customer
                 }
                 if (model.Channel == PaymentChannel.PayWithSpecta)
                 {
+                    logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
                     await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                     await _context.SaveChangesAsync();
                     var generateToken = await _payWithSpectaService.InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", model.TransactionReference);
@@ -245,6 +246,7 @@ namespace SocialPay.Core.Services.Customer
                     paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
                     return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentData };
                 }
+                logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
                 await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                 await _context.SaveChangesAsync();
                 encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
