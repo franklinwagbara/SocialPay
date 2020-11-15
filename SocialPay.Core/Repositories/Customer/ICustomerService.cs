@@ -90,7 +90,7 @@ namespace SocialPay.Core.Repositories.Customer
         public async Task<List<TransactionLog>> GetTransactionByClientId(long clientId)
         {
             return await _context.TransactionLog
-                .Where(x => x.ClientAuthenticationId == clientId
+                .Where(x => x.CustomerInfo == clientId
                ).ToListAsync();
         }
 
@@ -376,7 +376,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.OrderStatus = OrderStatusCode.Pending;
                                 logconfirmation.Message = model.Message;
                                 logconfirmation.LastDateModified = DateTime.Now;
-                                logconfirmation.CustomerInfo = linkInfo.ClientAuthenticationId;
+                                logconfirmation.CustomerInfo = model.CustomerId;
                                 logconfirmation.Status = true;                               
                                 logconfirmation.PaymentReference = model.InvoiceReference;
                                 logconfirmation.PaymentChannel = model.Channel;
@@ -523,7 +523,6 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.TransactionReference = model.TransactionReference;
                     logconfirmation.OrderStatus = OrderStatusCode.Pending;
                     logconfirmation.Message = model.Message;
-                    logconfirmation.CustomerInfo = paymentSetupInfo.ClientAuthenticationId;
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
