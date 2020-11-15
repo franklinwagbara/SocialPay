@@ -32,7 +32,10 @@ namespace SocialPay.Job.Repository.PayWithCard
                     foreach (var item in pendingRequest)
                     {
                         var getTransInfo = await context.TransactionLog
-                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
+                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                            && x.IsQueuedPayWithCard == false);
+                        if (getTransInfo == null)
+                            return null;
                         getTransInfo.IsQueuedPayWithCard = true;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
