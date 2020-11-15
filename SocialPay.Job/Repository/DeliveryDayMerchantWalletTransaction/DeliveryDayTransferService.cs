@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
@@ -38,6 +39,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        var requestId = Guid.NewGuid().ToString();
                         var getWalletInfo = await context.MerchantWallet
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
                         if (getWalletInfo == null)
@@ -71,13 +73,14 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                             channelID = walletModel.channelID,
                             CURRENCYCODE = walletModel.CURRENCYCODE,
                             frmacct = walletModel.frmacct,
-                            paymentRef = walletModel.paymentRef,
+                            PaymentReference = walletModel.paymentRef,
                             remarks = walletModel.remarks,
                             toacct = walletModel.toacct,
                             TransactionReference = item.TransactionReference,
                             CustomerTransactionReference = item.CustomerTransactionReference,
                             TransferType = walletModel.TransferType,
                             ChannelMode = WalletTransferMode.MerchantToSocialPay,
+                            RequestId = requestId
                         };
 
                         await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
@@ -96,7 +99,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                                     walletResponseModel.message = initiateRequest.message;
                                     walletResponseModel.response = initiateRequest.response;
                                     walletResponseModel.sent = initiateRequest.data.sent;
-                                    walletResponseModel.WalletTransferRequestLogId = walletRequestModel.WalletTransferRequestLogId;
+                                    walletResponseModel.RequestId = walletRequestModel.RequestId;
                                     walletResponseModel.responsedata = Convert.ToString(initiateRequest.responsedata);
                                     getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
@@ -132,9 +135,21 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                 }
 
             }
+            catch (SqlException db)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
             catch (Exception ex)
             {
-
+                var se = ex.InnerException as SqlException;
+                var code = se.Number;
+                var errorMessage = se.Message;
+                if (errorMessage.Contains("Violation") || code == 2627)
+                {
+                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

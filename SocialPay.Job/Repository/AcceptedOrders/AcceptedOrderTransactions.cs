@@ -68,7 +68,7 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                             channelID = walletModel.channelID,
                             CURRENCYCODE = walletModel.CURRENCYCODE,
                             frmacct = walletModel.frmacct,
-                            paymentRef = walletModel.paymentRef,
+                            PaymentReference = walletModel.paymentRef,
                             remarks = walletModel.remarks,
                             toacct = walletModel.toacct,
                             TransactionReference = item.TransactionReference,

@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialPay.Domain.Entities
 {
     public class WalletTransferRequestLog
     {
-        public long WalletTransferRequestLogId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string RequestId { get; set; }
+        public string PaymentReference { get; set; }
         public long ClientAuthenticationId { get; set; }
         public string TransactionReference { get; set; }
         public string CustomerTransactionReference { get; set; }
         public string amt { get; set; }
         public string toacct { get; set; }
         public string frmacct { get; set; }
-        public string paymentRef { get; set; }
         public string remarks { get; set; }
         public int channelID { get; set; }
         public string CURRENCYCODE { get; set; }
