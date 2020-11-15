@@ -316,6 +316,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
                                 DeliveryMethod = m.DeliveryMethod, Description = m.MerchantDescription,
+                                TransactionStatus = c.TransactionStatus,
                                 TotalAmount = v.Amount, PaymentCategory = m.PaymentCategory, ClientId = clientId,
                                 CustomerTransactionReference = c.CustomerTransactionReference, PaymentReference = v.PaymentReference,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
