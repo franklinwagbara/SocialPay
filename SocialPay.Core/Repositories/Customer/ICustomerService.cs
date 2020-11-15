@@ -579,6 +579,7 @@ namespace SocialPay.Core.Repositories.Customer
                     {
                         try
                         {
+                            logconfirmation.Status = true;
                             logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
                             logconfirmation.DeliveryFinalDate = logconfirmation.DeliveryDate.AddDays(2);
                             await _context.TransactionLog.AddAsync(logconfirmation);
