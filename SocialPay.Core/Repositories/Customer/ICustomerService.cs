@@ -131,9 +131,9 @@ namespace SocialPay.Core.Repositories.Customer
                              join p in _context.TransactionLog on c.TransactionReference  equals p.TransactionReference
                          join a in _context.CustomerOtherPaymentsInfo on p.PaymentReference equals a.PaymentReference
                          select new CustomerPaymentViewModel { MerchantAmount = c.MerchantAmount, CustomerEmail = a.Email,
-                         TotalAmount = c.TotalAmount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
+                         TotalAmount = a.Amount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
                          ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
-                         DeliveryTime = c.DeliveryTime, MerchantDescription = c.MerchantDescription, CustomerDescription = c.CustomerDescription,
+                         DeliveryTime = c.DeliveryTime, MerchantDescription = c.MerchantDescription, CustomerDescription = a.CustomerDescription,
                          TransactionReference = c.TransactionReference, Fullname = a.Fullname,
                          Document = a.Document == null ? string.Empty : _appSettings.BaseApiUrl + a.FileLocation + "/" + a.Document,
                          CustomerTransactionReference = p.CustomerTransactionReference}).OrderByDescending(x=>x.TransactionDate).ToList();

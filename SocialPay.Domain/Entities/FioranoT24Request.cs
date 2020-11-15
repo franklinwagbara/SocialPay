@@ -20,6 +20,8 @@ namespace SocialPay.Domain.Entities
         public string SessionId { get; set; }
         public string TrxnLocation { get; set; }
         public string JsonRequest { get; set; }
+        public string Channel { get; set; }
+        public string Message { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
         public virtual ICollection<FioranoT24TransactionResponse> FioranoT24TransactionResponse { get; set; }
     }
