@@ -86,12 +86,41 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {
-                            getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
-                            getTransInfo.LastDateModified = DateTime.Now;
-                            getTransInfo.WalletFundDate = DateTime.Now;
-                            context.Update(getTransInfo);
-                            await context.SaveChangesAsync();
+                            using(var transaction = await context.Database.BeginTransactionAsync())
+                            {
+                                try
+                                {
+                                    var walletResponse = new WalletTransferResponse
+                                    {
+                                        WalletTransferRequestLogId = walletRequestModel.WalletTransferRequestLogId,
+                                        sent = initiateRequest.data.sent,
+                                        message = initiateRequest.message,
+                                        response = initiateRequest.response,
+                                        responsedata = Convert.ToString(initiateRequest.responsedata),
+                                    };
+                                    getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.LastDateModified = DateTime.Now;
+                                    getTransInfo.WalletFundDate = DateTime.Now;
+                                    context.Update(getTransInfo);
+                                    await context.SaveChangesAsync();
+                                    await transaction.CommitAsync();
+                                }
+                                catch (Exception ex)
+                                {
+                                    await transaction.RollbackAsync();
+                                }
+                            }
+                           
                         }
+
+                        var failedResponse = new FailedTransactions
+                        {
+                            CustomerTransactionReference = item.CustomerTransactionReference,
+                            Message = initiateRequest.message,
+                            TransactionReference = item.TransactionReference
+                        };
+                        await context.FailedTransactions.AddAsync(failedResponse);
+                        await context.SaveChangesAsync();
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
