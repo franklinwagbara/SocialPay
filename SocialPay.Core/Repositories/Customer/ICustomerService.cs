@@ -627,12 +627,52 @@ namespace SocialPay.Core.Repositories.Customer
                 logRequest.TransactionReference = model.TransactionReference;
                 if (model.ProcessedBy == AcceptRejectRequest.Merchant)
                 {
-                    if (getTransactionLogs.TransactionStatus == OrderStatusCode.Decline)
+                    using(var transaction = await _context.Database.BeginTransactionAsync())
                     {
-                        await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
-                        await _context.SaveChangesAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        try
+                        {
+                            if (model.Status == OrderStatusCode.Decline)
+                            {
+                                if (getTransactionLogs.TransactionStatus == OrderStatusCode.Decline)
+                                {
+                                    logRequest.OrderStatus = OrderStatusCode.Dispute;
+                                    await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
+                                    await _context.SaveChangesAsync();
+                                    getTransactionLogs.TransactionStatus = OrderStatusCode.Dispute;
+                                    getTransactionLogs.Status = true;
+                                    getTransactionLogs.IsAccepted = true;
+                                    getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
+                                    _context.Update(getTransactionLogs);
+                                    await _context.SaveChangesAsync();
+                                    await transaction.CommitAsync();
+                                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                                }
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                            }
+
+                            if (getTransactionLogs.TransactionStatus == OrderStatusCode.Decline)
+                            {
+                                logRequest.OrderStatus = OrderStatusCode.Approved;
+                                await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
+                                await _context.SaveChangesAsync();
+                                getTransactionLogs.TransactionStatus = OrderStatusCode.Approved;
+                                getTransactionLogs.Status = true;
+                                getTransactionLogs.IsAccepted = true;
+                                getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
+                                _context.Update(getTransactionLogs);
+                                await _context.SaveChangesAsync();
+                                await transaction.CommitAsync();
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                            }
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        }
                     }
+                  
                 }
 
                 if (getTransactionLogs != null && getTransactionLogs.TransactionStatus != OrderStatusCode.Pending)
