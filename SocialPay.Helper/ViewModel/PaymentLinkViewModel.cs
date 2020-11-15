@@ -57,7 +57,8 @@ namespace SocialPay.Helper.ViewModel
     public class OrdersViewModel
     {
         public long CustomerTransactionId { get; set; }
-        public string Description { get; set; }
+        public string MerchantDescription { get; set; }
+        public string CustomerDescription { get; set; }
         public decimal MerchantAmount { get; set; }
         public decimal ShippingFee { get; set; }
         public decimal TotalAmount { get; set; }

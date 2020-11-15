@@ -33,7 +33,7 @@ namespace SocialPay.Core.Services.Report
                                 join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
                                 select new OrdersViewModel { MerchantAmount = m.UnitPrice, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                                 Description = m.Description, ClientId = c.ClientAuthenticationId, CustomerTransactionReference = c.CustomerTransactionReference,
+                                 MerchantDescription = m.Description, ClientId = c.ClientAuthenticationId, CustomerTransactionReference = c.CustomerTransactionReference,
                                 TotalAmount = m.TotalAmount, PaymentCategory = category,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
                     request = invoiceResponse;
@@ -44,7 +44,7 @@ namespace SocialPay.Core.Services.Report
                                 join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
                                 select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                                DeliveryMethod = m.DeliveryMethod, Description = m.MerchantDescription,
+                                DeliveryMethod = m.DeliveryMethod, MerchantDescription = m.MerchantDescription,
                                 TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory, ClientId = c.ClientAuthenticationId,
                                 CustomerTransactionReference = c.CustomerTransactionReference,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
