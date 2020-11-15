@@ -611,7 +611,11 @@ namespace SocialPay.Core.Repositories.Customer
             try
             {
                 var getTransactionLogs = await _context.TransactionLog
-                    .SingleOrDefaultAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference);
+                    .SingleOrDefaultAsync(x => x.CustomerTransactionReference == 
+                    model.CustomerTransactionReference);
+                if(getTransactionLogs != null && getTransactionLogs.TransactionStatus != OrderStatusCode.Pending)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionProcessed};
+
                 if (await _context.ItemAcceptedOrRejected
                     .AnyAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference))
                 return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionAlreadyexit };
@@ -653,7 +657,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 logRequest.ReturnedDate = DateTime.Now.AddDays(Convert.ToInt32(_appSettings.returnedDateSLA));
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
-                                getTransactionLogs.OrderStatus = OrderStatusCode.Decline;
+                                getTransactionLogs.TransactionStatus = OrderStatusCode.Decline;
                                 getTransactionLogs.Status = true;
                                 getTransactionLogs.IsAccepted = false;
                                 getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
@@ -691,7 +695,7 @@ namespace SocialPay.Core.Repositories.Customer
                             logRequest.LastDateModified = DateTime.Now;
                             await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                             await _context.SaveChangesAsync();
-                            getTransactionLogs.OrderStatus = model.Status;
+                            getTransactionLogs.TransactionStatus = OrderStatusCode.Approved;
                             getTransactionLogs.Status = true;
                             getTransactionLogs.IsAccepted = true;
                             getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
