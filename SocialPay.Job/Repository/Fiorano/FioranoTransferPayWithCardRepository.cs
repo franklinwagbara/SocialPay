@@ -26,7 +26,7 @@ namespace SocialPay.Job.Repository.Fiorano
 
         public IServiceProvider Services { get; }
         public async Task<WebApiResponse> InititiateDebit(string debitAmount, string narration,
-            string transactionRef, string creditAccountNo, bool tranType)
+            string transactionRef, string creditAccountNo, bool tranType, string channel, string message)
         {
             try
             {
@@ -76,6 +76,7 @@ namespace SocialPay.Job.Repository.Fiorano
                         TransactionType = _appSettings.fioranoTransactionType,
                         TrxnLocation = _appSettings.fioranoTrxnLocation,
                         VtellerAppID = _appSettings.fioranoVtellerAppID,
+                        Channel = channel, Message = message
                     };
                     await context.FioranoT24Request.AddAsync(logRequest);
                     await context.SaveChangesAsync();

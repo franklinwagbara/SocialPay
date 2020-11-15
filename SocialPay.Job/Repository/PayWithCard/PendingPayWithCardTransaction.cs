@@ -47,7 +47,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount), 
                             "Card-Payment" + " - " + item.TransactionReference +
                             " - "+ item.CustomerTransactionReference, item.TransactionReference,
-                            "", false);
+                            "", false, item.PaymentChannel, "Card payment");
                         if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                         {
                             getTransInfo.IsApproved = true;

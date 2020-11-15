@@ -61,7 +61,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                                .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
                                "Card-Payment" + " - " + item.TransactionReference +
                                " - " + item.CustomerTransactionReference, item.TransactionReference,
-                               getBankInfo.Nuban, true);
+                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer");
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
