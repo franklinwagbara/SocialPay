@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SocialPay.Job.Repository.DeliveryDayMerchantTransaction;
+using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Services;
 using System;
 using System.Threading.Tasks;
