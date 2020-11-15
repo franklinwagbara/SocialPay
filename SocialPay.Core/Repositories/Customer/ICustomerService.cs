@@ -606,7 +606,7 @@ namespace SocialPay.Core.Repositories.Customer
             }
         }
 
-        public async Task<WebApiResponse> ValidateShippingRequest(AcceptRejectRequestDto model, long clientId)
+        public async Task<WebApiResponse> AcceptRejectOrderRequest(AcceptRejectRequestDto model, long clientId)
         {
             try
             {

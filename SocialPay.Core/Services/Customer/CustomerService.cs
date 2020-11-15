@@ -324,7 +324,7 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-                var validateReference = await _customerService.ValidateShippingRequest(model, clientId);
+                var validateReference = await _customerService.AcceptRejectOrderRequest(model, clientId);
                 return validateReference;
             }
             catch (Exception ex)
