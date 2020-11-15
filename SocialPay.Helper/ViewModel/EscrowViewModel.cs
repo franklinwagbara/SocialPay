@@ -16,6 +16,7 @@ namespace SocialPay.Helper.ViewModel
         public string CustomUrl { get; set; }
         public string DeliveryMethod { get; set; }
         public long DeliveryTime { get; set; }
+        public DateTime DeliveryDay { get; set; }
         public bool RedirectAfterPayment { get; set; }
         public string AdditionalDetails { get; set; }
         public string PaymentCategory { get; set; }
