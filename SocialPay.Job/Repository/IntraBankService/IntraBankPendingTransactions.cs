@@ -40,6 +40,11 @@ namespace SocialPay.Job.Repository.IntraBankService
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        var getTransInfo = await context.TransactionLog
+                         .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                         && x.DeliveryDayTransferStatus == OrderStatusCode.CompletedWalletFunding);
+                        if (getTransInfo == null)
+                            return null;
                         string bankCode = string.Empty;
                         var getBankInfo = await context.MerchantBankInfo
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
@@ -49,9 +54,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                         if(getBankInfo.BankCode == _appSettings.SterlingBankCode)
                         {
                             bankCode = getBankInfo.BankCode;
-                            var getTransInfo = await context.TransactionLog
-                           .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
-
+                          
                             getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.WalletFundingProgress;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
