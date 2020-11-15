@@ -9,7 +9,7 @@ namespace SocialPay.Domain.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string RequestId { get; set; }
+        public string PaymentReference { get; set; }
         public string TransactionReference  { get; set; }
         public string TransactionBranch { get; set; }
         public string TransactionType { get; set; }

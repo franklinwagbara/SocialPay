@@ -102,7 +102,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             VtellerAppID = _appSettings.fioranoVtellerAppID,
                             Channel = item.PaymentChannel,
                             Message = "Card payment",
-                            RequestId = requestId
+                            PaymentReference = item.PaymentReference
                         };
                         await context.FioranoT24Request.AddAsync(logRequest);
                         await context.SaveChangesAsync();
@@ -121,7 +121,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                                     await context.SaveChangesAsync();
                                     var logFioranoResponse = new FioranoT24TransactionResponse
                                     {
-                                        RequestId = logRequest.RequestId,
+                                        PaymentReference = logRequest.PaymentReference,
                                         Balance = postTransaction.FTResponse.Balance,
                                         CHARGEAMT = postTransaction.FTResponse.CHARGEAMT,
                                         COMMAMT = postTransaction.FTResponse.COMMAMT,
