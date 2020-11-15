@@ -55,11 +55,11 @@ namespace SocialPay.Core.Repositories.Customer
             );
         }
 
-        public async Task<InvoicePaymentInfo> GetInvoicePaymentInfo(string refId, string customerRef)
+        public async Task<InvoicePaymentInfo> GetInvoicePaymentInfo(string refId, string paymentReference)
         {
             return await _context.InvoicePaymentInfo
                 .SingleOrDefaultAsync(p => p.TransactionReference
-              == refId && p.CustomerTransactionReference == customerRef
+              == refId && p.PaymentReference == paymentReference
             );
         }
 
