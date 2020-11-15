@@ -44,8 +44,10 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             return null;
 
                         var getTransInfo = await context.TransactionLog
-                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
-
+                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                            && x.OrderStatus == OrderStatusCode.Pending);
+                        if (getTransInfo == null)
+                            return null;
                         getTransInfo.OrderStatus = OrderStatusCode.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
