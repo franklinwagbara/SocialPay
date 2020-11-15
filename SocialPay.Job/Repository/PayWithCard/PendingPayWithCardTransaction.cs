@@ -31,6 +31,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
                             && x.IsQueuedPayWithCard == false);
@@ -50,7 +51,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount), 
                             "Card-Payment" + " - " + item.TransactionReference +
                             " - "+ item.CustomerTransactionReference, item.TransactionReference,
-                            "", false, item.PaymentChannel, "Card payment");
+                            "", false, item.PaymentChannel, "Card payment", requestId);
                         if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                         {
                             getTransInfo.IsApproved = true;

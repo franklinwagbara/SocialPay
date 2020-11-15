@@ -27,11 +27,11 @@ namespace SocialPay.Job.Repository.Fiorano
 
         public IServiceProvider Services { get; }
         public async Task<WebApiResponse> InititiateDebit(string debitAmount, string narration,
-            string transactionRef, string creditAccountNo, bool tranType, string channel, string message)
+            string transactionRef, string creditAccountNo, bool tranType, string channel,
+            string message, string requestId)
         {
             try
             {
-                var requestId = Guid.NewGuid().ToString();
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();

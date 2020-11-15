@@ -40,6 +40,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                          .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
                          && x.TransactionStatus == OrderStatusCode.CompletedWalletFunding);
@@ -64,7 +65,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                                .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
                                "Card-Payment" + " - " + item.TransactionReference +
                                " - " + item.CustomerTransactionReference, item.TransactionReference,
-                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer");
+                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer", requestId);
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
