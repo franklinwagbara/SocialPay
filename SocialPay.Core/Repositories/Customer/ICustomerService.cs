@@ -378,7 +378,8 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.LastDateModified = DateTime.Now;
                                 logconfirmation.CustomerInfo = linkInfo.ClientAuthenticationId;
                                 logconfirmation.Status = true;                               
-                                logconfirmation.PaymentReference = model.InvoiceReference;                               
+                                logconfirmation.PaymentReference = model.InvoiceReference;
+                                logconfirmation.PaymentChannel = model.Channel;
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                                 var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
                                 logconfirmation.TotalAmount = invoiceInfo.TotalAmount;

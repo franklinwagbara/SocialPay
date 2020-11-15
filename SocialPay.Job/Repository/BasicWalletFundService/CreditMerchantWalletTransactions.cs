@@ -103,6 +103,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                     getTransInfo.WalletFundDate = DateTime.Now;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
+                                    await context.WalletTransferResponse.AddAsync(walletResponse);
+                                    await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
                                 }
                                 catch (Exception ex)
