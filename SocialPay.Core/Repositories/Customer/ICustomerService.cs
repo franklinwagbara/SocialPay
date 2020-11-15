@@ -616,20 +616,23 @@ namespace SocialPay.Core.Repositories.Customer
                 if(getTransactionLogs != null && getTransactionLogs.TransactionStatus != OrderStatusCode.Pending)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionProcessed};
 
+                if(getTransactionLogs.DeliveryDate < DateTime.Now)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };
+
                 if (await _context.ItemAcceptedOrRejected
                     .AnyAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference))
                 return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionAlreadyexit };
                 if (model.Status == OrderStatusCode.Decline || model.Status == OrderStatusCode.Approved)
                 {
-                    var validateOrder = await _context.MerchantPaymentSetup
-                   .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
-                    if (validateOrder == null)
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                   // var validateOrder = await _context.MerchantPaymentSetup
+                   //.SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+                   // if (validateOrder == null)
+                   //     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                    var response = await _context.CustomerTransaction
-                        .SingleOrDefaultAsync(x => x.CustomerTransactionId == model.RequestId);
+                   // var response = await _context.CustomerTransaction
+                   //     .SingleOrDefaultAsync(x => x.CustomerTransactionId == model.RequestId);
 
-                    int sla = Convert.ToInt32(_appSettings.deliverySLA);
+                   // int sla = Convert.ToInt32(_appSettings.deliverySLA);
 
                     var logRequest = new ItemAcceptedOrRejected
                     {
@@ -648,9 +651,9 @@ namespace SocialPay.Core.Repositories.Customer
                             if (model.Status == OrderStatusCode.Decline)
                             {
                                 var getMerchant = await _context.ClientAuthentication
-                                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateOrder.ClientAuthenticationId);
-                                if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
-                                    return new WebApiResponse { ResponseCode = AppResponseCodes.CancelHasExpired };
+                                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getTransactionLogs.ClientAuthenticationId);
+                                //if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
+                                //    return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };
 
                                 logRequest.OrderStatus = OrderStatusCode.Decline;
                                 logRequest.LastDateModified = DateTime.Now;
@@ -682,7 +685,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 var mailBuilder = new StringBuilder();
                                 mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
                                 mailBuilder.AppendLine("<br />");
-                                mailBuilder.AppendLine("An order has been rejected by" + "" + response.CustomerEmail + " " + ".<br />");
+                                mailBuilder.AppendLine("An order has been rejected by" + "" + getTransactionLogs.CustomerEmail + " " + ".<br />");
                                 //mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
                                 // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
                                 mailBuilder.AppendLine("Best Regards,");
