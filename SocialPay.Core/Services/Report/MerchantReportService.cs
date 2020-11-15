@@ -213,11 +213,13 @@ namespace SocialPay.Core.Services.Report
                 var response = (from m in getTransactions
                               //  join i in _context.ItemAcceptedOrRejected on m.TransactionReference equals i.TransactionReference
                                 join t in  _context.TransactionLog on m.TransactionReference equals t.TransactionReference
-                                where t.TransactionStatus == status select new EscrowViewModel {
+                                where t.TransactionStatus == status
+                                select new EscrowViewModel {
                                 ShippingFee = m.ShippingFee, PaymentCategory = m.PaymentCategory, PaymentLinkName = m.PaymentLinkName,
                                 MerchantAmount = m.MerchantAmount, DeliveryMethod = m.DeliveryMethod,
                                 MerchantDescription = m.MerchantDescription, TotalAmount = m.TotalAmount,
-                                Channel = t.Category, ClientId = t.ClientAuthenticationId, CustomerTransactionReference = t.CustomerTransactionReference,
+                                Channel = t.Category, ClientId = t.ClientAuthenticationId, DeliveryDay = t.DeliveryFinalDate,
+                                CustomerTransactionReference = t.CustomerTransactionReference,
                                 }).ToList();
 
                 result = response;
