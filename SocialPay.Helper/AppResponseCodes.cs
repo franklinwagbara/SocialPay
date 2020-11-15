@@ -94,6 +94,8 @@
         public const string CompletedWalletFunding = "06";
         public const string CompletedDirectFundTransfer = "07";
         public const string Failed = "08";
+        public const string BankTransferProcessing = "09";
+        public const string TransactionCompleted = "10";
 
     }
     public class RoleDetails

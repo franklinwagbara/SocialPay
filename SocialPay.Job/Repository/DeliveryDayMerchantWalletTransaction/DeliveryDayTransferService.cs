@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.DeliveryDayMerchantTransaction
+namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
 {
     public class DeliveryDayTransferService
     {
@@ -47,6 +47,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantTransaction
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
                         getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.WalletFundingProgress;
+                        getTransInfo.TransactionStatus = OrderStatusCode.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -100,6 +101,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantTransaction
                                     getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     getTransInfo.WalletFundDate = DateTime.Now;
+                                    getTransInfo.TransactionStatus = OrderStatusCode.CompletedWalletFunding;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
                                     await context.WalletTransferResponse.AddAsync(walletResponseModel);
@@ -115,6 +117,15 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantTransaction
                             }
                            
                         }
+
+                        var failedResponse = new FailedTransactions
+                        {
+                            CustomerTransactionReference = item.CustomerTransactionReference,
+                            Message = initiateRequest.message,
+                            TransactionReference = item.TransactionReference
+                        };
+                        await context.FailedTransactions.AddAsync(failedResponse);
+                        await context.SaveChangesAsync();
                         return null;
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

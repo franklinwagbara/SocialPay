@@ -42,7 +42,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                     {
                         var getTransInfo = await context.TransactionLog
                          .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                         && x.DeliveryDayTransferStatus == OrderStatusCode.CompletedWalletFunding);
+                         && x.TransactionStatus == OrderStatusCode.CompletedWalletFunding);
                         if (getTransInfo == null)
                             return null;
                         string bankCode = string.Empty;
@@ -55,7 +55,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                         {
                             bankCode = getBankInfo.BankCode;
                           
-                            getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.WalletFundingProgress;
+                            getTransInfo.TransactionStatus = OrderStatusCode.BankTransferProcessing;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
@@ -69,6 +69,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
                                 getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedDirectFundTransfer;
+                                getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
                                 await context.SaveChangesAsync();
@@ -76,13 +77,24 @@ namespace SocialPay.Job.Repository.IntraBankService
                             }
 
                             getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.Failed;
+                            getTransInfo.TransactionStatus = OrderStatusCode.Failed;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
                             //return null;
                         }
+                        getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.BankTransferProcessing;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
+                        await context.SaveChangesAsync();
+                        await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
+                            getBankInfo.BankCode, _appSettings.socialT24AccountNo);
 
-                       //G await _interBankPendingTransferService.ProcessTransactions
+                        getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
+                        getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.TransactionCompleted;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
+                        await context.SaveChangesAsync();
 
                        //Other banks transfer
                       //  return null;
