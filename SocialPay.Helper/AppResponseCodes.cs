@@ -88,10 +88,12 @@
         public const string Pending = "01";
         public const string Approved = "02";
         public const string Decline = "03";
-        public const string Failed = "04";
+        public const string Dispute = "04";
         public const string WalletFundingProgress = "05";
         public const string CompletedWalletFunding = "06";
         public const string CompletedDirectFundTransfer = "07";
+        public const string Failed = "08";
+
     }
     public class RoleDetails
     {
