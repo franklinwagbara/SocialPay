@@ -380,6 +380,8 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.Status = true;                               
                                 logconfirmation.PaymentReference = model.InvoiceReference;
                                 logconfirmation.PaymentChannel = model.Channel;
+                                logconfirmation.TransactionStatus = OrderStatusCode.Approved;
+
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                                 var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
                                 logconfirmation.TotalAmount = invoiceInfo.TotalAmount;
@@ -526,6 +528,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
+                    logconfirmation.TransactionStatus = OrderStatusCode.Pending;
 
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
@@ -571,6 +574,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
+                    logconfirmation.TransactionStatus = OrderStatusCode.Approved;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
