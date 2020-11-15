@@ -44,7 +44,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             return null;
 
                         var getTransInfo = await context.TransactionLog
-                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                            .SingleOrDefaultAsync(x => x.PaymentReference == item.PaymentReference
                             && x.OrderStatus == OrderStatusCode.Pending);
                         if (getTransInfo == null)
                             return null;
@@ -52,7 +52,6 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
-                                              
 
                         var walletModel = new WalletTransferRequestDto
                         {
