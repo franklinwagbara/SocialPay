@@ -148,17 +148,17 @@ namespace SocialPay.API
             ////services.AddSingleton<WalletRepoJobService>();
             ////services.AddSingleton<PendingWalletRequestService>();
 
-            //services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
-            //services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
-            //services.AddSingleton<WalletRepoJobService>();
-            //services.AddSingleton<CreditMerchantWalletTransactions>();
+            services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
+            services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            services.AddSingleton<WalletRepoJobService>();
+            services.AddSingleton<CreditMerchantWalletTransactions>();
 
-            ////////Credit T24 account for card payments
-            //services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
-            //services.AddSingleton<IHostedService, CardPaymentTask>();
-            //services.AddSingleton<FioranoTransferPayWithCardRepository>();
-            //services.AddSingleton<PendingPayWithCardTransaction>();
-            //services.AddSingleton<CreditDebitService>();
+            //////Credit T24 account for card payments
+            services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
+            services.AddSingleton<IHostedService, CardPaymentTask>();
+            services.AddSingleton<FioranoTransferPayWithCardRepository>();
+            services.AddSingleton<PendingPayWithCardTransaction>();
+            services.AddSingleton<CreditDebitService>();
 
 
             ////Credit Social pay wallet from merchant wallet

@@ -62,7 +62,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             channelID = 1,
                             TransferType = 1,
                             frmacct = _appSettings.SterlingWalletPoolAccount,
-                            paymentRef = Guid.NewGuid().ToString(),
+                            paymentRef = item.PaymentReference,
                             remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
@@ -72,7 +72,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             channelID = walletModel.channelID,
                             CURRENCYCODE = walletModel.CURRENCYCODE,
                             frmacct = walletModel.frmacct,
-                            paymentRef = walletModel.paymentRef,
+                            paymentRef = item.PaymentReference,
                             remarks = walletModel.remarks,
                             toacct = walletModel.toacct,
                             TransactionReference = item.TransactionReference,
