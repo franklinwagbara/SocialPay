@@ -22,12 +22,15 @@ namespace SocialPay.API.Controllers
         private readonly MerchantPaymentLinkService _merchantPaymentLinkService;
         private readonly CustomerRepoService _customerRepoService;
         private readonly MerchantReportService _merchantReportService;
+        private readonly DisputeRepoService _disputeRepoService;
         public TransactionsController(MerchantPaymentLinkService merchantPaymentLinkService,
-            CustomerRepoService customerRepoService, MerchantReportService merchantReportService)
+            CustomerRepoService customerRepoService, MerchantReportService merchantReportService,
+            DisputeRepoService disputeRepoService)
         {
             _merchantPaymentLinkService = merchantPaymentLinkService;
             _customerRepoService = customerRepoService;
             _merchantReportService = merchantReportService;
+            _disputeRepoService = disputeRepoService;
         }
 
        // [AllowAnonymous]
@@ -126,6 +129,38 @@ namespace SocialPay.API.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Route("log-dispute")]
+        public async Task<IActionResult> LogDispute([FromBody] DisputeItemRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _disputeRepoService.LogDisputeRequest(model, Convert.ToInt32(clientId));
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
         [HttpGet]
         [Route("get-disputes")]
         public async Task<IActionResult> GetLoggedDisputes()
@@ -140,7 +175,6 @@ namespace SocialPay.API.Controllers
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     var result = await _merchantReportService.GetAllLoggedDisputes(Convert.ToInt32(clientId), false);
-
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
