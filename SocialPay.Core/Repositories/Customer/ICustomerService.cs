@@ -575,6 +575,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
                     logconfirmation.TransactionStatus = OrderStatusCode.Approved;
+                   // logconfirmation.CustomerEmail = model.e;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
