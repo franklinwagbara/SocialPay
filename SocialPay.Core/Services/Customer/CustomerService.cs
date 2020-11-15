@@ -109,13 +109,13 @@ namespace SocialPay.Core.Services.Customer
                     var getInvoiceInfo = await _customerService.GetInvoicePaymentAsync(model.TransactionReference);
                     if (getInvoiceInfo == null)                 
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
-                    //var customerReference = Guid.NewGuid().ToString();
+                    var customerReference = Guid.NewGuid().ToString();
                     var invoicePayment = new InvoicePaymentInfo
                     {
                         TransactionReference = model.TransactionReference, Channel = model.Channel,
                         Email = model.Email, Fullname = model.Fullname, PhoneNumber = model.PhoneNumber,
                         InvoicePaymentLinkId = getInvoiceInfo.InvoicePaymentLinkId, LastDateModified = DateTime.Now,
-                        CustomerTransactionReference = paymentRef
+                        CustomerTransactionReference = customerReference, PaymentReference = paymentRef
                     };
                     decimal CustomerTotalAmount = getInvoiceInfo.TotalAmount;
                     if (model.Channel == PaymentChannel.PayWithSpecta)
