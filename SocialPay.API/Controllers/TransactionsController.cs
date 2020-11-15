@@ -132,7 +132,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("log-dispute")]
-        public async Task<IActionResult> LogDispute([FromBody] DisputeItemRequestDto model)
+        public async Task<IActionResult> LogDispute([FromForm] DisputeItemRequestDto model)
         {
             var response = new WebApiResponse { };
             try
