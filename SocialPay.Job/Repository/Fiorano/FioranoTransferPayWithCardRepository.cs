@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
@@ -30,6 +31,7 @@ namespace SocialPay.Job.Repository.Fiorano
         {
             try
             {
+                var requestId = Guid.NewGuid().ToString();
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -76,14 +78,15 @@ namespace SocialPay.Job.Repository.Fiorano
                         TransactionType = _appSettings.fioranoTransactionType,
                         TrxnLocation = _appSettings.fioranoTrxnLocation,
                         VtellerAppID = _appSettings.fioranoVtellerAppID,
-                        Channel = channel, Message = message
+                        Channel = channel, Message = message,
+                        RequestId = requestId
                     };
                     await context.FioranoT24Request.AddAsync(logRequest);
                     await context.SaveChangesAsync();
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
                     var logFioranoResponse = new FioranoT24TransactionResponse
                     {
-                        FioranoT24RequestId = logRequest.FioranoT24RequestId,
+                        RequestId = logRequest.RequestId,
                         Balance = postTransaction.FTResponse.Balance,
                         CHARGEAMT = postTransaction.FTResponse.CHARGEAMT,
                         COMMAMT = postTransaction.FTResponse.COMMAMT,
@@ -103,9 +106,21 @@ namespace SocialPay.Job.Repository.Fiorano
                 }
                
             }
+            catch (SqlException db)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
             catch (Exception ex)
             {
-
+                var se = ex.InnerException as SqlException;
+                var code = se.Number;
+                var errorMessage = se.Message;
+                if (errorMessage.Contains("Violation") || code == 2627)
+                {
+                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

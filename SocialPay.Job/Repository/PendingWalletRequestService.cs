@@ -59,7 +59,7 @@ namespace SocialPay.Job.Repository
                         var walletRequestModel = new WalletTransferRequestLog
                         {
                             amt = walletModel.amt, channelID = walletModel.channelID, CURRENCYCODE = walletModel.CURRENCYCODE,
-                            frmacct = walletModel.frmacct, paymentRef = walletModel.paymentRef, remarks = walletModel.remarks,
+                            frmacct = walletModel.frmacct, PaymentReference = walletModel.paymentRef, remarks = walletModel.remarks,
                             toacct = walletModel.toacct, TransactionReference = item.TransactionReference,
                             CustomerTransactionReference = item.CustomerTransactionReference, TransferType = walletModel.TransferType,
                         };

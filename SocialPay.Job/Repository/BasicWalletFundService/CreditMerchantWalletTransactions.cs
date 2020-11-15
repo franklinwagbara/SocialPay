@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
@@ -39,6 +40,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
                            && x.OrderStatus == OrderStatusCode.Pending);
@@ -73,14 +75,15 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             channelID = walletModel.channelID,
                             CURRENCYCODE = walletModel.CURRENCYCODE,
                             frmacct = walletModel.frmacct,
-                            paymentRef = item.PaymentReference,
+                            PaymentReference = item.PaymentReference,
                             remarks = walletModel.remarks,
                             toacct = walletModel.toacct,
                             TransactionReference = item.TransactionReference,
                             CustomerTransactionReference = item.CustomerTransactionReference,
                             TransferType = walletModel.TransferType,
                             ChannelMode = WalletTransferMode.SocialPayToMerchant,
-                            ClientAuthenticationId = item.ClientAuthenticationId
+                            ClientAuthenticationId = item.ClientAuthenticationId,
+                            RequestId = requestId
                         };
 
                         await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
@@ -95,7 +98,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                 {
                                     var walletResponse = new WalletTransferResponse
                                     {
-                                        WalletTransferRequestLogId = walletRequestModel.WalletTransferRequestLogId,
+                                        RequestId = walletRequestModel.RequestId,
                                         sent = initiateRequest.data.sent,
                                         message = initiateRequest.message,
                                         response = initiateRequest.response,
@@ -131,8 +134,21 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                 }
 
             }
+            catch (SqlException db)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
             catch (Exception ex)
             {
+                var se = ex.InnerException as SqlException;
+                var code = se.Number;
+                var errorMessage = se.Message;
+                if (errorMessage.Contains("Violation") || code == 2627)
+                {
+                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

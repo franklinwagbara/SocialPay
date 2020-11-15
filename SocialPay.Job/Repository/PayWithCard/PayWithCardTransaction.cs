@@ -30,7 +30,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.Status == true && x.IsQueuedPayWithCard == false
                         && x.IsCompletedPayWithCard == false
-                        && x.PaymentChannel == PaymentChannel.Card).Take(1).ToListAsync();
+                        && x.PaymentChannel == PaymentChannel.Card).ToListAsync();
 
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)

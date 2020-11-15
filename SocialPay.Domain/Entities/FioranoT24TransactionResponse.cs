@@ -5,7 +5,7 @@ namespace SocialPay.Domain.Entities
     public class FioranoT24TransactionResponse
     {
         public long FioranoT24TransactionResponseId { get; set; }
-        public long FioranoT24RequestId { get; set; }
+        public string RequestId { get; set; }
         public string ReferenceID { get; set; }
         public string ResponseCode { get; set; }
         public string ResponseText { get; set; }
@@ -15,7 +15,7 @@ namespace SocialPay.Domain.Entities
         public string FTID { get; set; }
         public string JsonResponse { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
-        public virtual FioranoT24Request FioranoT24Request { get; set; }
+        //public virtual FioranoT24Request FioranoT24Request { get; set; }
     }
 
 }
