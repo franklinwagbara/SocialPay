@@ -27,6 +27,7 @@ using SocialPay.Core.Services.Validations;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Helper.Cryptography;
+using SocialPay.Job.Repository.AcceptedOrders;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.PayWithCard;
@@ -150,6 +151,12 @@ namespace SocialPay.API
 
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
             services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            services.AddSingleton<AcceptedOrderTransactions>();
+
+            //Accepted order service
+
+            services.AddScoped<IAcceptedOrders, AcceptedOrders>();
+            services.AddSingleton<IHostedService, AcceptedOrderTask>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
 
