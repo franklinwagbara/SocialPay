@@ -74,8 +74,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             TransactionType = _appSettings.fioranoTransactionType,
                             DebitAcctNo = _appSettings.socialPayNominatedAccountNo,
                             TransactionBranch = "NG0020006",
-                            narrations = "Card-Payment" + " - " + item.TransactionReference +
-                            " - " + item.CustomerTransactionReference,
+                            narrations = "CP from Nominated to Social Pay" + " - " + item.PaymentReference,
                             DebitAmount = Convert.ToString(getTransInfo.TotalAmount),
                             CreditAccountNo = _appSettings.socialT24AccountNo,
                         };
