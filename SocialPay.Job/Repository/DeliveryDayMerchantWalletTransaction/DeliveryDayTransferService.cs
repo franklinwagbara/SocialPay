@@ -64,7 +64,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                             TransferType = 1,
                             frmacct = getWalletInfo.Mobile,
                             paymentRef = Guid.NewGuid().ToString(),
-                            remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
+                            remarks = "Social-Pay Delivery day wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
                         var walletRequestModel = new WalletTransferRequestLog

@@ -152,7 +152,7 @@ namespace SocialPay.API
             ////services.AddSingleton<PendingWalletRequestService>();
 
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
-            //services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
 
             //Accepted order service

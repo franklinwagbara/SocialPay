@@ -26,7 +26,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    DateTime today = DateTime.Now.Date;
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.Status == true && x.IsQueuedPayWithCard == false
                         && x.IsCompletedPayWithCard == false
