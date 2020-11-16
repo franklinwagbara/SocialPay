@@ -57,10 +57,12 @@ namespace SocialPay.Core.Services.Validations
         {
             try
             {
-                var validateBvn = await BvnValidation(bvn, "");
-                if (validateBvn.ResponseCode != AppResponseCodes.Success)
-                    return validateBvn;
+                //var validateBvn = await BvnValidation(bvn, "");
+                //if (validateBvn.ResponseCode != AppResponseCodes.Success)
+                //    return validateBvn;
                 var banks = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
+
+                //var validatebvn = await banks.GetBvnAsync(bvn);
 
                 var getUserInfo = await banks.getAccountFullInfoAsync(nuban);
 

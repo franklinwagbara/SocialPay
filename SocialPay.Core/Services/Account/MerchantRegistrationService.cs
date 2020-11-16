@@ -333,7 +333,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-               // clientId = 30033;
+               ///clientId = 40080;
                 ////if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
                 //// x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
                 ////    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
