@@ -157,7 +157,7 @@ namespace SocialPay.API
             //Accepted order service
 
             services.AddScoped<IAcceptedOrders, AcceptedOrders>();
-            services.AddSingleton<IHostedService, AcceptedOrderTask>();
+            //services.AddSingleton<IHostedService, AcceptedOrderTask>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<AcceptedOrderTransactions>();
 
