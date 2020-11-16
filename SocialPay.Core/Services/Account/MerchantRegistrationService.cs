@@ -361,7 +361,7 @@ namespace SocialPay.Core.Services.Account
 
                 if (model.BankCode == _appSettings.SterlingBankCode)
                 {
-                    var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban);
+                    var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban, model.BVN);
                     if (result.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
 
