@@ -29,7 +29,7 @@ namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.TransactionStatus == OrderStatusCode.CompletedWalletFunding
+                        .Where(x => x.StatusJourney == OrderStatusCode.CompletedWalletFunding
                         && x.OrderStatus == OrderStatusCode.CompletedWalletFunding
                         //&& x.Category == MerchantPaymentLinkCategory.Escrow
                         //|| x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink
