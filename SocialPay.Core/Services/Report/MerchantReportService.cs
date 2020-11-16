@@ -223,7 +223,8 @@ namespace SocialPay.Core.Services.Report
                                 MerchantDescription = m.MerchantDescription, TotalAmount = c.Amount, CustomerDescription = c.CustomerDescription,
                                 Channel = t.Category, ClientId = t.ClientAuthenticationId, DeliveryDay = t.DeliveryFinalDate,
                                 CustomerTransactionReference = t.CustomerTransactionReference, CustomerEmail = c.Email,
-                                Fullname = c.Fullname, PhoneNumber = c.PhoneNumber
+                                Fullname = c.Fullname, PhoneNumber = c.PhoneNumber, TransactionReference = c.TransactionReference,
+                                PaymentReference = c.PaymentReference
                                 }).ToList();
 
                 result = response;
