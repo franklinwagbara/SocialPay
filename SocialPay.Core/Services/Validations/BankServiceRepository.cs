@@ -16,11 +16,50 @@ namespace SocialPay.Core.Services.Validations
         {
             _appSettings = appSettings.Value;
         }
-        public async Task<AccountInfoViewModel> GetAccountFullInfoAsync(string nuban)
+
+
+        public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth)
         {
             try
             {
+                var banksServices = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
+                var validatebvn = await banksServices.GetBvnAsync(bvn);
+                var validateNode = validatebvn.Nodes[1];
+                var bvnDetails = validateNode.Descendants("Customer")
 
+                    .Select(b => new BvnViewModel
+                    {
+                        Bvn = b.Element("Bvn")?.Value,
+                        FirstName = b.Element("FirstName")?.Value,
+                        LastName = b.Element("LastName")?.Value,
+                        PhoneNumber = b.Element("PhoneNumber")?.Value,
+                        DateOfBirth = b.Element("DateOfBirth")?.Value,
+                        MiddleName = b.Element("MiddleName")?.Value,
+
+                    }).FirstOrDefault();
+                if (bvnDetails == null)
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
+                if (bvnDetails.Bvn.Contains("exit"))
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
+
+                //if (!bvnDetails.DateOfBirth.Equals(dateOfbirth))
+                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth };
+                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+
+                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
+            }
+        }
+
+        public async Task<AccountInfoViewModel> GetAccountFullInfoAsync(string nuban, string bvn)
+        {
+            try
+            {
+                var validateBvn = await BvnValidation(bvn, "");
+                if (validateBvn.ResponseCode != AppResponseCodes.Success)
+                    return validateBvn;
                 var banks = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
 
                 var getUserInfo = await banks.getAccountFullInfoAsync(nuban);
