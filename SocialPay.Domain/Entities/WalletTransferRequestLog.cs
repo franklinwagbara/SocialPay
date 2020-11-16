@@ -24,6 +24,6 @@ namespace SocialPay.Domain.Entities
         public string ChannelMode { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         //public virtual ICollection<WalletTransferResponse> WalletTransferResponse { get; set; }
-        public virtual ClientAuthentication ClientAuthentication { get; set; }
+        //public virtual ClientAuthentication ClientAuthentication { get; set; }
     }
 }
