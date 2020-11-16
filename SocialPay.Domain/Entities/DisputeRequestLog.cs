@@ -8,7 +8,7 @@ namespace SocialPay.Domain.Entities
         public long ClientAuthenticationId { get; set; }
         public string DisputeComment { get; set; }
         public string TransactionReference { get; set; }
-        public string CustomerTransactionReference { get; set; }
+        public string PaymentReference { get; set; }
         public string DisputeFile { get; set; }
         public string FileLocation { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;

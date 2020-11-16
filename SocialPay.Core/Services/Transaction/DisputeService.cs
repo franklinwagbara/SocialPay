@@ -34,7 +34,7 @@ namespace SocialPay.Core.Services.Transaction
                 {
                     DisputeComment = model.Comment,
                     ClientAuthenticationId = clientId,
-                    CustomerTransactionReference = model.CustomerTransactionReference,
+                    PaymentReference = model.PaymentReference,
                     TransactionReference = model.TransactionReference,                    
                 };
 
