@@ -96,6 +96,7 @@
         public const string Failed = "08";
         public const string BankTransferProcessing = "09";
         public const string TransactionCompleted = "10";
+        public const string ItemAccepted = "11";
 
     }
     public class RoleDetails

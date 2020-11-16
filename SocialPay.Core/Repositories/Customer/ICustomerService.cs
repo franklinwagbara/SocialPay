@@ -652,10 +652,10 @@ namespace SocialPay.Core.Repositories.Customer
 
                             if (getTransactionLogs.TransactionStatus == OrderStatusCode.Decline)
                             {
-                                logRequest.OrderStatus = OrderStatusCode.Approved;
+                                logRequest.OrderStatus = OrderStatusCode.ItemAccepted;
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
-                                getTransactionLogs.TransactionStatus = OrderStatusCode.Approved;
+                                getTransactionLogs.TransactionStatus = OrderStatusCode.ItemAccepted;
                                 getTransactionLogs.Status = true;
                                 getTransactionLogs.IsAccepted = true;
                                 getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
