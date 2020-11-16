@@ -22,6 +22,7 @@ namespace SocialPay.Helper.ViewModel
         public string PaymentCategory { get; set; }
         public string PaymentMethod { get; set; }
         public string TransactionReference { get; set; }
+        public string PaymentReference { get; set; }
         public string PaymentLinkUrl { get; set; }
         public string Document { get; set; }
         public string CustomerEmail { get; set; }
