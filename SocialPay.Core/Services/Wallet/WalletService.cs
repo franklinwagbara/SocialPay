@@ -34,20 +34,7 @@ namespace SocialPay.Core.Services.Wallet
             try
             {
                 
-               
-                //model.CURRENCYCODE = "NGN"; 
-                //model.DOB = "2090-05-21";
-                //model.firstname = "Pat";
-                //model.lastname = "Pat";
-                //model.Gender = "M";
-               // model.mobile = "83487783473";
-                var request = JsonConvert.SerializeObject(model);
-                ////var content = new StringContent(
-                ////    request, Encoding.UTF8,
-                ////    "application/json");                
-                ////var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.createwalletUrl, content);
-                ////var result = await response.Content.ReadAsStringAsync();
-
+                var request = JsonConvert.SerializeObject(model);             
                 var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.createwalletUrl,
                     new StringContent(request, Encoding.UTF8, "application/json"));
                 var result = await response.Content.ReadAsStringAsync();
@@ -55,6 +42,12 @@ namespace SocialPay.Core.Services.Wallet
                 {
                      apiResponse = JsonConvert.DeserializeObject<WalletResponseDto>(result);
                      apiResponse.responsedata = result;
+                    return apiResponse;
+                }
+                if(result.Contains("Duplicate Records"))
+                {
+                    apiResponse.response = AppResponseCodes.Success;
+                    apiResponse.responsedata = result;
                     return apiResponse;
                 }
                 apiResponse.response = AppResponseCodes.Failed;
