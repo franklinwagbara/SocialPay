@@ -30,6 +30,7 @@ using SocialPay.Helper.Cryptography;
 using SocialPay.Job.Repository.AcceptedOrders;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.Fiorano;
+using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.TaskSchedules;
 
@@ -138,10 +139,10 @@ namespace SocialPay.API
                 option.InstanceName = "master";
             });
 
-            //services.AddScoped<INotificationServices, NotificationService>();
-            //services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
-            //services.AddSingleton<JobEmailService>();
-            //services.AddSingleton<NotificationTransactions>();
+            services.AddScoped<INotificationServices, NotificationService>();
+            services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
+            services.AddSingleton<JobEmailService>();
+            services.AddSingleton<NotificationTransactions>();
 
             ///Wallet tranaction
             ////services.AddScoped<IWalletTransactions, WalletTransactions>();
