@@ -141,7 +141,7 @@ namespace SocialPay.API
             });
 
             services.AddScoped<INotificationServices, NotificationService>();
-           // services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
+            services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
             services.AddSingleton<JobEmailService>();
             services.AddSingleton<NotificationTransactions>();
 
@@ -152,19 +152,19 @@ namespace SocialPay.API
             ////services.AddSingleton<PendingWalletRequestService>();
 
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
-            //services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
 
             //Accepted order service
 
             services.AddScoped<IAcceptedOrders, AcceptedOrders>();
-            //services.AddSingleton<IHostedService, AcceptedOrderTask>();
+            services.AddSingleton<IHostedService, AcceptedOrderTask>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<AcceptedOrderTransactions>();
 
             //////Credit T24 account for card payments
             services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
-            //services.AddSingleton<IHostedService, CardPaymentTask>();
+            services.AddSingleton<IHostedService, CardPaymentTask>();
             services.AddSingleton<FioranoTransferPayWithCardRepository>();
             services.AddSingleton<PendingPayWithCardTransaction>();
             services.AddSingleton<CreditDebitService>();
@@ -173,7 +173,7 @@ namespace SocialPay.API
             ////Credit Social pay wallet from merchant wallet
 
             services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
-            //services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
+            services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
             services.AddSingleton<DeliveryDayTransferService>();
 
 
