@@ -41,7 +41,7 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                            && x.TransactionStatus == OrderStatusCode.WalletFundingProgress);
+                            && x.TransactionStatus == OrderStatusCode.Approved);
 
                         getTransInfo.IsWalletQueued = true;
                         getTransInfo.TransactionStatus = OrderStatusCode.WalletFundingProgress;
