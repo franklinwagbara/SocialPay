@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.AcceptedOrders
+namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
 {
     public interface IAcceptedOrders
     {
