@@ -38,7 +38,7 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
-                        var paymentRef = Guid.NewGuid().ToString();
+                        var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
                             && x.TransactionStatus == OrderStatusCode.WalletFundingProgress);
@@ -62,7 +62,7 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                             channelID = 1,
                             TransferType = 1,
                             frmacct = getWalletInfo.Mobile,
-                            paymentRef = paymentRef,
+                            paymentRef = item.PaymentReference,
                             remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
@@ -78,6 +78,7 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                             TransactionReference = item.TransactionReference,
                             CustomerTransactionReference = item.CustomerTransactionReference,
                             TransferType = walletModel.TransferType,
+                            RequestId = requestId
                         };
 
                         await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
@@ -100,6 +101,8 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                                     };
 
                                     getTransInfo.IsWalletCompleted = true;
+                                    getTransInfo.TransactionStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
