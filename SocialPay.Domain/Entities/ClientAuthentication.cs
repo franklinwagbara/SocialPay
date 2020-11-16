@@ -30,6 +30,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<TransactionLog> TransactionLog { get; set; }
         public virtual ICollection<AccountResetRequest> AccountResetRequest { get; set; }
         public virtual ICollection<DisputeRequestLog> DisputeRequestLog { get; set; }
-        public virtual ICollection<WalletTransferRequestLog> WalletTransferRequestLog { get; set; }
+       // public virtual ICollection<WalletTransferRequestLog> WalletTransferRequestLog { get; set; }
     }
 }
