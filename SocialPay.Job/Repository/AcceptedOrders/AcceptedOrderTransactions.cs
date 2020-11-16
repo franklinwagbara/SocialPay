@@ -78,7 +78,8 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                             TransactionReference = item.TransactionReference,
                             CustomerTransactionReference = item.CustomerTransactionReference,
                             TransferType = walletModel.TransferType,
-                            RequestId = requestId
+                            RequestId = requestId,
+                            ClientAuthenticationId = item.ClientAuthenticationId
                         };
 
                         await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
