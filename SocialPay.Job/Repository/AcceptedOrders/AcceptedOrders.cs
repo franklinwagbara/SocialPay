@@ -29,9 +29,10 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.OrderStatus == OrderStatusCode.Approved
-                        && x.Category == MerchantPaymentLinkCategory.Escrow
-                        || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink
+                        .Where(x => x.TransactionStatus == OrderStatusCode.Approved
+                        && x.OrderStatus == OrderStatusCode.CompletedWalletFunding
+                        //&& x.Category == MerchantPaymentLinkCategory.Escrow
+                        //|| x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink
                         ).ToListAsync();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)

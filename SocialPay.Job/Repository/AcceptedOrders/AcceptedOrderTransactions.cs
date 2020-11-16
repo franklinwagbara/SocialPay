@@ -11,6 +11,7 @@ using SocialPay.Core.Configurations;
 using Microsoft.Extensions.Options;
 using SocialPay.Helper;
 using SocialPay.Core.Services.Wallet;
+using StackExchange.Redis;
 
 namespace SocialPay.Job.Repository.AcceptedOrders
 {
@@ -37,10 +38,13 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        var paymentRef = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
-                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
+                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                            && x.TransactionStatus == OrderStatusCode.WalletFundingProgress);
 
                         getTransInfo.IsWalletQueued = true;
+                        getTransInfo.TransactionStatus = OrderStatusCode.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -54,11 +58,11 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                         {
                             CURRENCYCODE = _appSettings.walletcurrencyCode,
                             amt = Convert.ToString(item.TotalAmount),
-                            toacct = getWalletInfo.Mobile,
+                            toacct = _appSettings.SterlingWalletPoolAccount,
                             channelID = 1,
                             TransferType = 1,
-                            frmacct = _appSettings.SterlingWalletPoolAccount,
-                            paymentRef = Guid.NewGuid().ToString(),
+                            frmacct = getWalletInfo.Mobile,
+                            paymentRef = paymentRef,
                             remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
@@ -82,20 +86,55 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {
-                            getTransInfo.IsWalletCompleted = true;
-                            getTransInfo.LastDateModified = DateTime.Now;
-                            context.Update(getTransInfo);
-                            await context.SaveChangesAsync();
+                            using(var transaction = await context.Database.BeginTransactionAsync())
+                            {
+                                try
+                                {
+                                    var walletResponse = new WalletTransferResponse
+                                    {
+                                        RequestId = walletRequestModel.RequestId,
+                                        sent = initiateRequest.data.sent,
+                                        message = initiateRequest.message,
+                                        response = initiateRequest.response,
+                                        responsedata = Convert.ToString(initiateRequest.responsedata),
+                                    };
+
+                                    getTransInfo.IsWalletCompleted = true;
+                                    getTransInfo.LastDateModified = DateTime.Now;
+                                    context.Update(getTransInfo);
+                                    await context.SaveChangesAsync();
+                                    await context.WalletTransferResponse.AddAsync(walletResponse);
+                                    await context.SaveChangesAsync();
+                                    await transaction.CommitAsync();
+                                    return null;
+                                }
+                                catch (Exception ex)
+                                {
+                                    await transaction.RollbackAsync();
+                                    return null;
+                                }
+                            }
+                         
+
                         }
+
+                        var failedResponse = new FailedTransactions
+                        {
+                            CustomerTransactionReference = item.CustomerTransactionReference,
+                            Message = initiateRequest.message,
+                            TransactionReference = item.TransactionReference
+                        };
+                        await context.FailedTransactions.AddAsync(failedResponse);
+                        await context.SaveChangesAsync();
                     }
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    return null;
                 }
 
             }
             catch (Exception ex)
             {
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return null;
             }
         }
 
