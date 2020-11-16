@@ -50,7 +50,7 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                         await context.SaveChangesAsync();
 
                         var getWalletInfo = await context.MerchantWallet
-                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.CustomerInfo);
+                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
                         if (getWalletInfo == null)
                             return null;
 
