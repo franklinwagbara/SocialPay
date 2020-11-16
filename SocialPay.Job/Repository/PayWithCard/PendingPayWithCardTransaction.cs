@@ -46,7 +46,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             && x.IsQueuedPayWithCard == false);
                         if (getTransInfo == null)
                             return null;
-                        getTransInfo.IsQueuedPayWithCard = true;
+                        getTransInfo.TransactionJourney = OrderStatusCode.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -114,7 +114,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                                 try
                                 {
                                     getTransInfo.IsApproved = true;
-                                    getTransInfo.IsCompletedPayWithCard = true;
+                                    getTransInfo.TransactionJourney = OrderStatusCode.CompletedWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
@@ -143,10 +143,10 @@ namespace SocialPay.Job.Repository.PayWithCard
                             }
                            
                         }
-                        getTransInfo.IsQueuedPayWithCard = false;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
+                        //getTransInfo.IsQueuedPayWithCard = false;
+                        //getTransInfo.LastDateModified = DateTime.Now;
+                        //context.Update(getTransInfo);
+                        //await context.SaveChangesAsync();
                         return null;
 
 
