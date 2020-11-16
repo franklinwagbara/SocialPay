@@ -49,7 +49,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
                         getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.WalletFundingProgress;
-                        getTransInfo.TransactionStatus = OrderStatusCode.WalletFundingProgress;
+                        getTransInfo.StatusJourney = OrderStatusCode.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -104,7 +104,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                                     getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     getTransInfo.WalletFundDate = DateTime.Now;
-                                    getTransInfo.TransactionStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.StatusJourney = OrderStatusCode.CompletedWalletFunding;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
                                     await context.WalletTransferResponse.AddAsync(walletResponseModel);
