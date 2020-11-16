@@ -8,6 +8,7 @@ namespace SocialPay.Helper.Dto.Request
     {
         public string TransactionReference { get; set; }
         public string PaymentReference { get; set; }
+        public string ProcessedBy { get; set; }
         public string Comment { get; set; }
         [Required(ErrorMessage = "Document is required")]
         [DataType(DataType.Upload)]

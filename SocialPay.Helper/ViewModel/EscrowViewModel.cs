@@ -38,6 +38,8 @@ namespace SocialPay.Helper.ViewModel
     {
         public string TransactionReference { get; set; }
         public string CustomerTransactionReference { get; set; }
+        public string PaymentReference { get; set; }
+        public string ProcessedBy { get; set; }
         public string Comment { get; set; }
         public string Document { get; set; }
         public DateTime DateEntered { get; set; }

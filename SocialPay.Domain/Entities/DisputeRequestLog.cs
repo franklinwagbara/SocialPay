@@ -10,6 +10,7 @@ namespace SocialPay.Domain.Entities
         public string TransactionReference { get; set; }
         public string PaymentReference { get; set; }
         public string DisputeFile { get; set; }
+        public string ProcessedBy { get; set; }
         public string FileLocation { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }

@@ -35,7 +35,8 @@ namespace SocialPay.Core.Services.Transaction
                     DisputeComment = model.Comment,
                     ClientAuthenticationId = clientId,
                     PaymentReference = model.PaymentReference,
-                    TransactionReference = model.TransactionReference,                    
+                    TransactionReference = model.TransactionReference,
+                    ProcessedBy = model.ProcessedBy
                 };
 
                 string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.DisputeDocument);
