@@ -141,13 +141,13 @@ namespace SocialPay.Core.Services.Report
                     var getallDisputes = await _context.DisputeRequestLog.ToListAsync();
 
                     var dataResponse = (from d in getallDisputes
-                                       join t in _context.TransactionLog on d.TransactionReference equals t.TransactionReference
+                                       join t in _context.TransactionLog on d.PaymentReference equals t.PaymentReference
                                         select new ItemDisputeViewModel
                                         {
-                                            Comment = d.DisputeComment,
+                                            Comment = d.DisputeComment, ProcessedBy = d.ProcessedBy,
                                             TransactionReference = t.TransactionReference,
                                             CustomerTransactionReference = t.CustomerTransactionReference,
-                                            DateEntered = d.DateEntered,
+                                            DateEntered = d.DateEntered, PaymentReference = d.PaymentReference,
                                             Document = _appSettings.BaseApiUrl + d.FileLocation + "/" + d.DisputeFile
                                         }).ToList();
 
@@ -159,11 +159,13 @@ namespace SocialPay.Core.Services.Report
                     .Where(x => x.CustomerInfo == clientId || x.ClientAuthenticationId == clientId).ToListAsync();
               
                 var response = (from t in getTransactions
-                                join d in _context.DisputeRequestLog on t.TransactionReference equals d.TransactionReference
+                                join d in _context.DisputeRequestLog on t.PaymentReference equals d.PaymentReference
                               select new ItemDisputeViewModel
                               {
                                   Comment = d.DisputeComment, TransactionReference = t.TransactionReference,
                                   CustomerTransactionReference = t.CustomerTransactionReference,
+                                  PaymentReference = d.PaymentReference,
+                                  ProcessedBy = d.ProcessedBy,
                                   DateEntered = d.DateEntered, Document = _appSettings.BaseApiUrl + d.FileLocation + "/" + d.DisputeFile
                               }).ToList();
 
