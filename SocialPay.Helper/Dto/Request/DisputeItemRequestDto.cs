@@ -7,7 +7,7 @@ namespace SocialPay.Helper.Dto.Request
     public class DisputeItemRequestDto
     {
         public string TransactionReference { get; set; }
-        public string CustomerTransactionReference { get; set; }
+        public string PaymentReference { get; set; }
         public string Comment { get; set; }
         [Required(ErrorMessage = "Document is required")]
         [DataType(DataType.Upload)]
