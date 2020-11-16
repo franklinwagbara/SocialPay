@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.AcceptedOrders
+namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
 {
     public class AcceptedOrders : IAcceptedOrders
     {
@@ -29,7 +29,7 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.TransactionStatus == OrderStatusCode.Approved
+                        .Where(x => x.TransactionStatus == OrderStatusCode.CompletedWalletFunding
                         && x.OrderStatus == OrderStatusCode.CompletedWalletFunding
                         //&& x.Category == MerchantPaymentLinkCategory.Escrow
                         //|| x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink

@@ -27,8 +27,9 @@ using SocialPay.Core.Services.Validations;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Helper.Cryptography;
-using SocialPay.Job.Repository.AcceptedOrders;
+using SocialPay.Job.Repository.AcceptedOrdersWalletTransaction;
 using SocialPay.Job.Repository.BasicWalletFundService;
+using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
@@ -171,9 +172,9 @@ namespace SocialPay.API
 
             ////Credit Social pay wallet from merchant wallet
 
-            //services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
-            //services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
-            //services.AddSingleton<DeliveryDayTransferService>();
+            services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
+            services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
+            services.AddSingleton<DeliveryDayTransferService>();
 
 
             ////Intrabank transactions

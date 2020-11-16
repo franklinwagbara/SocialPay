@@ -13,7 +13,7 @@ using SocialPay.Helper;
 using SocialPay.Core.Services.Wallet;
 using StackExchange.Redis;
 
-namespace SocialPay.Job.Repository.AcceptedOrders
+namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
 {
     public class AcceptedOrderTransactions
     {
@@ -118,8 +118,6 @@ namespace SocialPay.Job.Repository.AcceptedOrders
                                     return null;
                                 }
                             }
-                         
-
                         }
 
                         var failedResponse = new FailedTransactions
