@@ -292,7 +292,7 @@ namespace SocialPay.Core.Services.Customer
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPamentChannel };
                 }
-                if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank)
+                if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank || model.Channel == PaymentChannel.PayWithSpecta)
                 {
                     if(model.Channel == PaymentChannel.Card)
                     {
