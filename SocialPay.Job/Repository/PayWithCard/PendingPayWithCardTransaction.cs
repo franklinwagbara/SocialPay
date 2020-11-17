@@ -43,7 +43,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                            && x.IsQueuedPayWithCard == false);
+                            && x.TransactionJourney == OrderStatusCode.Approved);
                         if (getTransInfo == null)
                             return null;
                         getTransInfo.TransactionJourney = OrderStatusCode.WalletFundingProgress;
