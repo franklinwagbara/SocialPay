@@ -42,8 +42,7 @@ namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
-                        getTransInfo.IsWalletQueued = true;
-                        //getTransInfo.TransactionStatus = OrderStatusCode.WalletFundingProgress;
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.ProcessingApprovedRequest;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -100,10 +99,10 @@ namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
                                         responsedata = Convert.ToString(initiateRequest.responsedata),
                                     };
 
-                                    getTransInfo.IsWalletCompleted = true;
-                                    //getTransInfo.TransactionStatus = OrderStatusCode.CompletedWalletFunding;
-                                    getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.OrderWasAcceptedWalletDebited;
+                                    //getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
+                                    getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedWalletFunding;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
                                     await context.WalletTransferResponse.AddAsync(walletResponse);

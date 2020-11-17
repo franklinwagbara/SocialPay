@@ -102,7 +102,12 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                         response = initiateRequest.response,
                                         responsedata = Convert.ToString(initiateRequest.responsedata),
                                     };
+                                    if(getTransInfo.PaymentChannel != PaymentChannel.Card)
+                                    {
+                                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.AwaitingCustomerFeedBack;
+                                    }
                                     getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     getTransInfo.WalletFundDate = DateTime.Now;
                                     context.Update(getTransInfo);
