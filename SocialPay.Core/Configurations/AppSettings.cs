@@ -22,6 +22,7 @@
         public string walletTowalletUrl { get; set; }
         public string sterlingpaymentGatewayRequestUrl { get; set; }
         public string paywithSpectaBaseUrl { get; set; }
+        public string paywithSpectaverifyPaymentUrl { get; set; }
         public string paywithSpectaCallBackUrl { get; set; }
         public string paywithSpectaPurchaseUrlExtension { get; set; }
         public string mid { get; set; }

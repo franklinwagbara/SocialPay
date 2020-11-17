@@ -53,5 +53,37 @@ namespace SocialPay.Core.Services.Specta
 				return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
 			}
         }
+
+        public async Task<WebApiResponse> PaymentVerification(string message)
+        {
+            var apiResponse = new WebApiResponse { };
+            try
+            {
+                var decodeMessage = System.Uri.UnescapeDataString(message);
+                var model = new PayWithSpectaVerificationRequestDto
+                {
+                    verificationToken = decodeMessage,
+                };
+                var request = JsonConvert.SerializeObject(model);
+
+                var response = await _client.PostAsync(_appSettings.paywithSpectaverifyPaymentUrl,
+                    new StringContent(request, Encoding.UTF8, "application/json"));
+                var result = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    var successfulResponse = JsonConvert.DeserializeObject<PaymentVerificationResponseDto>(result);
+                    apiResponse.Data = successfulResponse.Result;
+                    apiResponse.ResponseCode = AppResponseCodes.Success;
+                    apiResponse.Message = Convert.ToString(successfulResponse.Result.Data.PaymentReference);
+                    return apiResponse;
+                }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+            }
+            catch (Exception)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
     }
 }

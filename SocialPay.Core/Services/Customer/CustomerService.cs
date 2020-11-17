@@ -307,6 +307,15 @@ namespace SocialPay.Core.Services.Customer
                         return result;
                     }
 
+                    if (model.Channel == PaymentChannel.PayWithSpecta)
+                    {
+                        var result = await _payWithSpectaService.PaymentVerification(model.Message);
+                        if(result.ResponseCode != AppResponseCodes.Success)
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
+                        model.Message = "success" + result.Message;
+                        return await _customerService.LogPaymentResponse(model);
+                    }
+
                     var oneBankRequest = await _customerService.LogPaymentResponse(model);
                     return oneBankRequest;
 

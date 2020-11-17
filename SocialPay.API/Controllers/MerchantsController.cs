@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Report;
+using SocialPay.Core.Services.Specta;
 using SocialPay.Core.Services.Transaction;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Helper;
@@ -27,10 +28,11 @@ namespace SocialPay.API.Controllers
         private readonly InvoiceService _invoiceService;
         private readonly CreateMerchantWalletService _createMerchantWalletService;
         private readonly DisputeRepoService _disputeRepoService;
+        private readonly PayWithSpectaService _payWithSpectaService;
         public MerchantsController(MerchantRegistrationService merchantRegistrationService,
             MerchantPaymentLinkService merchantPaymentLinkService, MerchantReportService merchantReportService,
             InvoiceService invoiceService, CreateMerchantWalletService createMerchantWalletService,
-            DisputeRepoService disputeRepoService)
+            DisputeRepoService disputeRepoService, PayWithSpectaService payWithSpectaService)
         {
             _merchantRegistrationService = merchantRegistrationService;
             _merchantPaymentLinkService = merchantPaymentLinkService;
@@ -38,6 +40,7 @@ namespace SocialPay.API.Controllers
             _invoiceService = invoiceService;
             _createMerchantWalletService = createMerchantWalletService;
             _disputeRepoService = disputeRepoService;
+            _payWithSpectaService = payWithSpectaService;
         }
 
         [HttpPost]
@@ -467,6 +470,36 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+
+
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("verify-pay-with-specta")]
+        //public async Task<IActionResult> VerifyPayWithSpecta(string verifyPayment)
+        //{
+        //    var response = new WebApiResponse { };
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+
+        //            var result = await _payWithSpectaService.PaymentVerification(verifyPayment);
+        //            return Ok(result);
+        //        }
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //            .Select(e => e.ErrorMessage));
+        //        response.ResponseCode = AppResponseCodes.Failed;
+        //        response.Data = message;
+        //        return BadRequest(response);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.ResponseCode = AppResponseCodes.InternalError;
+        //        return BadRequest(response);
+        //    }
+        //}
 
         //[AllowAnonymous]
         //[HttpGet]
