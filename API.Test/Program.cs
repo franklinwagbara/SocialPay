@@ -8,18 +8,23 @@ namespace API.Test
     {
         static void Main(string[] args)
         {
-            DateTime nextDay = DateTime.Now.Date;
-            String myDate = "05-12-2020";
-            DateTime sdate = DateTime.Parse(myDate);
-           
-            var lockAccountModel = new TestApps
-            {
-                eDate = DateTime.Today
-            };
+            //DateTime nextDay = DateTime.Now.Date;
+            //String myDate = "05-12-2020";
+            //DateTime sdate = DateTime.Parse(myDate);
 
+            //var lockAccountModel = new TestApps
+            //{
+            //    eDate = DateTime.Today
+            //};
+            var sec = new EncryptDecrypt();
             var myUrl = "http://socialpay-web.sterlingapps.p.azurewebsites.net/#/confirm-payments?q=3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
-            var decodeUrl = System.Uri.UnescapeDataString(myUrl);
-
+            var decodeString = "nyuxjd7%20O7A%20TXK7Iyf%2FzvJtIirNIklh0fR3qBsm%207E1PwzgQyLsX%2FH3T8NVHNmX";
+            var decodeMessage = System.Uri.UnescapeDataString(decodeString);
+            if (decodeMessage.Contains(" "))
+            {
+                decodeMessage = decodeMessage.Replace(" ", "+");
+            }
+            var getMessage = sec.DecryptAlt(decodeMessage);
             var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap,
                   "");
 
@@ -39,7 +44,7 @@ namespace API.Test
             //string url1 =  HttpUtility.UrlDecode(newParameter);
              //string url =  HttpUtility.UrlDecode(newParameter);
 
-            var sec = new EncryptDecrypt();
+           
 
             var encryptedText = mid + "^" + amount + "^" + refId;
 
