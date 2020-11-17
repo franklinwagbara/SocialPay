@@ -141,7 +141,7 @@ namespace SocialPay.API
             });
 
             services.AddScoped<INotificationServices, NotificationService>();
-           // services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
+            services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
             services.AddSingleton<JobEmailService>();
             services.AddSingleton<NotificationTransactions>();
 
@@ -158,7 +158,7 @@ namespace SocialPay.API
             //Accepted order service
 
             services.AddScoped<IAcceptedOrders, AcceptedOrders>();
-            //services.AddSingleton<IHostedService, AcceptedOrderTask>();
+            services.AddSingleton<IHostedService, AcceptedOrderTask>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<AcceptedOrderTransactions>();
 
@@ -173,7 +173,7 @@ namespace SocialPay.API
             ////Credit Social pay wallet from merchant wallet
 
             services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
-            //services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
+            services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
             services.AddSingleton<DeliveryDayTransferService>();
 
 

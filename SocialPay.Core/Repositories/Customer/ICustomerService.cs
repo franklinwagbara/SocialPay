@@ -14,6 +14,7 @@ using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -514,6 +515,8 @@ namespace SocialPay.Core.Repositories.Customer
                 if (paymentSetupInfo == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
                 var merchantInfo = await GetMerchantInfo(paymentSetupInfo.ClientAuthenticationId);
+                var getCustomerInfo = await _context.CustomerOtherPaymentsInfo
+                    .SingleOrDefaultAsync(x => x.PaymentReference == model.PaymentReference);
                 if (linkInfo != null && linkInfo.Channel == MerchantPaymentLinkCategory.Escrow || linkInfo.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
                 {
                     var customerInfo = await _context.ClientAuthentication
@@ -528,7 +531,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.OrderStatus = OrderStatusCode.Pending;
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
-                    logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
+                    logconfirmation.TotalAmount = getCustomerInfo.Amount;
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
                     logconfirmation.TransactionStatus = OrderStatusCode.Pending;
@@ -575,7 +578,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.OrderStatus = OrderStatusCode.Pending;
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
-                    logconfirmation.TotalAmount = paymentSetupInfo.TotalAmount;
+                    logconfirmation.TotalAmount = getCustomerInfo.Amount;
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
                     logconfirmation.TransactionStatus = OrderStatusCode.Approved;
