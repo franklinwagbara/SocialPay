@@ -143,7 +143,7 @@ namespace SocialPay.API
             });
 
             services.AddScoped<INotificationServices, NotificationService>();
-            services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
+           // services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
             services.AddSingleton<JobEmailService>();
             services.AddSingleton<NotificationTransactions>();
 
@@ -160,7 +160,7 @@ namespace SocialPay.API
             //Non escrow wallet transaction
 
             services.AddScoped<INonEscrowWalletTransaction, NonEscrowWalletTransaction>();
-            services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
+           // services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
             services.AddSingleton<NonEscrowWalletPendingTransaction>();
 
             //Accepted order service
