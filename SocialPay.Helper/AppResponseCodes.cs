@@ -99,6 +99,21 @@
         public const string ItemAccepted = "11";
 
     }
+
+    public class TransactionJourneyStatusCodes
+    {
+        public const string FirstWalletFundingWasSuccessul = "01";
+        public const string Approved = "02";
+        public const string Failed = "03";
+        public const string BasicWalletFundingProcessing = "04";
+        public const string BasicCompletedWalletFunding = "05"; 
+        public const string FioranoFirstFundingProcessing = "06"; 
+        public const string FioranoFirstFundingCompleted = "07"; 
+        public const string ProcessingApprovedRequest = "08"; 
+        public const string OrderWasAcceptedWalletDebited = "09"; 
+        public const string AwaitingCustomerFeedBack = "10"; 
+        public const string CompletedDeliveryDayWalletFunding = "11"; 
+    }
     public class RoleDetails
     {
         public const string Merchant = "Merchant";

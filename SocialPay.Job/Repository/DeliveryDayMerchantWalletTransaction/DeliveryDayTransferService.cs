@@ -101,6 +101,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                                     walletResponseModel.RequestId = walletRequestModel.RequestId;
                                     walletResponseModel.responsedata = Convert.ToString(initiateRequest.responsedata);
                                     getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     getTransInfo.WalletFundDate = DateTime.Now;
                                     //getTransInfo.TransactionJourney = OrderStatusCode.CompletedWalletFunding;

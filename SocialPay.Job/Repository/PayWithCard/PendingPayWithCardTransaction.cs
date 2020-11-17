@@ -46,7 +46,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             && x.TransactionJourney == OrderStatusCode.Approved);
                         if (getTransInfo == null)
                             return null;
-                        getTransInfo.TransactionJourney = OrderStatusCode.WalletFundingProgress;
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingProcessing;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -114,7 +114,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                                 try
                                 {
                                     getTransInfo.IsApproved = true;
-                                    getTransInfo.TransactionJourney = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();

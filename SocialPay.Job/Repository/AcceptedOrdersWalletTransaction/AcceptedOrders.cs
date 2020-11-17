@@ -29,10 +29,9 @@ namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.TransactionJourney == OrderStatusCode.CompletedWalletFunding
-                        && x.OrderStatus == OrderStatusCode.CompletedWalletFunding
-                        //&& x.Category == MerchantPaymentLinkCategory.Escrow
-                        //|| x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink
+                        .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
+                        || x.TransactionJourney == TransactionJourneyStatusCodes.AwaitingCustomerFeedBack
+                        && x.TransactionStatus == OrderStatusCode.Approved
                         ).ToListAsync();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)
