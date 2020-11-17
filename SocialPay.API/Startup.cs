@@ -31,6 +31,7 @@ using SocialPay.Job.Repository.AcceptedOrdersWalletTransaction;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
+using SocialPay.Job.Repository.NonEscrowWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.TaskSchedules;
@@ -134,6 +135,7 @@ namespace SocialPay.API
             services.AddScoped<UserRepoService>();
             services.AddScoped<AccountResetService>();
             services.AddScoped<DisputeRepoService>();
+            services.AddSingleton<WalletRepoJobService>();
             services.AddDistributedRedisCache(option =>
             {
                 option.Configuration = "172.18.4.114:6379";
@@ -155,11 +157,16 @@ namespace SocialPay.API
             services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
 
+            //Non escrow wallet transaction
+
+            services.AddScoped<INonEscrowWalletTransaction, NonEscrowWalletTransaction>();
+            services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
+            services.AddSingleton<NonEscrowWalletPendingTransaction>();
+
             //Accepted order service
 
             services.AddScoped<IAcceptedOrders, AcceptedOrders>();
             //services.AddSingleton<IHostedService, AcceptedOrderTask>();
-            services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<AcceptedOrderTransactions>();
 
             //////Credit T24 account for card payments

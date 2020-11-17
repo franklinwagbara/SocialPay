@@ -113,6 +113,9 @@
         public const string OrderWasAcceptedWalletDebited = "09"; 
         public const string AwaitingCustomerFeedBack = "10"; 
         public const string CompletedDeliveryDayWalletFunding = "11"; 
+        public const string WalletTranferCompleted = "12"; 
+        public const string ProcessingFinalWalletRequest = "13"; 
+        public const string BankTransferProcessing = "14"; 
     }
     public class RoleDetails
     {
