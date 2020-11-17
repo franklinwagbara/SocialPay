@@ -244,7 +244,7 @@ namespace SocialPay.Core.Services.Customer
                         return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode};
                     }
                     paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
-                    return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentData };
+                    return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef };
                 }
                 logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
                 await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
