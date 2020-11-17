@@ -27,7 +27,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.TransactionJourney == OrderStatusCode.Approved 
+                        .Where(x => x.TransactionJourney == OrderStatusCode.CompletedWalletFunding 
                         && x.PaymentChannel == PaymentChannel.Card).Take(1).ToListAsync();
 
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
