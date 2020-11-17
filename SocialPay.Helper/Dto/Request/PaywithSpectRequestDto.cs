@@ -8,4 +8,9 @@
         public string description { get; set; }
         public string amount { get; set; }
     }
+
+    public class PayWithSpectaVerificationRequestDto
+    {
+        public string verificationToken { get; set; }
+    }
 }
