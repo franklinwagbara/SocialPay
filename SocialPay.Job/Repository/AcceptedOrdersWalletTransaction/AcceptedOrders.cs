@@ -31,6 +31,7 @@ namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
                         || x.TransactionJourney == TransactionJourneyStatusCodes.AwaitingCustomerFeedBack
+                        || x.TransactionJourney == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
                         && x.TransactionStatus == OrderStatusCode.Approved
                         ).ToListAsync();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
