@@ -43,7 +43,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                            && x.TransactionJourney == OrderStatusCode.Approved);
+                            && x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul);
                         if (getTransInfo == null)
                             return null;
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingProcessing;
