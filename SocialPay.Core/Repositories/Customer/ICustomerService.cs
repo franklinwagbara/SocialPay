@@ -382,7 +382,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.Status = true;                               
                                 logconfirmation.PaymentReference = model.InvoiceReference;
                                 logconfirmation.PaymentChannel = model.Channel;
-                                logconfirmation.StatusJourney = OrderStatusCode.Approved;
+                                logconfirmation.TransactionJourney = OrderStatusCode.Approved;
                                 logconfirmation.TransactionStatus = OrderStatusCode.Approved;
 
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
@@ -390,7 +390,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.TotalAmount = invoiceInfo.TotalAmount;
                                 logconfirmation.ClientAuthenticationId = invoiceInfo.ClientAuthenticationId;
                                 getpaymentInfo.TransactionStatus = OrderStatusCode.Approved;
-                                logconfirmation.StatusJourney = OrderStatusCode.Approved;
+                                logconfirmation.TransactionJourney = OrderStatusCode.Approved;
                                 getpaymentInfo.Status = true;
                                 getpaymentInfo.Message = model.Message;
                                 getpaymentInfo.LastDateModified = DateTime.Now;
@@ -532,7 +532,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
                     logconfirmation.TransactionStatus = OrderStatusCode.Pending;
-                    logconfirmation.StatusJourney = OrderStatusCode.Pending;
+                    logconfirmation.TransactionJourney = OrderStatusCode.Pending;
 
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
@@ -579,7 +579,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
                     logconfirmation.TransactionStatus = OrderStatusCode.Approved;
-                    logconfirmation.StatusJourney = OrderStatusCode.Approved;
+                    logconfirmation.TransactionJourney = OrderStatusCode.Approved;
                    // logconfirmation.CustomerEmail = model.e;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
