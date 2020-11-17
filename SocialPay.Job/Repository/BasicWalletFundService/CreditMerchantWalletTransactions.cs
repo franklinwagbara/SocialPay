@@ -102,10 +102,16 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                         response = initiateRequest.response,
                                         responsedata = Convert.ToString(initiateRequest.responsedata),
                                     };
-                                    if(getTransInfo.PaymentChannel != PaymentChannel.Card)
-                                    {
-                                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.AwaitingCustomerFeedBack;
-                                    }
+                                    //if(getTransInfo.Category == MerchantPaymentLinkCategory.Escrow ||
+                                    //    getTransInfo.Category == MerchantPaymentLinkCategory.OneOffEscrowLink)
+                                    //{
+                                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.AwaitingCustomerFeedBack;
+                                    //}
+
+                                    //if (getTransInfo.PaymentChannel == PaymentChannel.Card)
+                                    //{
+                                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.AwaitingCustomerFeedBack;
+                                    //}
                                     getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul;
                                     getTransInfo.LastDateModified = DateTime.Now;
