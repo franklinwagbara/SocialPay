@@ -217,7 +217,7 @@ namespace SocialPay.Core.Services.Customer
                         //decimal CustomerTotalAmount = model.CustomerAmount;// + getPaymentDetails.ShippingFee;
                         if (model.Channel == PaymentChannel.PayWithSpecta)
                         {
-                            var generateToken = await _payWithSpectaService.InitiatePayment(logCustomerInfo.Amount, "Social pay", model.TransactionReference);
+                            var generateToken = await _payWithSpectaService.InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef);
                             if (generateToken.ResponseCode != AppResponseCodes.Success)
                             {
                                 return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
@@ -238,7 +238,7 @@ namespace SocialPay.Core.Services.Customer
                     logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
                     await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                     await _context.SaveChangesAsync();
-                    var generateToken = await _payWithSpectaService.InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", model.TransactionReference);
+                    var generateToken = await _payWithSpectaService.InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", paymentRef);
                     if (generateToken.ResponseCode != AppResponseCodes.Success)
                     {
                         return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode};
