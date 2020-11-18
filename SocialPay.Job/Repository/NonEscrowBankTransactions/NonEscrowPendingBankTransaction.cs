@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.NonEscrowBankTransaction
+namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 {
     public class NonEscrowPendingBankTransaction
     {
@@ -45,7 +45,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransaction
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                          .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                         && x.TransactionJourney == OrderStatusCode.CompletedWalletFunding);
+                         && x.TransactionJourney == TransactionJourneyStatusCodes.WalletTranferCompleted);
                         if (getTransInfo == null)
                             return null;
                         string bankCode = string.Empty;
@@ -58,21 +58,22 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransaction
                         {
                             bankCode = getBankInfo.BankCode;
 
-                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
-                            getTransInfo.LastDateModified = DateTime.Now;
-                            context.Update(getTransInfo);
-                            await context.SaveChangesAsync();
+                            //getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
+                            //getTransInfo.LastDateModified = DateTime.Now;
+                            //context.Update(getTransInfo);
+                            //await context.SaveChangesAsync();
 
                             var initiateRequest = await _fioranoTransferRepository
                                .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
-                               "Card-Payment" + " - " + item.TransactionReference +
-                               " - " + item.CustomerTransactionReference, item.TransactionReference,
+                               "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
+                               " - " + item.PaymentReference, item.PaymentReference,
                                getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer", requestId);
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
                                 getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedDirectFundTransfer;
                                 getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
+                                getTransInfo.TransactionJourney = OrderStatusCode.TransactionCompleted;
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
                                 await context.SaveChangesAsync();
@@ -80,11 +81,11 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransaction
                             }
 
                             getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.Failed;
-                            getTransInfo.TransactionStatus = OrderStatusCode.Failed;
+                            getTransInfo.TransactionJourney = OrderStatusCode.Failed;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
-                            //return null;
+                            return null;
                         }
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
                         getTransInfo.LastDateModified = DateTime.Now;

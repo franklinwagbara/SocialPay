@@ -116,6 +116,7 @@
         public const string WalletTranferCompleted = "12"; 
         public const string ProcessingFinalWalletRequest = "13"; 
         public const string BankTransferProcessing = "14"; 
+        public const string CompletedBankTransfer = "15"; 
     }
     public class RoleDetails
     {
