@@ -30,7 +30,6 @@ using SocialPay.Domain;
 using SocialPay.Helper.Cryptography;
 using SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction;
 using SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction;
-using SocialPay.Job.Repository.AcceptedOrdersWalletTransaction;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
