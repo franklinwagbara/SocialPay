@@ -15,6 +15,7 @@ namespace SocialPay.Domain.Entities
         public string TransactionJourney { get; set; }
         public string DeliveryDayTransferStatus { get; set; }
         public string Message { get; set; }
+        public string LinkCategory { get; set; }
         public string TransactionReference { get; set; }
         public string CustomerTransactionReference { get; set; }
         public bool Status { get; set; }
