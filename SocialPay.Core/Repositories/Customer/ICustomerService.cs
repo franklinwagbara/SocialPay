@@ -736,10 +736,20 @@ namespace SocialPay.Core.Repositories.Customer
                     {
                         try
                         {
+                            var emailModal = new EmailRequestDto();
+                            var mailBuilder = new StringBuilder();
+                            var getMerchant = await _context.ClientAuthentication
+                                  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getTransactionLogs.ClientAuthenticationId);
+                            //{
+                            //    Subject = "Order" + " " + model.TransactionReference + " " + "was Rejected",
+                            //    SourceEmail = "info@sterling.ng",
+                            //    DestinationEmail = getMerchant.Email,
+                            //    // DestinationEmail = "festypat9@gmail.com",
+                            //    //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                            //};
                             if (model.Status == OrderStatusCode.Decline)
                             {
-                                var getMerchant = await _context.ClientAuthentication
-                                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getTransactionLogs.ClientAuthenticationId);
+                              
                                 //if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
                                 //    return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };
 
@@ -762,15 +772,9 @@ namespace SocialPay.Core.Repositories.Customer
                                 ////await _context.ItemDispute.AddAsync(disputeModel);
                                 ////await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
-                                var emailModal = new EmailRequestDto
-                                {
-                                    Subject = "Order" + " " + model.TransactionReference + " " + "was Rejected",
-                                    SourceEmail = "info@sterling.ng",
-                                    DestinationEmail = getMerchant.Email,
-                                    // DestinationEmail = "festypat9@gmail.com",
-                                    //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
-                                };
-                                var mailBuilder = new StringBuilder();
+                                emailModal.Subject = "info@sterling.ng";
+                                emailModal.DestinationEmail = getMerchant.Email;
+                                emailModal.Subject = "Order" + " " + model.TransactionReference + " " + "was Rejected";
                                 mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
                                 mailBuilder.AppendLine("<br />");
                                 mailBuilder.AppendLine("An order has been rejected by" + "" + getTransactionLogs.CustomerEmail + " " + ".<br />");
@@ -779,7 +783,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 mailBuilder.AppendLine("Best Regards,");
                                 emailModal.EmailBody = mailBuilder.ToString();
 
-                                var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                                await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                             }
                             logRequest.OrderStatus = OrderStatusCode.Approved;
@@ -793,6 +797,18 @@ namespace SocialPay.Core.Repositories.Customer
                             _context.Update(getTransactionLogs);
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
+                            emailModal.Subject = "info@sterling.ng";
+                            emailModal.DestinationEmail = getMerchant.Email;
+                            emailModal.Subject = "Order" + " " + model.TransactionReference + " " + "was Accepted";
+                            mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("An order has been rejected by" + "" + getTransactionLogs.CustomerEmail + " " + ".<br />");
+                            //mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
+                            // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                            mailBuilder.AppendLine("Best Regards,");
+                            emailModal.EmailBody = mailBuilder.ToString();
+
+                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                         }
                         catch (Exception ex)
