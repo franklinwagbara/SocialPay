@@ -3,15 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
+namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
 {
-    public class AcceptedOrders : IAcceptedOrders
+    public class AcceptedEscrowRequestBankTransaction : IAcceptedEscrowRequestBankTransaction
     {
-        private readonly AcceptedOrderTransactions _transactions;
-        public AcceptedOrders(AcceptedOrderTransactions transactions, IServiceProvider services)
+        private readonly AcceptedEscrowRequestPendingBankTransaction _transactions;
+        public AcceptedEscrowRequestBankTransaction(AcceptedEscrowRequestPendingBankTransaction transactions, IServiceProvider services)
         {
             Services = services;
             _transactions = transactions;
@@ -29,10 +31,11 @@ namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
-                        || x.TransactionJourney == TransactionJourneyStatusCodes.AwaitingCustomerFeedBack
-                        //|| x.TransactionJourney == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
-                        && x.TransactionStatus == OrderStatusCode.Approved
+                        //.Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
+                        //|| x.TransactionJourney == TransactionJourneyStatusCodes.AwaitingCustomerFeedBack
+                        ////|| x.TransactionJourney == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
+                        //&& x.TransactionStatus == OrderStatusCode.Approved
+                        .Where(x => x.TransactionStatus == TransactionJourneyStatusCodes.WalletTranferCompleted
                         ).ToListAsync();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)

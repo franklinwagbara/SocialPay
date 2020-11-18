@@ -13,13 +13,13 @@ using SocialPay.Helper;
 using SocialPay.Core.Services.Wallet;
 using StackExchange.Redis;
 
-namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
+namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
 {
-    public class AcceptedOrderTransactions
+    public class AcceptedEscrowOrderTransactions
     {
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
-        public AcceptedOrderTransactions(IServiceProvider service, IOptions<AppSettings> appSettings,
+        public AcceptedEscrowOrderTransactions(IServiceProvider service, IOptions<AppSettings> appSettings,
             WalletRepoJobService walletRepoJobService)
         {
             Services = service;
@@ -43,6 +43,7 @@ namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.ProcessingApprovedRequest;
+                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.ProcessingApprovedRequest;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -99,10 +100,10 @@ namespace SocialPay.Job.Repository.AcceptedOrdersWalletTransaction
                                         responsedata = Convert.ToString(initiateRequest.responsedata),
                                     };
 
-                                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.OrderWasAcceptedWalletDebited;
-                                    //getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                                    getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
                                     getTransInfo.LastDateModified = DateTime.Now;
-                                    getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
