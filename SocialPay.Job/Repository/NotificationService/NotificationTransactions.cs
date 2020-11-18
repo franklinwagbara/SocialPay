@@ -38,6 +38,8 @@ namespace SocialPay.Job.Repository.NotificationService
                     {
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
+                        if (getTransInfo == null)
+                            return null;
                         getTransInfo.IsNotified = true;
                         getTransInfo.LastDateModified = DateTime.Now;
                         getTransInfo.DateNotified = DateTime.Now;
