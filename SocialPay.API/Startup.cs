@@ -28,6 +28,8 @@ using SocialPay.Core.Services.Validations;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Helper.Cryptography;
+using SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction;
+using SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction;
 using SocialPay.Job.Repository.AcceptedOrdersWalletTransaction;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
@@ -160,6 +162,13 @@ namespace SocialPay.API
             ////services.AddSingleton<WalletRepoJobService>();
             ////services.AddSingleton<PendingWalletRequestService>();
 
+            //accepted escrow bank request
+
+            services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
+            services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
+            services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
+
+
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
             services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
@@ -178,9 +187,9 @@ namespace SocialPay.API
 
             //Accepted order service
 
-            services.AddScoped<IAcceptedOrders, AcceptedOrders>();
-            //services.AddSingleton<IHostedService, AcceptedOrderTask>();
-            services.AddSingleton<AcceptedOrderTransactions>();
+            services.AddScoped<IAcceptedEscrowOrders, AcceptedEscrowOrders>();
+            services.AddSingleton<IHostedService, AcceptedWalletOrderTask>();
+            services.AddSingleton<AcceptedEscrowOrderTransactions>();
 
             //////Credit T24 account for card payments
             services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();

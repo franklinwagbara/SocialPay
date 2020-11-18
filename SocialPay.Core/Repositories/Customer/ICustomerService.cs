@@ -679,7 +679,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
                             }
 
-                            if (getTransactionLogs.TransactionStatus == OrderStatusCode.Decline)
+                            if (model.Status == OrderStatusCode.Approved)
                             {
                                 logRequest.OrderStatus = OrderStatusCode.ItemAccepted;
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
