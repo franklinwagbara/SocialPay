@@ -507,7 +507,6 @@ namespace SocialPay.Core.Repositories.Customer
             try
             {
                
-
                 var logconfirmation = new TransactionLog { };
                 var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
                 var paymentSetupInfo = await _context.MerchantPaymentSetup

@@ -33,8 +33,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == 
                         TransactionJourneyStatusCodes.WalletTranferCompleted).Take(2).ToListAsync();
-                    var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
-                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
+                    var getNonEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Basic
+                     || x.LinkCategory == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
