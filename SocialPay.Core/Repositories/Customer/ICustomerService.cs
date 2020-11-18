@@ -165,7 +165,28 @@ namespace SocialPay.Core.Repositories.Customer
                          select new CustomerInfoViewModel { CustomerEmail = a.Email, Fullname = a.Fullname,
                              CustomerPhoneNumber = a.PhoneNumber, DateRegistered = a.DateEntered, 
                              ClientAuthenticationId = p.CustomerInfo}).OrderByDescending(x=>x.DateRegistered).ToList();
-            result = response;
+
+
+            var uniquePersons = response.GroupBy(p => p.CustomerEmail)
+                           .Select(grp => grp.First())
+                           .ToArray();
+
+                    List<CustomerInfoViewModel> distinctPeople = response
+          .GroupBy(p => new { p.CustomerEmail, p.CustomerPhoneNumber })
+          .Select(g => g.First())
+          .ToList();
+
+            result = response
+                      .GroupBy(p => new { p.CustomerEmail, p.CustomerPhoneNumber, p.Fullname, p.DateRegistered})
+                      .Select(g => g.First())
+                      .ToList();
+            result = distinctPeople;
+
+           // response.GroupBy(item => (item.CustomerEmail, item.CustomerPhoneNumber, item.Fullname,
+           // item.DateRegistered)).Select(group => group.First()).ToList();
+           //// var distinctList = response.Distinct(x => x.).ToList();
+
+           // result = response;
 
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
         }

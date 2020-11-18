@@ -32,7 +32,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
-                       // || x.TransactionJourney == TransactionJourneyStatusCodes.AwaitingCustomerFeedBack
+                        || x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
                         //|| x.TransactionJourney == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
                         && x.TransactionStatus == OrderStatusCode.Approved
                         //&& x.Category == MerchantPaymentLinkCategory.Basic
