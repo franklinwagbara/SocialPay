@@ -19,6 +19,7 @@ using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
+using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
@@ -31,6 +32,8 @@ using SocialPay.Job.Repository.AcceptedOrdersWalletTransaction;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
+using SocialPay.Job.Repository.InterBankService;
+using SocialPay.Job.Repository.NonEscrowBankTransactions;
 using SocialPay.Job.Repository.NonEscrowWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
@@ -136,6 +139,10 @@ namespace SocialPay.API
             services.AddScoped<AccountResetService>();
             services.AddScoped<DisputeRepoService>();
             services.AddSingleton<WalletRepoJobService>();
+            services.AddSingleton<InterBankPendingTransferService>();
+            services.AddSingleton<BankServiceRepositoryJobService>();
+            services.AddSingleton<IBSReposerviceJob>();
+            services.AddSingleton<SqlRepository>();
             services.AddDistributedRedisCache(option =>
             {
                 option.Configuration = "172.18.4.114:6379";
@@ -162,6 +169,12 @@ namespace SocialPay.API
             services.AddScoped<INonEscrowWalletTransaction, NonEscrowWalletTransaction>();
             services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
             services.AddSingleton<NonEscrowWalletPendingTransaction>();
+
+            //Non escrow bank transaction
+
+            services.AddScoped<INonEscrowBankTransaction, NonEscrowBankTransaction>();
+            services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
+            services.AddSingleton<NonEscrowPendingBankTransaction>();
 
             //Accepted order service
 

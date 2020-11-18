@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.NonEscrowBankTransaction
+namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 {
-    public class NonEscrowBankTransaction
+    public class NonEscrowBankTransaction : INonEscrowBankTransaction
     {
         private readonly NonEscrowPendingBankTransaction _transactions;
         public NonEscrowBankTransaction(NonEscrowPendingBankTransaction transactions, IServiceProvider services)
@@ -31,15 +31,14 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
-                        && x.TransactionStatus == OrderStatusCode.Approved
-                        && x.Category == MerchantPaymentLinkCategory.Basic
-                        || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink
-                        ).ToListAsync();
+                        .Where(x => x.TransactionJourney == 
+                        TransactionJourneyStatusCodes.WalletTranferCompleted).Take(2).ToListAsync();
+                    var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
+                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
-                    if (pendingTransactions.Count == 0)
+                    if (getNonEscrowTransactions.Count == 0)
                         return "No record";
-                    await _transactions.ProcessTransactions(pendingTransactions);
+                    await _transactions.ProcessTransactions(getNonEscrowTransactions);
                     //return "No record";
                 }
 

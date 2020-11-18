@@ -28,14 +28,16 @@ namespace SocialPay.Job.Repository.NotificationService
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.OrderStatus == OrderStatusCode.Pending 
-                        && x.Category == MerchantPaymentLinkCategory.Escrow
-                        || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink
-                        && x.IsNotified == false && x.DeliveryDate.Day == nextDay.Day).ToListAsync();
+                        .Where(x =>x.IsNotified == false && x.TransactionStatus == OrderStatusCode.Pending
+                        && x.DeliveryDate.Day == nextDay.Day).ToListAsync();
+
+                    var getvalidRequest = pendingTransactions.Where(x => x.Category 
+                         == MerchantPaymentLinkCategory.Escrow
+                     || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
-                    if (pendingTransactions.Count == 0)
+                    if (getvalidRequest.Count == 0)
                         return "No record";
-                    await _transactions.InitiatePendingNotifications(pendingTransactions);
+                    await _transactions.InitiatePendingNotifications(getvalidRequest);
                     //return "No record";
                 }
 

@@ -268,6 +268,14 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
+
+                var logResponse = new PaymentResponse
+                {
+                    Message = model.Message, PaymentReference = model.PaymentReference,
+                    TransactionReference = model.TransactionReference
+                };
+                await _context.PaymentResponse.AddAsync(logResponse);
+                await _context.SaveChangesAsync();
                 var validateLinkType = await _customerService.GetLinkCategorybyTranref(model.TransactionReference);
                 if(validateLinkType.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {
