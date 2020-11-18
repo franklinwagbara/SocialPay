@@ -17,6 +17,26 @@ namespace SocialPay.Core.Services.Data
         {
             _appSettings = appSettings.Value;
         }
+
+        public DataSet getNIPFee(decimal amt)
+        {
+            DataSet ds = new DataSet();
+            //try
+            //{
+
+
+
+            //    Sterling.MSSQL.Connect c = new Sterling.MSSQL.Connect("mssqlconn");
+            //    c.SetProcedure("spd_getNIPFeeCharge");
+            //    c.AddParam("@amt", amt);
+            //    ds = c.Select("rec");
+            //}
+            //catch (Exception ex)
+            //{
+            //    //log.Error(ex);
+            //}
+            return ds;
+        }
         public async Task<WebApiResponse> InsertNipTransferRequest(NipFundstransferRequestDto model)
         {
 			try
