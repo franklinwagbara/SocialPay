@@ -87,22 +87,22 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                             await context.SaveChangesAsync();
                             return null;
                         }
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
-                        var processIntebankTransction = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
-                            getBankInfo.BankCode, _appSettings.socialT24AccountNo);
+                        ////getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
+                        ////getTransInfo.LastDateModified = DateTime.Now;
+                        ////context.Update(getTransInfo);
+                        ////await context.SaveChangesAsync();
+                        ////var processIntebankTransction = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
+                        ////    getBankInfo.BankCode, _appSettings.socialT24AccountNo);
 
-                        getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
-                        getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.TransactionCompleted;
-                        getTransInfo.TransactionJourney = OrderStatusCode.TransactionCompleted;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
+                        ////getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
+                        ////getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.TransactionCompleted;
+                        ////getTransInfo.TransactionJourney = OrderStatusCode.TransactionCompleted;
+                        ////getTransInfo.LastDateModified = DateTime.Now;
+                        ////context.Update(getTransInfo);
+                        ////await context.SaveChangesAsync();
 
                         //Other banks transfer
-                        //  return null;
+                          return null;
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
