@@ -40,8 +40,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                     {
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
-                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                            && x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted);
+                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
                         if (getTransInfo == null)
                             return null;
