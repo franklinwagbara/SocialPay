@@ -215,16 +215,36 @@ namespace SocialPay.Core.Services.Customer
                         await transaction.CommitAsync();
                         _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
                         //decimal CustomerTotalAmount = model.CustomerAmount;// + getPaymentDetails.ShippingFee;
-                        if (model.Channel == PaymentChannel.PayWithSpecta)
+                        if(getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)
                         {
-                            var generateToken = await _payWithSpectaService.InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef);
-                            if (generateToken.ResponseCode != AppResponseCodes.Success)
+                            if (model.Channel == PaymentChannel.PayWithSpecta)
                             {
-                                return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
+                                var generateToken = await _payWithSpectaService.InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef);
+                                if (generateToken.ResponseCode != AppResponseCodes.Success)
+                                {
+                                    return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
+                                }
+                                paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                                return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                             }
-                            paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
-                            return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
+
+                            encryptedText = _appSettings.mid + _appSettings.paymentCombination + logCustomerInfo.Amount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                            encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
+                            paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
+                            paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+                            return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef };
                         }
+
+                        ////if (model.Channel == PaymentChannel.PayWithSpecta)
+                        ////{
+                        ////    var generateToken = await _payWithSpectaService.InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef);
+                        ////    if (generateToken.ResponseCode != AppResponseCodes.Success)
+                        ////    {
+                        ////        return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
+                        ////    }
+                        ////    paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                        ////    return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
+                        ////}
                         
                         encryptedText = _appSettings.mid + _appSettings.paymentCombination + logCustomerInfo.Amount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
                         encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
@@ -233,7 +253,7 @@ namespace SocialPay.Core.Services.Customer
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef };
                     }
                 }
-                if (model.Channel == PaymentChannel.PayWithSpecta)
+                if (model.Channel == PaymentChannel.PayWithSpecta && getPaymentDetails.PaymentCategory != MerchantPaymentLinkCategory.Escrow)
                 {
                     logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
                     await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
