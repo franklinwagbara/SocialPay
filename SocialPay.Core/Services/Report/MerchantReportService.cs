@@ -224,7 +224,7 @@ namespace SocialPay.Core.Services.Report
                                 Channel = t.Category, ClientId = t.ClientAuthenticationId, DeliveryDay = t.DeliveryFinalDate,
                                 CustomerTransactionReference = t.CustomerTransactionReference, CustomerEmail = c.Email,
                                 Fullname = c.Fullname, PhoneNumber = c.PhoneNumber, TransactionReference = c.TransactionReference,
-                                PaymentReference = c.PaymentReference
+                                PaymentReference = c.PaymentReference, ActivityStatus = t.AcitivityStatus
                                 }).ToList();
 
                 result = response;
