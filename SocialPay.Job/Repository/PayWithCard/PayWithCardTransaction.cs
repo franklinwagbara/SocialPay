@@ -27,7 +27,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.OrderStatus == OrderStatusCode.CompletedWalletFunding 
+                        .Where(x => x.OrderStatus == TransactionJourneyStatusCodes.CompletedWalletFunding 
                         && x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
                         && x.PaymentChannel == PaymentChannel.Card).Take(1).ToListAsync();
 

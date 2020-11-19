@@ -43,10 +43,10 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                           && x.OrderStatus == OrderStatusCode.Pending);
+                           && x.OrderStatus == TransactionJourneyStatusCodes.Pending);
                         if (getTransInfo == null)
                             return null;
-                        getTransInfo.OrderStatus = OrderStatusCode.WalletFundingProgress;
+                        getTransInfo.OrderStatus = TransactionJourneyStatusCodes.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -112,8 +112,9 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                     //{
                                     //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.AwaitingCustomerFeedBack;
                                     //}
-                                    getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
+                                    getTransInfo.OrderStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul;
+                                    getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     getTransInfo.WalletFundDate = DateTime.Now;
                                     context.Update(getTransInfo);

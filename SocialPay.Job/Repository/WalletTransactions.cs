@@ -28,7 +28,7 @@ namespace SocialPay.Job.Repository
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime today = DateTime.Now.Date;
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.Status == true && x.OrderStatus == OrderStatusCode.Approved
+                        .Where(x => x.Status == true && x.OrderStatus == TransactionJourneyStatusCodes.Approved
                         && x.Category == MerchantPaymentLinkCategory.Escrow
                         || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink
                         && x.IsWalletQueued == false

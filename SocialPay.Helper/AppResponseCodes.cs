@@ -84,7 +84,23 @@
         public const string Guest = "01";
         public const string Merchant = "02";
     }
-    public class OrderStatusCode
+    //public class OrderStatusCode
+    //{
+    //    public const string Pending = "01";
+    //    public const string Approved = "02";
+    //    public const string Decline = "03";
+    //    public const string Dispute = "04";
+    //    public const string WalletFundingProgress = "05";
+    //    public const string CompletedWalletFunding = "06";
+    //    public const string CompletedDirectFundTransfer = "07";
+    //    public const string Failed = "08";
+    //    public const string BankTransferProcessing = "09";
+    //    public const string TransactionCompleted = "10";
+    //    public const string ItemAccepted = "11";
+
+    //}
+
+    public class TransactionJourneyStatusCodes
     {
         public const string Pending = "01";
         public const string Approved = "02";
@@ -93,30 +109,22 @@
         public const string WalletFundingProgress = "05";
         public const string CompletedWalletFunding = "06";
         public const string CompletedDirectFundTransfer = "07";
-        public const string Failed = "08";
+        public const string FirstWalletFundingWasSuccessul = "08";
         public const string BankTransferProcessing = "09";
         public const string TransactionCompleted = "10";
         public const string ItemAccepted = "11";
-
-    }
-
-    public class TransactionJourneyStatusCodes
-    {
-        public const string FirstWalletFundingWasSuccessul = "01";
-        public const string Approved = "02";
-        public const string Failed = "03";
-        public const string BasicWalletFundingProcessing = "04";
-        public const string BasicCompletedWalletFunding = "05"; 
-        public const string FioranoFirstFundingProcessing = "06"; 
-        public const string FioranoFirstFundingCompleted = "07"; 
-        public const string ProcessingApprovedRequest = "08"; 
-        public const string OrderWasAcceptedWalletDebited = "09"; 
-        public const string AwaitingCustomerFeedBack = "10"; 
-        public const string CompletedDeliveryDayWalletFunding = "11"; 
-        public const string WalletTranferCompleted = "12"; 
-        public const string ProcessingFinalWalletRequest = "13"; 
-        public const string BankTransferProcessing = "14"; 
-        public const string CompletedBankTransfer = "15"; 
+        public const string TransactionFailed = "12";
+        public const string BasicWalletFundingProcessing = "13";
+        public const string BasicCompletedWalletFunding = "14"; 
+        public const string FioranoFirstFundingProcessing = "15"; 
+        public const string FioranoFirstFundingCompleted = "16"; 
+        public const string ProcessingApprovedRequest = "17"; 
+        public const string OrderWasAcceptedWalletDebited = "18"; 
+        public const string AwaitingCustomerFeedBack = "19"; 
+        public const string CompletedDeliveryDayWalletFunding = "20"; 
+        public const string WalletTranferCompleted = "21"; 
+        public const string ProcessingFinalWalletRequest = "22"; 
+        public const string CompletedBankTransfer = "23"; 
     }
     public class RoleDetails
     {

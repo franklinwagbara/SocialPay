@@ -384,7 +384,7 @@ namespace SocialPay.Core.Repositories.Customer
                     var getpaymentInfo = await GetInvoicePaymentInfo(model.TransactionReference, model.InvoiceReference);
                     if (getpaymentInfo == null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
-                    if(getpaymentInfo.TransactionStatus == OrderStatusCode.Approved)
+                    if(getpaymentInfo.TransactionStatus == TransactionJourneyStatusCodes.Approved)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
@@ -397,26 +397,27 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.CustomerEmail = getpaymentInfo.Email;
                                 logconfirmation.CustomerTransactionReference = getpaymentInfo.CustomerTransactionReference;
                                 logconfirmation.TransactionReference = model.TransactionReference;
-                                logconfirmation.OrderStatus = OrderStatusCode.Pending;
+                                logconfirmation.OrderStatus = TransactionJourneyStatusCodes.Pending;
                                 logconfirmation.Message = model.Message;
                                 logconfirmation.LastDateModified = DateTime.Now;
                                 logconfirmation.CustomerInfo = model.CustomerId;
                                 logconfirmation.Status = true;                               
                                 logconfirmation.PaymentReference = model.InvoiceReference;
                                 logconfirmation.PaymentChannel = model.Channel;
-                                logconfirmation.TransactionJourney = OrderStatusCode.Approved;
-                                logconfirmation.TransactionStatus = OrderStatusCode.Approved;
+                                logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
+                                logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Approved;
+                                logconfirmation.AcitivityStatus = TransactionJourneyStatusCodes.Approved;
 
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                                 var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
                                 logconfirmation.TotalAmount = invoiceInfo.TotalAmount;
                                 logconfirmation.ClientAuthenticationId = invoiceInfo.ClientAuthenticationId;
-                                getpaymentInfo.TransactionStatus = OrderStatusCode.Approved;
-                                logconfirmation.TransactionJourney = OrderStatusCode.Approved;
+                                getpaymentInfo.TransactionStatus = TransactionJourneyStatusCodes.Approved;
+                                logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
                                 getpaymentInfo.Status = true;
                                 getpaymentInfo.Message = model.Message;
                                 getpaymentInfo.LastDateModified = DateTime.Now;
-                                logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
+                                logconfirmation.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.Pending;
                                 _context.Update(getpaymentInfo);
                                 await _context.SaveChangesAsync();
                                 await _context.TransactionLog.AddAsync(logconfirmation);
@@ -444,7 +445,7 @@ namespace SocialPay.Core.Repositories.Customer
                             logFailedResponse.Message = model.Message;                            
                             await _context.FailedTransactions.AddAsync(logFailedResponse);
                             await _context.SaveChangesAsync();
-                            getpaymentInfo.TransactionStatus = OrderStatusCode.Failed;
+                            getpaymentInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
                             getpaymentInfo.Status = false;
                             getpaymentInfo.Message = model.Message;
                             getpaymentInfo.LastDateModified = DateTime.Now;
@@ -549,14 +550,15 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.CustomerEmail = customerInfo.Email;
                     logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
                     logconfirmation.TransactionReference = model.TransactionReference;
-                    logconfirmation.OrderStatus = OrderStatusCode.Pending;
+                    logconfirmation.OrderStatus = TransactionJourneyStatusCodes.Pending;
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = getCustomerInfo.Amount;
-                    logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
+                    logconfirmation.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
-                    logconfirmation.TransactionStatus = OrderStatusCode.Pending;
-                    logconfirmation.TransactionJourney = OrderStatusCode.Pending;
+                    logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Pending;
+                    logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Pending;
+                    logconfirmation.AcitivityStatus = TransactionJourneyStatusCodes.Pending;
 
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
@@ -597,14 +599,15 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.CustomerInfo = model.CustomerId;
                     logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
                     logconfirmation.TransactionReference = model.TransactionReference;
-                    logconfirmation.OrderStatus = OrderStatusCode.Pending;
+                    logconfirmation.OrderStatus = TransactionJourneyStatusCodes.Pending;
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = getCustomerInfo.Amount;
-                    logconfirmation.DeliveryDayTransferStatus = OrderStatusCode.Pending;
+                    logconfirmation.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
-                    logconfirmation.TransactionStatus = OrderStatusCode.Approved;
-                    logconfirmation.TransactionJourney = OrderStatusCode.Approved;
+                    logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Approved;
+                    logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
+                    logconfirmation.AcitivityStatus = TransactionJourneyStatusCodes.Approved;
                    // logconfirmation.CustomerEmail = model.e;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
@@ -660,14 +663,15 @@ namespace SocialPay.Core.Repositories.Customer
                     {
                         try
                         {
-                            if (model.Status == OrderStatusCode.Decline)
+                            if (model.Status == TransactionJourneyStatusCodes.Decline)
                             {
-                                if (getTransactionLogs.TransactionStatus == OrderStatusCode.Decline)
+                                if (getTransactionLogs.TransactionStatus == TransactionJourneyStatusCodes.Decline)
                                 {
-                                    logRequest.OrderStatus = OrderStatusCode.Dispute;
+                                    logRequest.OrderStatus = TransactionJourneyStatusCodes.Dispute;
                                     await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                     await _context.SaveChangesAsync();
-                                    getTransactionLogs.TransactionStatus = OrderStatusCode.Dispute;
+                                    getTransactionLogs.TransactionStatus = TransactionJourneyStatusCodes.Dispute;
+                                    getTransactionLogs.AcitivityStatus = TransactionJourneyStatusCodes.Dispute;
                                     getTransactionLogs.Status = true;
                                     getTransactionLogs.IsAccepted = true;
                                     getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
@@ -679,12 +683,13 @@ namespace SocialPay.Core.Repositories.Customer
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
                             }
 
-                            if (model.Status == OrderStatusCode.Approved)
+                            if (model.Status == TransactionJourneyStatusCodes.Approved)
                             {
-                                logRequest.OrderStatus = OrderStatusCode.ItemAccepted;
+                                logRequest.OrderStatus = TransactionJourneyStatusCodes.ItemAccepted;
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
-                                getTransactionLogs.TransactionStatus = OrderStatusCode.ItemAccepted;
+                                getTransactionLogs.TransactionStatus = TransactionJourneyStatusCodes.ItemAccepted;
+                                getTransactionLogs.AcitivityStatus = TransactionJourneyStatusCodes.ItemAccepted;
                                 getTransactionLogs.Status = true;
                                 getTransactionLogs.IsAccepted = true;
                                 getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
@@ -704,7 +709,7 @@ namespace SocialPay.Core.Repositories.Customer
                   
                 }
 
-                if (getTransactionLogs != null && getTransactionLogs.TransactionStatus != OrderStatusCode.Pending)
+                if (getTransactionLogs != null && getTransactionLogs.TransactionStatus != TransactionJourneyStatusCodes.Pending)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionProcessed};
 
                 if(getTransactionLogs.DeliveryDate < DateTime.Now)
@@ -713,7 +718,7 @@ namespace SocialPay.Core.Repositories.Customer
                 //if (await _context.ItemAcceptedOrRejected
                 //    .AnyAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference))
                 //return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionAlreadyexit };
-                if (model.Status == OrderStatusCode.Decline || model.Status == OrderStatusCode.Approved)
+                if (model.Status == TransactionJourneyStatusCodes.Decline || model.Status == TransactionJourneyStatusCodes.Approved)
                 {
                     // var validateOrder = await _context.MerchantPaymentSetup
                     //.SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
@@ -747,18 +752,18 @@ namespace SocialPay.Core.Repositories.Customer
                             //    // DestinationEmail = "festypat9@gmail.com",
                             //    //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
                             //};
-                            if (model.Status == OrderStatusCode.Decline)
+                            if (model.Status == TransactionJourneyStatusCodes.Decline)
                             {
                               
                                 //if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
                                 //    return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };
 
-                                logRequest.OrderStatus = OrderStatusCode.Decline;
+                                logRequest.OrderStatus = TransactionJourneyStatusCodes.Decline;
                                 logRequest.LastDateModified = DateTime.Now;
                                 logRequest.ReturnedDate = DateTime.Now.AddDays(Convert.ToInt32(_appSettings.returnedDateSLA));
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
-                                getTransactionLogs.TransactionStatus = OrderStatusCode.Decline;
+                                getTransactionLogs.TransactionStatus = TransactionJourneyStatusCodes.Decline;
                                 getTransactionLogs.Status = true;
                                 getTransactionLogs.IsAccepted = false;
                                 getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
@@ -786,11 +791,11 @@ namespace SocialPay.Core.Repositories.Customer
                                 await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                             }
-                            logRequest.OrderStatus = OrderStatusCode.Approved;
+                            logRequest.OrderStatus = TransactionJourneyStatusCodes.Approved;
                             logRequest.LastDateModified = DateTime.Now;
                             await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                             await _context.SaveChangesAsync();
-                            getTransactionLogs.TransactionStatus = OrderStatusCode.Approved;
+                            getTransactionLogs.TransactionStatus = TransactionJourneyStatusCodes.Approved;
                             getTransactionLogs.Status = true;
                             getTransactionLogs.IsAccepted = true;
                             getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;

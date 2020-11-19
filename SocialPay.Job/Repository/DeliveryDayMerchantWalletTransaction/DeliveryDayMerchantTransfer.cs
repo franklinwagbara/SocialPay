@@ -28,7 +28,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.DeliveryDayTransferStatus == OrderStatusCode.Pending
+                        .Where(x => x.DeliveryDayTransferStatus == TransactionJourneyStatusCodes.Pending
                         && x.DeliveryFinalDate.Day == DateTime.Now.Day).ToListAsync();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)
