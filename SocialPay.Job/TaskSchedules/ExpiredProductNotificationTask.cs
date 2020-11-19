@@ -12,7 +12,7 @@ namespace SocialPay.Job.TaskSchedules
         {
         }
 
-        protected override string Schedule => "*/" + 3 + " * * * *"; // every 4 min 
+        protected override string Schedule => "*/" + 10 + " * * * *"; // every 4 min 
 
         public override Task ProcessInScope(IServiceProvider scopeServiceProvider)
         {
