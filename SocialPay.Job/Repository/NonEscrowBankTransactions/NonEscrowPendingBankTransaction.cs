@@ -71,17 +71,18 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
-                                getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedDirectFundTransfer;
-                                getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
-                                getTransInfo.TransactionJourney = OrderStatusCode.TransactionCompleted;
+                                getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
+                               // getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                                getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
+                                getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
                                 await context.SaveChangesAsync();
                                 return null;
                             }
 
-                            getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.Failed;
-                            getTransInfo.TransactionJourney = OrderStatusCode.Failed;
+                            getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();

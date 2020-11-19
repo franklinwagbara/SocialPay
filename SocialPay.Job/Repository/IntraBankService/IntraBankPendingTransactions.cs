@@ -43,7 +43,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                          .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                         && x.TransactionStatus == OrderStatusCode.CompletedWalletFunding);
+                         && x.AcitivityStatus == TransactionJourneyStatusCodes.CompletedWalletFunding);
                         if (getTransInfo == null)
                             return null;
                         string bankCode = string.Empty;
@@ -56,7 +56,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                         {
                             bankCode = getBankInfo.BankCode;
                           
-                            getTransInfo.TransactionStatus = OrderStatusCode.BankTransferProcessing;
+                            getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.BankTransferProcessing;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
@@ -69,30 +69,31 @@ namespace SocialPay.Job.Repository.IntraBankService
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
-                                getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.CompletedDirectFundTransfer;
-                                getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
+                                getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
+                                getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
                                 await context.SaveChangesAsync();
                                 return null;
                             }
 
-                            getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.Failed;
-                            getTransInfo.TransactionStatus = OrderStatusCode.Failed;
+                            getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                            getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
                             //return null;
                         }
-                        getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.BankTransferProcessing;
+                        getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.BankTransferProcessing;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
                         await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo);
 
-                        getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
-                        getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.TransactionCompleted;
+                        getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                        getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                        getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();

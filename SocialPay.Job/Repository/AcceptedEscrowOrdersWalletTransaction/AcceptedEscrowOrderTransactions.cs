@@ -43,7 +43,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.ProcessingApprovedRequest;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.ProcessingApprovedRequest;
+                        getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.ProcessingApprovedRequest;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -101,7 +101,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                                     };
 
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
-                                    getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                                    getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
                                     context.Update(getTransInfo);

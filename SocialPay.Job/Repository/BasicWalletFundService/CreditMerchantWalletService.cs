@@ -28,7 +28,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.OrderStatus == OrderStatusCode.Pending).Take(1).ToListAsync();
+                        .Where(x => x.OrderStatus == TransactionJourneyStatusCodes.Pending).Take(1).ToListAsync();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)
                         return "No record";
