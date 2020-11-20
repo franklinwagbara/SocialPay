@@ -528,7 +528,13 @@ namespace SocialPay.Core.Repositories.Customer
         {
             try
             {
-               
+
+                var validateDuplicateTransaction = await _context.TransactionLog
+                    .SingleOrDefaultAsync(x => x.Message == model.Message);
+
+                if (validateDuplicateTransaction != null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+
                 var logconfirmation = new TransactionLog { };
                 var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
                 var paymentSetupInfo = await _context.MerchantPaymentSetup
