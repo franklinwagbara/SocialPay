@@ -36,6 +36,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                         ////|| x.TransactionJourney == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
                         //&& x.TransactionStatus == OrderStatusCode.Approved
                         .Where(x => x.AcitivityStatus == TransactionJourneyStatusCodes.WalletTranferCompleted
+                        && x.TransactionStatus == TransactionJourneyStatusCodes.Approved
                         ).ToListAsync();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)
