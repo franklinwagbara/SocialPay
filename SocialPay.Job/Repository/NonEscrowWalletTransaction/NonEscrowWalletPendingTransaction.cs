@@ -102,6 +102,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                                     };
 
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                                    getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
                                     //getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
