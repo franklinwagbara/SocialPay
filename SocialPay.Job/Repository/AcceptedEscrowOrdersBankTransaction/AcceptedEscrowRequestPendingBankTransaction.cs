@@ -57,10 +57,11 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                         {
                             bankCode = getBankInfo.BankCode;
 
-                            //getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
-                            //getTransInfo.LastDateModified = DateTime.Now;
-                            //context.Update(getTransInfo);
-                            //await context.SaveChangesAsync();
+                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
+                            getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.BankTransferProcessing;
+                            getTransInfo.LastDateModified = DateTime.Now;
+                            context.Update(getTransInfo);
+                            await context.SaveChangesAsync();
 
                             var initiateRequest = await _fioranoTransferRepository
                                .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
