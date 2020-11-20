@@ -770,6 +770,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                                 await _context.SaveChangesAsync();
                                 getTransactionLogs.TransactionStatus = TransactionJourneyStatusCodes.Decline;
+                                getTransactionLogs.AcitivityStatus = TransactionJourneyStatusCodes.Decline;
                                 getTransactionLogs.Status = true;
                                 getTransactionLogs.IsAccepted = false;
                                 getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
@@ -802,6 +803,7 @@ namespace SocialPay.Core.Repositories.Customer
                             await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                             await _context.SaveChangesAsync();
                             getTransactionLogs.TransactionStatus = TransactionJourneyStatusCodes.Approved;
+                            getTransactionLogs.AcitivityStatus = TransactionJourneyStatusCodes.Approved;
                             getTransactionLogs.Status = true;
                             getTransactionLogs.IsAccepted = true;
                             getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
