@@ -44,7 +44,8 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                          .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                         && x.TransactionJourney == TransactionJourneyStatusCodes.WalletTranferCompleted);
+                         && x.AcitivityStatus == TransactionJourneyStatusCodes.WalletTranferCompleted
+                         && x.TransactionStatus == TransactionJourneyStatusCodes.Approved);
                         if (getTransInfo == null)
                             return null;
                         string bankCode = string.Empty;
