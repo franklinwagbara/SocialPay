@@ -31,6 +31,7 @@ using SocialPay.Helper.Cryptography;
 using SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction;
 using SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction;
 using SocialPay.Job.Repository.BasicWalletFundService;
+using SocialPay.Job.Repository.DeclinedEscrowWalletTransaction;
 using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
@@ -171,6 +172,11 @@ namespace SocialPay.API
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
             services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
+
+
+            services.AddScoped<IDeclineEscrowWalletTransaction, DeclineEscrowWalletTransaction>();
+            services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            services.AddSingleton<DeclineEscrowWalletPendingTransaction>();
 
             //Non escrow wallet transaction
 

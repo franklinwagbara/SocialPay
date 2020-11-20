@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
 {
-    public class DeclineEscrowWalletTransaction
+    public class DeclineEscrowWalletTransaction : IDeclineEscrowWalletTransaction
     {
         private readonly DeclineEscrowWalletPendingTransaction _transactions;
         public DeclineEscrowWalletTransaction(DeclineEscrowWalletPendingTransaction transactions, IServiceProvider services)
