@@ -165,7 +165,7 @@ namespace SocialPay.API
             //accepted escrow bank request
 
             services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
-            services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
+           // services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
             services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
 
 
@@ -175,7 +175,7 @@ namespace SocialPay.API
 
 
             services.AddScoped<IDeclineEscrowWalletTransaction, DeclineEscrowWalletTransaction>();
-            services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
             services.AddSingleton<DeclineEscrowWalletPendingTransaction>();
 
             //Non escrow wallet transaction
