@@ -30,16 +30,16 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
-                    //var pendingTransactions = await context.TransactionLog
-                    //    .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
-                    //    || x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
-                    //    && x.AcitivityStatus == TransactionJourneyStatusCodes.Approved
-                    //    ).ToListAsync();
-
                     var pendingTransactions = await context.TransactionLog
-                     .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul                   
-                     && x.AcitivityStatus == TransactionJourneyStatusCodes.Approved
-                     ).ToListAsync();
+                        .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
+                        || x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
+                        //&& x.AcitivityStatus == TransactionJourneyStatusCodes.Approved
+                        ).ToListAsync();
+
+                    //var pendingTransactions = await context.TransactionLog
+                    // .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul                   
+                    // && x.AcitivityStatus == TransactionJourneyStatusCodes.Approved
+                    // ).ToListAsync();
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
