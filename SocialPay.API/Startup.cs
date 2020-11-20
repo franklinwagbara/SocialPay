@@ -165,7 +165,7 @@ namespace SocialPay.API
             //accepted escrow bank request
 
             services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
-            services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
+            //services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
             services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
 
 
@@ -175,19 +175,19 @@ namespace SocialPay.API
 
 
             services.AddScoped<IDeclineEscrowWalletTransaction, DeclineEscrowWalletTransaction>();
-            services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
+            //services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
             services.AddSingleton<DeclineEscrowWalletPendingTransaction>();
 
             //Non escrow wallet transaction
 
             services.AddScoped<INonEscrowWalletTransaction, NonEscrowWalletTransaction>();
-            services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
+          //  services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
             services.AddSingleton<NonEscrowWalletPendingTransaction>();
 
             //Non escrow bank transaction
 
             services.AddScoped<INonEscrowBankTransaction, NonEscrowBankTransaction>();
-            services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
+          //  services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
             services.AddSingleton<NonEscrowPendingBankTransaction>();
 
             //Accepted order service
@@ -198,7 +198,7 @@ namespace SocialPay.API
 
             //////Credit T24 account for card payments
             services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
-            services.AddSingleton<IHostedService, CardPaymentTask>();
+          //  services.AddSingleton<IHostedService, CardPaymentTask>();
             services.AddSingleton<FioranoTransferPayWithCardRepository>();
             services.AddSingleton<PendingPayWithCardTransaction>();
             services.AddSingleton<CreditDebitService>();
