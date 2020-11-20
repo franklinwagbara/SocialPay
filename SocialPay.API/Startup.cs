@@ -187,7 +187,7 @@ namespace SocialPay.API
             //Non escrow bank transaction
 
             services.AddScoped<INonEscrowBankTransaction, NonEscrowBankTransaction>();
-          //  services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
+            services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
             services.AddSingleton<NonEscrowPendingBankTransaction>();
 
             //Accepted order service
