@@ -41,8 +41,8 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.ProcessingApprovedRequest;
-                        getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.ProcessingApprovedRequest;
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.ProcessingRejectedRequest;
+                        getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.ProcessingRejectedRequest;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();

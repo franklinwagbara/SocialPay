@@ -175,7 +175,7 @@ namespace SocialPay.API
 
 
             services.AddScoped<IDeclineEscrowWalletTransaction, DeclineEscrowWalletTransaction>();
-            //services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
+            services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
             services.AddSingleton<DeclineEscrowWalletPendingTransaction>();
 
             //Non escrow wallet transaction
