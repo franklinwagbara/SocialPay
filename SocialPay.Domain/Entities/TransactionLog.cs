@@ -12,7 +12,7 @@ namespace SocialPay.Domain.Entities
         public string PaymentChannel { get; set; }
         public string OrderStatus { get; set; }
         public string TransactionStatus { get; set; }
-        public string AcitivityStatus { get; set; }
+        public string ActivityStatus { get; set; }
         public string TransactionJourney { get; set; }
         public string DeliveryDayTransferStatus { get; set; }
         public string Message { get; set; }

@@ -115,7 +115,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                                 {
                                     getTransInfo.IsApproved = true;
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
-                                    getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
+                                    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();

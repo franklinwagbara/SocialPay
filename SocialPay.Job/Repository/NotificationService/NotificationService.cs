@@ -28,7 +28,7 @@ namespace SocialPay.Job.Repository.NotificationService
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x =>x.IsNotified == false && x.AcitivityStatus == TransactionJourneyStatusCodes.Pending
+                        .Where(x =>x.IsNotified == false && x.ActivityStatus == TransactionJourneyStatusCodes.Pending
                         && x.DeliveryDate.Day == nextDay.Day).ToListAsync();
 
                     var getvalidRequest = pendingTransactions.Where(x => x.Category 
