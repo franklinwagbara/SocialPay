@@ -126,6 +126,7 @@
         public const string ProcessingFinalWalletRequest = "22"; 
         public const string CompletedBankTransfer = "23"; 
         public const string ProcessingRejectedRequest = "24"; 
+        public const string WalletTranferCompletedForRefund = "25"; 
     }
     public class RoleDetails
     {

@@ -99,10 +99,10 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                                         responsedata = Convert.ToString(initiateRequest.responsedata),
                                     };
 
-                                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
-                                    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompletedForRefund;
+                                    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.WalletTranferCompletedForRefund;
                                     getTransInfo.LastDateModified = DateTime.Now;
-                                    getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                                    getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.WalletTranferCompletedForRefund;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
