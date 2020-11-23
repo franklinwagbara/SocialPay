@@ -1,14 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction;
+using SocialPay.Job.Repository.DeliveryDayBankTransaction;
+using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Services;
 using System;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.TaskSchedules
 {
-    public class AcceptedEscrowBankOrderTask : ScheduledProcessor
+    public class DeliveryDayBankTask : ScheduledProcessor
     {
-        public AcceptedEscrowBankOrderTask(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
+        public DeliveryDayBankTask(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
         {
         }
 
@@ -16,7 +18,7 @@ namespace SocialPay.Job.TaskSchedules
 
         public override Task ProcessInScope(IServiceProvider scopeServiceProvider)
         {
-            IAcceptedEscrowRequestBankTransaction reportGenerator = scopeServiceProvider.GetRequiredService<IAcceptedEscrowRequestBankTransaction>();
+            IDeliveryDayBankTransaction reportGenerator = scopeServiceProvider.GetRequiredService<IDeliveryDayBankTransaction>();
             reportGenerator.GetPendingTransactions();
             return Task.CompletedTask;
         }
