@@ -33,7 +33,8 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                         //|| x.TransactionJourney == TransactionJourneyStatusCodes.AwaitingCustomerFeedBack
                         ////|| x.TransactionJourney == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
                         //&& x.TransactionStatus == OrderStatusCode.Approved
-                        .Where(x => x.ActivityStatus == TransactionJourneyStatusCodes.Decline
+                        .Where(x => x.ActivityStatus == TransactionJourneyStatusCodes.ItemAccepted
+                        && x.TransactionStatus == TransactionJourneyStatusCodes.ItemAccepted
                         ).ToListAsync();
                     var getEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Escrow
                     || x.LinkCategory == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
