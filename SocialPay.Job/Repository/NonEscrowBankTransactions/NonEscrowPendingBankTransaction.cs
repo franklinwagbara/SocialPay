@@ -74,7 +74,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                 getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
                                // getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
-                                getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                                getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
                                 await context.SaveChangesAsync();

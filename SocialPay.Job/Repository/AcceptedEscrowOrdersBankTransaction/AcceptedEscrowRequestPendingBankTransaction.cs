@@ -44,7 +44,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                          .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                         && x.AcitivityStatus == TransactionJourneyStatusCodes.WalletTranferCompleted
+                         && x.ActivityStatus == TransactionJourneyStatusCodes.WalletTranferCompleted
                          && x.TransactionStatus == TransactionJourneyStatusCodes.Approved);
                         if (getTransInfo == null)
                             return null;
@@ -59,7 +59,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                             bankCode = getBankInfo.BankCode;
 
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
-                            getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.BankTransferProcessing;
+                            getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.BankTransferProcessing;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
@@ -74,7 +74,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                             {
                                 getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
                                 getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
-                                getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                                getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
                                 await context.SaveChangesAsync();
@@ -83,7 +83,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
 
                             getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.TransactionFailed;
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
-                            getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                            getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();

@@ -114,7 +114,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                     //}
                                     getTransInfo.OrderStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul;
-                                    getTransInfo.AcitivityStatus = TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul;
+                                    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     getTransInfo.WalletFundDate = DateTime.Now;
                                     context.Update(getTransInfo);
