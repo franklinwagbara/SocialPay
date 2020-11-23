@@ -3,19 +3,22 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
+namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
 {
-    public class DeliveryDayMerchantTransfer : IDeliveryDayMerchantTransfer
+    public class DeliveryDayBankTransaction : IDeliveryDayBankTransaction
     {
-        private readonly DeliveryDayTransferService _transactions;
-        public DeliveryDayMerchantTransfer(IServiceProvider services, DeliveryDayTransferService transactions)
+        private readonly DeliveryDayBankPendingTransaction _transactions;
+        public DeliveryDayBankTransaction(DeliveryDayBankPendingTransaction transactions, IServiceProvider services)
         {
             Services = services;
             _transactions = transactions;
         }
+
         public IServiceProvider Services { get; }
 
         public async Task<string> GetPendingTransactions()
@@ -27,12 +30,14 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
-                    var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.DeliveryDayTransferStatus == TransactionJourneyStatusCodes.Pending
-                        && x.TransactionStatus == TransactionJourneyStatusCodes.Pending
-                        && x.DeliveryFinalDate.Day == DateTime.Now.Day).ToListAsync();
+                    var pendingTransactions = await context.TransactionLog                       
+                        .Where(x => x.ActivityStatus == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
+                        && x.TransactionJourney == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
+                        ).ToListAsync();
+                    var getEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Escrow
+                    || x.LinkCategory == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
-                    if (pendingTransactions.Count == 0)
+                    if (getEscrowTransactions.Count == 0)
                         return "No record";
                     await _transactions.ProcessTransactions(pendingTransactions);
                     //return "No record";

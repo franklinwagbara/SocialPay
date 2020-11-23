@@ -32,6 +32,7 @@ using SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction;
 using SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.DeclinedEscrowWalletTransaction;
+using SocialPay.Job.Repository.DeliveryDayBankTransaction;
 using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
@@ -207,8 +208,13 @@ namespace SocialPay.API
             ////Credit Social pay wallet from merchant wallet
 
             services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
-            //services.AddSingleton<IHostedService, MerchantToSocialPayWalletTask>();
+            services.AddSingleton<IHostedService, DeliveryDayWalletTask>();
             services.AddSingleton<DeliveryDayTransferService>();
+
+
+            services.AddScoped<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
+            services.AddSingleton<IHostedService, DeliveryDayBankTask>();
+            services.AddSingleton<DeliveryDayBankPendingTransaction>();
 
 
             ////Intrabank transactions

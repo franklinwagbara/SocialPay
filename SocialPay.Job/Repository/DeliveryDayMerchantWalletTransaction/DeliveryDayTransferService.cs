@@ -48,7 +48,10 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
-                        getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.WalletFundingProgress;
+                        getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.WalletFundingProgressFinalDeliveryDay;
+                        getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.WalletFundingProgressFinalDeliveryDay;
+                       // getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.WalletFundingProgressFinalDeliveryDay;
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletFundingProgressFinalDeliveryDay;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -100,7 +103,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                                     walletResponseModel.sent = initiateRequest.data.sent;
                                     walletResponseModel.RequestId = walletRequestModel.RequestId;
                                     walletResponseModel.responsedata = Convert.ToString(initiateRequest.responsedata);
-                                    getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
+                                    getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding;
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding;
                                     getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
