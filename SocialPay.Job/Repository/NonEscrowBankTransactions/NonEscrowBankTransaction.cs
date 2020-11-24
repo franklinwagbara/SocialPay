@@ -32,10 +32,10 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == 
-                        TransactionJourneyStatusCodes.WalletTranferCompleted).Take(1).ToListAsync();
+                        TransactionJourneyStatusCodes.WalletTranferCompleted).ToListAsync();
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Basic
-                     || x.LinkCategory == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
+                     || x.LinkCategory == MerchantPaymentLinkCategory.OneOffBasicLink).Take(1).ToList();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
