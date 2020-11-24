@@ -36,7 +36,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                         .Where(x=>x.ActivityStatus == TransactionJourneyStatusCodes.Approved
                         ).ToListAsync();
                     var getEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Escrow
-                    || x.LinkCategory == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
+                    || x.LinkCategory == MerchantPaymentLinkCategory.OneOffEscrowLink).Take(1).ToList();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (getEscrowTransactions.Count == 0)
                         return "No record";
