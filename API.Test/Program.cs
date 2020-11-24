@@ -18,7 +18,7 @@ namespace API.Test
             //};
             var sec = new EncryptDecrypt();
             var myUrl = "http://socialpay-web.sterlingapps.p.azurewebsites.net/#/confirm-payments?q=3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
-            var decodeString = "3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJEHnoI4CKAnWGGAqBIjWds%2FIvFJSyzraHx2%2Fh28cIDMwQ%3D%3D";
+            var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6o%2FsE5lumxNYOWL5DuHvKaQ%3D%3D";
             var decodeMessage = System.Uri.UnescapeDataString(decodeString);
             if (decodeMessage.Contains(" "))
             {
