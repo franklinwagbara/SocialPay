@@ -48,6 +48,12 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                          && x.TransactionJourney == TransactionJourneyStatusCodes.WalletTranferCompleted);
                         if (getTransInfo == null)
                             return null;
+
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
+                        await context.SaveChangesAsync();
+
                         string bankCode = string.Empty;
                         var getBankInfo = await context.MerchantBankInfo
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
@@ -57,11 +63,6 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                         if (getBankInfo.BankCode == _appSettings.SterlingBankCode)
                         {
                             bankCode = getBankInfo.BankCode;
-
-                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
-                            getTransInfo.LastDateModified = DateTime.Now;
-                            context.Update(getTransInfo);
-                            await context.SaveChangesAsync();
 
                             var initiateRequest = await _fioranoTransferRepository
                                .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
