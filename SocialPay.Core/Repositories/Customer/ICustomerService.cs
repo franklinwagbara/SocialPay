@@ -696,6 +696,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 await _context.SaveChangesAsync();
                                 getTransactionLogs.TransactionStatus = TransactionJourneyStatusCodes.ItemAccepted;
                                 getTransactionLogs.ActivityStatus = TransactionJourneyStatusCodes.ItemAccepted;
+                                getTransactionLogs.TransactionJourney = TransactionJourneyStatusCodes.ItemAccepted;
                                 getTransactionLogs.Status = true;
                                 getTransactionLogs.IsAccepted = true;
                                 getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;

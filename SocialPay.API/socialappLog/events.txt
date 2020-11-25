@@ -35,3 +35,7 @@ INFO  2020-11-09 21:21:01,233 200222ms AdminController        ?                 
 INFO  2020-11-09 21:24:25,083 61529ms AdminController        ?                  - Tasks starts to clear user account | 08076683150 | 11/9/2020 9:24:25 PM
 INFO  2020-11-20 09:24:32,933 153641ms CustomerController     ?                  - Task starts to initiate payments | 713245408f264fc082b41fa6dfbeb82f | 11/20/2020 9:24:32 AM
 INFO  2020-11-20 09:24:44,055 164762ms CustomerRepoService    ?                  - Task starts to save payments info | 713245408f264fc082b41fa6dfbeb82f | 11/20/2020 9:24:43 AM
+INFO  2020-11-24 11:13:27,740 143214ms CustomerController     ?                  - Task starts to initiate payments | 713245408f264fc082b41fa6dfbeb82f | 11/24/2020 11:13:27 AM
+INFO  2020-11-24 11:13:36,810 152283ms CustomerRepoService    ?                  - Task starts to save payments info | 713245408f264fc082b41fa6dfbeb82f | 11/24/2020 11:13:36 AM
+INFO  2020-11-24 12:36:21,398 1505378ms CustomerController     ?                  - Task starts to initiate payments | 713245408f264fc082b41fa6dfbeb82f | 11/24/2020 12:36:21 PM
+INFO  2020-11-24 12:36:29,063 1513044ms CustomerRepoService    ?                  - Task starts to save payments info | 713245408f264fc082b41fa6dfbeb82f | 11/24/2020 12:36:28 PM
