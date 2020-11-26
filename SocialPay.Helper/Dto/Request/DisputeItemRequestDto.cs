@@ -13,7 +13,7 @@ namespace SocialPay.Helper.Dto.Request
         [Required(ErrorMessage = "Document is required")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]
-        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", "pdf" })]
+        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".pdf", ".svg" })]
         public IFormFile Document { get; set; }
     }
 }
