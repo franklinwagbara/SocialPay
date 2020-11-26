@@ -85,7 +85,7 @@ namespace SocialPay.Helper.Dto.Request
        // [Required(ErrorMessage = "Please select a document.")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]
-        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", "pdf" })]
+        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".pdf" })]
         public IFormFile Document { get; set; }
         //public decimal customField { get; set; }
     }
