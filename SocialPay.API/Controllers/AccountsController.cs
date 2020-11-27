@@ -7,6 +7,10 @@ using SocialPay.Core.Services.Authentication;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 
 namespace SocialPay.API.Controllers
 {
@@ -141,7 +145,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("change-password")]
-        public async Task<IActionResult> ChnagePassword([FromBody] PasswordResetDto model)
+        public async Task<IActionResult> ChangePassword([FromBody] PasswordResetDto model)
         {
             var response = new WebApiResponse { };
             try
@@ -149,6 +153,37 @@ namespace SocialPay.API.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = await _accountResetService.ChangePassword(model);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Merchant, Guest")]
+        [HttpPost]
+        [Route("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetExistingPasswordDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var userId = identity.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                    var result = await _accountResetService.PasswordReset(model, Convert.ToInt32(userId));
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
