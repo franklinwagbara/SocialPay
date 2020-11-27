@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
@@ -14,10 +16,14 @@ namespace SocialPay.Core.Repositories.UserService
     {
         private readonly SocialPayDbContext _context;
         private readonly Utilities _utilities;
-        public UserRepoService(SocialPayDbContext context, Utilities utilities)
+        private readonly AppSettings _appSettings;
+
+        public UserRepoService(SocialPayDbContext context, Utilities utilities,
+            IOptions<AppSettings> appSettings)
         {
             _context = context;
             _utilities = utilities;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<ClientAuthentication> GetClientAuthenticationAsync(string email)
@@ -98,5 +104,57 @@ namespace SocialPay.Core.Repositories.UserService
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+
+
+        public async Task<WebApiResponse> ResetPassword(ResetExistingPasswordDto model, long clientId)
+        {
+            try
+            {
+                var userInfo = await GetClientAuthenticationClientIdAsync(clientId);
+                if(userInfo == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
+
+                if (!VerifyPasswordHash(model.CurrentPassword.Encrypt(_appSettings.appKey), userInfo.ClientSecretHash, userInfo.ClientSecretSalt))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+                byte[] passwordHash, passwordSalt;
+                _utilities.CreatePasswordHash(model.NewPassword.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
+
+                userInfo.ClientSecretHash = passwordHash;
+                userInfo.ClientSecretSalt = passwordSalt;
+                userInfo.LastDateModified = DateTime.Now;
+                _context.ClientAuthentication.Update(userInfo);
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        {
+            if (password == null) throw new ArgumentNullException("password");
+            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
+            if (storedHash.Length != 64) throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
+            if (storedSalt.Length != 128) throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordHash");
+
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != storedHash[i]) return false;
+                }
+            }
+
+            return true;
+        }
+
+        ///  if (!VerifyPasswordHash(loginRequestDto.Password.Encrypt(_appSettings.appKey), validateuserInfo.ClientSecretHash, validateuserInfo.ClientSecretSalt))
+        ///return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin
+
     }
 }

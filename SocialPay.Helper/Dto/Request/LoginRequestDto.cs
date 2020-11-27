@@ -21,6 +21,18 @@ namespace SocialPay.Helper.Dto.Request
         public string ConfirmPassword { get; set; }
     }
 
+
+    public class ResetExistingPasswordDto
+    {
+        [Required(ErrorMessage = "Current password")]
+        public string CurrentPassword { get; set; }
+        [Required(ErrorMessage = "New Password")]
+        public string NewPassword { get; set; }
+        [Required(ErrorMessage = "Confirm Password")]
+        [Compare("NewPassword", ErrorMessage = "Password and Confirmation Password must match.")]
+        public string ConfirmPassword { get; set; }
+    }
+
     public class AccountResetDto
     {
         [Required(ErrorMessage = "Email")]

@@ -77,5 +77,20 @@ namespace SocialPay.Core.Services.Account
             }
         }
 
+
+        public async Task<WebApiResponse> PasswordReset(ResetExistingPasswordDto model, long clientId)
+        {
+            try
+            {
+                //clientId = 40084;
+                return await _userRepoService.ResetPassword(model, clientId);               
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
     }
 }
