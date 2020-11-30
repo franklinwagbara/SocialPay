@@ -63,5 +63,6 @@
         public string socialPayT24CurCode { get; set; }
         public string socialT24BVN { get; set; }
         public string clientloginAttempts { get; set; }
+        public string otpSession { get; set; }
     }
 }
