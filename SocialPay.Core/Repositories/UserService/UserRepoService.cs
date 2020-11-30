@@ -8,6 +8,7 @@ using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Repositories.UserService
@@ -31,7 +32,10 @@ namespace SocialPay.Core.Repositories.UserService
             return await _context.ClientAuthentication.SingleOrDefaultAsync(x => x.Email == email);
         }
 
-
+        public async Task<ClientLoginStatus> GetLoginAttemptAsync(long clientId)
+        {
+            return await _context.ClientLoginStatus.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+        }
         public async Task<ClientAuthentication> GetClientAuthenticationClientIdAsync(long clientId)
         {
             return await _context.ClientAuthentication.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
