@@ -472,6 +472,33 @@ namespace SocialPay.API.Controllers
         }
 
 
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("insert-login-status")]
+        //public async Task<IActionResult> InsertLoginStatus()
+        //{
+        //    var response = new WebApiResponse { };
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+
+        //            var result = await _merchantReportService.InsertData();
+        //            return Ok(result);
+        //        }
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //            .Select(e => e.ErrorMessage));
+        //        response.ResponseCode = AppResponseCodes.Failed;
+        //        response.Data = message;
+        //        return BadRequest(response);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.ResponseCode = AppResponseCodes.InternalError;
+        //        return BadRequest(response);
+        //    }
+        //}
 
         //[AllowAnonymous]
         //[HttpGet]

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201129234905_included_login_attempt_table")]
+    partial class included_login_attempt_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,9 +75,6 @@ namespace SocialPay.Domain.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("LastDateModified")
                         .HasColumnType("datetime2");
 
@@ -94,32 +93,6 @@ namespace SocialPay.Domain.Migrations
                     b.HasKey("ClientAuthenticationId");
 
                     b.ToTable("ClientAuthentication");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.ClientLoginStatus", b =>
-                {
-                    b.Property<long>("ClientLoginStatusId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<long>("ClientAuthenticationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsSuccessful")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("LoginAttempt")
-                        .HasColumnType("int");
-
-                    b.HasKey("ClientLoginStatusId");
-
-                    b.HasIndex("ClientAuthenticationId");
-
-                    b.ToTable("ClientLoginStatus");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.CreateWalletResponse", b =>
@@ -625,12 +598,15 @@ namespace SocialPay.Domain.Migrations
                     b.ToTable("LinkCategory");
                 });
 
-            modelBuilder.Entity("SocialPay.Domain.Entities.LoginAttemptHistory", b =>
+            modelBuilder.Entity("SocialPay.Domain.Entities.LoginAttempt", b =>
                 {
-                    b.Property<long>("LoginAttemptHistoryId")
+                    b.Property<long>("LoginAttemptId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("int");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
@@ -638,11 +614,11 @@ namespace SocialPay.Domain.Migrations
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("LoginAttemptHistoryId");
+                    b.HasKey("LoginAttemptId");
 
                     b.HasIndex("ClientAuthenticationId");
 
-                    b.ToTable("LoginAttemptHistory");
+                    b.ToTable("LoginAttempt");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.MerchantActivitySetup", b =>
@@ -1161,15 +1137,6 @@ namespace SocialPay.Domain.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SocialPay.Domain.Entities.ClientLoginStatus", b =>
-                {
-                    b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
-                        .WithMany("ClientLoginStatus")
-                        .HasForeignKey("ClientAuthenticationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("SocialPay.Domain.Entities.CreateWalletResponse", b =>
                 {
                     b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
@@ -1242,10 +1209,10 @@ namespace SocialPay.Domain.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SocialPay.Domain.Entities.LoginAttemptHistory", b =>
+            modelBuilder.Entity("SocialPay.Domain.Entities.LoginAttempt", b =>
                 {
                     b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
-                        .WithMany("LoginAttemptHistory")
+                        .WithMany("LoginAttempt")
                         .HasForeignKey("ClientAuthenticationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

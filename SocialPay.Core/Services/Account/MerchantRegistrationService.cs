@@ -90,7 +90,8 @@ namespace SocialPay.Core.Services.Account
                             PhoneNumber = signUpRequestDto.PhoneNumber,
                             RoleName = RoleDetails.Merchant,
                             LastDateModified = DateTime.Now,
-                            UserName = signUpRequestDto.Email
+                            UserName = signUpRequestDto.Email,
+                            IsLocked = false
                         };
                         await _context.ClientAuthentication.AddAsync(model);
                         await _context.SaveChangesAsync();
@@ -109,6 +110,16 @@ namespace SocialPay.Core.Services.Account
                         await _context.MerchantWallet.AddAsync(merchantWallet);
                         await _context.SaveChangesAsync();
 
+
+                        var loginstatus = new ClientLoginStatus
+                        {
+                            ClientAuthenticationId = model.ClientAuthenticationId,
+                             IsSuccessful = true, LoginAttempt = 0
+                        };
+
+                        await _context.ClientLoginStatus.AddAsync(loginstatus);
+                        await _context.SaveChangesAsync();
+
                         var pinRequestModel = new PinRequest
                         {
                             ClientAuthenticationId = model.ClientAuthenticationId,
@@ -117,6 +128,7 @@ namespace SocialPay.Core.Services.Account
                             LastDateModified = DateTime.Now,
                             Pin = encryptedPin
                         };
+
                         await _context.PinRequest.AddAsync(pinRequestModel);
                         await _context.SaveChangesAsync();
                         var emailModal = new EmailRequestDto

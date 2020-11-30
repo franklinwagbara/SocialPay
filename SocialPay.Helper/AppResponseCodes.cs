@@ -37,6 +37,7 @@
         public const string FiranoDebitError = "33";               
         public const string AccountLockFailed = "34";               
         public const string TransactionProcessed = "35";               
+        public const string AccountIsLocked = "36";               
     }
 
     public class MerchantOnboardingProcess

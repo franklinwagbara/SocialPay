@@ -14,6 +14,7 @@ namespace SocialPay.Domain.Entities
         public byte[] ClientSecretSalt { get; set; }
         public string StatusCode { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsLocked { get; set; }
         public string RoleName { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
@@ -30,6 +31,8 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<TransactionLog> TransactionLog { get; set; }
         public virtual ICollection<AccountResetRequest> AccountResetRequest { get; set; }
         public virtual ICollection<DisputeRequestLog> DisputeRequestLog { get; set; }
+        public virtual ICollection<LoginAttemptHistory> LoginAttemptHistory { get; set; }
+        public virtual ICollection<ClientLoginStatus> ClientLoginStatus { get; set; }
        // public virtual ICollection<WalletTransferRequestLog> WalletTransferRequestLog { get; set; }
     }
 }

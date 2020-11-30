@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
+using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
@@ -29,10 +30,11 @@ namespace SocialPay.Core.Services.Authentication
         private readonly Utilities _utilities;
         private readonly ADRepoService _aDRepoService;
         private readonly WalletRepoService _walletRepoService;
+        private readonly UserRepoService _userRepoService;
         private readonly IDistributedCache _distributedCache;
         public AuthRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             Utilities utilities, ADRepoService aDRepoService, IDistributedCache distributedCache,
-            WalletRepoService walletRepoService) : base(context)
+            WalletRepoService walletRepoService, UserRepoService userRepoService) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -40,6 +42,7 @@ namespace SocialPay.Core.Services.Authentication
             _aDRepoService = aDRepoService;
             _distributedCache = distributedCache;
             _walletRepoService = walletRepoService;
+            _userRepoService = userRepoService;
         }
 
         public async Task<ClientAuthentication> GetClientDetails(string email)
@@ -56,6 +59,7 @@ namespace SocialPay.Core.Services.Authentication
             == clientId
             );
         }
+
         public async Task<LoginAPIResponse> Authenticate(LoginRequestDto loginRequestDto)
         {
             try
@@ -70,11 +74,14 @@ namespace SocialPay.Core.Services.Authentication
                     .Include(x=>x.MerchantBusinessInfo)
                     .Include(x=>x.MerchantWallet)
                     .Include(x=>x.MerchantBankInfo)
-                    .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email && x.IsDeleted == false);
+                    .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email 
+                    && x.IsDeleted == false && x.IsLocked == false);
 
                 // check if username exists
                 if (validateuserInfo == null)
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+                var userLoginAttempts = await _userRepoService.GetLoginAttemptAsync(validateuserInfo.ClientAuthenticationId);
+
                 var tokenResult = new LoginAPIResponse();
                 var key = Encoding.ASCII.GetBytes(_appSettings.SecretKey);
                 var tokenDescriptor = new SecurityTokenDescriptor();
@@ -111,10 +118,48 @@ namespace SocialPay.Core.Services.Authentication
                 }
                 // check if password is correct
                 if (!VerifyPasswordHash(loginRequestDto.Password.Encrypt(_appSettings.appKey), validateuserInfo.ClientSecretHash, validateuserInfo.ClientSecretSalt))
-                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+                {
+                    using(var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            userLoginAttempts.LoginAttempt ++;
+                            userLoginAttempts.IsSuccessful = false;
+                            _context.ClientLoginStatus.Update(userLoginAttempts);
+                            await _context.SaveChangesAsync();
+                            var loginDetails = new LoginAttemptHistory
+                            {
+                                ClientAuthenticationId = userLoginAttempts.ClientAuthenticationId
+                            };
+                            await _context.LoginAttemptHistory.AddAsync(loginDetails);
+                            await _context.SaveChangesAsync();
+                            if(userLoginAttempts.LoginAttempt == Convert.ToInt32(_appSettings.clientloginAttempts))
+                            {
+                                validateuserInfo.IsLocked = true;
+                                validateuserInfo.LastDateModified = DateTime.Now;
+                                _context.ClientAuthentication.Update(validateuserInfo);
+                                await _context.SaveChangesAsync();
+                                await transaction.CommitAsync();
+                                return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked };
+                            }
+                            await transaction.CommitAsync();
+                            return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+                        }
+                        catch (Exception ex)
+                        {
+                            return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError };
+                        }
+                    }
+                }
 
-               
-                if(validateuserInfo.RoleName == "Guest")
+                userLoginAttempts.LoginAttempt = 0;
+                userLoginAttempts.IsSuccessful = true;
+                _context.ClientLoginStatus.Update(userLoginAttempts);
+                await _context.SaveChangesAsync();
+                validateuserInfo.IsLocked = false;
+                _context.ClientAuthentication.Update(validateuserInfo);
+                await _context.SaveChangesAsync();
+                if (validateuserInfo.RoleName == "Guest")
                 {
                     tokenDescriptor = new SecurityTokenDescriptor
                     {
@@ -277,6 +322,7 @@ namespace SocialPay.Core.Services.Authentication
             {
                 var validateUser = await _context.ClientAuthentication
                     .SingleOrDefaultAsync(x => x.Email == updateUserRequestDto.Email);
+
                 if(validateUser == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
 
@@ -293,25 +339,56 @@ namespace SocialPay.Core.Services.Authentication
             }
         }
 
-    ////    var cacheKey = "customerList";
-    ////    string serializedCustomerList;
-    ////    var customerList = new List<Customer>();
-    ////    var redisCustomerList = await distributedCache.GetAsync(cacheKey);
-    ////if (redisCustomerList != null)
-    ////{
-    ////    serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
-    ////    customerList = JsonConvert.DeserializeObject<List<Customer>>(serializedCustomerList);
-    ////}
-    ////else
-    ////{
-    ////    customerList = await context.Customers.ToListAsync();
-    ////serializedCustomerList = JsonConvert.SerializeObject(customerList);
-    ////    redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
-    ////    var options = new DistributedCacheEntryOptions()
-    ////        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
-    ////        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
-    ////await distributedCache.SetAsync(cacheKey, redisCustomerList, options);
-}
+
+        public async Task<WebApiResponse> UnlockUserAccount(UpdateUserRequestDto updateUserRequestDto)
+        {
+            try
+            {
+                var validateUser = await _context.ClientAuthentication
+                    .SingleOrDefaultAsync(x => x.Email == updateUserRequestDto.Email);
+
+                if (validateUser == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
+
+                var getAccountDetails = await _userRepoService.GetLoginAttemptAsync(validateUser.ClientAuthenticationId);
+
+                getAccountDetails.IsSuccessful = true;
+                getAccountDetails.LoginAttempt = 0;
+                _context.ClientLoginStatus.Update(getAccountDetails);
+                await _context.SaveChangesAsync();
+                validateUser.IsLocked = false;
+                validateUser.LastDateModified = DateTime.Now;
+                _context.Update(validateUser);
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        ////    var cacheKey = "customerList";
+        ////    string serializedCustomerList;
+        ////    var customerList = new List<Customer>();
+        ////    var redisCustomerList = await distributedCache.GetAsync(cacheKey);
+        ////if (redisCustomerList != null)
+        ////{
+        ////    serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
+        ////    customerList = JsonConvert.DeserializeObject<List<Customer>>(serializedCustomerList);
+        ////}
+        ////else
+        ////{
+        ////    customerList = await context.Customers.ToListAsync();
+        ////serializedCustomerList = JsonConvert.SerializeObject(customerList);
+        ////    redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+        ////    var options = new DistributedCacheEntryOptions()
+        ////        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+        ////        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+        ////await distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+    }
 
 }
 

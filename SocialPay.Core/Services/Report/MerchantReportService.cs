@@ -7,6 +7,7 @@ using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Domain;
+using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
@@ -244,6 +245,30 @@ namespace SocialPay.Core.Services.Report
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+        public async Task<WebApiResponse> InsertData()
+        {
+            try
+            {
+                var getallClients = await _context.ClientAuthentication.ToListAsync();
+                var loginstat = new List<ClientLoginStatus>();
+                foreach (var item in getallClients)
+                {
+                    loginstat.Add(new ClientLoginStatus { ClientAuthenticationId = item.ClientAuthenticationId, 
+                    IsSuccessful = true, LoginAttempt = 0});
+                }
+
+                await _context.ClientLoginStatus.AddRangeAsync(loginstat);
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
 
         public async Task<UserInfoViewModel> RedisCacheTest()
         {

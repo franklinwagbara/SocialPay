@@ -31,5 +31,7 @@ namespace SocialPay.Domain
         public DbSet<WalletTransferResponse> WalletTransferResponse { get; set; }
         public DbSet<DisputeRequestLog> DisputeRequestLog { get; set; }
         public DbSet<PaymentResponse> PaymentResponse { get; set; }
+        public DbSet<LoginAttemptHistory> LoginAttemptHistory { get; set; }
+        public DbSet<ClientLoginStatus> ClientLoginStatus { get; set; }
     }
 }
