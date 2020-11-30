@@ -190,6 +190,10 @@ namespace SocialPay.Core.Services.Account
                     {
                         if (validateToken == null)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                        if(validateToken.DateEntered.AddMinutes(Convert.ToInt32(_appSettings.otpSession)) < DateTime.Now)
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.OtpExpired };
+
                         var getuserInfo = await _context.ClientAuthentication.
                            SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateToken.ClientAuthenticationId);
                         if (getuserInfo == null)

@@ -39,6 +39,7 @@
         public const string TransactionProcessed = "35";               
         public const string AccountIsLocked = "36";               
         public const string DuplicatePassword = "37";               
+        public const string OtpExpired = "38";               
     }
 
     public class MerchantOnboardingProcess
