@@ -121,6 +121,10 @@ namespace SocialPay.Core.Repositories.UserService
 
                 if (!VerifyPasswordHash(model.CurrentPassword.Encrypt(_appSettings.appKey), userInfo.ClientSecretHash, userInfo.ClientSecretSalt))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+
+                if (VerifyPasswordHash(model.NewPassword.Encrypt(_appSettings.appKey), userInfo.ClientSecretHash, userInfo.ClientSecretSalt))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicatePassword };
+
                 byte[] passwordHash, passwordSalt;
                 _utilities.CreatePasswordHash(model.NewPassword.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
 

@@ -82,7 +82,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                //clientId = 40084;
+               // clientId = 40084;
                 return await _userRepoService.ResetPassword(model, clientId);               
             }
             catch (Exception ex)
