@@ -75,11 +75,14 @@ namespace SocialPay.Core.Services.Authentication
                     .Include(x=>x.MerchantWallet)
                     .Include(x=>x.MerchantBankInfo)
                     .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email 
-                    && x.IsDeleted == false && x.IsLocked == false);
+                    && x.IsDeleted == false);
 
                 // check if username exists
                 if (validateuserInfo == null)
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+
+                if(validateuserInfo.IsLocked == true)
+                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked };
                 var userLoginAttempts = await _userRepoService.GetLoginAttemptAsync(validateuserInfo.ClientAuthenticationId);
 
                 var tokenResult = new LoginAPIResponse();

@@ -103,7 +103,7 @@ namespace SocialPay.API.Controllers
         [Route("unlock-user-account")]
         public async Task<IActionResult> UnLockAccount([FromBody] UpdateUserRequestDto model)
         {
-            _log4net.Info("Tasks starts to disable account" + " | " + model.Email + " | " + DateTime.Now);
+            _log4net.Info("Tasks starts to unlock account" + " | " + model.Email + " | " + DateTime.Now);
 
             var response = new WebApiResponse { };
             try
