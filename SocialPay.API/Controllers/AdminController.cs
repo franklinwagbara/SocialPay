@@ -99,34 +99,34 @@ namespace SocialPay.API.Controllers
 
 
 
-        [HttpPost]
-        [Route("unlock-user-account")]
-        public async Task<IActionResult> UnLockAccount([FromBody] UpdateUserRequestDto model)
-        {
-            _log4net.Info("Tasks starts to unlock account" + " | " + model.Email + " | " + DateTime.Now);
+        ////[HttpPost]
+        ////[Route("unlock-user-account")]
+        ////public async Task<IActionResult> UnLockAccount([FromBody] UpdateUserRequestDto model)
+        ////{
+        ////    _log4net.Info("Tasks starts to unlock account" + " | " + model.Email + " | " + DateTime.Now);
 
-            var response = new WebApiResponse { };
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var result = await _authRepoService.UnlockUserAccount(model);
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            var result = await _authRepoService.UnlockUserAccount(model);
+        ////            return Ok(result);
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + model.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _log4net.Error("Error occured" + " | " + model.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
         //[AllowAnonymous]
         [HttpGet]
