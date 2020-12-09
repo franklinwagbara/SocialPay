@@ -110,7 +110,6 @@ namespace SocialPay.Core.Services.Account
                         await _context.MerchantWallet.AddAsync(merchantWallet);
                         await _context.SaveChangesAsync();
 
-
                         var loginstatus = new ClientLoginStatus
                         {
                             ClientAuthenticationId = model.ClientAuthenticationId,
@@ -196,17 +195,21 @@ namespace SocialPay.Core.Services.Account
 
                         var getuserInfo = await _context.ClientAuthentication.
                            SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateToken.ClientAuthenticationId);
+
                         if (getuserInfo == null)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
                         getuserInfo.StatusCode = MerchantOnboardingProcess.SignUp;
                         _context.ClientAuthentication.Update(getuserInfo);
                         await _context.SaveChangesAsync();
                         validateToken.Status = true;
                         _context.PinRequest.Update(validateToken);
+
                         var cacheKey = Convert.ToString(getuserInfo.ClientAuthenticationId);
                         string serializedCustomerList;
                         var userInfo = new UserInfoViewModel { };
                         var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+
                         if (redisCustomerList != null)
                         {
                             await _distributedCache.RemoveAsync(cacheKey);
@@ -220,19 +223,23 @@ namespace SocialPay.Core.Services.Account
                             await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);                         
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                         }
+
                         await _distributedCache.RemoveAsync(cacheKey);
                         userInfo.Email = getuserInfo.Email;
                         userInfo.StatusCode = getuserInfo.StatusCode;
                         serializedCustomerList = JsonConvert.SerializeObject(userInfo);
                         redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+
                         var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                         .SetSlidingExpiration(TimeSpan.FromMinutes(15));
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)

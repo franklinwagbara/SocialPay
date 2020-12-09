@@ -81,7 +81,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                      
                         var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
                         var jsonRequest = JsonConvert.SerializeObject(request);
-                        var logRequest = new FioranoT24Request
+                        var logRequest = new FioranoT24CreditRequest
                         {
                             SessionId = fioranoRequestBody.SessionId,
                             CommissionCode = fioranoRequestBody.CommissionCode,
@@ -93,8 +93,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                             DebitAcctNo = fioranoRequestBody.DebitAcctNo,
                             TransactionReference = item.TransactionReference,
                             DebitAmount = Convert.ToDouble(fioranoRequestBody.DebitAmount),
-                            //DebitAmount = shippingInfo.TotalAmount, narrations = _appSettings.transactionNarration,
-                            //DebitAmount = totalAmount,
                             narrations = fioranoRequestBody.narrations,
                             TransactionType = _appSettings.fioranoTransactionType,
                             TrxnLocation = _appSettings.fioranoTrxnLocation,
@@ -103,7 +101,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             Message = "Card payment",
                             PaymentReference = item.PaymentReference
                         };
-                        await context.FioranoT24Request.AddAsync(logRequest);
+                        await context.FioranoT24CreditRequest.AddAsync(logRequest);
                         await context.SaveChangesAsync();
                         var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
                         

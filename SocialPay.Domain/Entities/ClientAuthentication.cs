@@ -33,6 +33,11 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<DisputeRequestLog> DisputeRequestLog { get; set; }
         public virtual ICollection<LoginAttemptHistory> LoginAttemptHistory { get; set; }
         public virtual ICollection<ClientLoginStatus> ClientLoginStatus { get; set; }
+        public virtual ICollection<DefaultWalletTransferRequestLog> DefaultWalletTransferRequestLog { get; set; }
+        public virtual ICollection<DebitMerchantWalletTransferRequestLog> DebitMerchantWalletTransferRequestLog { get; set; }
+        public virtual ICollection<CreditMerchantWalletTransferRequestLog> CreditMerchantWalletTransferRequestLog { get; set; }
+        public virtual ICollection<DeclinedWalletTransferRequestLog> DeclinedWalletTransferRequestLog { get; set; }
+        public virtual ICollection<AcceptedEscrowWalletTransferRequestLog> AcceptedEscrowWalletTransferRequestLog { get; set; }
        // public virtual ICollection<WalletTransferRequestLog> WalletTransferRequestLog { get; set; }
     }
 }

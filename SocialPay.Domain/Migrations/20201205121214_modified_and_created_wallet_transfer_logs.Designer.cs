@@ -3,133 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201205121214_modified_and_created_wallet_transfer_logs")]
+    partial class modified_and_created_wallet_transfer_logs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.0-preview.7.20365.15");
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.AcceptedEscrowFioranoT24Request", b =>
-                {
-                    b.Property<string>("PaymentReference")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Channel")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CommissionCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreditAccountNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreditCurrency")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DebitAcctNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("DebitAmount")
-                        .HasColumnType("float");
-
-                    b.Property<string>("DebitCurrency")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JsonRequest")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SessionId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionBranch")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrxnLocation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VtellerAppID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("narrations")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PaymentReference");
-
-                    b.ToTable("AcceptedEscrowFioranoT24Request");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.AcceptedEscrowWalletTransferRequestLog", b =>
-                {
-                    b.Property<string>("PaymentReference")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CURRENCYCODE")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ChannelMode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("ClientAuthenticationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RequestId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TransferType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("amt")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("channelID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("frmacct")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("toacct")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PaymentReference");
-
-                    b.HasIndex("ClientAuthenticationId");
-
-                    b.ToTable("AcceptedEscrowWalletTransferRequestLog");
-                });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.AccountResetRequest", b =>
                 {
@@ -276,9 +166,6 @@ namespace SocialPay.Domain.Migrations
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("RequestId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TransactionReference")
                         .HasColumnType("nvarchar(max)");
@@ -431,9 +318,6 @@ namespace SocialPay.Domain.Migrations
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("RequestId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TransactionReference")
                         .HasColumnType("nvarchar(max)");
 
@@ -462,57 +346,6 @@ namespace SocialPay.Domain.Migrations
                     b.ToTable("DebitMerchantWalletTransferRequestLog");
                 });
 
-            modelBuilder.Entity("SocialPay.Domain.Entities.DeclinedWalletTransferRequestLog", b =>
-                {
-                    b.Property<string>("PaymentReference")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CURRENCYCODE")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ChannelMode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("ClientAuthenticationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RequestId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TransferType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("amt")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("channelID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("frmacct")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("toacct")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PaymentReference");
-
-                    b.HasIndex("ClientAuthenticationId");
-
-                    b.ToTable("DeclinedWalletTransferRequestLog");
-                });
-
             modelBuilder.Entity("SocialPay.Domain.Entities.DefaultWalletTransferRequestLog", b =>
                 {
                     b.Property<string>("PaymentReference")
@@ -532,9 +365,6 @@ namespace SocialPay.Domain.Migrations
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("RequestId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TransactionReference")
                         .HasColumnType("nvarchar(max)");
@@ -1223,67 +1053,6 @@ namespace SocialPay.Domain.Migrations
                     b.ToTable("MerchantWallet");
                 });
 
-            modelBuilder.Entity("SocialPay.Domain.Entities.NonEscrowFioranoT24Request", b =>
-                {
-                    b.Property<string>("PaymentReference")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Channel")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CommissionCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreditAccountNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreditCurrency")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DebitAcctNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("DebitAmount")
-                        .HasColumnType("float");
-
-                    b.Property<string>("DebitCurrency")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JsonRequest")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SessionId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionBranch")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrxnLocation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VtellerAppID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("narrations")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PaymentReference");
-
-                    b.ToTable("NonEscrowFioranoT24Request");
-                });
-
             modelBuilder.Entity("SocialPay.Domain.Entities.PaymentResponse", b =>
                 {
                     b.Property<long>("PaymentResponseId")
@@ -1506,9 +1275,6 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<string>("PaymentReference")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("RequestId")
                         .HasColumnType("nvarchar(max)");
 
@@ -1530,15 +1296,6 @@ namespace SocialPay.Domain.Migrations
                     b.HasKey("WalletTransferResponseId");
 
                     b.ToTable("WalletTransferResponse");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.AcceptedEscrowWalletTransferRequestLog", b =>
-                {
-                    b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
-                        .WithMany("AcceptedEscrowWalletTransferRequestLog")
-                        .HasForeignKey("ClientAuthenticationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.AccountResetRequest", b =>
@@ -1599,15 +1356,6 @@ namespace SocialPay.Domain.Migrations
                 {
                     b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
                         .WithMany("DebitMerchantWalletTransferRequestLog")
-                        .HasForeignKey("ClientAuthenticationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.DeclinedWalletTransferRequestLog", b =>
-                {
-                    b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
-                        .WithMany("DeclinedWalletTransferRequestLog")
                         .HasForeignKey("ClientAuthenticationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

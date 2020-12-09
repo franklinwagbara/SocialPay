@@ -25,7 +25,7 @@ namespace SocialPay.Domain
         public DbSet<FailedTransactions> FailedTransactions { get; set; }
         public DbSet<AccountResetRequest> AccountResetRequest { get; set; }
         public DbSet<FundsTransferLog> FundsTransferLog { get; set; }
-        public DbSet<FioranoT24Request> FioranoT24Request { get; set; }
+        public DbSet<FioranoT24CreditRequest> FioranoT24CreditRequest { get; set; }
         public DbSet<FioranoT24TransactionResponse> FioranoT24TransactionResponse { get; set; }
         public DbSet<WalletTransferRequestLog> WalletTransferRequestLog { get; set; }
         public DbSet<WalletTransferResponse> WalletTransferResponse { get; set; }
@@ -33,5 +33,12 @@ namespace SocialPay.Domain
         public DbSet<PaymentResponse> PaymentResponse { get; set; }
         public DbSet<LoginAttemptHistory> LoginAttemptHistory { get; set; }
         public DbSet<ClientLoginStatus> ClientLoginStatus { get; set; }
+        public DbSet<DefaultWalletTransferRequestLog> DefaultWalletTransferRequestLog { get; set; }
+        public DbSet<CreditMerchantWalletTransferRequestLog> CreditMerchantWalletTransferRequestLog { get; set; }
+        public DbSet<DebitMerchantWalletTransferRequestLog> DebitMerchantWalletTransferRequestLog { get; set; }
+        public DbSet<NonEscrowFioranoT24Request> NonEscrowFioranoT24Request { get; set; }
+        public DbSet<AcceptedEscrowWalletTransferRequestLog> AcceptedEscrowWalletTransferRequestLog { get; set; }
+        public DbSet<AcceptedEscrowFioranoT24Request> AcceptedEscrowFioranoT24Request { get; set; }
+        public DbSet<DeclinedWalletTransferRequestLog> DeclinedWalletTransferRequestLog { get; set; }
     }
 }

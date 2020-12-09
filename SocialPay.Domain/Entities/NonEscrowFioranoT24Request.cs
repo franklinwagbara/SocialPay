@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialPay.Domain.Entities
 {
-    public class FioranoT24Request
+    public class NonEscrowFioranoT24Request
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

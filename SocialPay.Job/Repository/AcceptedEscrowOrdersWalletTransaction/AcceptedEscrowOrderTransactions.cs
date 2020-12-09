@@ -65,7 +65,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                             remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
-                        var walletRequestModel = new WalletTransferRequestLog
+                        var walletRequestModel = new AcceptedEscrowWalletTransferRequestLog
                         {
                             amt = walletModel.amt,
                             channelID = walletModel.channelID,
@@ -81,7 +81,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                             ClientAuthenticationId = item.ClientAuthenticationId
                         };
 
-                        await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
+                        await context.AcceptedEscrowWalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
 
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
