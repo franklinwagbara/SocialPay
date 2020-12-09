@@ -20,7 +20,7 @@ namespace SocialPay.Core.Services.Specta
 			_appSettings = appSettings.Value;
 			_client = new HttpClient
 			{
-				BaseAddress = new Uri(_appSettings.paywithSpectaBaseUrl)
+				BaseAddress = new Uri(_appSettings.paywithSpectaBaseUrl),
 			};
 		}
         public async Task<WebApiResponse> InitiatePayment(decimal amount, string description, string transactionReference)
@@ -38,6 +38,7 @@ namespace SocialPay.Core.Services.Specta
 
                 var response = await _client.PostAsync(_appSettings.paywithSpectaPurchaseUrlExtension,
                     new StringContent(request, Encoding.UTF8, "application/json"));
+                _client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, _appSettings.paywithspectaHeaderValue);
                 var result = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
