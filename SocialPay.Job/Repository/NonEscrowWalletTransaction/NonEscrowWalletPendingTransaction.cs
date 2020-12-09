@@ -66,7 +66,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                             remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
-                        var walletRequestModel = new WalletTransferRequestLog
+                        var walletRequestModel = new DebitMerchantWalletTransferRequestLog
                         {
                             amt = walletModel.amt,
                             channelID = walletModel.channelID,
@@ -82,7 +82,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                             ClientAuthenticationId = item.ClientAuthenticationId
                         };
 
-                        await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
+                        await context.DebitMerchantWalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
 
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);

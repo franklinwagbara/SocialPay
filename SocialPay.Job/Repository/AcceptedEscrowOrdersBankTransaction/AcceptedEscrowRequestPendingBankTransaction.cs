@@ -65,10 +65,10 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                             await context.SaveChangesAsync();
 
                             var initiateRequest = await _fioranoTransferRepository
-                               .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
+                               .InititiateEscrowAcceptedRequest(Convert.ToString(getTransInfo.TotalAmount),
                                "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
                                " - " + item.PaymentReference, item.PaymentReference,
-                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer", requestId);
+                               getBankInfo.Nuban, true, item.TransactionReference, "Intra-Bank Transfer", item.PaymentReference);
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {

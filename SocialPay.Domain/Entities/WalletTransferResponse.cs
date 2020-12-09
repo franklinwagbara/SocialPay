@@ -6,6 +6,7 @@ namespace SocialPay.Domain.Entities
     {
         public long WalletTransferResponseId { get; set; }
         public string RequestId { get; set; }
+        public string PaymentReference { get; set; }
         public string message { get; set; }
         public string response { get; set; }
         public string responsedata { get; set; }

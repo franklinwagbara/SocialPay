@@ -68,7 +68,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             remarks = "Social-Pay Core pool to merchant wallet" + " - " + item.PaymentReference + " - " + item.PaymentChannel
                         };
 
-                        var walletRequestModel = new WalletTransferRequestLog
+                        var walletRequestModel = new DefaultWalletTransferRequestLog
                         {
                             amt = walletModel.amt,
                             channelID = walletModel.channelID,
@@ -85,7 +85,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             RequestId = requestId
                         };
 
-                        await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
+                        await context.DefaultWalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
                         if (initiateRequest.response == AppResponseCodes.Success)
@@ -100,6 +100,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                         sent = initiateRequest.data.sent,
                                         message = initiateRequest.message,
                                         response = initiateRequest.response,
+                                        PaymentReference = walletRequestModel.PaymentReference,
                                         responsedata = Convert.ToString(initiateRequest.responsedata),
                                     };
                                     //if(getTransInfo.Category == MerchantPaymentLinkCategory.Escrow ||

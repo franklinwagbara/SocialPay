@@ -65,15 +65,15 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                             bankCode = getBankInfo.BankCode;
 
                             var initiateRequest = await _fioranoTransferRepository
-                               .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
+                               .InititiateMerchantCredit(Convert.ToString(getTransInfo.TotalAmount),
                                "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
                                " - " + item.PaymentReference, item.PaymentReference,
-                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer", requestId);
+                               getBankInfo.Nuban, true, item.TransactionReference, "Intra-Bank Transfer", 
+                               item.PaymentReference);
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
                                 getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
-                               // getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.LastDateModified = DateTime.Now;
