@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
@@ -35,6 +36,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionLogid = 0;
+
             try
             {
                 using (var scope = Services.CreateScope())
@@ -53,6 +56,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
+
+                        transactionLogid = getTransInfo.TransactionLogId;
 
                         string bankCode = string.Empty;
                         var getBankInfo = await context.MerchantBankInfo
@@ -90,15 +95,12 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                             return null;
                         }
                         
-                        getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.BankTransferProcessing;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
+                       
                         await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo);
 
-                        getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                        getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                        getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
@@ -113,8 +115,27 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
             }
             catch (Exception ex)
             {
+                var se = ex.InnerException as SqlException;
+                var code = se.Number;
+                var errorMessage = se.Message;
+                if (errorMessage.Contains("Violation") || code == 2627)
+                {
+                    using (var scope = Services.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                        var getTransInfo = await context.TransactionLog
+                          .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                return null;
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
+                        await context.SaveChangesAsync();
+                    }
+
+                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
     }

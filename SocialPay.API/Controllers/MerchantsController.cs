@@ -108,7 +108,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        //[AllowAnonymous]
+       // [AllowAnonymous]
         [HttpGet]
         [Route("list-of-banks")]
         public async Task<IActionResult> GetBanks()

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
@@ -31,6 +32,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionLogid = 0;
             try
             {
                 using (var scope = Services.CreateScope())
@@ -48,6 +50,8 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
+
+                        transactionLogid = getTransInfo.TransactionLogId;
 
                         var getWalletInfo = await context.MerchantWallet
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
@@ -103,7 +107,6 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
 
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
                                     getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
-                                    //getTransInfo.OrderStatus = OrderStatusCode.CompletedWalletFunding;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
                                     context.Update(getTransInfo);
@@ -136,8 +139,27 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
             }
             catch (Exception ex)
             {
+                var se = ex.InnerException as SqlException;
+                var code = se.Number;
+                var errorMessage = se.Message;
+                if (errorMessage.Contains("Violation") || code == 2627)
+                {
+                    using (var scope = Services.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                        var getTransInfo = await context.TransactionLog
+                          .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                return null;
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
+                        await context.SaveChangesAsync();
+                    }
+
+                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
