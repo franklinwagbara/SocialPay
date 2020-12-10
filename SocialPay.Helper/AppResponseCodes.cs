@@ -40,6 +40,7 @@
         public const string AccountIsLocked = "36";               
         public const string DuplicatePassword = "37";               
         public const string OtpExpired = "38";               
+        public const string NipFeesCalculationFailed = "39";               
     }
 
     public class MerchantOnboardingProcess

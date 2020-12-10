@@ -1,6 +1,9 @@
 ﻿using bankService;
 using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Linq;
 
 namespace API.Test
 {
@@ -16,6 +19,16 @@ namespace API.Test
             //{
             //    eDate = DateTime.Today
             //};
+
+            var getFees = GetNIPFee(12000);
+            var dataList = getFees.Tables["Table"]
+               .AsEnumerable()
+               .Select(i => new FeesViewModel
+               {
+                   FeeAmount = i["feeAmount"].ToString(),
+                   Vat = i["vat"].ToString()
+               }).FirstOrDefault();
+
             var sec = new EncryptDecrypt();
             var myUrl = "http://socialpay-web.sterlingapps.p.azurewebsites.net/#/confirm-payments?q=3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
             var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6o%2FsE5lumxNYOWL5DuHvKaQ%3D%3D";
@@ -88,5 +101,42 @@ namespace API.Test
         {
             public DateTime? eDate { get; set; }
         }
+
+        public class FeesViewModel
+        {
+            public string FeeAmount { get; set; }
+            public string Vat { get; set; }
+        }
+        public static DataSet GetNIPFee(decimal amount)
+        {
+            DataSet ds = new DataSet();
+
+            try
+            {
+                SqlCommand sqlcomm = new SqlCommand
+                {
+                    Connection = new SqlConnection("Server=10.0.41.101;Database=nfpdb_test;User Id=sa; Password=tylent;MultipleActiveResultSets=true;")
+                };
+
+                using (sqlcomm.Connection)
+                {
+                    using SqlDataAdapter da = new SqlDataAdapter();
+                    sqlcomm.Parameters.AddWithValue("@amt", amount);
+                    sqlcomm.CommandText = "spd_getNIPFeeCharge";
+                    da.SelectCommand = sqlcomm;
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+
+                    da.Fill(ds);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+            return ds;
+        }
+
     }
 }

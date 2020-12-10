@@ -356,10 +356,20 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-               ///clientId = 40080;
+                ///clientId = 40080;
                 ////if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
                 //// x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
                 ////    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
+
+                //var nibsRequestModelTest = new IBSNameEnquiryRequestDto
+                //{
+                //    ReferenceID = Guid.NewGuid().ToString(),
+                //    ToAccount = model.Nuban,
+                //    DestinationBankCode = model.BankCode,
+                //    RequestType = _appSettings.nameEnquiryRequestType,
+                //};
+                //var ibsRequestTest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModelTest);
+
 
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBankInfo).Include(x=>x.MerchantBusinessInfo)
