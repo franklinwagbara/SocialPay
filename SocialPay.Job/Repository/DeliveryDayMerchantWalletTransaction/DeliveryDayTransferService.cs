@@ -71,7 +71,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
 
                         var walletRequestModel = new WalletTransferRequestLog
                         {
-                            amt = walletModel.amt,
+                            amt = Convert.ToDecimal(walletModel.amt),
                             channelID = walletModel.channelID,
                             CURRENCYCODE = walletModel.CURRENCYCODE,
                             frmacct = walletModel.frmacct,

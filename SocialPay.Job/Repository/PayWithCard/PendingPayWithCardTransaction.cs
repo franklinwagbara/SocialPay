@@ -98,7 +98,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             TransactionBranch = "NG0020006",
                             DebitAcctNo = fioranoRequestBody.DebitAcctNo,
                             TransactionReference = item.TransactionReference,
-                            DebitAmount = Convert.ToDouble(fioranoRequestBody.DebitAmount),
+                            DebitAmount = Convert.ToDecimal(fioranoRequestBody.DebitAmount),
                             narrations = fioranoRequestBody.narrations,
                             TransactionType = _appSettings.fioranoTransactionType,
                             TrxnLocation = _appSettings.fioranoTrxnLocation,

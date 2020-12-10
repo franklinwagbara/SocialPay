@@ -94,7 +94,7 @@ namespace SocialPay.Job.Repository.InterBankService
                         CusNumVal = nipRequestModel.CusNumVal, BeneficiaryKYCLevel = nipRequestModel.BeneficiaryKYCLevel,
                         BraCodeVal = nipRequestModel.BraCodeVal, ChannelCode = nipRequestModel.ChannelCode, 
                         ClientAuthenticationId = clientId, CurCodeVal = nipRequestModel.CurCodeVal,
-                        Fee = nipRequestModel.Fee, Vat = nipRequestModel.Vat, LedCodeVal = nipRequestModel.LedCodeVal,
+                        Fee = nipRequestModel.Fee, Vat = Convert.ToDecimal(nipRequestModel.Vat), LedCodeVal = nipRequestModel.LedCodeVal,
                         OriginatorAccountNumber = nipRequestModel.OriginatorAccountNumber, 
                         OriginatorBankVerificationNumber = nipRequestModel.OriginatorBankVerificationNumber,
                         OriginatorKYCLevel = nipRequestModel.OriginatorKYCLevel, OrignatorName = nipRequestModel.OrignatorName,

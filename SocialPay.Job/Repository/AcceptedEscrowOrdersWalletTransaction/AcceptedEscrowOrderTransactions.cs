@@ -71,7 +71,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
 
                         var walletRequestModel = new AcceptedEscrowWalletTransferRequestLog
                         {
-                            amt = walletModel.amt,
+                            amt = Convert.ToDecimal(walletModel.amt),
                             channelID = walletModel.channelID,
                             CURRENCYCODE = walletModel.CURRENCYCODE,
                             frmacct = walletModel.frmacct,

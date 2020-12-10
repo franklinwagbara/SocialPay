@@ -72,7 +72,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
 
                         var walletRequestModel = new DebitMerchantWalletTransferRequestLog
                         {
-                            amt = walletModel.amt,
+                            amt = Convert.ToDecimal(walletModel.amt),
                             channelID = walletModel.channelID,
                             CURRENCYCODE = walletModel.CURRENCYCODE,
                             frmacct = walletModel.frmacct,

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace SocialPay.Domain.Entities
 {
@@ -7,17 +9,29 @@ namespace SocialPay.Domain.Entities
         public long TransactionLogId { get; set; }
         public long ClientAuthenticationId { get; set; }
         public long CustomerInfo { get; set; }
+        [Column(TypeName = "VARCHAR(30)")]
         public string CustomerEmail { get; set; }
+        [Column(TypeName = "VARCHAR(10)")]
         public string Category { get; set; }
+        [Column(TypeName = "VARCHAR(10)")]
         public string PaymentChannel { get; set; }
+        [Column(TypeName = "VARCHAR(5)")]
         public string OrderStatus { get; set; }
+        [Column(TypeName = "VARCHAR(5)")]
         public string TransactionStatus { get; set; }
+        [Column(TypeName = "VARCHAR(5)")]
         public string ActivityStatus { get; set; }
+        [Column(TypeName = "VARCHAR(5)")]
         public string TransactionJourney { get; set; }
+        [Column(TypeName = "VARCHAR(5)")]
         public string DeliveryDayTransferStatus { get; set; }
+        [Column(TypeName = "VARCHAR(50)")]
         public string Message { get; set; }
+        [Column(TypeName = "VARCHAR(5)")]
         public string LinkCategory { get; set; }
+        [Column(TypeName = "VARCHAR(90)")]
         public string TransactionReference { get; set; }
+        [Column(TypeName = "VARCHAR(90)")]
         public string CustomerTransactionReference { get; set; }
         public bool Status { get; set; }
         public bool IsApproved { get; set; }
@@ -28,7 +42,9 @@ namespace SocialPay.Domain.Entities
         public bool IsAccepted { get; set; }
         public bool IsNotified { get; set; }
         public bool TransactionCompleted { get; set; }
+        [Column(TypeName = "VARCHAR(90)")]
         public string PaymentReference { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime DeliveryFinalDate { get; set; }
