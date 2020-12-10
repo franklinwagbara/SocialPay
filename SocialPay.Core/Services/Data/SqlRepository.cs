@@ -4,8 +4,10 @@ using SocialPay.Core.Configurations;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.ViewModel;
 using System;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Data
@@ -18,29 +20,56 @@ namespace SocialPay.Core.Services.Data
             _appSettings = appSettings.Value;
         }
 
-        public DataSet getNIPFee(decimal amt)
+        public FeesCalculationViewModel GetNIPFee(decimal amount)
         {
-            DataSet ds = new DataSet();
-            //try
-            //{
+            var result = new FeesCalculationViewModel();
+            try
+            {
+                var ds = new DataSet();
 
+                SqlCommand sqlcomm = new SqlCommand
+                {
+                    Connection = new SqlConnection(_appSettings.nipdbConnectionString)
+                };
 
+                using (sqlcomm.Connection)
+                {
+                    using SqlDataAdapter da = new SqlDataAdapter();
+                    sqlcomm.Parameters.AddWithValue("@amt", amount);
+                    sqlcomm.CommandText = "spd_getNIPFeeCharge";
+                    da.SelectCommand = sqlcomm;
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
 
-            //    Sterling.MSSQL.Connect c = new Sterling.MSSQL.Connect("mssqlconn");
-            //    c.SetProcedure("spd_getNIPFeeCharge");
-            //    c.AddParam("@amt", amt);
-            //    ds = c.Select("rec");
-            //}
-            //catch (Exception ex)
-            //{
-            //    //log.Error(ex);
-            //}
-            return ds;
+                    da.Fill(ds);
+                    var dataList = ds.Tables["Table"]
+                     .AsEnumerable()
+                     .Select(i => new FeesCalculationViewModel
+                     {
+                         FeeAmount = i["feeAmount"].ToString(),
+                         Vat = i["vat"].ToString()
+                     }).FirstOrDefault();
+
+                    result = dataList;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+            return result;
         }
+
         public async Task<WebApiResponse> InsertNipTransferRequest(NipFundstransferRequestDto model)
         {
-			try
-			{
+            try
+            {
+
+                var getFeesAndVat = GetNIPFee(model.Amount);
+                if (getFeesAndVat == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.NipFeesCalculationFailed };
+
                 using (SqlConnection con = new SqlConnection(_appSettings.nipdbConnectionString))
                 {
                     using (SqlCommand cmd = new SqlCommand("FundsTransfer_InsertNIPTransaction", con))
@@ -59,8 +88,8 @@ namespace SocialPay.Core.Services.Data
                         cmd.Parameters.Add("@BraCodeVal", SqlDbType.VarChar).Value = model.BraCodeVal;
                         cmd.Parameters.Add("@CurCodeVal", SqlDbType.VarChar).Value = model.CurCodeVal;
                         cmd.Parameters.Add("@CusNumVal", SqlDbType.VarChar).Value = model.CusNumVal;
-                        cmd.Parameters.Add("@Fee", SqlDbType.Decimal).Value = model.Fee;
-                        cmd.Parameters.Add("@Vat", SqlDbType.Decimal).Value = model.Vat;
+                        cmd.Parameters.Add("@Fee", SqlDbType.Decimal).Value = getFeesAndVat.FeeAmount;
+                        cmd.Parameters.Add("@Vat", SqlDbType.Decimal).Value = getFeesAndVat.Vat;
                         cmd.Parameters.Add("@OrignatorName", SqlDbType.VarChar).Value = model.OrignatorName;
                         cmd.Parameters.Add("@OriginatorAccountNumber", SqlDbType.VarChar).Value = model.OriginatorAccountNumber;
                         cmd.Parameters.Add("@OriginatorBankVerificationNumber", SqlDbType.VarChar).Value = model.OriginatorBankVerificationNumber;
@@ -70,12 +99,13 @@ namespace SocialPay.Core.Services.Data
                         await con.OpenAsync();
                         await cmd.ExecuteNonQueryAsync();
                         await con.CloseAsync();
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                 }
             }
-			catch (Exception ex)
-			{
+            catch (Exception ex)
+            {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

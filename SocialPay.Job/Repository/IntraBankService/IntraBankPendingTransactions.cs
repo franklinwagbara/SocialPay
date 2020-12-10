@@ -46,6 +46,7 @@ namespace SocialPay.Job.Repository.IntraBankService
                          && x.ActivityStatus == TransactionJourneyStatusCodes.CompletedWalletFunding);
                         if (getTransInfo == null)
                             return null;
+
                         string bankCode = string.Empty;
                         var getBankInfo = await context.MerchantBankInfo
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);

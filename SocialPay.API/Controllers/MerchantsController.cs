@@ -82,7 +82,7 @@ namespace SocialPay.API.Controllers
         {
             var response = new WebApiResponse { };
             try
-            {
+            { 
                 if (ModelState.IsValid)
                 {
                     var identity = User.Identity as ClaimsIdentity;
@@ -118,13 +118,9 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var identity = User.Identity as ClaimsIdentity;
-                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                   
                     var result = await _merchantRegistrationService.GetListOfBanks();
-                    //if (result.ResponseCode != AppResponseCodes.Success)
-                    //    return BadRequest(result);
+          
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
