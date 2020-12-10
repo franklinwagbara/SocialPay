@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
@@ -33,6 +34,7 @@ namespace SocialPay.Job.Repository.IntraBankService
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+
             try
             {
                 using (var scope = Services.CreateScope())
@@ -66,7 +68,8 @@ namespace SocialPay.Job.Repository.IntraBankService
                                .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
                                "Card-Payment" + " - " + item.TransactionReference +
                                " - " + item.CustomerTransactionReference, item.TransactionReference,
-                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer", requestId);
+                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer", requestId,
+                               getTransInfo.TransactionLogId);
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {

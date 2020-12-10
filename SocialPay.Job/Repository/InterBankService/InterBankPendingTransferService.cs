@@ -129,7 +129,7 @@ namespace SocialPay.Job.Repository.InterBankService
                     //}
 
                     //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction, Data = errorMessage };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

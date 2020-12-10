@@ -29,10 +29,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        //.Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
-                        //|| x.TransactionJourney == TransactionJourneyStatusCodes.AwaitingCustomerFeedBack
-                        ////|| x.TransactionJourney == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
-                        //&& x.TransactionStatus == OrderStatusCode.Approved
+                       
                         .Where(x=>x.ActivityStatus == TransactionJourneyStatusCodes.Approved
                         ).ToListAsync();
                     var getEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Escrow

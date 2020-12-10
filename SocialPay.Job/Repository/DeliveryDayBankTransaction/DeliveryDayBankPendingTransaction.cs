@@ -68,7 +68,8 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
                                .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
                                "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
                                " - " + item.PaymentReference, item.PaymentReference,
-                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer", requestId);
+                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer", requestId,
+                               getTransInfo.TransactionLogId);
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -28,7 +29,7 @@ namespace SocialPay.Job.Repository.Fiorano
         public IServiceProvider Services { get; }
         public async Task<WebApiResponse> InititiateDebit(string debitAmount, string narration,
             string transactionRef, string creditAccountNo, bool tranType, string channel,
-            string message, string paymentReference)
+            string message, string paymentReference, long transactionLogid)
         {
             try
             {
@@ -114,10 +115,22 @@ namespace SocialPay.Job.Repository.Fiorano
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
-                if (errorMessage.Contains("Violation") || code == 2627)
+                using (var scope = Services.CreateScope())
                 {
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    var getTransInfo = await context.TransactionLog
+                      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+
+                    var failedResponse = new FailedTransactions
+                    {
+                        CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
+                        Message = errorMessage,
+                        TransactionReference = getTransInfo.TransactionReference
+                    };
+                    await context.FailedTransactions.AddAsync(failedResponse);
+                    await context.SaveChangesAsync();
+
+                    await context.SaveChangesAsync();
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

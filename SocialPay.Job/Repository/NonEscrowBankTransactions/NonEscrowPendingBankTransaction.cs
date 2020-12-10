@@ -97,20 +97,34 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                         }
                         
                        
-                        await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
+                        var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
                             item.PaymentReference, item.TransactionReference);
 
-                        getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
-                        getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
+                        if(initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
+                        {
+                            getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
+                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.LastDateModified = DateTime.Now;
+                            context.Update(getTransInfo);
+                            await context.SaveChangesAsync();
+                            return null;
+                        }
 
-                        //Other banks transfer
+                        var failedResponse = new FailedTransactions
+                        {
+                            CustomerTransactionReference = item.CustomerTransactionReference,
+                            Message = initiateInterBankRequest.Data.ToString(),
+                            TransactionReference = item.TransactionReference
+                        };
+                        await context.FailedTransactions.AddAsync(failedResponse);
+                        await context.SaveChangesAsync();
                         return null;
+
                     }
+
+                    //Other banks transfer
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
 
@@ -128,9 +142,15 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                         var getTransInfo = await context.TransactionLog
                           .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
+                        var failedResponse = new FailedTransactions
+                        {
+                            CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
+                            Message = errorMessage,
+                            TransactionReference = getTransInfo.TransactionReference
+                        };
+                        await context.FailedTransactions.AddAsync(failedResponse);
+                        await context.SaveChangesAsync();
+
                         await context.SaveChangesAsync();
                     }
 
