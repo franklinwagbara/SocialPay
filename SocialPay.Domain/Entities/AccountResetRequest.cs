@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialPay.Domain.Entities
 {
@@ -6,6 +7,7 @@ namespace SocialPay.Domain.Entities
     {
         public long AccountResetRequestId { get; set; }
         public long ClientAuthenticationId { get; set; }
+        [Column(TypeName = "VARCHAR(15)")]
         public string Token { get; set; }
         public bool IsCompleted { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;

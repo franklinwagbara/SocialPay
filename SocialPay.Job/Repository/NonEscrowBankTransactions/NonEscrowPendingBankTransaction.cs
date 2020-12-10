@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
@@ -35,6 +36,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionLogid = 0;
+
             try
             {
                 using (var scope = Services.CreateScope())
@@ -54,7 +57,10 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
 
+                        transactionLogid = getTransInfo.TransactionLogId;
+
                         string bankCode = string.Empty;
+
                         var getBankInfo = await context.MerchantBankInfo
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
                         if (getBankInfo == null)
@@ -89,31 +95,69 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                             await context.SaveChangesAsync();
                             return null;
                         }
-                        ////getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
-                        ////getTransInfo.LastDateModified = DateTime.Now;
-                        ////context.Update(getTransInfo);
-                        ////await context.SaveChangesAsync();
-                        ////var processIntebankTransction = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
-                        ////    getBankInfo.BankCode, _appSettings.socialT24AccountNo);
+                        
+                       
+                        var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
+                            getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
+                            item.PaymentReference, item.TransactionReference);
 
-                        ////getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
-                        ////getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.TransactionCompleted;
-                        ////getTransInfo.TransactionJourney = OrderStatusCode.TransactionCompleted;
-                        ////getTransInfo.LastDateModified = DateTime.Now;
-                        ////context.Update(getTransInfo);
-                        ////await context.SaveChangesAsync();
+                        if(initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
+                        {
+                            getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
+                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.LastDateModified = DateTime.Now;
+                            context.Update(getTransInfo);
+                            await context.SaveChangesAsync();
+                            return null;
+                        }
 
-                        //Other banks transfer
-                          return null;
+                        var failedResponse = new FailedTransactions
+                        {
+                            CustomerTransactionReference = item.CustomerTransactionReference,
+                            Message = initiateInterBankRequest.Data.ToString(),
+                            TransactionReference = item.TransactionReference
+                        };
+                        await context.FailedTransactions.AddAsync(failedResponse);
+                        await context.SaveChangesAsync();
+                        return null;
+
                     }
+
+                    //Other banks transfer
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
 
             }
             catch (Exception ex)
             {
+                var se = ex.InnerException as SqlException;
+                var code = se.Number;
+                var errorMessage = se.Message;
+                if (errorMessage.Contains("Violation") || code == 2627)
+                {
+                    using (var scope = Services.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                        var getTransInfo = await context.TransactionLog
+                          .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                return null;
+                        var failedResponse = new FailedTransactions
+                        {
+                            CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
+                            Message = errorMessage,
+                            TransactionReference = getTransInfo.TransactionReference
+                        };
+                        await context.FailedTransactions.AddAsync(failedResponse);
+                        await context.SaveChangesAsync();
+
+                        await context.SaveChangesAsync();
+                    }
+
+                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
     }

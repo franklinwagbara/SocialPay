@@ -24,8 +24,7 @@ namespace SocialPay.Domain
         public DbSet<InvoicePaymentInfo> InvoicePaymentInfo { get; set; }
         public DbSet<FailedTransactions> FailedTransactions { get; set; }
         public DbSet<AccountResetRequest> AccountResetRequest { get; set; }
-        public DbSet<FundsTransferLog> FundsTransferLog { get; set; }
-        public DbSet<FioranoT24CreditRequest> FioranoT24CreditRequest { get; set; }
+        public DbSet<FioranoT24CardCreditRequest> FioranoT24CardCreditRequest { get; set; }
         public DbSet<FioranoT24TransactionResponse> FioranoT24TransactionResponse { get; set; }
         public DbSet<WalletTransferRequestLog> WalletTransferRequestLog { get; set; }
         public DbSet<WalletTransferResponse> WalletTransferResponse { get; set; }
@@ -40,5 +39,6 @@ namespace SocialPay.Domain
         public DbSet<AcceptedEscrowWalletTransferRequestLog> AcceptedEscrowWalletTransferRequestLog { get; set; }
         public DbSet<AcceptedEscrowFioranoT24Request> AcceptedEscrowFioranoT24Request { get; set; }
         public DbSet<DeclinedWalletTransferRequestLog> DeclinedWalletTransferRequestLog { get; set; }
+        public DbSet<InterBankTransactionRequest> InterBankTransactionRequest { get; set; }
     }
 }

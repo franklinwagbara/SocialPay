@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -28,7 +29,7 @@ namespace SocialPay.Job.Repository.Fiorano
         public IServiceProvider Services { get; }
         public async Task<WebApiResponse> InititiateDebit(string debitAmount, string narration,
             string transactionRef, string creditAccountNo, bool tranType, string channel,
-            string message, string paymentReference)
+            string message, string paymentReference, long transactionLogid)
         {
             try
             {
@@ -57,7 +58,8 @@ namespace SocialPay.Job.Repository.Fiorano
                     }
                     var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
                     var jsonRequest = JsonConvert.SerializeObject(request);
-                    var logRequest = new FioranoT24CreditRequest
+
+                    var logRequest = new FioranoT24CardCreditRequest
                     {
                         SessionId = fioranoRequestBody.SessionId,
                         CommissionCode = fioranoRequestBody.CommissionCode,
@@ -68,7 +70,7 @@ namespace SocialPay.Job.Repository.Fiorano
                         TransactionBranch = "NG0020006",
                         DebitAcctNo = fioranoRequestBody.DebitAcctNo,
                         TransactionReference = transactionRef,
-                        DebitAmount = Convert.ToDouble(fioranoRequestBody.DebitAmount),
+                        DebitAmount = Convert.ToDecimal(fioranoRequestBody.DebitAmount),
                         narrations = narration,
                         TransactionType = _appSettings.fioranoTransactionType,
                         TrxnLocation = _appSettings.fioranoTrxnLocation,
@@ -76,8 +78,9 @@ namespace SocialPay.Job.Repository.Fiorano
                         Channel = channel, Message = message,
                         PaymentReference = paymentReference
                     };
-                    await context.FioranoT24CreditRequest.AddAsync(logRequest);
+                    await context.FioranoT24CardCreditRequest.AddAsync(logRequest);
                     await context.SaveChangesAsync();
+
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
                     var logFioranoResponse = new FioranoT24TransactionResponse
                     {
@@ -93,6 +96,7 @@ namespace SocialPay.Job.Repository.Fiorano
                     };
                     await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
                     await context.SaveChangesAsync();
+
                     if (postTransaction.ResponseCode == AppResponseCodes.Success)
                     {                        
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
@@ -111,10 +115,22 @@ namespace SocialPay.Job.Repository.Fiorano
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
-                if (errorMessage.Contains("Violation") || code == 2627)
+                using (var scope = Services.CreateScope())
                 {
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    var getTransInfo = await context.TransactionLog
+                      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+
+                    var failedResponse = new FailedTransactions
+                    {
+                        CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
+                        Message = errorMessage,
+                        TransactionReference = getTransInfo.TransactionReference
+                    };
+                    await context.FailedTransactions.AddAsync(failedResponse);
+                    await context.SaveChangesAsync();
+
+                    await context.SaveChangesAsync();
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -154,6 +170,7 @@ namespace SocialPay.Job.Repository.Fiorano
 
                     var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
                     var jsonRequest = JsonConvert.SerializeObject(request);
+
                     var logRequest = new NonEscrowFioranoT24Request
                     {
                         SessionId = fioranoRequestBody.SessionId,
@@ -165,7 +182,7 @@ namespace SocialPay.Job.Repository.Fiorano
                         TransactionBranch = "NG0020006",
                         DebitAcctNo = fioranoRequestBody.DebitAcctNo,
                         TransactionReference = transactionRef,
-                        DebitAmount = Convert.ToDouble(fioranoRequestBody.DebitAmount),
+                        DebitAmount = Convert.ToDecimal(fioranoRequestBody.DebitAmount),
                         narrations = narration,
                         TransactionType = _appSettings.fioranoTransactionType,
                         TrxnLocation = _appSettings.fioranoTrxnLocation,
@@ -267,7 +284,7 @@ namespace SocialPay.Job.Repository.Fiorano
                         TransactionBranch = "NG0020006",
                         DebitAcctNo = fioranoRequestBody.DebitAcctNo,
                         TransactionReference = transactionRef,
-                        DebitAmount = Convert.ToDouble(fioranoRequestBody.DebitAmount),
+                        DebitAmount = Convert.ToDecimal(fioranoRequestBody.DebitAmount),
                         narrations = narration,
                         TransactionType = _appSettings.fioranoTransactionType,
                         TrxnLocation = _appSettings.fioranoTrxnLocation,

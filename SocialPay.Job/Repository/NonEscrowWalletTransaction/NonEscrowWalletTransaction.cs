@@ -33,11 +33,10 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
                         || x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
-                        //&& x.AcitivityStatus == TransactionJourneyStatusCodes.Approved
                         ).ToListAsync();
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
-                    || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).Take(1).ToList();
+                    || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
                     // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";

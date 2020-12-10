@@ -66,5 +66,7 @@
         public string socialT24BVN { get; set; }
         public string clientloginAttempts { get; set; }
         public string otpSession { get; set; }
+        public string redisServer { get; set; }
+        public string redisInstanceName { get; set; }
     }
 }

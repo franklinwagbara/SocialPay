@@ -10,19 +10,31 @@ namespace SocialPay.Domain.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Column(TypeName = "VARCHAR(90)")]
         public string PaymentReference { get; set; }
-        public long ClientAuthenticationId { get; set; }
-        public string TransactionReference { get; set; }
-        public string CustomerTransactionReference { get; set; }
-        public string amt { get; set; }
-        public string toacct { get; set; }
-        public string frmacct { get; set; }
-        public string remarks { get; set; }
-        public int channelID { get; set; }
-        public string CURRENCYCODE { get; set; }
-        public int TransferType { get; set; }
-        public string ChannelMode { get; set; }
+        [Column(TypeName = "VARCHAR(90)")]
         public string RequestId { get; set; }
+        public long ClientAuthenticationId { get; set; }
+        [Column(TypeName = "VARCHAR(90)")]
+        public string TransactionReference { get; set; }
+        [Column(TypeName = "VARCHAR(90)")]
+        public string CustomerTransactionReference { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal amt { get; set; }
+        [Column(TypeName = "VARCHAR(20)")]
+        public string toacct { get; set; }
+        [Column(TypeName = "VARCHAR(20)")]
+        public string frmacct { get; set; }
+        [Column(TypeName = "VARCHAR(130)")]
+        public string remarks { get; set; }
+        [Column(TypeName = "int")]
+        public int channelID { get; set; }
+        [Column(TypeName = "VARCHAR(10)")]
+        public string CURRENCYCODE { get; set; }
+        [Column(TypeName = "int")]
+        public int TransferType { get; set; }
+        [Column(TypeName = "VARCHAR(15)")]
+        public string ChannelMode { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
     }

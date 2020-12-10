@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using SocialPay.Helper;
 using SocialPay.Core.Services.Wallet;
 using StackExchange.Redis;
+using Microsoft.Data.SqlClient;
 
 namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
 {
@@ -31,6 +32,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionLogid = 0;
             try
             {
                 using (var scope = Services.CreateScope())
@@ -47,6 +49,8 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
+
+                        transactionLogid = getTransInfo.TransactionLogId;
 
                         var getWalletInfo = await context.MerchantWallet
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
@@ -67,7 +71,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
 
                         var walletRequestModel = new AcceptedEscrowWalletTransferRequestLog
                         {
-                            amt = walletModel.amt,
+                            amt = Convert.ToDecimal(walletModel.amt),
                             channelID = walletModel.channelID,
                             CURRENCYCODE = walletModel.CURRENCYCODE,
                             frmacct = walletModel.frmacct,
@@ -135,7 +139,27 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
             catch (Exception ex)
             {
 
-                return null;
+                var se = ex.InnerException as SqlException;
+                var code = se.Number;
+                var errorMessage = se.Message;
+                using (var scope = Services.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    var getTransInfo = await context.TransactionLog
+                      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+
+                    var failedResponse = new FailedTransactions
+                    {
+                        CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
+                        Message = errorMessage,
+                        TransactionReference = getTransInfo.TransactionReference
+                    };
+                    await context.FailedTransactions.AddAsync(failedResponse);
+                    await context.SaveChangesAsync();
+
+                    await context.SaveChangesAsync();
+                }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
