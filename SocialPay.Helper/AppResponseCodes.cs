@@ -132,6 +132,7 @@
         public const string ProcessingRejectedRequest = "24"; 
         public const string WalletTranferCompletedForRefund = "25"; 
         public const string WalletFundingProgressFinalDeliveryDay = "26"; 
+        public const string DuplicateTransaction = "27"; 
     }
     public class RoleDetails
     {

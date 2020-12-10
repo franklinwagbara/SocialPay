@@ -33,6 +33,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
         public async Task<WebApiResponse> InitiateTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionLogid = 0;
             try
             {
                 using (var scope = Services.CreateScope())
@@ -44,12 +45,16 @@ namespace SocialPay.Job.Repository.PayWithCard
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
                             && x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul);
+
                         if (getTransInfo == null)
                             return null;
+
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingProcessing;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
+
+                        transactionLogid = getTransInfo.TransactionLogId;
 
                         var getWalletInfo = await context.MerchantWallet
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
@@ -81,7 +86,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                      
                         var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
                         var jsonRequest = JsonConvert.SerializeObject(request);
-                        var logRequest = new FioranoT24CreditRequest
+
+                        var logRequest = new FioranoT24CardCreditRequest
                         {
                             SessionId = fioranoRequestBody.SessionId,
                             CommissionCode = fioranoRequestBody.CommissionCode,
@@ -101,8 +107,9 @@ namespace SocialPay.Job.Repository.PayWithCard
                             Message = "Card payment",
                             PaymentReference = item.PaymentReference
                         };
-                        await context.FioranoT24CreditRequest.AddAsync(logRequest);
+                        await context.FioranoT24CardCreditRequest.AddAsync(logRequest);
                         await context.SaveChangesAsync();
+
                         var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
                         
                         if (postTransaction.ResponseCode == AppResponseCodes.Success)
@@ -117,6 +124,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
+
                                     var logFioranoResponse = new FioranoT24TransactionResponse
                                     {
                                         PaymentReference = logRequest.PaymentReference,
@@ -132,6 +140,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                                     await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
                                     await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
+
                                     return null;
                                 }
                                 catch (Exception ex)
@@ -182,6 +191,18 @@ namespace SocialPay.Job.Repository.PayWithCard
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
+                    using (var scope = Services.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                        var getTransInfo = await context.TransactionLog
+                          .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
+                        await context.SaveChangesAsync();
+                    }
+
                     //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }

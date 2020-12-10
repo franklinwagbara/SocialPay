@@ -32,6 +32,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionLogid = 0;
             try
             {
                 
@@ -44,12 +45,16 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         var getTransInfo = await context.TransactionLog
                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
                            && x.OrderStatus == TransactionJourneyStatusCodes.Pending);
+
                         if (getTransInfo == null)
                             return null;
+
                         getTransInfo.OrderStatus = TransactionJourneyStatusCodes.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
+
+                        transactionLogid = getTransInfo.TransactionLogId;
 
                         var getWalletInfo = await context.MerchantWallet
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
@@ -157,6 +162,18 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
+                    using (var scope = Services.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                        var getTransInfo = await context.TransactionLog
+                          .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+
+                        getTransInfo.OrderStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
+                        await context.SaveChangesAsync();
+                    }
+                       
                     //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }

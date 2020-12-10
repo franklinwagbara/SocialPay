@@ -55,18 +55,20 @@ namespace SocialPay.Job.Repository.InterBankService
                         sDate = DateTime.Today, eDate = DateTime.Today.AddMinutes(10),
                         acct = sourceAccount, amt = amount, reasonForLocking ="Funds transfer"
                     };
+
                     var lockAccount = await _bankServiceRepositoryJobService.LockAccountWithReasonAsync(lockAccountModel);
                     //if (lockAccount.Contains(""))
                     //    return new WebApiResponse { ResponseCode = AppResponseCodes.AccountLockFailed }; 
                     var nipEnquiry = await _iBSReposerviceJob.InitiateNameEnquiry(nameEnquiryModel);
                     if(nipEnquiry.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
+
                     var nipRequestModel = new NipFundstransferRequestDto
                     {
                         BraCodeVal = _appSettings.socialT24Bracode, Amount = amount,
                         AppID = Convert.ToInt32(_appSettings.socialPayAppID), CurCodeVal = _appSettings.socialPayT24CurCode,
                         CusNumVal = _appSettings.socialPayT24CustomerNum, DestinationBankCode = desBankCode,
-                        Fee = 10, Vat = 0.75, ChannelCode = "2", LedCodeVal =  _appSettings.socialPayT24CustomerLedCode,
+                        ChannelCode = "2", LedCodeVal =  _appSettings.socialPayT24CustomerLedCode,
                         NESessionID = "999377373673736", AccountName = nipEnquiry.AccountName, AccountNumber = destinationAccount,
                         BeneficiaryKYCLevel = nipEnquiry.KYCLevel, BeneficiaryBankVerificationNumber = nipEnquiry.BVN,
                         OriginatorAccountNumber = sourceAccount, OriginatorKYCLevel =nipEnquiry.KYCLevel,
@@ -75,15 +77,12 @@ namespace SocialPay.Job.Repository.InterBankService
                         AccountLockID = lockAccount, OrignatorName = _appSettings.socialPayT24AccountName, SubAcctVal = "0"
                     };
 
-                    var insertRequest = await _sqlRepository.InsertNipTransferRequest(nipRequestModel);
-
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    return await _sqlRepository.InsertNipTransferRequest(nipRequestModel);
                 }
 
             }
             catch (Exception ex)
             {
-
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

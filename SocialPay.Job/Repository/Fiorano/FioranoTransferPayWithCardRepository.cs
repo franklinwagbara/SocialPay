@@ -57,7 +57,8 @@ namespace SocialPay.Job.Repository.Fiorano
                     }
                     var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
                     var jsonRequest = JsonConvert.SerializeObject(request);
-                    var logRequest = new FioranoT24CreditRequest
+
+                    var logRequest = new FioranoT24CardCreditRequest
                     {
                         SessionId = fioranoRequestBody.SessionId,
                         CommissionCode = fioranoRequestBody.CommissionCode,
@@ -76,8 +77,9 @@ namespace SocialPay.Job.Repository.Fiorano
                         Channel = channel, Message = message,
                         PaymentReference = paymentReference
                     };
-                    await context.FioranoT24CreditRequest.AddAsync(logRequest);
+                    await context.FioranoT24CardCreditRequest.AddAsync(logRequest);
                     await context.SaveChangesAsync();
+
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
                     var logFioranoResponse = new FioranoT24TransactionResponse
                     {
@@ -93,6 +95,7 @@ namespace SocialPay.Job.Repository.Fiorano
                     };
                     await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
                     await context.SaveChangesAsync();
+
                     if (postTransaction.ResponseCode == AppResponseCodes.Success)
                     {                        
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

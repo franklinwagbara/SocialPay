@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialPay.Domain.Entities
 {
-    public class FioranoT24CreditRequest
+    public class FioranoT24CardCreditRequest
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
