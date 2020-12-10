@@ -89,8 +89,10 @@ namespace SocialPay.Job.Repository.IntraBankService
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
+
                         await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
-                            getBankInfo.BankCode, _appSettings.socialT24AccountNo);
+                            getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
+                            item.PaymentReference, item.TransactionReference);
 
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.TransactionCompleted;

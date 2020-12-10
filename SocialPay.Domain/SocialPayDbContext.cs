@@ -40,5 +40,6 @@ namespace SocialPay.Domain
         public DbSet<AcceptedEscrowWalletTransferRequestLog> AcceptedEscrowWalletTransferRequestLog { get; set; }
         public DbSet<AcceptedEscrowFioranoT24Request> AcceptedEscrowFioranoT24Request { get; set; }
         public DbSet<DeclinedWalletTransferRequestLog> DeclinedWalletTransferRequestLog { get; set; }
+        public DbSet<InterBankTransactionRequest> InterBankTransactionRequest { get; set; }
     }
 }

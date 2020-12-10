@@ -38,6 +38,7 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<CreditMerchantWalletTransferRequestLog> CreditMerchantWalletTransferRequestLog { get; set; }
         public virtual ICollection<DeclinedWalletTransferRequestLog> DeclinedWalletTransferRequestLog { get; set; }
         public virtual ICollection<AcceptedEscrowWalletTransferRequestLog> AcceptedEscrowWalletTransferRequestLog { get; set; }
+        public virtual ICollection<InterBankTransactionRequest> InterBankTransactionRequest { get; set; }
        // public virtual ICollection<WalletTransferRequestLog> WalletTransferRequestLog { get; set; }
     }
 }

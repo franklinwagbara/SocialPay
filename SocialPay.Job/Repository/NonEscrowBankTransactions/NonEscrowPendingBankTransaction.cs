@@ -60,6 +60,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                         transactionLogid = getTransInfo.TransactionLogId;
 
                         string bankCode = string.Empty;
+
                         var getBankInfo = await context.MerchantBankInfo
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
                         if (getBankInfo == null)
@@ -97,7 +98,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                         
                        
                         await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
-                            getBankInfo.BankCode, _appSettings.socialT24AccountNo);
+                            getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
+                            item.PaymentReference, item.TransactionReference);
 
                         getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;

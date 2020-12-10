@@ -66,9 +66,9 @@ namespace SocialPay.Core.Services.Data
             try
             {
 
-                var getFeesAndVat = GetNIPFee(model.Amount);
-                if (getFeesAndVat == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.NipFeesCalculationFailed };
+                //var getFeesAndVat = GetNIPFee(model.Amount);
+                //if (getFeesAndVat == null)
+                //    return new WebApiResponse { ResponseCode = AppResponseCodes.NipFeesCalculationFailed };
 
                 using (SqlConnection con = new SqlConnection(_appSettings.nipdbConnectionString))
                 {
@@ -88,13 +88,15 @@ namespace SocialPay.Core.Services.Data
                         cmd.Parameters.Add("@BraCodeVal", SqlDbType.VarChar).Value = model.BraCodeVal;
                         cmd.Parameters.Add("@CurCodeVal", SqlDbType.VarChar).Value = model.CurCodeVal;
                         cmd.Parameters.Add("@CusNumVal", SqlDbType.VarChar).Value = model.CusNumVal;
-                        cmd.Parameters.Add("@Fee", SqlDbType.Decimal).Value = getFeesAndVat.FeeAmount;
-                        cmd.Parameters.Add("@Vat", SqlDbType.Decimal).Value = getFeesAndVat.Vat;
+                        cmd.Parameters.Add("@Fee", SqlDbType.Decimal).Value = model.Fee;
+                        cmd.Parameters.Add("@Vat", SqlDbType.Decimal).Value = model.Vat;
                         cmd.Parameters.Add("@OrignatorName", SqlDbType.VarChar).Value = model.OrignatorName;
                         cmd.Parameters.Add("@OriginatorAccountNumber", SqlDbType.VarChar).Value = model.OriginatorAccountNumber;
                         cmd.Parameters.Add("@OriginatorBankVerificationNumber", SqlDbType.VarChar).Value = model.OriginatorBankVerificationNumber;
                         cmd.Parameters.Add("@PaymentRef", SqlDbType.VarChar).Value = model.PaymentRef;
                         cmd.Parameters.Add("@OriginatorKYCLevel", SqlDbType.VarChar).Value = model.OriginatorKYCLevel;
+                        cmd.Parameters.Add("@SubAcctVal", SqlDbType.VarChar).Value = model.SubAcctVal;
+                        cmd.Parameters.Add("@DestinationBankCode", SqlDbType.VarChar).Value = model.DestinationBankCode;
                         cmd.Parameters.Add("@ChannelCode", SqlDbType.TinyInt).Value = model.ChannelCode;
                         await con.OpenAsync();
                         await cmd.ExecuteNonQueryAsync();

@@ -157,6 +157,7 @@ namespace SocialPay.Job.Repository.Fiorano
 
                     var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
                     var jsonRequest = JsonConvert.SerializeObject(request);
+
                     var logRequest = new NonEscrowFioranoT24Request
                     {
                         SessionId = fioranoRequestBody.SessionId,
