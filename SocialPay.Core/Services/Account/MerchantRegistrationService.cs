@@ -7,6 +7,7 @@ using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Services.IBS;
+using SocialPay.Core.Services.Tin;
 using SocialPay.Core.Services.Validations;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
@@ -33,6 +34,7 @@ namespace SocialPay.Core.Services.Account
         private readonly BankServiceRepository _bankServiceRepository;
         private readonly IBSReposervice _iBSReposervice;
         private readonly WalletRepoService _walletRepoService;
+        private readonly TinService _tinService;
         private readonly IDistributedCache _distributedCache;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantRegistrationService));
         public MerchantRegistrationService(SocialPayDbContext context,
@@ -40,6 +42,7 @@ namespace SocialPay.Core.Services.Account
             Utilities utilities, IHostingEnvironment environment,
             BankServiceRepository bankServiceRepository,
             IBSReposervice iBSReposervice, WalletRepoService walletRepoService,
+            TinService tinService,
             IDistributedCache distributedCache) : base(context)
         {
             _context = context;
@@ -51,6 +54,7 @@ namespace SocialPay.Core.Services.Account
             _iBSReposervice = iBSReposervice;
             _walletRepoService = walletRepoService;
             _distributedCache = distributedCache;
+            _tinService = tinService;
         }
 
         public async Task<WebApiResponse> CreateNewMerchant(SignUpRequestDto signUpRequestDto)
@@ -261,6 +265,12 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+                if(!string.IsNullOrEmpty(model.Tin))
+                {
+                    var validateTin = await _tinService.ValidateTin(model.Tin);
+                    if (validateTin.ResponseCode != AppResponseCodes.Success)
+                        return validateTin;
+                }
 
                 if(await _context.MerchantBusinessInfo.AnyAsync(x=>x.BusinessEmail == model.BusinessEmail || 
                 x.BusinessPhoneNumber == model.BusinessPhoneNumber || x.Chargebackemail == model.Chargebackemail))

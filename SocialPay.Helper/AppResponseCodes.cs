@@ -41,6 +41,8 @@
         public const string DuplicatePassword = "37";               
         public const string OtpExpired = "38";               
         public const string NipFeesCalculationFailed = "39";               
+        public const string TinValidationFailed = "40";               
+       // public const string TinIsRequired = "41";               
     }
 
     public class MerchantOnboardingProcess

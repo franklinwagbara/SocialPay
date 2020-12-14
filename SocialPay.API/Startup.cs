@@ -23,6 +23,7 @@ using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
+using SocialPay.Core.Services.Tin;
 using SocialPay.Core.Services.Transaction;
 using SocialPay.Core.Services.Validations;
 using SocialPay.Core.Services.Wallet;
@@ -141,6 +142,7 @@ namespace SocialPay.API
             services.AddScoped<UserRepoService>();
             services.AddScoped<AccountResetService>();
             services.AddScoped<DisputeRepoService>();
+            services.AddScoped<TinService>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<InterBankPendingTransferService>();
             services.AddSingleton<BankServiceRepositoryJobService>();

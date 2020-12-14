@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NCrontab;
+using SocialPay.Core.Configurations;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,13 +12,16 @@ namespace SocialPay.Job.Services
     {
         private CrontabSchedule _schedule;
         private DateTime _nextRun;
+        private readonly AppSettings _appSettings;
 
         protected abstract string Schedule { get; }
 
-        public ScheduledProcessor(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
+        public ScheduledProcessor(IServiceScopeFactory serviceScopeFactory
+           ) : base(serviceScopeFactory)
         {
             _schedule = CrontabSchedule.Parse(Schedule);
             _nextRun = _schedule.GetNextOccurrence(DateTime.Now);
+            
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -24,7 +29,6 @@ namespace SocialPay.Job.Services
             do
             {
                 var now = DateTime.Now;
-
                 if (now > _nextRun)
                 {
                     await Process();
