@@ -13,6 +13,7 @@ namespace SocialPay.Helper.Dto.Request
         public string BusinessPhoneNumber { get; set; }
         [Required(ErrorMessage = "Business email")]
         public string BusinessEmail { get; set; }
+        public string Tin { get; set; }
         [Required(ErrorMessage = "Business country")]
         public string Country { get; set; }       
         public string Chargebackemail { get; set; }

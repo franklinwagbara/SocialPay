@@ -68,5 +68,7 @@
         public string otpSession { get; set; }
         public string redisServer { get; set; }
         public string redisInstanceName { get; set; }
+        public string tinvalidationBaseUrl { get; set; }
+        public string tinvalidationEndpointUrl { get; set; }
     }
 }

@@ -1,0 +1,45 @@
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using SocialPay.Core.Configurations;
+using SocialPay.Helper;
+using SocialPay.Helper.Dto.Request;
+using SocialPay.Helper.Dto.Response;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SocialPay.Core.Services.Tin
+{
+    public class TinService
+    {
+		private readonly AppSettings _appSettings;
+		private readonly HttpClient _client;
+		public TinService(IOptions<AppSettings> appSettings)
+		{
+			_appSettings = appSettings.Value;
+			_client = new HttpClient
+			{
+				BaseAddress = new Uri(_appSettings.tinvalidationBaseUrl),
+			};
+		}
+
+        public async Task<WebApiResponse> ValidateTin(string tin)
+        {
+            try
+            {
+                var response = await _client.GetAsync(_appSettings.tinvalidationEndpointUrl + tin);
+                var result = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success};
+                return new WebApiResponse { ResponseCode = AppResponseCodes.TinValidationFailed };
+            }
+            catch (Exception)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+    }
+}

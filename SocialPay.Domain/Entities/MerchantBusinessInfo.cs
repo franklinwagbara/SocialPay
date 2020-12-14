@@ -19,6 +19,8 @@ namespace SocialPay.Domain.Entities
         [Column(TypeName = "VARCHAR(25)")]
         public string Country { get; set; }
         [Column(TypeName = "VARCHAR(20)")]
+        public string Tin { get; set; }
+        [Column(TypeName = "VARCHAR(20)")]
         public string Chargebackemail { get; set; }
         [Column(TypeName = "VARCHAR(20)")]
         public string Logo { get; set; }
