@@ -303,7 +303,7 @@ namespace SocialPay.Core.Services.Account
                             BusinessPhoneNumber = model.BusinessPhoneNumber,
                             Chargebackemail = model.Chargebackemail,
                             ClientAuthenticationId = clientId,
-                            Country = model.Country,
+                            Country = model.Country, Tin = model.Tin,
                             MerchantReferenceId = merchantId,
                             FileLocation = "MerchantLogo",
                             Logo = newFileName
