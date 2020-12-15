@@ -181,11 +181,12 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+                //model.Token = "1At4AGMX7HISvClyC2/mfnc2e/hp6n3gI4yoH7tAej+H+4UQTmnnyG5Rklpqjl02fgj2zoMbDv+ipMNeyDdrTin+/mcQ38u8L+HizkA1CKpAvf1Pxryz+nRB6UbsxhgA";
                 var encryptPin = model.Pin.Encrypt(_appSettings.appKey);
-               // var token = model.Token.Trim().Replace(" ", "+");
-
+                // var token = model.Token.Trim().Replace(" ", "+");
+                //1At4AGMX7HISvClyC2/mfnc2e/hp6n3gI4yoH7tAej+H+4UQTmnnyG5Rklpqjl02fgj2zoMbDv+ipMNeyDdrTin+/mcQ38u8L+HizkA1CKpAvf1Pxryz+nRB6UbsxhgA
                 var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.Pin == encryptPin
-                && x.Status == false && x.TokenSecret == model.Token.Encrypt(_appSettings.appKey));
+                && x.Status == false && x.TokenSecret == model.Token);
 
                 using(var transaction = await _context.Database.BeginTransactionAsync())
                 {
