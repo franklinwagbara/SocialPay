@@ -8,7 +8,7 @@ namespace SocialPay.Domain.Entities
     {
         public long MerchantActivitySetupId { get; set; }
         public long ClientAuthenticationId { get; set; }
-        [Column(TypeName = "VARCHAR(20)")]
+        [Column(TypeName = "NVARCHAR(20)")]
         public string PayOrchargeMe { get; set; }
         public bool ReceiveEmail { get; set; }
         [Column(TypeName = "decimal(18,2)")]

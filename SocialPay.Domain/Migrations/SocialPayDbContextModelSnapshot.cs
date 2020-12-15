@@ -22,61 +22,61 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.AcceptedEscrowFioranoT24Request", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("Channel")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<long?>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CommissionCode")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("CreditAccountNo")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("CreditCurrency")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("DebitAcctNo")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<decimal>("DebitAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("DebitCurrency")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("JsonRequest")
-                        .HasColumnType("VARCHAR(150)");
+                        .HasColumnType("NVARCHAR(150)");
 
                     b.Property<string>("Message")
-                        .HasColumnType("VARCHAR(250)");
+                        .HasColumnType("NVARCHAR(250)");
 
                     b.Property<string>("SessionId")
-                        .HasColumnType("VARCHAR(40)");
+                        .HasColumnType("NVARCHAR(40)");
 
                     b.Property<string>("TransactionBranch")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionType")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("TrxnLocation")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("VtellerAppID")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("narrations")
-                        .HasColumnType("VARCHAR(110)");
+                        .HasColumnType("NVARCHAR(110)");
 
                     b.HasKey("PaymentReference");
 
@@ -88,28 +88,28 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.AcceptedEscrowWalletTransferRequestLog", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("CURRENCYCODE")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("ChannelMode")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RequestId")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<int>("TransferType")
                         .HasColumnType("int");
@@ -121,13 +121,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("frmacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("remarks")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.Property<string>("toacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.HasKey("PaymentReference");
 
@@ -156,7 +156,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Token")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.HasKey("AccountResetRequestId");
 
@@ -182,10 +182,10 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("FullName")
-                        .HasColumnType("VARCHAR(45)");
+                        .HasColumnType("NVARCHAR(45)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -197,16 +197,16 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("RoleName")
-                        .HasColumnType("VARCHAR(25)");
+                        .HasColumnType("NVARCHAR(25)");
 
                     b.Property<string>("StatusCode")
-                        .HasColumnType("VARCHAR(5)");
+                        .HasColumnType("NVARCHAR(5)");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(35)");
 
                     b.HasKey("ClientAuthenticationId");
 
@@ -253,7 +253,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
-                        .HasColumnType("VARCHAR(50)");
+                        .HasColumnType("NVARCHAR(50)");
 
                     b.HasKey("CreateWalletResponseId");
 
@@ -265,28 +265,28 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.CreditMerchantWalletTransferRequestLog", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("CURRENCYCODE")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("ChannelMode")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RequestId")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<int>("TransferType")
                         .HasColumnType("int");
@@ -298,13 +298,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("frmacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("remarks")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.Property<string>("toacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.HasKey("PaymentReference");
 
@@ -324,13 +324,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Channel")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerDescription")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.Property<long>("CustomerId")
                         .HasColumnType("bigint");
@@ -339,31 +339,31 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Document")
-                        .HasColumnType("VARCHAR(50)");
+                        .HasColumnType("NVARCHAR(50)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("FileLocation")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.Property<string>("Fullname")
-                        .HasColumnType("VARCHAR(60)");
+                        .HasColumnType("NVARCHAR(60)");
 
                     b.Property<long>("MerchantPaymentSetupId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<bool>("PaymentStatus")
                         .HasColumnType("bit");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.HasKey("CustomerOtherPaymentsInfoId");
 
@@ -380,16 +380,16 @@ namespace SocialPay.Domain.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Channel")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerEmail")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("datetime2");
@@ -398,10 +398,10 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Message")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("OrderStatus")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -419,28 +419,28 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.DebitMerchantWalletTransferRequestLog", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("CURRENCYCODE")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("ChannelMode")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RequestId")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<int>("TransferType")
                         .HasColumnType("int");
@@ -452,13 +452,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("frmacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("remarks")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.Property<string>("toacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.HasKey("PaymentReference");
 
@@ -470,28 +470,28 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.DeclinedWalletTransferRequestLog", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("CURRENCYCODE")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("ChannelMode")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RequestId")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<int>("TransferType")
                         .HasColumnType("int");
@@ -503,13 +503,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("frmacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("remarks")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.Property<string>("toacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.HasKey("PaymentReference");
 
@@ -521,28 +521,28 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.DefaultWalletTransferRequestLog", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("CURRENCYCODE")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("ChannelMode")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RequestId")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<int>("TransferType")
                         .HasColumnType("int");
@@ -554,13 +554,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("frmacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("remarks")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.Property<string>("toacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.HasKey("PaymentReference");
 
@@ -583,22 +583,22 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DisputeComment")
-                        .HasColumnType("VARCHAR(250)");
+                        .HasColumnType("NVARCHAR(250)");
 
                     b.Property<string>("DisputeFile")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("FileLocation")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("ProcessedBy")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.HasKey("DisputeRequestLogId");
 
@@ -615,16 +615,16 @@ namespace SocialPay.Domain.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
-                        .HasColumnType("VARCHAR(350)");
+                        .HasColumnType("NVARCHAR(350)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.HasKey("FailedTransactionsId");
 
@@ -634,58 +634,58 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.FioranoT24CardCreditRequest", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("Channel")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("CommissionCode")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("CreditAccountNo")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("CreditCurrency")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("DebitAcctNo")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<decimal>("DebitAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("DebitCurrency")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("JsonRequest")
-                        .HasColumnType("VARCHAR(250)");
+                        .HasColumnType("NVARCHAR(250)");
 
                     b.Property<string>("Message")
-                        .HasColumnType("VARCHAR(230)");
+                        .HasColumnType("NVARCHAR(230)");
 
                     b.Property<string>("SessionId")
-                        .HasColumnType("VARCHAR(35)");
+                        .HasColumnType("NVARCHAR(35)");
 
                     b.Property<string>("TransactionBranch")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionType")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("TrxnLocation")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("VtellerAppID")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("narrations")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.HasKey("PaymentReference");
 
@@ -700,31 +700,31 @@ namespace SocialPay.Domain.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Balance")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("CHARGEAMT")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("COMMAMT")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("FTID")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("JsonResponse")
-                        .HasColumnType("VARCHAR(250)");
+                        .HasColumnType("NVARCHAR(250)");
 
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("ReferenceID")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("ResponseCode")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("ResponseText")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
@@ -737,16 +737,16 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.InterBankTransactionRequest", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("AccountLockID")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("AccountName")
-                        .HasColumnType("VARCHAR(40)");
+                        .HasColumnType("NVARCHAR(40)");
 
                     b.Property<string>("AccountNumber")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -755,61 +755,61 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BeneficiaryBankVerificationNumber")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("BeneficiaryKYCLevel")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("BraCodeVal")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("ChannelCode")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CurCodeVal")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("CusNumVal")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DestinationBankCode")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<decimal>("Fee")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("LedCodeVal")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("NESessionID")
-                        .HasColumnType("VARCHAR(35)");
+                        .HasColumnType("NVARCHAR(35)");
 
                     b.Property<string>("OriginatorAccountNumber")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("OriginatorBankVerificationNumber")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("OriginatorKYCLevel")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("OrignatorName")
-                        .HasColumnType("VARCHAR(40)");
+                        .HasColumnType("NVARCHAR(40)");
 
                     b.Property<string>("PaymentRef")
-                        .HasColumnType("VARCHAR(120)");
+                        .HasColumnType("NVARCHAR(120)");
 
                     b.Property<string>("SubAcctVal")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<decimal>("Vat")
                         .HasColumnType("decimal(18,2)");
@@ -829,19 +829,19 @@ namespace SocialPay.Domain.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Channel")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("Fullname")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<long>("InvoicePaymentLinkId")
                         .HasColumnType("bigint");
@@ -850,22 +850,22 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
-                        .HasColumnType("VARCHAR(250)");
+                        .HasColumnType("NVARCHAR(250)");
 
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionStatus")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.HasKey("InvoicePaymentInfoId");
 
@@ -885,19 +885,19 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerEmail")
-                        .HasColumnType("VARCHAR(40)");
+                        .HasColumnType("NVARCHAR(40)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InvoiceName")
-                        .HasColumnType("VARCHAR(40)");
+                        .HasColumnType("NVARCHAR(40)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -912,7 +912,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<bool>("TransactionStatus")
                         .HasColumnType("bit");
@@ -938,13 +938,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("VARCHAR(180)");
+                        .HasColumnType("NVARCHAR(180)");
 
                     b.Property<long>("CustomerTransactionId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
@@ -956,22 +956,22 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OrderStatus")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("ProcessedBy")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<DateTime>("ReturnedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.HasKey("ItemAcceptedOrRejectedId");
 
@@ -988,7 +988,7 @@ namespace SocialPay.Domain.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Channel")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
@@ -997,7 +997,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.HasKey("LinkCategoryId");
 
@@ -1046,7 +1046,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PayOrchargeMe")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<bool>("ReceiveEmail")
                         .HasColumnType("bit");
@@ -1069,31 +1069,31 @@ namespace SocialPay.Domain.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("AccountName")
-                        .HasColumnType("VARCHAR(35)");
+                        .HasColumnType("NVARCHAR(35)");
 
                     b.Property<string>("BVN")
-                        .HasColumnType("VARCHAR(12)");
+                        .HasColumnType("NVARCHAR(12)");
 
                     b.Property<string>("BankCode")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("BankName")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("BranchCode")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Country")
-                        .HasColumnType("VARCHAR(25)");
+                        .HasColumnType("NVARCHAR(25)");
 
                     b.Property<string>("Currency")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("CusNum")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
@@ -1102,13 +1102,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("KycLevel")
-                        .HasColumnType("VARCHAR(5)");
+                        .HasColumnType("NVARCHAR(5)");
 
                     b.Property<string>("LedCode")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("Nuban")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.HasKey("MerchantBankInfoId");
 
@@ -1125,37 +1125,37 @@ namespace SocialPay.Domain.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("BusinessEmail")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("BusinessName")
-                        .HasColumnType("VARCHAR(50)");
+                        .HasColumnType("NVARCHAR(50)");
 
                     b.Property<string>("BusinessPhoneNumber")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("Chargebackemail")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Country")
-                        .HasColumnType("VARCHAR(25)");
+                        .HasColumnType("NVARCHAR(25)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FileLocation")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("Logo")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("MerchantReferenceId")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("Tin")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.HasKey("MerchantBusinessInfoId");
 
@@ -1175,34 +1175,34 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("AdditionalDetails")
-                        .HasColumnType("VARCHAR(120)");
+                        .HasColumnType("NVARCHAR(120)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomUrl")
-                        .HasColumnType("VARCHAR(250)");
+                        .HasColumnType("NVARCHAR(250)");
 
                     b.Property<decimal>("CustomerAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("CustomerDescription")
-                        .HasColumnType("VARCHAR(120)");
+                        .HasColumnType("NVARCHAR(120)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeliveryMethod")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<long>("DeliveryTime")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Document")
-                        .HasColumnType("VARCHAR(120)");
+                        .HasColumnType("NVARCHAR(120)");
 
                     b.Property<string>("FileLocation")
-                        .HasColumnType("VARCHAR(150)");
+                        .HasColumnType("NVARCHAR(150)");
 
                     b.Property<bool>("HasAdditionalCharges")
                         .HasColumnType("bit");
@@ -1214,19 +1214,19 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("MerchantDescription")
-                        .HasColumnType("VARCHAR(120)");
+                        .HasColumnType("NVARCHAR(120)");
 
                     b.Property<string>("PaymentCategory")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("PaymentLinkName")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("PaymentLinkUrl")
-                        .HasColumnType("VARCHAR(150)");
+                        .HasColumnType("NVARCHAR(150)");
 
                     b.Property<string>("PaymentMethod")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<bool>("RedirectAfterPayment")
                         .HasColumnType("bit");
@@ -1238,7 +1238,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.HasKey("MerchantPaymentSetupId");
 
@@ -1258,31 +1258,31 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("CurrencyCode")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DoB")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("Firstname")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("Gender")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<DateTime>("LastDateModified")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Lastname")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("Mobile")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("status")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.HasKey("MerchantWalletId");
 
@@ -1294,58 +1294,58 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.NonEscrowFioranoT24Request", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("Channel")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("CommissionCode")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("CreditAccountNo")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("CreditCurrency")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("DebitAcctNo")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<decimal>("DebitAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("DebitCurrency")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("JsonRequest")
-                        .HasColumnType("VARCHAR(250)");
+                        .HasColumnType("NVARCHAR(250)");
 
                     b.Property<string>("Message")
-                        .HasColumnType("VARCHAR(230)");
+                        .HasColumnType("NVARCHAR(230)");
 
                     b.Property<string>("SessionId")
-                        .HasColumnType("VARCHAR(35)");
+                        .HasColumnType("NVARCHAR(35)");
 
                     b.Property<string>("TransactionBranch")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionType")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("TrxnLocation")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("VtellerAppID")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("narrations")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.HasKey("PaymentReference");
 
@@ -1360,16 +1360,16 @@ namespace SocialPay.Domain.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Message")
-                        .HasColumnType("VARCHAR(150)");
+                        .HasColumnType("NVARCHAR(150)");
 
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.HasKey("PaymentResponseId");
 
@@ -1393,13 +1393,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Pin")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(50)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
                     b.Property<string>("TokenSecret")
-                        .HasColumnType("VARCHAR(50)");
+                        .HasColumnType("NVARCHAR(350)");
 
                     b.HasKey("PinRequestId");
 
@@ -1419,22 +1419,22 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ActivityStatus")
-                        .HasColumnType("VARCHAR(5)");
+                        .HasColumnType("NVARCHAR(5)");
 
                     b.Property<string>("Category")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerEmail")
-                        .HasColumnType("VARCHAR(30)");
+                        .HasColumnType("NVARCHAR(30)");
 
                     b.Property<long>("CustomerInfo")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateNotified")
                         .HasColumnType("datetime2");
@@ -1443,7 +1443,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeliveryDayTransferStatus")
-                        .HasColumnType("VARCHAR(5)");
+                        .HasColumnType("NVARCHAR(5)");
 
                     b.Property<DateTime>("DeliveryFinalDate")
                         .HasColumnType("datetime2");
@@ -1473,19 +1473,19 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LinkCategory")
-                        .HasColumnType("VARCHAR(5)");
+                        .HasColumnType("NVARCHAR(5)");
 
                     b.Property<string>("Message")
-                        .HasColumnType("VARCHAR(50)");
+                        .HasColumnType("NVARCHAR(50)");
 
                     b.Property<string>("OrderStatus")
-                        .HasColumnType("VARCHAR(5)");
+                        .HasColumnType("NVARCHAR(5)");
 
                     b.Property<string>("PaymentChannel")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -1500,13 +1500,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TransactionJourney")
-                        .HasColumnType("VARCHAR(5)");
+                        .HasColumnType("NVARCHAR(5)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionStatus")
-                        .HasColumnType("VARCHAR(5)");
+                        .HasColumnType("NVARCHAR(5)");
 
                     b.Property<DateTime>("WalletFundDate")
                         .HasColumnType("datetime2");
@@ -1521,28 +1521,28 @@ namespace SocialPay.Domain.Migrations
             modelBuilder.Entity("SocialPay.Domain.Entities.WalletTransferRequestLog", b =>
                 {
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("CURRENCYCODE")
-                        .HasColumnType("VARCHAR(10)");
+                        .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("ChannelMode")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CustomerTransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RequestId")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("TransactionReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<int>("TransferType")
                         .HasColumnType("int");
@@ -1554,13 +1554,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("frmacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("remarks")
-                        .HasColumnType("VARCHAR(130)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.Property<string>("toacct")
-                        .HasColumnType("VARCHAR(20)");
+                        .HasColumnType("NVARCHAR(20)");
 
                     b.HasKey("PaymentReference");
 
@@ -1577,22 +1577,22 @@ namespace SocialPay.Domain.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("RequestId")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("message")
-                        .HasColumnType("VARCHAR(120)");
+                        .HasColumnType("NVARCHAR(120)");
 
                     b.Property<string>("response")
-                        .HasColumnType("VARCHAR(90)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("responsedata")
-                        .HasColumnType("VARCHAR(150)");
+                        .HasColumnType("NVARCHAR(150)");
 
                     b.Property<bool>("sent")
                         .HasColumnType("bit");

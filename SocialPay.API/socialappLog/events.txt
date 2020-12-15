@@ -39,3 +39,19 @@ INFO  2020-11-24 11:13:27,740 143214ms CustomerController     ?                 
 INFO  2020-11-24 11:13:36,810 152283ms CustomerRepoService    ?                  - Task starts to save payments info | 713245408f264fc082b41fa6dfbeb82f | 11/24/2020 11:13:36 AM
 INFO  2020-11-24 12:36:21,398 1505378ms CustomerController     ?                  - Task starts to initiate payments | 713245408f264fc082b41fa6dfbeb82f | 11/24/2020 12:36:21 PM
 INFO  2020-11-24 12:36:29,063 1513044ms CustomerRepoService    ?                  - Task starts to save payments info | 713245408f264fc082b41fa6dfbeb82f | 11/24/2020 12:36:28 PM
+INFO  2020-12-15 12:30:16,627 154949ms AccountsController     ?                  - Tasks starts to create account | pelumisunday@gmail.com | 12/15/2020 12:30:16 PM
+INFO  2020-12-15 12:30:16,763 155085ms antRegistrationService ?                  - Initiating create account | pelumisunday@gmail.com | 12/15/2020 12:30:16 PM
+ERROR 2020-12-15 12:31:36,509 234831ms antRegistrationService ?                  - Error occured | pelumisunday@gmail.com | An error occurred while updating the entries. See the inner exception for details. | 12/15/2020 12:31:36 PM
+INFO  2020-12-15 12:31:48,473 246794ms AccountsController     ?                  - Tasks starts to create account | pelumisunday@gmail.com | 12/15/2020 12:31:48 PM
+INFO  2020-12-15 12:31:48,473 246795ms antRegistrationService ?                  - Initiating create account | pelumisunday@gmail.com | 12/15/2020 12:31:48 PM
+INFO  2020-12-15 12:42:26,159 88437ms AccountsController     ?                  - Tasks starts to create account | pelumisunday@gmail.com | 12/15/2020 12:42:26 PM
+INFO  2020-12-15 12:42:26,512 88789ms antRegistrationService ?                  - Initiating create account | pelumisunday@gmail.com | 12/15/2020 12:42:26 PM
+INFO  2020-12-15 12:49:32,360 88292ms AccountsController     ?                  - Tasks starts to create account | pelumisunday@gmail.com | 12/15/2020 12:49:32 PM
+INFO  2020-12-15 12:49:32,407 88339ms antRegistrationService ?                  - Initiating create account | pelumisunday@gmail.com | 12/15/2020 12:49:32 PM
+INFO  2020-12-15 12:55:23,884 97885ms AccountsController     ?                  - Tasks starts to create account | pelumisunday@gmail.com | 12/15/2020 12:55:23 PM
+INFO  2020-12-15 12:55:24,227 98228ms antRegistrationService ?                  - Initiating create account | pelumisunday@gmail.com | 12/15/2020 12:55:24 PM
+ERROR 2020-12-15 12:55:36,416 110417ms antRegistrationService ?                  - Error occured | pelumisunday@gmail.com | An error occurred while updating the entries. See the inner exception for details. | 12/15/2020 12:55:36 PM
+INFO  2020-12-15 12:55:44,608 118609ms AccountsController     ?                  - Tasks starts to create account | pelumisunday@gmail.com | 12/15/2020 12:55:44 PM
+INFO  2020-12-15 12:55:44,608 118609ms antRegistrationService ?                  - Initiating create account | pelumisunday@gmail.com | 12/15/2020 12:55:44 PM
+INFO  2020-12-15 13:09:33,316 63006ms AccountsController     ?                  - Tasks starts to create account | pelumisunday@gmail.com | 12/15/2020 1:09:33 PM
+INFO  2020-12-15 13:09:33,530 63220ms antRegistrationService ?                  - Initiating create account | pelumisunday@gmail.com | 12/15/2020 1:09:33 PM
