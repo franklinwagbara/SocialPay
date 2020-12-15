@@ -7,7 +7,7 @@ namespace SocialPay.Domain.Entities
     {
         public long AccountResetRequestId { get; set; }
         public long ClientAuthenticationId { get; set; }
-        [Column(TypeName = "VARCHAR(15)")]
+        [Column(TypeName = "NVARCHAR(15)")]
         public string Token { get; set; }
         public bool IsCompleted { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;

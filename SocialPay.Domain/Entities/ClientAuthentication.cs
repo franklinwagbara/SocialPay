@@ -9,21 +9,21 @@ namespace SocialPay.Domain.Entities
     public class ClientAuthentication
     {
         public long ClientAuthenticationId { get; set; }
-        [Column(TypeName = "VARCHAR(30)")]
+        [Column(TypeName = "NVARCHAR(30)")]
         public string Email { get; set; }
-        [Column(TypeName = "VARCHAR(20)")]
+        [Column(TypeName = "NVARCHAR(35)")]
         public string UserName { get; set; }
-        [Column(TypeName = "VARCHAR(15)")]
+        [Column(TypeName = "NVARCHAR(15)")]
         public string PhoneNumber { get; set; }
-        [Column(TypeName = "VARCHAR(45)")]
+        [Column(TypeName = "NVARCHAR(45)")]
         public string FullName { get; set; }
         public byte[] ClientSecretHash { get; set; }
         public byte[] ClientSecretSalt { get; set; }
-        [Column(TypeName = "VARCHAR(5)")]
+        [Column(TypeName = "NVARCHAR(5)")]
         public string StatusCode { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsLocked { get; set; }
-        [Column(TypeName = "VARCHAR(25)")]
+        [Column(TypeName = "NVARCHAR(25)")]
         public string RoleName { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }

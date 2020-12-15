@@ -468,6 +468,8 @@ namespace SocialPay.API.Controllers
             }
         }
 
+   
+        //FromXmlBody
 
         //[AllowAnonymous]
         //[HttpGet]
