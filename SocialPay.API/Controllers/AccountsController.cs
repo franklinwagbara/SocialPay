@@ -87,6 +87,31 @@ namespace SocialPay.API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("request-new-token")]
+        public async Task<IActionResult> RequestNewToken([FromBody] SignUpConfirmationRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _merchantRegistrationService.RequestNewToken(model);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
         [HttpPost]
         [Route("login")]

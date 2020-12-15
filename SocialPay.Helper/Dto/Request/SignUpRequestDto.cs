@@ -26,8 +26,8 @@ namespace SocialPay.Helper.Dto.Request
        // [Required(ErrorMessage = "Pin is required.")]
         public string Pin { get; set; }
        // [Required(ErrorMessage = "Token is required.")]
-       ///[JsonIgnore]
-       // public string Token { get; set; }
+       //[JsonIgnore]
+       public string Token { get; set; }
     }
 
 
