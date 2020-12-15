@@ -185,7 +185,7 @@ namespace SocialPay.Core.Services.Account
                // var token = model.Token.Trim().Replace(" ", "+");
 
                 var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.Pin == encryptPin
-                && x.Status == false);
+                && x.Status == false && x.TokenSecret == model.Token.Encrypt(_appSettings.appKey));
 
                 using(var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -194,7 +194,7 @@ namespace SocialPay.Core.Services.Account
                         if (validateToken == null)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                        if(validateToken.DateEntered.AddMinutes(Convert.ToInt32(_appSettings.otpSession)) < DateTime.Now)
+                        if(validateToken.LastDateModified.AddMinutes(Convert.ToInt32(_appSettings.otpSession)) < DateTime.Now)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.OtpExpired };
 
                         var getuserInfo = await _context.ClientAuthentication.
@@ -259,7 +259,76 @@ namespace SocialPay.Core.Services.Account
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
-     
+
+        public async Task<WebApiResponse> RequestNewToken(SignUpConfirmationRequestDto model)
+        {
+            try
+            {
+               // var encryptPin = model.Pin.Encrypt(_appSettings.appKey);
+                //var token = model.Token.Trim().Replace(" ", "+");
+
+                var validateToken = await _context.PinRequest
+                    .SingleOrDefaultAsync(x => x.TokenSecret == model.Token.Encrypt(_appSettings.appKey));
+
+                var newPin = Utilities.GeneratePin();
+
+                if (validateToken == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+
+                validateToken.Pin = newPin.Encrypt(_appSettings.appKey);
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        if (validateToken == null)
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                        var newToken = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
+                        var encryptedToken = newToken.Encrypt(_appSettings.appKey);
+                        var resetUrl = _appSettings.WebportalUrl + encryptedToken;
+                        string urlPath = "<a href=\"" + resetUrl + "\">Click to confirm your sign up process</a>";
+                        var userInfo = await _context.ClientAuthentication
+                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateToken.ClientAuthenticationId);
+
+                        validateToken.TokenSecret = newToken;
+                        validateToken.LastDateModified = DateTime.Now;
+                        _context.PinRequest.Update(validateToken);
+                        await _context.SaveChangesAsync();
+                        var emailModal = new EmailRequestDto
+                        {
+                            Subject = "Merchant Signed Up",
+                            SourceEmail = "info@sterling.ng",
+                            DestinationEmail = userInfo.Email,
+                            // DestinationEmail = "festypat9@gmail.com",
+                            //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                        };
+                        var mailBuilder = new StringBuilder();
+                        mailBuilder.AppendLine("Dear" + " " + userInfo.Email + "," + "<br />");
+                        mailBuilder.AppendLine("<br />");
+                        mailBuilder.AppendLine("You have successfully sign up. Please confirm your sign up by clicking the link below.<br />");
+                        mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
+                        // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                        mailBuilder.AppendLine("Best Regards,");
+                        emailModal.EmailBody = mailBuilder.ToString();
+
+                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
 
         public async Task<WebApiResponse> OnboardMerchantBusinessInfo(MerchantOnboardingInfoRequestDto model, long clientId)
         {
