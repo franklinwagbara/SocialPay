@@ -337,8 +337,8 @@ namespace SocialPay.Core.Services.Account
                 if(!string.IsNullOrEmpty(model.Tin))
                 {
                     var validateTin = await _tinService.ValidateTin(model.Tin);
-                    if (validateTin.ResponseCode != AppResponseCodes.Success)
-                        return validateTin;
+                    //if (validateTin.ResponseCode != AppResponseCodes.Success)
+                    //    return validateTin;
                 }
 
                 if(await _context.MerchantBusinessInfo.AnyAsync(x=>x.BusinessEmail == model.BusinessEmail || 
