@@ -271,19 +271,18 @@ namespace SocialPay.Core.Services.Account
                 var validateToken = await _context.PinRequest
                     .SingleOrDefaultAsync(x => x.TokenSecret == model.Token);
 
-                var newPin = Utilities.GeneratePin();
 
                 if (validateToken == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
+                var newPin = Utilities.GeneratePin();
 
                 validateToken.Pin = newPin.Encrypt(_appSettings.appKey);
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                        if (validateToken == null)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                       
                         var newToken = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
                         var encryptedToken = newToken.Encrypt(_appSettings.appKey);
                         var resetUrl = _appSettings.WebportalUrl + encryptedToken;
@@ -295,13 +294,12 @@ namespace SocialPay.Core.Services.Account
                         validateToken.LastDateModified = DateTime.Now;
                         _context.PinRequest.Update(validateToken);
                         await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
                         var emailModal = new EmailRequestDto
                         {
                             Subject = "Merchant Signed Up",
                             SourceEmail = "info@sterling.ng",
                             DestinationEmail = userInfo.Email,
-                            // DestinationEmail = "festypat9@gmail.com",
-                            //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
                         };
                         var mailBuilder = new StringBuilder();
                         mailBuilder.AppendLine("Dear" + " " + userInfo.Email + "," + "<br />");
