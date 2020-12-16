@@ -269,7 +269,7 @@ namespace SocialPay.Core.Services.Account
                 //var token = model.Token.Trim().Replace(" ", "+");
 
                 var validateToken = await _context.PinRequest
-                    .SingleOrDefaultAsync(x => x.TokenSecret == model.Token.Encrypt(_appSettings.appKey));
+                    .SingleOrDefaultAsync(x => x.TokenSecret == model.Token);
 
                 var newPin = Utilities.GeneratePin();
 
