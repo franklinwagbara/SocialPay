@@ -291,7 +291,7 @@ namespace SocialPay.Core.Services.Account
                         var userInfo = await _context.ClientAuthentication
                              .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateToken.ClientAuthenticationId);
 
-                        validateToken.TokenSecret = newToken;
+                        validateToken.TokenSecret = encryptedToken;
                         validateToken.LastDateModified = DateTime.Now;
                         _context.PinRequest.Update(validateToken);
                         await _context.SaveChangesAsync();
