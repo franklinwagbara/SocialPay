@@ -468,7 +468,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-   
+
         //FromXmlBody
 
         //[AllowAnonymous]
@@ -527,32 +527,32 @@ namespace SocialPay.API.Controllers
         //    }
         //}
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-cache")]
-        //public async Task<IActionResult> CacheTest()
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-cache")]
+        ////public async Task<IActionResult> CacheTest()
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (ModelState.IsValid)
+        ////        {
 
-        //            var result = await _merchantReportService.RedisCacheTest();
-        //            return Ok(result);
-        //        }
-        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage));
-        //        response.ResponseCode = AppResponseCodes.Failed;
-        //        response.Data = message;
-        //        return BadRequest(response);
+        ////            var result = await _merchantReportService.RedisCacheTest();
+        ////            return Ok(result);
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
     }
 }

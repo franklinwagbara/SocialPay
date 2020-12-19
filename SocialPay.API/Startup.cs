@@ -149,11 +149,21 @@ namespace SocialPay.API
             services.AddSingleton<IBSReposerviceJob>();
             services.AddSingleton<SqlRepository>();
 
-            services.AddDistributedRedisCache(option =>
-            {
-                option.Configuration = "172.18.4.114:6379";
-                option.InstanceName = "master";
+            var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
+            var redisInstance = Configuration.GetSection("RedisConnectionStrings")["RedisInstance"];
+            //services.Configure<AppSettings>(redisSection);
+           // string BConfig = Configuration.GetSection("ConnectionStrings")["BConnection"];
+
+            services.AddDistributedRedisCache(options => {
+                options.Configuration = redisServer;
+                options.InstanceName = redisInstance;
             });
+
+            //services.AddDistributedRedisCache(option =>
+            //{
+            //    option.Configuration = "172.18.4.114:6379";
+            //    option.InstanceName = "master";
+            //});
 
             services.AddScoped<INotificationServices, NotificationService>();
            // services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
