@@ -11,6 +11,8 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
     public class DeclineEscrowWalletTransaction : IDeclineEscrowWalletTransaction
     {
         private readonly DeclineEscrowWalletPendingTransaction _transactions;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeclineEscrowWalletTransaction));
+
         public DeclineEscrowWalletTransaction(DeclineEscrowWalletPendingTransaction transactions, IServiceProvider services)
         {
             Services = services;
@@ -23,22 +25,18 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
         {
             try
             {
-                //  _log4net.Info("Tasks starts to fetch awaiting transactions" + " | " + DateTime.Now);
+                _log4net.Info("Job Service" + "-" + "DeclineEscrowWalletTransaction" + " | " + DateTime.Now);
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
-                        //.Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
-                        //|| x.TransactionJourney == TransactionJourneyStatusCodes.AwaitingCustomerFeedBack
-                        ////|| x.TransactionJourney == TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding
-                        //&& x.TransactionStatus == OrderStatusCode.Approved
                         .Where(x => x.ActivityStatus == TransactionJourneyStatusCodes.ItemAccepted
                         && x.TransactionStatus == TransactionJourneyStatusCodes.ItemAccepted
                         ).ToListAsync();
                     var getEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Escrow
                     || x.LinkCategory == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
-                    // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                     _log4net.Info("Job Service" + "-" + "DeclineEscrowWalletTransaction pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (getEscrowTransactions.Count == 0)
                         return "No record";
                     await _transactions.ProcessTransactions(pendingTransactions);
@@ -51,7 +49,7 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
             }
             catch (Exception ex)
             {
-                //  _log4net.Error("An error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                  _log4net.Error("job Service Error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return "Error";
             }
 

@@ -10,7 +10,6 @@ using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.DeliveryDayBankTransaction

@@ -23,6 +23,7 @@ namespace SocialPay.API.Controllers
         private readonly CustomerRepoService _customerRepoService;
         private readonly MerchantReportService _merchantReportService;
         private readonly DisputeRepoService _disputeRepoService;
+
         public TransactionsController(MerchantPaymentLinkService merchantPaymentLinkService,
             CustomerRepoService customerRepoService, MerchantReportService merchantReportService,
             DisputeRepoService disputeRepoService)

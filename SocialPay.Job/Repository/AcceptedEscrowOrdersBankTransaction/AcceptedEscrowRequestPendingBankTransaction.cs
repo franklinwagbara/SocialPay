@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
@@ -10,7 +11,6 @@ using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
@@ -20,6 +20,8 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
         private readonly AppSettings _appSettings;
         private readonly FioranoTransferPayWithCardRepository _fioranoTransferRepository;
         private readonly AcceptedEscrowInterBankPendingTransferService _interBankPendingTransferService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AcceptedEscrowRequestPendingBankTransaction));
+
         public AcceptedEscrowRequestPendingBankTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
              FioranoTransferPayWithCardRepository fioranoTransferRepository,
          AcceptedEscrowInterBankPendingTransferService interBankPendingTransferService)
@@ -34,6 +36,8 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionLogid = 0;
+
             try
             {
                 using (var scope = Services.CreateScope())
@@ -41,13 +45,18 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service" + "-" + "Accepted escrow bank transaction" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                          .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
                          && x.ActivityStatus == TransactionJourneyStatusCodes.WalletTranferCompleted
                          && x.TransactionStatus == TransactionJourneyStatusCodes.Approved);
+
                         if (getTransInfo == null)
                             return null;
+                        transactionLogid = item.TransactionLogId;
+
                         string bankCode = string.Empty;
                         var getBankInfo = await context.MerchantBankInfo
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
@@ -56,6 +65,8 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
 
                         if (getBankInfo.BankCode == _appSettings.SterlingBankCode)
                         {
+                            _log4net.Info("Job Service" + "-" + "Processing intra bank transaction" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                             bankCode = getBankInfo.BankCode;
 
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
@@ -72,6 +83,8 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
+                                _log4net.Info("Job Service" + "-" + "Accepted escrow bank request was successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                                 getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
                                 getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
@@ -89,12 +102,17 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                             await context.SaveChangesAsync();
                             return null;
                         }
+
+                        _log4net.Info("Job Service" + "-" + "Accepted escrow inter bank transaction" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
                             item.PaymentReference, item.TransactionReference);
 
                         if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
                         {
+                            _log4net.Info("Job Service" + "-" + "Accepted escrow inter bank request was successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                             getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
@@ -120,8 +138,29 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-                return null;
+                var se = ex.InnerException as SqlException;
+                var code = se.Number;
+                var errorMessage = se.Message;
+                if (errorMessage.Contains("Violation") || code == 2627)
+                {
+                    //using (var scope = Services.CreateScope())
+                    //{
+                    //    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    //    var getTransInfo = await context.TransactionLog
+                    //      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+
+                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                    //    getTransInfo.LastDateModified = DateTime.Now;
+                    //    context.Update(getTransInfo);
+                    //    await context.SaveChangesAsync();
+                    //}
+
+                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
     }

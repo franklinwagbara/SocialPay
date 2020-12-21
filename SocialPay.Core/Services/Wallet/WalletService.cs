@@ -15,6 +15,8 @@ namespace SocialPay.Core.Services.Wallet
     {
         private readonly HttpClient _client;
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(WalletRepoService));
+
         public WalletRepoService(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
@@ -34,11 +36,14 @@ namespace SocialPay.Core.Services.Wallet
             try
             {
                 
-                var request = JsonConvert.SerializeObject(model);             
+                var request = JsonConvert.SerializeObject(model);
+                _log4net.Info("Initiating CreateMerchantWallet request" + " | " + request + " | " + DateTime.Now);
+
                 var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.createwalletUrl,
                     new StringContent(request, Encoding.UTF8, "application/json"));
                 var result = await response.Content.ReadAsStringAsync();
-                if(response.IsSuccessStatusCode)
+                _log4net.Info("Initiating CreateMerchantWallet response" + " | " + result + " | " + DateTime.Now);
+                if (response.IsSuccessStatusCode)
                 {
                      apiResponse = JsonConvert.DeserializeObject<WalletResponseDto>(result);
                      apiResponse.responsedata = result;
@@ -56,6 +61,8 @@ namespace SocialPay.Core.Services.Wallet
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured CreateMerchantWallet" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 apiResponse.response = AppResponseCodes.InternalError;
                 apiResponse.responsedata = "An error occured while creating wallet";
                 return apiResponse;
@@ -95,10 +102,13 @@ namespace SocialPay.Core.Services.Wallet
             var apiResponse = new GetWalletInfoResponseDto { };
             try
             {
+                _log4net.Info("Initiating GetWalletDetailsAsync request" + " | " + phoneNumber + " | " + DateTime.Now);
 
                 var response = await _client.GetAsync(_appSettings.walletExtensionUrl
                     + _appSettings.getwalletDetailsUrl + phoneNumber);
                 var result = await response.Content.ReadAsStringAsync();
+                _log4net.Info("Initiating GetWalletDetailsAsync response" + " | " + result + " | " + DateTime.Now);
+
                 if (response.IsSuccessStatusCode)
                 {
                     apiResponse = JsonConvert.DeserializeObject<GetWalletInfoResponseDto>(result);
@@ -111,6 +121,8 @@ namespace SocialPay.Core.Services.Wallet
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured GetWalletDetailsAsync" + " | " + phoneNumber + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+
                 apiResponse.Response = AppResponseCodes.InternalError;
                 apiResponse.Responsedata = "An error occured while creating wallet";
                 return apiResponse;

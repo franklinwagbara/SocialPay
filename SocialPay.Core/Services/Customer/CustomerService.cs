@@ -50,6 +50,8 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
+                _log4net.Info("GetLinkDetails" + " | " + transactionReference + " | " +  DateTime.Now);
+
                 //////var decodeUrl = System.Uri.UnescapeDataString(transactionReference);
                 //////if (decodeUrl.Contains(" "))
                 //////{
@@ -57,11 +59,11 @@ namespace SocialPay.Core.Services.Customer
                 //////}
                 //////var dd = DecryptAlt(decodeUrl);
 
-               // var decryptedReference = transactionReference.Replace(" ", "+").Decrypt(_appSettings.appKey).Split(",")[3];
+                // var decryptedReference = transactionReference.Replace(" ", "+").Decrypt(_appSettings.appKey).Split(",")[3];
                 //var res = t1.Decrypt(_appSettings.appKey).Split(",")[3];
                 //var decryptedReference1 = transactionReference.Decrypt(_appSettings.appKey);
                 //string dv = decryptedReference1.Split(",")[3];
-               // var decryptedReference = transactionReference.Decrypt(_appSettings.appKey).Split(",")[3];
+                // var decryptedReference = transactionReference.Decrypt(_appSettings.appKey).Split(",")[3];
 
                 var result = await _customerService.GetTransactionDetails(transactionReference);
                 if (result == null)
@@ -71,6 +73,8 @@ namespace SocialPay.Core.Services.Customer
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetLinkDetails" + " | " + transactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -80,12 +84,15 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
+                _log4net.Info("GetAllCustomerOrders" + " | " + clientId + " | " +  category + " | " + DateTime.Now);
+
                 //clientId = 40074;
                 //category = "02";
                 return await _customerService.GetCustomerOrders(clientId, category);
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetAllCustomerOrders" + " | " + clientId + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -93,7 +100,7 @@ namespace SocialPay.Core.Services.Customer
 
         public async Task<InitiatePaymentResponse> MakePayment(CustomerPaymentRequestDto model)
         {
-            _log4net.Info("Task starts to save payments info" + " | " + model.TransactionReference + " | " + DateTime.Now);
+            _log4net.Info("Task starts to save payments MakePayment info" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | "+ DateTime.Now);
 
             try
             {
@@ -225,6 +232,8 @@ namespace SocialPay.Core.Services.Customer
                                     return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
                                 }
                                 paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                                _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
                                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                             }
 
@@ -232,6 +241,8 @@ namespace SocialPay.Core.Services.Customer
                             encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                             paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                             paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+                            _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
                             return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef };
                         }
 
@@ -250,6 +261,8 @@ namespace SocialPay.Core.Services.Customer
                         encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                         paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                         paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+                        _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef };
                     }
                 }
@@ -264,6 +277,8 @@ namespace SocialPay.Core.Services.Customer
                         return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode};
                     }
                     paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                    _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | "+ DateTime.Now);
+
                     return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef };
                 }
                 logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
@@ -274,11 +289,12 @@ namespace SocialPay.Core.Services.Customer
                 //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
                 paymentData =  _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                 paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+                _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef };
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured while trying to initiate payment" + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | "+ DateTime.Now);
+                _log4net.Error("An error occured while trying to initiate payment MakePayment" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | "+ ex.Message.ToString() + " | "+ DateTime.Now);
                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -288,6 +304,7 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
+                _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
                 var logResponse = new PaymentResponse
                 {
@@ -311,10 +328,14 @@ namespace SocialPay.Core.Services.Customer
                             var decryptResponse = DecryptAlt(decodeMessage);
                             model.Message = decryptResponse;
                             var result = await _customerService.LogInvoicePaymentResponse(model);
+                            _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+
                             return result;
                         }
 
                         var oneBankRequest = await _customerService.LogInvoicePaymentResponse(model);
+                        _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+
                         return oneBankRequest;
 
                     }
@@ -332,6 +353,8 @@ namespace SocialPay.Core.Services.Customer
                         var decryptResponse = DecryptAlt(decodeMessage);
                         model.Message = decryptResponse;
                         var result = await _customerService.LogPaymentResponse(model);
+                        _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+
                         return result;
                     }
 
@@ -345,6 +368,8 @@ namespace SocialPay.Core.Services.Customer
                     }
 
                     var oneBankRequest = await _customerService.LogPaymentResponse(model);
+                    _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | "  + DateTime.Now);
+
                     return oneBankRequest;
 
                 }
@@ -352,6 +377,8 @@ namespace SocialPay.Core.Services.Customer
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "PaymentConfirmation" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -359,6 +386,8 @@ namespace SocialPay.Core.Services.Customer
 
         public async Task<WebApiResponse> AcceptOrRejectItem(AcceptRejectRequestDto model, long clientId)
         {
+            _log4net.Info("AcceptOrRejectItem" + " | " + clientId + " | " + model.PaymentReference + "" + model.TransactionReference + " | " + DateTime.Now);
+
             try
             {
                 var validateReference = await _customerService.AcceptRejectOrderRequest(model, clientId);
@@ -366,6 +395,8 @@ namespace SocialPay.Core.Services.Customer
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "AcceptOrRejectItem" + " | " + clientId + " | " + model.PaymentReference + ""+ model.TransactionReference + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

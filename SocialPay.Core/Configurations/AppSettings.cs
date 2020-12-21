@@ -70,5 +70,7 @@
         public string redisInstanceName { get; set; }
         public string tinvalidationBaseUrl { get; set; }
         public string tinvalidationEndpointUrl { get; set; }
+        public string accountLock { get; set; }
+        public string accountReason { get; set; }
     }
 }

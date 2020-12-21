@@ -11,7 +11,6 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
@@ -20,6 +19,8 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
     {
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowWalletPendingTransaction));
+
         public NonEscrowWalletPendingTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
             WalletRepoJobService walletRepoJobService)
         {
@@ -40,6 +41,8 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
@@ -114,10 +117,14 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
                                     await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
+                                    _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                                     return null;
                                 }
                                 catch (Exception ex)
                                 {
+                                    _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                                     await transaction.RollbackAsync();
                                     return null;
                                 }
@@ -139,6 +146,8 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;

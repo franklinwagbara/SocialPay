@@ -37,12 +37,10 @@ using SocialPay.Job.Repository.DeliveryDayBankTransaction;
 using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
-using SocialPay.Job.Repository.IntraBankService;
 using SocialPay.Job.Repository.NonEscrowBankTransactions;
 using SocialPay.Job.Repository.NonEscrowWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
-using SocialPay.Job.TaskSchedules;
 
 namespace SocialPay.API
 {

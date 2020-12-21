@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Job.Repository.NonEscrowWalletTransaction;
-using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.Services;
 using System;
 using System.Threading.Tasks;

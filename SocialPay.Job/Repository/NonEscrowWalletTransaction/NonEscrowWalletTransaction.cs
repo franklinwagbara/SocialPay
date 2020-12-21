@@ -3,9 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
@@ -13,6 +11,8 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
     public class NonEscrowWalletTransaction : INonEscrowWalletTransaction
     {
         private readonly NonEscrowWalletPendingTransaction _transactions;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowWalletTransaction));
+
         public NonEscrowWalletTransaction(NonEscrowWalletPendingTransaction transactions, IServiceProvider services)
         {
             Services = services;
@@ -25,7 +25,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
         {
             try
             {
-                //  _log4net.Info("Tasks starts to fetch awaiting transactions" + " | " + DateTime.Now);
+                _log4net.Info("Job Service" + "-" + "to fetch awaiting transactions" + " | " + DateTime.Now);
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -37,7 +37,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
-                    // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                     _log4net.Info("Job Service. Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
                     await _transactions.ProcessTransactions(getNonEscrowTransactions);
@@ -50,7 +50,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
             }
             catch (Exception ex)
             {
-                //  _log4net.Error("An error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                 _log4net.Error("Job Service." + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return "Error";
             }
 

@@ -59,11 +59,11 @@ namespace SocialPay.Core.Services.Account
 
         public async Task<WebApiResponse> CreateNewMerchant(SignUpRequestDto signUpRequestDto)
         {
-            _log4net.Info("Initiating create account" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
+            _log4net.Info("Initiating create merchant account" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
 
             try
             {
-                if(await _context.ClientAuthentication.AnyAsync(x=>x.Email == signUpRequestDto.Email))
+                if (await _context.ClientAuthentication.AnyAsync(x => x.Email == signUpRequestDto.Email))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail };
                 var token = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
@@ -78,8 +78,8 @@ namespace SocialPay.Core.Services.Account
                 var resetUrl = _appSettings.WebportalUrl + encryptedToken;
                 string urlPath = "<a href=\"" + resetUrl + "\">Click to confirm your sign up process</a>";
                 _utilities.CreatePasswordHash(signUpRequestDto.Password.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
-              
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
@@ -117,7 +117,8 @@ namespace SocialPay.Core.Services.Account
                         var loginstatus = new ClientLoginStatus
                         {
                             ClientAuthenticationId = model.ClientAuthenticationId,
-                             IsSuccessful = true, LoginAttempt = 0
+                            IsSuccessful = true,
+                            LoginAttempt = 0
                         };
 
                         await _context.ClientLoginStatus.AddAsync(loginstatus);
@@ -140,33 +141,35 @@ namespace SocialPay.Core.Services.Account
                             SourceEmail = "info@sterling.ng",
                             DestinationEmail = signUpRequestDto.Email,
                             // DestinationEmail = "festypat9@gmail.com",
-                          //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                            //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
                         };
                         var mailBuilder = new StringBuilder();
                         mailBuilder.AppendLine("Dear" + " " + signUpRequestDto.Email + "," + "<br />");
                         mailBuilder.AppendLine("<br />");
                         mailBuilder.AppendLine("You have successfully sign up. Please confirm your sign up by clicking the link below.<br />");
                         mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
-                       // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                        // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
 
                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
-                        if(sendMail != AppResponseCodes.Success)
+                        if (sendMail != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
                         await transaction.CommitAsync();
+                        _log4net.Info("Initiating create merchant account was successful" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | "+  ex.Message.ToString() + " | "+ DateTime.Now);
+                        _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
                 }
-                
-                
-                
+
+
+
             }
             catch (Exception ex)
             {
@@ -181,6 +184,8 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+                _log4net.Info("Initiating confirm signup" + " | " + model.Pin + " | " + DateTime.Now);
+
                 //model.Token = "1At4AGMX7HISvClyC2/mfnc2e/hp6n3gI4yoH7tAej+H+4UQTmnnyG5Rklpqjl02fgj2zoMbDv+ipMNeyDdrTin+/mcQ38u8L+HizkA1CKpAvf1Pxryz+nRB6UbsxhgA";
                 var encryptPin = model.Pin.Encrypt(_appSettings.appKey);
                 // var token = model.Token.Trim().Replace(" ", "+");
@@ -188,14 +193,14 @@ namespace SocialPay.Core.Services.Account
                 var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.Pin == encryptPin
                 && x.Status == false && x.TokenSecret == model.Token);
 
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
                         if (validateToken == null)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                        if(validateToken.LastDateModified.AddMinutes(Convert.ToInt32(_appSettings.otpSession)) < DateTime.Now)
+                        if (validateToken.LastDateModified.AddMinutes(Convert.ToInt32(_appSettings.otpSession)) < DateTime.Now)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.OtpExpired };
 
                         var getuserInfo = await _context.ClientAuthentication.
@@ -225,9 +230,10 @@ namespace SocialPay.Core.Services.Account
                             var options1 = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(DateTime.Now.AddMinutes(3))
                             .SetSlidingExpiration(TimeSpan.FromMinutes(1));
-                            await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);                         
+                            await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
+                            _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                         }
@@ -244,18 +250,20 @@ namespace SocialPay.Core.Services.Account
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
+                        _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
+                        _log4net.Error("Error occured" + " | " + "ConfirmSignup" + " | " + model.Pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
                 }
 
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -265,7 +273,9 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-               // var encryptPin = model.Pin.Encrypt(_appSettings.appKey);
+                _log4net.Info("Initiating new token request" + " | " + model.Token + " | " + DateTime.Now);
+
+                // var encryptPin = model.Pin.Encrypt(_appSettings.appKey);
                 //var token = model.Token.Trim().Replace(" ", "+");
 
                 var validateToken = await _context.PinRequest
@@ -282,7 +292,7 @@ namespace SocialPay.Core.Services.Account
                 {
                     try
                     {
-                       
+
                         var newToken = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
                         var encryptedToken = newToken.Encrypt(_appSettings.appKey);
                         var resetUrl = _appSettings.WebportalUrl + encryptedToken;
@@ -311,11 +321,13 @@ namespace SocialPay.Core.Services.Account
                         emailModal.EmailBody = mailBuilder.ToString();
 
                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        _log4net.Info("Initiating RequestNewToken was successful" + " | " + DateTime.Now);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
+                        _log4net.Error("Error occured" + " | " + "RequestNewToken" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -324,6 +336,7 @@ namespace SocialPay.Core.Services.Account
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "RequestNewToken" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -334,20 +347,22 @@ namespace SocialPay.Core.Services.Account
             try
             {
                 //clientId = 4;
-                if(!string.IsNullOrEmpty(model.Tin))
+                _log4net.Info("Initiating OnboardMerchantBusinessInfo request" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
+
+                if (!string.IsNullOrEmpty(model.Tin))
                 {
                     var validateTin = await _tinService.ValidateTin(model.Tin);
                     if (validateTin.ResponseCode != AppResponseCodes.Success)
                         return validateTin;
                 }
 
-                if(await _context.MerchantBusinessInfo.AnyAsync(x=>x.BusinessEmail == model.BusinessEmail || 
-                x.BusinessPhoneNumber == model.BusinessPhoneNumber || x.Chargebackemail == model.Chargebackemail))
+                if (await _context.MerchantBusinessInfo.AnyAsync(x => x.BusinessEmail == model.BusinessEmail ||
+                 x.BusinessPhoneNumber == model.BusinessPhoneNumber || x.Chargebackemail == model.Chargebackemail))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
                 var getUserInfo = await _context.ClientAuthentication
-                    .Include(x=>x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
-                if(getUserInfo.MerchantBusinessInfo.Count > 0)
+                    .Include(x => x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                if (getUserInfo.MerchantBusinessInfo.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
                 string fileName = string.Empty;
                 var merchantId = Guid.NewGuid().ToString("N").Substring(22);
@@ -356,15 +371,15 @@ namespace SocialPay.Core.Services.Account
 
                 var FileExtension = Path.GetExtension(fileName);
                 fileName = Path.Combine(_hostingEnvironment.WebRootPath, "MerchantLogo") + $@"\{newFileName}";
-                
+
                 // concating  FileName + FileExtension
                 newFileName = merchantId + FileExtension;
                 var filePath = Path.Combine(fileName, newFileName);
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                      
+
                         var businessInfoModel = new MerchantBusinessInfo
                         {
                             BusinessEmail = model.BusinessEmail,
@@ -372,13 +387,14 @@ namespace SocialPay.Core.Services.Account
                             BusinessPhoneNumber = model.BusinessPhoneNumber,
                             Chargebackemail = model.Chargebackemail,
                             ClientAuthenticationId = clientId,
-                            Country = model.Country, Tin = model.Tin,
+                            Country = model.Country,
+                            Tin = model.Tin,
                             MerchantReferenceId = merchantId,
                             FileLocation = "MerchantLogo",
                             Logo = newFileName
                         };
-                       
-                        
+
+
                         await _context.MerchantBusinessInfo.AddAsync(businessInfoModel);
                         await _context.SaveChangesAsync();
                         getUserInfo.StatusCode = MerchantOnboardingProcess.BusinessInfo;
@@ -399,7 +415,7 @@ namespace SocialPay.Core.Services.Account
                             var options1 = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                             .SetSlidingExpiration(TimeSpan.FromMinutes(15));
-                            await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);                            
+                            await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
                         }
                         await _distributedCache.RemoveAsync(cacheKey);
                         userInfo.Email = getUserInfo.Email;
@@ -412,6 +428,8 @@ namespace SocialPay.Core.Services.Account
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
                         model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
                         await transaction.CommitAsync();
+                        _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo };
                     }
                     catch (Exception ex)
@@ -420,12 +438,13 @@ namespace SocialPay.Core.Services.Account
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
-                   
+
                 }
-               
+
             }
             catch (Exception ex)
             {
+                _log4net.Error("An error ocuured while saving merchant business info" + model.BusinessEmail + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -435,6 +454,8 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+                _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
+
                 ///clientId = 40080;
                 ////if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
                 //// x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
@@ -451,7 +472,7 @@ namespace SocialPay.Core.Services.Account
 
 
                 var getUserInfo = await _context.ClientAuthentication
-                    .Include(x => x.MerchantBankInfo).Include(x=>x.MerchantBusinessInfo)
+                    .Include(x => x.MerchantBankInfo).Include(x => x.MerchantBusinessInfo)
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
                 if (getUserInfo.MerchantBusinessInfo.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBusinessInfoRequired };
@@ -473,6 +494,8 @@ namespace SocialPay.Core.Services.Account
 
                 if (model.BankCode == _appSettings.SterlingBankCode)
                 {
+                    _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
+
                     var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban, model.BVN);
                     if (result.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
@@ -491,6 +514,7 @@ namespace SocialPay.Core.Services.Account
                             getUserInfo.LastDateModified = DateTime.Now;
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
+                            _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
                         }
                         catch (Exception ex)
@@ -502,6 +526,7 @@ namespace SocialPay.Core.Services.Account
                     }
 
                 }
+                _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
 
                 var nibsRequestModel = new IBSNameEnquiryRequestDto
                 {
@@ -514,7 +539,7 @@ namespace SocialPay.Core.Services.Account
                 if (ibsRequest.ResponseCode != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
 
-                if(ibsRequest.BVN != model.BVN)
+                if (ibsRequest.BVN != model.BVN)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN };
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -529,10 +554,12 @@ namespace SocialPay.Core.Services.Account
                         getUserInfo.LastDateModified = DateTime.Now;
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
+                        _log4net.Info("Initiating OnboardMerchantBankInfo interbank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
+                        _log4net.Error("Error occured" + " | " + "OnboardMerchantBankInfo" + " | " + model.BVN + " | " + model.BankName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -552,47 +579,50 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+                _log4net.Info("Initiating TransactionSetupRequest request" + " | " + model.ReceiveEmail + " | " + clientId + " | " + model.OutSideLagos + " | " + DateTime.Now);
+
                 //clientId = 10013;
                 var getUserInfo = await _context.ClientAuthentication
-                    .Include(x=>x.MerchantWallet)
-                    .Include(x=>x.MerchantBankInfo)
+                    .Include(x => x.MerchantWallet)
+                    .Include(x => x.MerchantBankInfo)
                     .Include(x => x.MerchantActivitySetup).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
-                if(getUserInfo.MerchantBankInfo.Count == 0)
+                if (getUserInfo.MerchantBankInfo.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBankInfoRequired };
                 if (getUserInfo.MerchantActivitySetup.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
-            
-                        using(var transaction  = await _context.Database.BeginTransactionAsync())
-                        {
-                            try
-                            {
-                                var accountSetupModel = new MerchantActivitySetup
-                                {
-                                    ClientAuthenticationId = clientId,
-                                    WithinLagos = model.WithinLagos,
-                                    PayOrchargeMe = model.PayOrchargeMe,
-                                    ReceiveEmail = model.ReceiveEmail,
-                                    OutSideLagos = model.OutSideLagos,
-                                    OutSideNigeria = model.OutSideNigeria
 
-                                };
-                                var walletModel = new MerchantWalletRequestDto
-                                {
-                                    CURRENCYCODE = _appSettings.currencyCode, DOB = getUserInfo.MerchantWallet.Select(x=>x.DoB).FirstOrDefault(),
-                                    firstname = getUserInfo.MerchantWallet.Select(x => x.Firstname).FirstOrDefault(),
-                                    lastname = getUserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault(),
-                                    Gender = getUserInfo.MerchantWallet.Select(x => x.Gender).FirstOrDefault(),
-                                    mobile = getUserInfo.PhoneNumber,
-                                };
-                                var walletResponse = new CreateWalletResponse { };
-                                getUserInfo.StatusCode = MerchantOnboardingProcess.Wallet;
-                                _context.ClientAuthentication.Update(getUserInfo);
-                                    await _context.SaveChangesAsync();
-                                    //_context.MerchantWallet.Update(walletInfo);
-                                    //await _context.SaveChangesAsync();
-                                    await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
-                                    await _context.SaveChangesAsync();
-                                    await transaction.CommitAsync();
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var accountSetupModel = new MerchantActivitySetup
+                        {
+                            ClientAuthenticationId = clientId,
+                            WithinLagos = model.WithinLagos,
+                            PayOrchargeMe = model.PayOrchargeMe,
+                            ReceiveEmail = model.ReceiveEmail,
+                            OutSideLagos = model.OutSideLagos,
+                            OutSideNigeria = model.OutSideNigeria
+
+                        };
+                        var walletModel = new MerchantWalletRequestDto
+                        {
+                            CURRENCYCODE = _appSettings.currencyCode,
+                            DOB = getUserInfo.MerchantWallet.Select(x => x.DoB).FirstOrDefault(),
+                            firstname = getUserInfo.MerchantWallet.Select(x => x.Firstname).FirstOrDefault(),
+                            lastname = getUserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault(),
+                            Gender = getUserInfo.MerchantWallet.Select(x => x.Gender).FirstOrDefault(),
+                            mobile = getUserInfo.PhoneNumber,
+                        };
+                        var walletResponse = new CreateWalletResponse { };
+                        getUserInfo.StatusCode = MerchantOnboardingProcess.Wallet;
+                        _context.ClientAuthentication.Update(getUserInfo);
+                        await _context.SaveChangesAsync();
+                        //_context.MerchantWallet.Update(walletInfo);
+                        //await _context.SaveChangesAsync();
+                        await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
                         var cacheKey = Convert.ToString(clientId);
                         string serializedCustomerList;
                         var userInfo = new UserInfoViewModel { };
@@ -608,6 +638,7 @@ namespace SocialPay.Core.Services.Account
                             .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                             .SetSlidingExpiration(TimeSpan.FromMinutes(15));
                             await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
+                            _log4net.Info("Initiating TransactionSetupRequest request saved" + " | " + model.ReceiveEmail + " | " + clientId + " | " + model.OutSideLagos + " | " + DateTime.Now);
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.Wallet };
                         }
                         await _distributedCache.RemoveAsync(cacheKey);
@@ -619,47 +650,51 @@ namespace SocialPay.Core.Services.Account
                         .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                         .SetSlidingExpiration(TimeSpan.FromMinutes(15));
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.Wallet };
-                                ////var createWallet = await _walletRepoService.CreateMerchantWallet(walletModel);
-                                ////if(createWallet.response == AppResponseCodes.Success)
-                                ////{
-                                ////    var walletInfo = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
-                                ////    walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
-                                ////    walletResponse.Message = createWallet.responsedata.ToString();
-                                ////    await _context.CreateWalletResponse.AddAsync(walletResponse);
-                                ////    await _context.SaveChangesAsync();
-                            
-                                ////    getUserInfo.StatusCode = AppResponseCodes.Success;
-                                ////    walletInfo.status = MerchantWalletProcess.Processed;
-                                ////    walletInfo.LastDateModified = DateTime.Now;
-                                ////    _context.ClientAuthentication.Update(getUserInfo);
-                                ////    await _context.SaveChangesAsync();
-                                ////    _context.MerchantWallet.Update(walletInfo);
-                                ////    await _context.SaveChangesAsync();
-                                ////    await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
-                                ////    await _context.SaveChangesAsync();
-                                ////    await transaction.CommitAsync();
-                                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
-                                //// }
-                                ////walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
-                                ////walletResponse.Message = createWallet.responsedata.ToString();
-                                ////await _context.CreateWalletResponse.AddAsync(walletResponse);
-                                ////await _context.SaveChangesAsync();
-                                ////await transaction.CommitAsync();
-                       // return new WebApiResponse { ResponseCode = AppResponseCodes.FailedCreatingWallet };  
-                        }
-                            catch (Exception ex)
-                            {
-                                await transaction.RollbackAsync();
-                                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        _log4net.Info("Initiating TransactionSetupRequest request saved" + " | " + model.ReceiveEmail + " | " + clientId + " | " + model.OutSideLagos + " | " + DateTime.Now);
 
-                             }
-                        }
-                       
-                   
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.Wallet };
+                        ////var createWallet = await _walletRepoService.CreateMerchantWallet(walletModel);
+                        ////if(createWallet.response == AppResponseCodes.Success)
+                        ////{
+                        ////    var walletInfo = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                        ////    walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
+                        ////    walletResponse.Message = createWallet.responsedata.ToString();
+                        ////    await _context.CreateWalletResponse.AddAsync(walletResponse);
+                        ////    await _context.SaveChangesAsync();
+
+                        ////    getUserInfo.StatusCode = AppResponseCodes.Success;
+                        ////    walletInfo.status = MerchantWalletProcess.Processed;
+                        ////    walletInfo.LastDateModified = DateTime.Now;
+                        ////    _context.ClientAuthentication.Update(getUserInfo);
+                        ////    await _context.SaveChangesAsync();
+                        ////    _context.MerchantWallet.Update(walletInfo);
+                        ////    await _context.SaveChangesAsync();
+                        ////    await _context.MerchantActivitySetup.AddAsync(accountSetupModel);
+                        ////    await _context.SaveChangesAsync();
+                        ////    await transaction.CommitAsync();
+                        ////    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        //// }
+                        ////walletResponse.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
+                        ////walletResponse.Message = createWallet.responsedata.ToString();
+                        ////await _context.CreateWalletResponse.AddAsync(walletResponse);
+                        ////await _context.SaveChangesAsync();
+                        ////await transaction.CommitAsync();
+                        // return new WebApiResponse { ResponseCode = AppResponseCodes.FailedCreatingWallet };  
+                    }
+                    catch (Exception ex)
+                    {
+                        _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -669,16 +704,20 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+                _log4net.Info("Initiating GetListOfBanks request" + " | " +  DateTime.Now);
+
                 var nibsRequestModel = new IBSGetBanksRequestDto
                 {
-                    ReferenceID = Guid.NewGuid().ToString(),                   
+                    ReferenceID = Guid.NewGuid().ToString(),
                     RequestType = _appSettings.getBanksRequestType
                 };
-                var result = await _iBSReposervice.GetParticipatingBanks(nibsRequestModel);               
+                var result = await _iBSReposervice.GetParticipatingBanks(nibsRequestModel);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetListOfBanks" + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

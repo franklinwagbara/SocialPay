@@ -2,12 +2,9 @@
 using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Helper;
-using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Tin

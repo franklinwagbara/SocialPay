@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using SocialPay.Core.Configurations;
 using SocialPay.Job.Repository.IntraBankService;
 using SocialPay.Job.Services;
 using System;

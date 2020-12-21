@@ -11,7 +11,6 @@ using SocialPay.Core.Configurations;
 using Microsoft.Extensions.Options;
 using SocialPay.Helper;
 using SocialPay.Core.Services.Wallet;
-using StackExchange.Redis;
 using Microsoft.Data.SqlClient;
 
 namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NCrontab;
 using SocialPay.Core.Configurations;
 using System;

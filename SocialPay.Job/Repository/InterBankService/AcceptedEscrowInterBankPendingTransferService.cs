@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
@@ -12,7 +11,6 @@ using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.InterBankService
@@ -23,6 +21,8 @@ namespace SocialPay.Job.Repository.InterBankService
         private readonly BankServiceRepositoryJobService _bankServiceRepositoryJobService;
         private readonly IBSReposerviceJob _iBSReposerviceJob;
         private readonly SqlRepository _sqlRepository;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AcceptedEscrowInterBankPendingTransferService));
+
         public AcceptedEscrowInterBankPendingTransferService(IServiceProvider service, IOptions<AppSettings> appSettings,
             BankServiceRepositoryJobService bankServiceRepositoryJobService,
             IBSReposerviceJob iBSReposerviceJob, SqlRepository sqlRepository)
@@ -40,6 +40,8 @@ namespace SocialPay.Job.Repository.InterBankService
             string desBankCode, string sourceAccount, long clientId, 
             string paymentReference, string transactionReference)
         {
+            _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions" + " | " + paymentReference + " | " + transactionReference + " | " + desBankCode + " | "+ destinationAccount + " | "+ sourceAccount + " | "+ amount + " | "+ DateTime.Now);
+
             try
             {
                 using (var scope = Services.CreateScope())
@@ -54,8 +56,8 @@ namespace SocialPay.Job.Repository.InterBankService
                   
                     var lockAccountModel = new LockAccountRequestDto
                     {
-                        sDate = DateTime.Today, eDate = DateTime.Today.AddMinutes(10),
-                        acct = sourceAccount, amt = amount, reasonForLocking ="Funds transfer"
+                        sDate = DateTime.Today, eDate = DateTime.Today.AddMinutes(Convert.ToInt32(_appSettings.accountLock)),
+                        acct = sourceAccount, amt = amount, reasonForLocking = _appSettings.accountReason
                     };
 
                     var lockAccount = await _bankServiceRepositoryJobService.LockAccountWithReasonAsync(lockAccountModel);
@@ -80,7 +82,7 @@ namespace SocialPay.Job.Repository.InterBankService
                         OriginatorAccountNumber = sourceAccount, OriginatorKYCLevel =nipEnquiry.KYCLevel,
                         OriginatorBankVerificationNumber = _appSettings.socialT24BVN, 
                         Fee = Convert.ToDecimal(getFeesAndVat.FeeAmount), Vat = Convert.ToDouble(getFeesAndVat.Vat),
-                        PaymentRef = "Social-Pay-Merchant-Payment" + ""+ Guid.NewGuid().ToString().Substring(0,8),
+                        PaymentRef = "Social-Pay-Merchant-Payment" + ""+ Guid.NewGuid().ToString().Substring(0,13),
                         AccountLockID = lockAccount, OrignatorName = _appSettings.socialPayT24AccountName, SubAcctVal = "0"
                     };
 
@@ -104,13 +106,16 @@ namespace SocialPay.Job.Repository.InterBankService
 
                     await context.AcceptedEscrowInterBankTransactionRequest.AddAsync(logInterBankRequest);
                     await context.SaveChangesAsync();
+                    _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions was successfully inserted" + " | " + paymentReference + " | " + transactionReference + " | " + desBankCode + " | " + destinationAccount + " | " + sourceAccount + " | " + amount + " | " + DateTime.Now);
 
-                   return await _sqlRepository.InsertNipTransferRequest(nipRequestModel);
+                    return await _sqlRepository.InsertNipTransferRequest(nipRequestModel);
                 }
 
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionReference + " | " + paymentReference + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;

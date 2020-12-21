@@ -11,6 +11,7 @@ namespace SocialPay.Job.Repository.NotificationService
     public class NotificationService : INotificationServices
     {
         private readonly NotificationTransactions _transactions;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NotificationService));
         public NotificationService(NotificationTransactions transactions, IServiceProvider services)
         {
             Services = services;
@@ -22,7 +23,7 @@ namespace SocialPay.Job.Repository.NotificationService
         {
             try
             {
-                //  _log4net.Info("Tasks starts to fetch awaiting transactions" + " | " + DateTime.Now);
+                  _log4net.Info("Job Service" + "-"+ "Tasks starts to get all notification transactions" + " | " + DateTime.Now);
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -34,7 +35,7 @@ namespace SocialPay.Job.Repository.NotificationService
                     var getvalidRequest = pendingTransactions.Where(x => x.Category 
                          == MerchantPaymentLinkCategory.Escrow
                      || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
-                    // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                     _log4net.Info("Job Service" + "-" + "Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (getvalidRequest.Count == 0)
                         return "No record";
                     await _transactions.InitiatePendingNotifications(getvalidRequest);

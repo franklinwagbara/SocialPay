@@ -25,6 +25,8 @@ namespace SocialPay.Core.Repositories.Invoice
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AppSettings _appSettings;
         private readonly EmailService _emailService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(InvoiceService));
+
 
         public InvoiceService(SocialPayDbContext context,
             IHostingEnvironment environment, IOptions<AppSettings> appSettings,
@@ -50,6 +52,7 @@ namespace SocialPay.Core.Repositories.Invoice
         public async Task<WebApiResponse> GetInvoiceByClientId(long clientId)
         {
             var invoiceView = new List<MerchantInvoiceViewModel>();
+            _log4net.Info("GetInvoiceByClientId request" + " | " + clientId + " | " + DateTime.Now);
 
             try
             {
@@ -64,6 +67,7 @@ namespace SocialPay.Core.Repositories.Invoice
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetInvoiceByClientId" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = invoiceView };
             }
@@ -74,6 +78,8 @@ namespace SocialPay.Core.Repositories.Invoice
         {
             try
             {
+                _log4net.Info("SendInvoiceAsync request" + " | " + transactionReference + " | " + destinationEmail + " | "+ DateTime.Now);
+
                 var emailModal = new EmailRequestDto
                 {
                     Subject = "Invoice" + " " + Guid.NewGuid().ToString() + " ",
@@ -109,12 +115,15 @@ namespace SocialPay.Core.Repositories.Invoice
                 }
                 catch (Exception ex)
                 {
+                    _log4net.Error("Error occured" + " | " + "SendInvoiceAsync" + " | " + transactionReference + " | " + destinationEmail +" | "+ ex.Message.ToString() + " | " + DateTime.Now);
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError};
                 }
 
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "SendInvoiceAsync" + " | " + transactionReference + " | " + destinationEmail + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -149,6 +158,7 @@ namespace SocialPay.Core.Repositories.Invoice
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetInvoiceTransactionDetails" + " | " + clientId + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = response };
             }

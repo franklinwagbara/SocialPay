@@ -15,6 +15,8 @@ namespace SocialPay.Core.Services.Data
     public class SqlRepository
     {
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SqlRepository));
+
         public SqlRepository(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
@@ -22,6 +24,8 @@ namespace SocialPay.Core.Services.Data
 
         public FeesCalculationViewModel GetNIPFee(decimal amount)
         {
+            _log4net.Info("Job Service" + "-" + "SqlRepository" + " | " + amount + " | " + DateTime.Now);
+
             var result = new FeesCalculationViewModel();
             try
             {
@@ -50,10 +54,13 @@ namespace SocialPay.Core.Services.Data
                      }).FirstOrDefault();
 
                     result = dataList;
+                    _log4net.Info("Job Service" + "-" + "SqlRepository calculated response" + " | " + result.FeeAmount + " | " + DateTime.Now);
+
                 }
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured Fees calculated" + " | " + amount + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
 
                 throw;
             }
