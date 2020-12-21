@@ -55,3 +55,7 @@ INFO  2020-12-15 12:55:44,608 118609ms AccountsController     ?                 
 INFO  2020-12-15 12:55:44,608 118609ms antRegistrationService ?                  - Initiating create account | pelumisunday@gmail.com | 12/15/2020 12:55:44 PM
 INFO  2020-12-15 13:09:33,316 63006ms AccountsController     ?                  - Tasks starts to create account | pelumisunday@gmail.com | 12/15/2020 1:09:33 PM
 INFO  2020-12-15 13:09:33,530 63220ms antRegistrationService ?                  - Initiating create account | pelumisunday@gmail.com | 12/15/2020 1:09:33 PM
+INFO  2020-12-21 16:11:06,162 126404ms RequestBankTransaction ?                  - Job Service to fetch awaiting transactions | 12/21/2020 4:11:06 PM
+INFO  2020-12-21 16:11:11,503 131745ms RequestBankTransaction ?                  - Job Service total number of pending transactions | 0 | 12/21/2020 4:11:11 PM
+INFO  2020-12-21 16:16:07,230 56623ms RequestBankTransaction ?                  - Job Service to fetch awaiting transactions | AcceptedEscrowRequestPendingBankTransaction | 12/21/2020 4:16:06 PM
+INFO  2020-12-21 16:16:12,746 62139ms RequestBankTransaction ?                  - Job Service total number of pending transactions | 0 | 12/21/2020 4:16:12 PM

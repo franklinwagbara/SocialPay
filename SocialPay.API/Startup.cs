@@ -41,6 +41,7 @@ using SocialPay.Job.Repository.NonEscrowBankTransactions;
 using SocialPay.Job.Repository.NonEscrowWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
+using SocialPay.Job.TaskSchedules;
 
 namespace SocialPay.API
 {
@@ -179,7 +180,7 @@ namespace SocialPay.API
             //accepted escrow bank request
 
             services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
-           // services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
+            services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
             services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
 
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
