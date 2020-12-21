@@ -18,11 +18,11 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
     public class DeliveryDayBankPendingTransaction
     {
         private readonly AppSettings _appSettings;
-        private readonly FioranoTransferPayWithCardRepository _fioranoTransferRepository;
-        private readonly InterBankPendingTransferService _interBankPendingTransferService;
+        private readonly DeliveryDayFioranoTransferRepository _fioranoTransferRepository;
+        private readonly DeliveryDayInterBankPendingTransferService _interBankPendingTransferService;
         public DeliveryDayBankPendingTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
-             FioranoTransferPayWithCardRepository fioranoTransferRepository,
-         InterBankPendingTransferService interBankPendingTransferService)
+             DeliveryDayFioranoTransferRepository fioranoTransferRepository,
+         DeliveryDayInterBankPendingTransferService interBankPendingTransferService)
         {
             Services = service;
             _appSettings = appSettings.Value;
@@ -90,19 +90,30 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
                             await context.SaveChangesAsync();
                             return null;
                         }
-                        ////getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
-                        ////getTransInfo.LastDateModified = DateTime.Now;
-                        ////context.Update(getTransInfo);
-                        ////await context.SaveChangesAsync();
-                        ////var processIntebankTransction = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
-                        ////    getBankInfo.BankCode, _appSettings.socialT24AccountNo);
+                        var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
+                            getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
+                            item.PaymentReference, item.TransactionReference);
 
-                        ////getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
-                        ////getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.TransactionCompleted;
-                        ////getTransInfo.TransactionJourney = OrderStatusCode.TransactionCompleted;
-                        ////getTransInfo.LastDateModified = DateTime.Now;
-                        ////context.Update(getTransInfo);
-                        ////await context.SaveChangesAsync();
+                        if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
+                        {
+                            getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
+                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.LastDateModified = DateTime.Now;
+                            context.Update(getTransInfo);
+                            await context.SaveChangesAsync();
+                            return null;
+                        }
+
+                        var failedResponse = new FailedTransactions
+                        {
+                            CustomerTransactionReference = item.CustomerTransactionReference,
+                            Message = initiateInterBankRequest.Data.ToString(),
+                            TransactionReference = item.TransactionReference
+                        };
+                        await context.FailedTransactions.AddAsync(failedResponse);
+                        await context.SaveChangesAsync();
+                        return null;
 
                         //Other banks transfer
                         return null;

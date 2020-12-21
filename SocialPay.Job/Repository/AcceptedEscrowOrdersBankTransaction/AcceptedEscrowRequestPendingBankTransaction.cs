@@ -19,10 +19,10 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
     {
         private readonly AppSettings _appSettings;
         private readonly FioranoTransferPayWithCardRepository _fioranoTransferRepository;
-        private readonly InterBankPendingTransferService _interBankPendingTransferService;
+        private readonly AcceptedEscrowInterBankPendingTransferService _interBankPendingTransferService;
         public AcceptedEscrowRequestPendingBankTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
              FioranoTransferPayWithCardRepository fioranoTransferRepository,
-         InterBankPendingTransferService interBankPendingTransferService)
+         AcceptedEscrowInterBankPendingTransferService interBankPendingTransferService)
         {
             Services = service;
             _appSettings = appSettings.Value;
@@ -89,21 +89,29 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                             await context.SaveChangesAsync();
                             return null;
                         }
-                        ////getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
-                        ////getTransInfo.LastDateModified = DateTime.Now;
-                        ////context.Update(getTransInfo);
-                        ////await context.SaveChangesAsync();
-                        ////var processIntebankTransction = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
-                        ////    getBankInfo.BankCode, _appSettings.socialT24AccountNo);
+                        var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
+                            getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
+                            item.PaymentReference, item.TransactionReference);
 
-                        ////getTransInfo.TransactionStatus = OrderStatusCode.TransactionCompleted;
-                        ////getTransInfo.DeliveryDayTransferStatus = OrderStatusCode.TransactionCompleted;
-                        ////getTransInfo.TransactionJourney = OrderStatusCode.TransactionCompleted;
-                        ////getTransInfo.LastDateModified = DateTime.Now;
-                        ////context.Update(getTransInfo);
-                        ////await context.SaveChangesAsync();
+                        if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
+                        {
+                            getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
+                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.LastDateModified = DateTime.Now;
+                            context.Update(getTransInfo);
+                            await context.SaveChangesAsync();
+                            return null;
+                        }
 
-                        //Other banks transfer
+                        var failedResponse = new FailedTransactions
+                        {
+                            CustomerTransactionReference = item.CustomerTransactionReference,
+                            Message = initiateInterBankRequest.Data.ToString(),
+                            TransactionReference = item.TransactionReference
+                        };
+                        await context.FailedTransactions.AddAsync(failedResponse);
+                        await context.SaveChangesAsync();
                         return null;
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

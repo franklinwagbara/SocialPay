@@ -37,6 +37,7 @@ using SocialPay.Job.Repository.DeliveryDayBankTransaction;
 using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
+using SocialPay.Job.Repository.IntraBankService;
 using SocialPay.Job.Repository.NonEscrowBankTransactions;
 using SocialPay.Job.Repository.NonEscrowWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
@@ -146,13 +147,14 @@ namespace SocialPay.API
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<InterBankPendingTransferService>();
             services.AddSingleton<BankServiceRepositoryJobService>();
+            services.AddSingleton<AcceptedEscrowInterBankPendingTransferService>();
+            services.AddSingleton<DeliveryDayInterBankPendingTransferService>();
+            services.AddSingleton<DeliveryDayFioranoTransferRepository>();
             services.AddSingleton<IBSReposerviceJob>();
             services.AddSingleton<SqlRepository>();
 
             var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
             var redisInstance = Configuration.GetSection("RedisConnectionStrings")["RedisInstance"];
-            //services.Configure<AppSettings>(redisSection);
-           // string BConfig = Configuration.GetSection("ConnectionStrings")["BConnection"];
 
             services.AddDistributedRedisCache(options => {
                 options.Configuration = redisServer;

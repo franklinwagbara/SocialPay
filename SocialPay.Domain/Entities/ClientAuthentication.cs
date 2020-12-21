@@ -50,5 +50,7 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<InterBankTransactionRequest> InterBankTransactionRequest { get; set; }
         public virtual ICollection<AcceptedEscrowFioranoT24Request> AcceptedEscrowFioranoT24Request { get; set; }
         public virtual ICollection<WalletTransferRequestLog> WalletTransferRequestLog { get; set; }
+        public virtual ICollection<DeliveryDayWalletTransferRequestLog> DeliveryDayWalletTransferRequestLog { get; set; }
+        public virtual ICollection<AcceptedEscrowInterBankTransactionRequest> AcceptedEscrowInterBankTransactionRequest { get; set; }
     }
 }
