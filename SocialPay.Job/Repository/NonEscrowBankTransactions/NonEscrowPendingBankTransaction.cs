@@ -6,13 +6,11 @@ using SocialPay.Core.Configurations;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
-using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.NonEscrowBankTransactions
@@ -22,6 +20,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
         private readonly AppSettings _appSettings;
         private readonly FioranoTransferPayWithCardRepository _fioranoTransferRepository;
         private readonly InterBankPendingTransferService _interBankPendingTransferService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowPendingBankTransaction));
+
         public NonEscrowPendingBankTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
              FioranoTransferPayWithCardRepository fioranoTransferRepository,
          InterBankPendingTransferService interBankPendingTransferService)
@@ -45,6 +45,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                          .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
@@ -85,6 +87,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
                                 await context.SaveChangesAsync();
+                                _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                                 return null;
                             }
 
@@ -93,15 +97,20 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
+                            _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction failed response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                             return null;
                         }
-                        
-                       
+
+                        _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
+
                         var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
                             item.PaymentReference, item.TransactionReference);
+                        _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response" + " | " + initiateInterBankRequest.ResponseCode + " | "+ item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
-                        if(initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
+                        if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
                         {
                             getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
@@ -120,6 +129,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                         };
                         await context.FailedTransactions.AddAsync(failedResponse);
                         await context.SaveChangesAsync();
+                        _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response failed" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         return null;
 
                     }
@@ -131,28 +142,30 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    using (var scope = Services.CreateScope())
-                    {
-                        var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                        var getTransInfo = await context.TransactionLog
-                          .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+                    //using (var scope = Services.CreateScope())
+                    //{
+                    //    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    //    var getTransInfo = await context.TransactionLog
+                    //      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                        var failedResponse = new FailedTransactions
-                        {
-                            CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
-                            Message = errorMessage,
-                            TransactionReference = getTransInfo.TransactionReference
-                        };
-                        await context.FailedTransactions.AddAsync(failedResponse);
-                        await context.SaveChangesAsync();
+                    //    var failedResponse = new FailedTransactions
+                    //    {
+                    //        CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
+                    //        Message = errorMessage,
+                    //        TransactionReference = getTransInfo.TransactionReference
+                    //    };
+                    //    await context.FailedTransactions.AddAsync(failedResponse);
+                    //    await context.SaveChangesAsync();
 
-                        await context.SaveChangesAsync();
-                    }
+                    //    await context.SaveChangesAsync();
+                    //}
 
                     //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };

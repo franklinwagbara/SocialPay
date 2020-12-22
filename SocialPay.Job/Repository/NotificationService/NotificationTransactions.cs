@@ -19,6 +19,8 @@ namespace SocialPay.Job.Repository.NotificationService
     {
         private readonly JobEmailService _emailService;
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NotificationTransactions));
+
         public NotificationTransactions(JobEmailService emailService, IOptions<AppSettings> appSettings,
             IServiceProvider service)
         {
@@ -29,6 +31,7 @@ namespace SocialPay.Job.Repository.NotificationService
         public IServiceProvider Services { get; }
         public async Task<WebApiResponse> InitiatePendingNotifications(List<TransactionLog> pendingRequest)
         {
+            long transactionId = 0;
             try
             {
                 using (var scope = Services.CreateScope())
@@ -36,6 +39,7 @@ namespace SocialPay.Job.Repository.NotificationService
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service" + "-" + "Tasks starts to process transaction" + " | " + item.PaymentReference + " | "+ item.TransactionReference + " | "+ DateTime.Now);
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
                         if (getTransInfo == null)
@@ -43,7 +47,9 @@ namespace SocialPay.Job.Repository.NotificationService
                         getTransInfo.IsNotified = true;
                         getTransInfo.LastDateModified = DateTime.Now;
                         getTransInfo.DateNotified = DateTime.Now;
-                        context.Update(getTransInfo);                       
+                        context.Update(getTransInfo);
+
+                        transactionId = item.TransactionLogId;
 
                         var getMerchantInf = await context.ClientAuthentication
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
@@ -78,6 +84,7 @@ namespace SocialPay.Job.Repository.NotificationService
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

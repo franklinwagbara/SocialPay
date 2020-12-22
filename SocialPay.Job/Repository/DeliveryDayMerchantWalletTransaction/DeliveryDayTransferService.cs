@@ -69,7 +69,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                             remarks = "Social-Pay Delivery day wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
-                        var walletRequestModel = new WalletTransferRequestLog
+                        var walletRequestModel = new DeliveryDayWalletTransferRequestLog
                         {
                             amt = Convert.ToDecimal(walletModel.amt),
                             channelID = walletModel.channelID,
@@ -85,7 +85,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                             RequestId = requestId
                         };
 
-                        await context.WalletTransferRequestLog.AddAsync(walletRequestModel);
+                        await context.DeliveryDayWalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
 
                         var walletResponseModel = new WalletTransferResponse();

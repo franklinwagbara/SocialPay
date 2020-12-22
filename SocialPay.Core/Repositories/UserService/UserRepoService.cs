@@ -8,7 +8,6 @@ using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Repositories.UserService
@@ -18,6 +17,8 @@ namespace SocialPay.Core.Repositories.UserService
         private readonly SocialPayDbContext _context;
         private readonly Utilities _utilities;
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(UserRepoService));
+
 
         public UserRepoService(SocialPayDbContext context, Utilities utilities,
             IOptions<AppSettings> appSettings)
@@ -50,6 +51,8 @@ namespace SocialPay.Core.Repositories.UserService
         {
             try
             {
+                _log4net.Error("LogAccountReset request" + " | " + clientId + " | " + token + " | " + DateTime.Now);
+
                 var resetRequest = new AccountResetRequest
                 {
                     ClientAuthenticationId = clientId, IsCompleted = false, Token = token,
@@ -57,16 +60,21 @@ namespace SocialPay.Core.Repositories.UserService
                 };
                 await _context.AccountResetRequest.AddAsync(resetRequest);
                 await _context.SaveChangesAsync();
+                _log4net.Error("LogAccountReset request saved" + " | " + clientId + " | " + token + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "LogAccountReset" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
         public async Task<WebApiResponse> ChangeUserPassword(PasswordResetDto model, int expiredTime, string appKey)
         {
+            _log4net.Info("ChangeUserPassword request" + " | " + model.Token + " | " + appKey + " | " + DateTime.Now);
+
             try
             {
                 var getToken = await GetAccountResetAsync(model.Token);
@@ -93,10 +101,14 @@ namespace SocialPay.Core.Repositories.UserService
                         _context.Update(getToken);
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
+                        _log4net.Info("ChangeUserPassword request saved" + " | " + model.Token + " | " + appKey + " | " + DateTime.Now);
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
+                        _log4net.Error("Error occured" + " | " + "ChangeUserPassword" + " | " + model.Token + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -105,6 +117,8 @@ namespace SocialPay.Core.Repositories.UserService
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "ChangeUserPassword" + " | " + model.Token + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -115,6 +129,8 @@ namespace SocialPay.Core.Repositories.UserService
         {
             try
             {
+                _log4net.Info("ResetPassword request" + " | " + clientId + " | " +  DateTime.Now);
+
                 var userInfo = await GetClientAuthenticationClientIdAsync(clientId);
                 if(userInfo == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
@@ -133,11 +149,15 @@ namespace SocialPay.Core.Repositories.UserService
                 userInfo.LastDateModified = DateTime.Now;
                 _context.ClientAuthentication.Update(userInfo);
                 await _context.SaveChangesAsync();
+                _log4net.Info("ResetPassword request saved" + " | " + clientId + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
 
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "ResetPassword" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

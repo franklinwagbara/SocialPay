@@ -29,6 +29,8 @@ namespace SocialPay.Core.Services.Transaction
         private readonly InvoiceService _invoiceService;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IDistributedCache _distributedCache;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantPaymentLinkService));
+
         public MerchantPaymentLinkService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             Utilities utilities, ICustomerService customerService, IHostingEnvironment environment,
             InvoiceService invoiceService, IDistributedCache distributedCache)
@@ -49,6 +51,8 @@ namespace SocialPay.Core.Services.Transaction
             {
                 //clientId = 30032;
                 //userStatus = "00";
+                _log4net.Info("Initiating GeneratePaymentLink request" + " | " + clientId + " | " + paymentModel.PaymentLinkName + " | "+ DateTime.Now);
+
                 decimal addtionalAmount = 0;
                 var cacheKey = Convert.ToString(clientId);
                 string serializedCustomerList;
@@ -160,6 +164,7 @@ namespace SocialPay.Core.Services.Transaction
                         }
                         catch (Exception ex)
                         {
+                            _log4net.Error("Error occured" + " | " + "GeneratePaymentLink" + " | " + clientId + " | " + paymentModel.PaymentLinkName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                             await transaction.RollbackAsync();
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError};
                         }
@@ -183,6 +188,8 @@ namespace SocialPay.Core.Services.Transaction
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GeneratePaymentLink" + " | " + clientId + " | " + paymentModel.PaymentLinkName + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -191,12 +198,15 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-               // clientId = 10014;
+                // clientId = 10014;
+                _log4net.Info("Initiating GetAllPaymentLinksByMerchant request" + " | " + clientId + " | " +  DateTime.Now);
+
                 var getlinks = await _customerService.GetPaymentLinks(clientId);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getlinks };
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetAllPaymentLinksByMerchant" + " | " + clientId + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -208,10 +218,13 @@ namespace SocialPay.Core.Services.Transaction
             {
                 // clientId = 40072;
                 var result = await _customerService.GetCustomerPaymentsByMerchantPayRef(clientId);
+                _log4net.Info("Initiating GetCustomerPayments response" + " | " + clientId + " | " +  DateTime.Now);
+
                 return result;
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetCustomerPayments" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -221,12 +234,15 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
+                _log4net.Info("Initiating GetCustomers request" + " | " + clientId + " | " + DateTime.Now);
+
                 // clientId = 40091;
                 var result = await _customerService.GetCustomerByMerchantId(clientId);
                 return result;
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetCustomers" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -237,7 +253,9 @@ namespace SocialPay.Core.Services.Transaction
             try
             {
 
-               // clientId = 30043;
+                // clientId = 30043;
+                _log4net.Info("Initiating GenerateInvoice request" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | "+ DateTime.Now);
+
                 if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
                 var transactionReference = Guid.NewGuid().ToString();
@@ -273,6 +291,7 @@ namespace SocialPay.Core.Services.Transaction
                     }
                     catch (Exception ex)
                     {
+                        _log4net.Error("Error occured" + " | " + "GenerateInvoice" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -281,6 +300,8 @@ namespace SocialPay.Core.Services.Transaction
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GenerateInvoice" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

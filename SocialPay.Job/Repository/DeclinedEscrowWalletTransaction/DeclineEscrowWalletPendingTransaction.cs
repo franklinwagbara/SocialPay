@@ -11,6 +11,7 @@ using SocialPay.Core.Configurations;
 using Microsoft.Extensions.Options;
 using SocialPay.Helper;
 using SocialPay.Core.Services.Wallet;
+using Microsoft.Data.SqlClient;
 
 namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
 {
@@ -18,6 +19,8 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
     {
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeclineEscrowWalletPendingTransaction));
+
         public DeclineEscrowWalletPendingTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
             WalletRepoJobService walletRepoJobService)
         {
@@ -30,6 +33,7 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionLogid = 0;
             try
             {
                 using (var scope = Services.CreateScope())
@@ -37,6 +41,8 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service" + "-" + "DeclineEscrowWalletPendingTransaction" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
@@ -52,6 +58,7 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                         if (getWalletInfo == null)
                             return null;
 
+                        transactionLogid = getTransInfo.TransactionLogId;
                         var walletModel = new WalletTransferRequestDto
                         {
                             CURRENCYCODE = _appSettings.walletcurrencyCode,
@@ -108,10 +115,14 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
                                     await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
+                                    _log4net.Info("Job Service" + "-" + "DeclineEscrowWalletPendingTransaction successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                                     return null;
                                 }
                                 catch (Exception ex)
                                 {
+                                    _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                                     await transaction.RollbackAsync();
                                     return null;
                                 }
@@ -133,8 +144,29 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-                return null;
+                var se = ex.InnerException as SqlException;
+                var code = se.Number;
+                var errorMessage = se.Message;
+                if (errorMessage.Contains("Violation") || code == 2627)
+                {
+                    //using (var scope = Services.CreateScope())
+                    //{
+                    //    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    //    var getTransInfo = await context.TransactionLog
+                    //      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+
+                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                    //    getTransInfo.LastDateModified = DateTime.Now;
+                    //    context.Update(getTransInfo);
+                    //    await context.SaveChangesAsync();
+                    //}
+
+                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
     }

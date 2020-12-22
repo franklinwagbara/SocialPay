@@ -11,7 +11,6 @@ using SocialPay.Core.Configurations;
 using Microsoft.Extensions.Options;
 using SocialPay.Helper;
 using SocialPay.Core.Services.Wallet;
-using StackExchange.Redis;
 using Microsoft.Data.SqlClient;
 
 namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
@@ -148,6 +147,10 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                     var getTransInfo = await context.TransactionLog
                       .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
+                    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.Approved;
+                    getTransInfo.LastDateModified = DateTime.Now;
+                    context.Update(getTransInfo);
+                    await context.SaveChangesAsync();
                     var failedResponse = new FailedTransactions
                     {
                         CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
@@ -157,7 +160,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                     await context.FailedTransactions.AddAsync(failedResponse);
                     await context.SaveChangesAsync();
 
-                    await context.SaveChangesAsync();
+                   
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

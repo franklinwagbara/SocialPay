@@ -19,8 +19,9 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
     {
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CreditMerchantWalletTransactions));
 
-     
+
         public CreditMerchantWalletTransactions(IServiceProvider service, IOptions<AppSettings> appSettings,
          WalletRepoJobService walletRepoJobService)
         {
@@ -41,6 +42,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service" + "-" + "Credit merchant wallet" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
@@ -128,9 +131,12 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
                                     await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
+                                    _log4net.Info("Job Service" + "-" + "Credit merchant wallet saved" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                                 }
                                 catch (Exception ex)
                                 {
+                                    _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                                     await transaction.RollbackAsync();
                                 }
                             }
@@ -150,13 +156,17 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                 }
 
             }
-            catch (SqlException db)
+            catch (SqlException ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;

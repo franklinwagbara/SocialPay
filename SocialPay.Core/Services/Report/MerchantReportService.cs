@@ -28,6 +28,8 @@ namespace SocialPay.Core.Services.Report
         private readonly InvoiceService _invoiceService;
         private readonly IDistributedCache _distributedCache;
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantReportService));
+
         public MerchantReportService(SocialPayDbContext context,
             ICustomerService customerService, TransactionReceipt transactionReceipt,
             InvoiceService invoiceService, IDistributedCache distributedCache, IOptions<AppSettings> appSettings)
@@ -46,6 +48,7 @@ namespace SocialPay.Core.Services.Report
             var result = new List<MerchantBusinessInfoViewModel>();
             try
             {
+                _log4net.Info("Initiating GetMerchants request" + " | " +  DateTime.Now);
 
                 var getMerchantInfo = await _context.ClientAuthentication
                     .Where(x=>x.RoleName == RoleDetails.Merchant).ToListAsync();
@@ -96,6 +99,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetMerchants" + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = result };
             }
         }
@@ -104,6 +108,7 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
+                _log4net.Info("Initiating GenerateCustomerReceipt request" + " | " + DateTime.Now);
 
                 //await _transactionReceipt.ReceiptTemplate("festypat9@gmail.com");
                 var validateTransaction = await _customerService.GetTransactionReference(model.TransactionReference);
@@ -126,6 +131,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GenerateCustomerReceipt" + " | " + model.TransactionReference + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -136,8 +142,10 @@ namespace SocialPay.Core.Services.Report
             var result = new List<ItemDisputeViewModel>();
             try
             {
+                _log4net.Info("Initiating GetAllLoggedDisputes request" + " | " + clientId + " | "+ DateTime.Now);
+
                 //clientId = 30032;
-                if(IsAdmin)
+                if (IsAdmin)
                 {
                     var getallDisputes = await _context.DisputeRequestLog.ToListAsync();
 
@@ -171,10 +179,13 @@ namespace SocialPay.Core.Services.Report
                               }).ToList();
 
                 result = response;
+                _log4net.Info("Initiating GetAllLoggedDisputes response" + " | " + clientId + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetAllLoggedDisputes" + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -192,6 +203,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetAllInvoiceByMerchantId" + " | " + clientId + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -204,6 +216,8 @@ namespace SocialPay.Core.Services.Report
             try
             {
                 //clientId = 30032;
+                _log4net.Info("Initiating GetAllEscrowTransactions request" + " | " + clientId + " | " + DateTime.Now);
+
                 var getTransactions = await _context.MerchantPaymentSetup
                     .Include(c => c.CustomerTransaction)
                     .Include(c => c.CustomerOtherPaymentsInfo)
@@ -242,6 +256,8 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetAllEscrowTransactions" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

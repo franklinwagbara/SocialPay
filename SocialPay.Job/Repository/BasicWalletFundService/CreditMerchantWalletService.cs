@@ -11,6 +11,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
     public class CreditMerchantWalletService : ICreditMerchantWalletService
     {
         private readonly CreditMerchantWalletTransactions _transactions;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CreditMerchantWalletService));
+
         public CreditMerchantWalletService(IServiceProvider services, CreditMerchantWalletTransactions transactions)
         {
             Services = services;
@@ -22,14 +24,13 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
         {
             try
             {
-                //  _log4net.Info("Tasks starts to fetch awaiting transactions" + " | " + DateTime.Now);
+                _log4net.Info("Job Service" + "-" + "CreditMerchantWalletService" + " | " + DateTime.Now);
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    DateTime nextDay = DateTime.Now.Date.AddDays(1);
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.OrderStatus == TransactionJourneyStatusCodes.Pending).ToListAsync();
-                    // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                     _log4net.Info("Job Service" + "-" + "CreditMerchantWalletService pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     if (pendingTransactions.Count == 0)
                         return "No record";
                     await _transactions.ProcessTransactions(pendingTransactions);
@@ -41,7 +42,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
             }
             catch (Exception ex)
             {
-                //  _log4net.Error("An error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return "Error";
             }
 

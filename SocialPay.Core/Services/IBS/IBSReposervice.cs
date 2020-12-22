@@ -18,6 +18,8 @@ namespace SocialPay.Core.Services.IBS
     public class IBSReposervice
     {
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(IBSReposervice));
+
         public IBSReposervice(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
@@ -26,6 +28,7 @@ namespace SocialPay.Core.Services.IBS
 
         public async Task<WebApiResponse> GetParticipatingBanks(IBSGetBanksRequestDto getBanksRequestModel)
         {
+            _log4net.Info("Initiating GetParticipatingBanks request" + " | " + getBanksRequestModel.ReferenceID + " | " + getBanksRequestModel.RequestType + " | " +   DateTime.Now);
 
             try
             {
@@ -40,10 +43,13 @@ namespace SocialPay.Core.Services.IBS
                 getBanksStringBuilder.Append("</IBSRequest>");
                 var getBanksStringRequest = getBanksStringBuilder.ToString();
 
+                _log4net.Info("Initiating GetParticipatingBanks xml request" + " | " + getBanksStringRequest + " | " + getBanksRequestModel.RequestType + " | " + DateTime.Now);
+
                 var en = new EncryptDecrypt();
                 var encryptRequest = en.Encrypt(getBanksStringRequest);
                 var encryptedDataRequest = await ibsService.IBSBridgeAsync(encryptRequest, Convert.ToInt32(_appSettings.appId));
-
+                _log4net.Info("Initiating GetParticipatingBanks response" + " | " + encryptedDataRequest + " | " + getBanksRequestModel.RequestType + " | " + DateTime.Now);
+               
                 var decryptResponse = en.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
                 var deserializeResponseObject = ObjectToXML(decryptResponse, typeof(IBSGetBanksResponse));
 
@@ -56,6 +62,8 @@ namespace SocialPay.Core.Services.IBS
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetParticipatingBanks" + " | " + getBanksRequestModel.ReferenceID + " | " + getBanksRequestModel.RequestType + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -64,6 +72,8 @@ namespace SocialPay.Core.Services.IBS
 
         public async Task<IBSNameEnquiryResponseDto> InitiateNameEnquiry(IBSNameEnquiryRequestDto iBSNameEnquiryRequestDto)
         {
+            _log4net.Info("Initiating InitiateNameEnquiry request" + " | " + iBSNameEnquiryRequestDto.ReferenceID + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " +  DateTime.Now);
+
 
             try
             {
@@ -84,6 +94,7 @@ namespace SocialPay.Core.Services.IBS
                 var encryptRequest = en.Encrypt(nameEnquiryStringRequest);
                               
                 var encryptedDataRequest = await ibsService.IBSBridgeAsync(encryptRequest, Convert.ToInt32(_appSettings.appId));
+                _log4net.Info("Initiating InitiateNameEnquiry response" + " | " + encryptedDataRequest + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | "+ DateTime.Now);
 
                 var decryptResponse = en.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
                 var deserializeResponseObject = ObjectToXML(decryptResponse, typeof(IBSNameEnquiryResponseDto));
@@ -94,6 +105,7 @@ namespace SocialPay.Core.Services.IBS
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "InitiateNameEnquiry" + " | " + iBSNameEnquiryRequestDto.ReferenceID + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
                 return new IBSNameEnquiryResponseDto { ResponseCode = AppResponseCodes.InternalError };
             }
         }

@@ -19,6 +19,8 @@ namespace SocialPay.Core.Services.Account
     {
         private readonly SocialPayDbContext _context;
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ADRepoService));
+
         public ADRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings)
         {
             _context = context;
@@ -29,6 +31,8 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+                _log4net.Info("RegisterUser" + " | " + createUserRequestDto.Username + " | " +  DateTime.Now);
+
                 var aduserInfo = new ServiceSoapClient(ServiceSoapClient.EndpointConfiguration.ServiceSoap, _appSettings.EwsServiceUrl);
                 var banksLdap = new ldapSoapClient(ldapSoapClient.EndpointConfiguration.ldapSoap, _appSettings.LdapServiceUrl);
                 //bool validateADUser = await banksLdap.loginAsync(username, password);
@@ -69,10 +73,14 @@ namespace SocialPay.Core.Services.Account
                 };
                 await _context.ClientAuthentication.AddAsync(model);
                 await _context.SaveChangesAsync();
+                _log4net.Info("RegisterUser was successful" + " | " + createUserRequestDto.Username + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "RegisterUser" + " | " + createUserRequestDto.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

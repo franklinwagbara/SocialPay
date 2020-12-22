@@ -146,13 +146,14 @@ namespace SocialPay.API
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<InterBankPendingTransferService>();
             services.AddSingleton<BankServiceRepositoryJobService>();
+            services.AddSingleton<AcceptedEscrowInterBankPendingTransferService>();
+            services.AddSingleton<DeliveryDayInterBankPendingTransferService>();
+            services.AddSingleton<DeliveryDayFioranoTransferRepository>();
             services.AddSingleton<IBSReposerviceJob>();
             services.AddSingleton<SqlRepository>();
 
             var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
             var redisInstance = Configuration.GetSection("RedisConnectionStrings")["RedisInstance"];
-            //services.Configure<AppSettings>(redisSection);
-           // string BConfig = Configuration.GetSection("ConnectionStrings")["BConnection"];
 
             services.AddDistributedRedisCache(options => {
                 options.Configuration = redisServer;

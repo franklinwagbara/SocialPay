@@ -12,6 +12,8 @@ namespace SocialPay.Core.Services.Validations
     public class BankServiceRepository
     {
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(BankServiceRepository));
+
         public BankServiceRepository(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
@@ -22,6 +24,8 @@ namespace SocialPay.Core.Services.Validations
         {
             try
             {
+                _log4net.Info("Initiating BvnValidation request" + " | " + bvn + " | " + dateOfbirth + " | " + DateTime.Now);
+
                 var banksServices = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
                 var validatebvn = await banksServices.GetBvnAsync(bvn);
                 var validateNode = validatebvn.Nodes[1];
@@ -48,6 +52,7 @@ namespace SocialPay.Core.Services.Validations
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "BvnValidation" + " | " + bvn + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
             }
@@ -57,6 +62,8 @@ namespace SocialPay.Core.Services.Validations
         {
             try
             {
+                _log4net.Info("Initiating GetAccountFullInfoAsync request" + " | " + bvn + " | " + nuban + " | " + DateTime.Now);
+
                 //var validateBvn = await BvnValidation(bvn, "");
                 //if (validateBvn.ResponseCode != AppResponseCodes.Success)
                 //    return validateBvn;
@@ -68,6 +75,8 @@ namespace SocialPay.Core.Services.Validations
 
                 // var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, ServicesPoint.CoreBanking);
                 var validAccount = getUserInfo.Nodes[1];
+                _log4net.Info("Initiating GetAccountFullInfoAsync response" + " | " + bvn + " | " + nuban + " | " + validAccount + " | "+ DateTime.Now);
+
                 var accountDetail = validAccount.Descendants("BankAccountFullInfo")
 
                     .Select(b => new AccountInfoViewModel
@@ -97,6 +106,7 @@ namespace SocialPay.Core.Services.Validations
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetAccountFullInfoAsync" + " | " + bvn + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InternalError };
             }

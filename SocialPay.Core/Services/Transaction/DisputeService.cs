@@ -17,6 +17,8 @@ namespace SocialPay.Core.Services.Transaction
         private readonly SocialPayDbContext _context;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DisputeRepoService));
+
         public DisputeRepoService(SocialPayDbContext context, IHostingEnvironment environment,
             IOptions<AppSettings> appSettings)
         {
@@ -27,6 +29,8 @@ namespace SocialPay.Core.Services.Transaction
 
         public async Task<WebApiResponse> LogDisputeRequest(DisputeItemRequestDto model, long clientId)
         {
+            _log4net.Info("LogDisputeRequest" + " | " + clientId + " | " + model.TransactionReference +" | "+ DateTime.Now);
+
             try
             {
 
@@ -61,8 +65,10 @@ namespace SocialPay.Core.Services.Transaction
                 await _context.SaveChangesAsync();
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "LogDisputeRequest" + " | " + clientId + " | " + model.TransactionReference + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

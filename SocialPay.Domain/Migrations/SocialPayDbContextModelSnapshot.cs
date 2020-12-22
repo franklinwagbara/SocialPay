@@ -85,6 +85,93 @@ namespace SocialPay.Domain.Migrations
                     b.ToTable("AcceptedEscrowFioranoT24Request");
                 });
 
+            modelBuilder.Entity("SocialPay.Domain.Entities.AcceptedEscrowInterBankTransactionRequest", b =>
+                {
+                    b.Property<string>("PaymentReference")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<string>("AccountLockID")
+                        .HasColumnType("NVARCHAR(15)");
+
+                    b.Property<string>("AccountName")
+                        .HasColumnType("NVARCHAR(40)");
+
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("AppID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BeneficiaryBankVerificationNumber")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("BeneficiaryKYCLevel")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("BraCodeVal")
+                        .HasColumnType("NVARCHAR(15)");
+
+                    b.Property<string>("ChannelCode")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<long>("ClientAuthenticationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("CurCodeVal")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("CusNumVal")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DestinationBankCode")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<decimal>("Fee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("LedCodeVal")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("NESessionID")
+                        .HasColumnType("NVARCHAR(35)");
+
+                    b.Property<string>("OriginatorAccountNumber")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("OriginatorBankVerificationNumber")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("OriginatorKYCLevel")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("OrignatorName")
+                        .HasColumnType("NVARCHAR(40)");
+
+                    b.Property<string>("PaymentRef")
+                        .HasColumnType("NVARCHAR(120)");
+
+                    b.Property<string>("SubAcctVal")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("TransactionReference")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<decimal>("Vat")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("PaymentReference");
+
+                    b.HasIndex("ClientAuthenticationId");
+
+                    b.ToTable("AcceptedEscrowInterBankTransactionRequest");
+                });
+
             modelBuilder.Entity("SocialPay.Domain.Entities.AcceptedEscrowWalletTransferRequestLog", b =>
                 {
                     b.Property<string>("PaymentReference")
@@ -569,6 +656,144 @@ namespace SocialPay.Domain.Migrations
                     b.ToTable("DefaultWalletTransferRequestLog");
                 });
 
+            modelBuilder.Entity("SocialPay.Domain.Entities.DeliveryDayEscrowInterBankTransactionRequest", b =>
+                {
+                    b.Property<string>("PaymentReference")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<string>("AccountLockID")
+                        .HasColumnType("NVARCHAR(15)");
+
+                    b.Property<string>("AccountName")
+                        .HasColumnType("NVARCHAR(40)");
+
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("AppID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BeneficiaryBankVerificationNumber")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("BeneficiaryKYCLevel")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("BraCodeVal")
+                        .HasColumnType("NVARCHAR(15)");
+
+                    b.Property<string>("ChannelCode")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<long>("ClientAuthenticationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("CurCodeVal")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("CusNumVal")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DestinationBankCode")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<decimal>("Fee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("LedCodeVal")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("NESessionID")
+                        .HasColumnType("NVARCHAR(35)");
+
+                    b.Property<string>("OriginatorAccountNumber")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("OriginatorBankVerificationNumber")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("OriginatorKYCLevel")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("OrignatorName")
+                        .HasColumnType("NVARCHAR(40)");
+
+                    b.Property<string>("PaymentRef")
+                        .HasColumnType("NVARCHAR(120)");
+
+                    b.Property<string>("SubAcctVal")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("TransactionReference")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<decimal>("Vat")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("PaymentReference");
+
+                    b.HasIndex("ClientAuthenticationId");
+
+                    b.ToTable("DeliveryDayEscrowInterBankTransactionRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.DeliveryDayWalletTransferRequestLog", b =>
+                {
+                    b.Property<string>("PaymentReference")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<string>("CURRENCYCODE")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("ChannelMode")
+                        .HasColumnType("NVARCHAR(15)");
+
+                    b.Property<long>("ClientAuthenticationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("CustomerTransactionReference")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RequestId")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<string>("TransactionReference")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<int>("TransferType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("amt")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("channelID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("frmacct")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("remarks")
+                        .HasColumnType("NVARCHAR(130)");
+
+                    b.Property<string>("toacct")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.HasKey("PaymentReference");
+
+                    b.HasIndex("ClientAuthenticationId");
+
+                    b.ToTable("DeliveryDayWalletTransferRequestLog");
+                });
+
             modelBuilder.Entity("SocialPay.Domain.Entities.DisputeRequestLog", b =>
                 {
                     b.Property<long>("DisputeRequestLogId")
@@ -690,6 +915,67 @@ namespace SocialPay.Domain.Migrations
                     b.HasKey("PaymentReference");
 
                     b.ToTable("FioranoT24CardCreditRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.FioranoT24DeliveryDayRequest", b =>
+                {
+                    b.Property<string>("PaymentReference")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<string>("Channel")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("CommissionCode")
+                        .HasColumnType("NVARCHAR(15)");
+
+                    b.Property<string>("CreditAccountNo")
+                        .HasColumnType("NVARCHAR(30)");
+
+                    b.Property<string>("CreditCurrency")
+                        .HasColumnType("NVARCHAR(30)");
+
+                    b.Property<string>("DebitAcctNo")
+                        .HasColumnType("NVARCHAR(30)");
+
+                    b.Property<decimal>("DebitAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("DebitCurrency")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("JsonRequest")
+                        .HasColumnType("NVARCHAR(250)");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("NVARCHAR(230)");
+
+                    b.Property<string>("SessionId")
+                        .HasColumnType("NVARCHAR(35)");
+
+                    b.Property<string>("TransactionBranch")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TransactionReference")
+                        .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<string>("TransactionType")
+                        .HasColumnType("NVARCHAR(30)");
+
+                    b.Property<string>("TrxnLocation")
+                        .HasColumnType("NVARCHAR(30)");
+
+                    b.Property<string>("VtellerAppID")
+                        .HasColumnType("NVARCHAR(10)");
+
+                    b.Property<string>("narrations")
+                        .HasColumnType("NVARCHAR(130)");
+
+                    b.HasKey("PaymentReference");
+
+                    b.ToTable("FioranoT24DeliveryDayRequest");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.FioranoT24TransactionResponse", b =>
@@ -1148,11 +1434,17 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("FileLocation")
                         .HasColumnType("NVARCHAR(190)");
 
+                    b.Property<bool>("HasSpectaMerchantID")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Logo")
                         .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("MerchantReferenceId")
                         .HasColumnType("NVARCHAR(90)");
+
+                    b.Property<string>("SpectaMerchantID")
+                        .HasColumnType("NVARCHAR(50)");
 
                     b.Property<string>("Tin")
                         .HasColumnType("NVARCHAR(20)");
@@ -1609,6 +1901,15 @@ namespace SocialPay.Domain.Migrations
                         .HasForeignKey("ClientAuthenticationId");
                 });
 
+            modelBuilder.Entity("SocialPay.Domain.Entities.AcceptedEscrowInterBankTransactionRequest", b =>
+                {
+                    b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
+                        .WithMany("AcceptedEscrowInterBankTransactionRequest")
+                        .HasForeignKey("ClientAuthenticationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SocialPay.Domain.Entities.AcceptedEscrowWalletTransferRequestLog", b =>
                 {
                     b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
@@ -1694,6 +1995,24 @@ namespace SocialPay.Domain.Migrations
                 {
                     b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
                         .WithMany("DefaultWalletTransferRequestLog")
+                        .HasForeignKey("ClientAuthenticationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.DeliveryDayEscrowInterBankTransactionRequest", b =>
+                {
+                    b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
+                        .WithMany()
+                        .HasForeignKey("ClientAuthenticationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.DeliveryDayWalletTransferRequestLog", b =>
+                {
+                    b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
+                        .WithMany("DeliveryDayWalletTransferRequestLog")
                         .HasForeignKey("ClientAuthenticationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

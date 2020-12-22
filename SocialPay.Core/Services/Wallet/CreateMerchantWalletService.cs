@@ -21,6 +21,8 @@ namespace SocialPay.Core.Services.Wallet
 		private readonly AppSettings _appSettings;
 		private readonly WalletRepoService _walletRepoService;
 		private readonly IDistributedCache _distributedCache;
+		static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CreateMerchantWalletService));
+
 		public CreateMerchantWalletService(SocialPayDbContext context,
 			 IOptions<AppSettings> appSettings, WalletRepoService walletRepoService,
 			  IDistributedCache distributedCache)
@@ -35,6 +37,8 @@ namespace SocialPay.Core.Services.Wallet
 			try
 			{
 				//clientId = 40080;
+				_log4net.Info("Initiating CreateWallet request" + " | " + clientId + " | " + DateTime.Now);
+
 				var getUserInfo = await _context.ClientAuthentication
 				  .Include(x => x.MerchantWallet)
 				  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
@@ -81,6 +85,7 @@ namespace SocialPay.Core.Services.Wallet
 								.SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
 								.SetSlidingExpiration(TimeSpan.FromMinutes(15));
 								await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
+								_log4net.Info("CreateWallet response for" + " | " + clientId + " | " + DateTime.Now);
 								return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = AppResponseCodes.Success };
 							}
 							await _distributedCache.RemoveAsync(cacheKey);
@@ -92,12 +97,14 @@ namespace SocialPay.Core.Services.Wallet
 							.SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
 							.SetSlidingExpiration(TimeSpan.FromMinutes(15));
 							await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+							_log4net.Info("CreateWallet response for" + " | " + clientId + " | " + DateTime.Now);
 							return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = AppResponseCodes.Success };
 						}
 						return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
 					}
 					catch (Exception ex)
 					{
+						_log4net.Error("Error occured" + " | " + "CreateWallet" + " | "+ clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 						await transaction.RollbackAsync();
 						return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
 					}
@@ -106,6 +113,7 @@ namespace SocialPay.Core.Services.Wallet
 			}
 			catch (Exception ex)
 			{
+				_log4net.Error("Error occured" + " | " + "CreateWallet" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
 				return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
 			}
