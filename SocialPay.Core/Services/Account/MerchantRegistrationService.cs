@@ -346,7 +346,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                //clientId = 4;
+                //clientId = 18;
                 _log4net.Info("Initiating OnboardMerchantBusinessInfo request" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
 
                 if (!string.IsNullOrEmpty(model.Tin))
@@ -379,6 +379,7 @@ namespace SocialPay.Core.Services.Account
                 {
                     try
                     {
+                       
 
                         var businessInfoModel = new MerchantBusinessInfo
                         {
@@ -391,7 +392,9 @@ namespace SocialPay.Core.Services.Account
                             Tin = model.Tin,
                             MerchantReferenceId = merchantId,
                             FileLocation = "MerchantLogo",
-                            Logo = newFileName
+                            Logo = newFileName, 
+                            HasSpectaMerchantID = string.IsNullOrEmpty(model.SpectaMerchantID) ? false : true,
+                            SpectaMerchantID = string.IsNullOrEmpty(model.SpectaMerchantID) ? string.Empty : model.SpectaMerchantID
                         };
 
 
@@ -401,7 +404,6 @@ namespace SocialPay.Core.Services.Account
                         getUserInfo.LastDateModified = DateTime.Now;
                         await _context.SaveChangesAsync();
                         var cacheKey = Convert.ToString(clientId);
-                        //var cacheKey = "festypat";
                         string serializedCustomerList;
                         var userInfo = new UserInfoViewModel { };
                         var redisCustomerList = await _distributedCache.GetAsync(cacheKey);

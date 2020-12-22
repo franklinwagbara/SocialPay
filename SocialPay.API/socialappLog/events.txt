@@ -59,3 +59,10 @@ INFO  2020-12-21 16:11:06,162 126404ms RequestBankTransaction ?                 
 INFO  2020-12-21 16:11:11,503 131745ms RequestBankTransaction ?                  - Job Service total number of pending transactions | 0 | 12/21/2020 4:11:11 PM
 INFO  2020-12-21 16:16:07,230 56623ms RequestBankTransaction ?                  - Job Service to fetch awaiting transactions | AcceptedEscrowRequestPendingBankTransaction | 12/21/2020 4:16:06 PM
 INFO  2020-12-21 16:16:12,746 62139ms RequestBankTransaction ?                  - Job Service total number of pending transactions | 0 | 12/21/2020 4:16:12 PM
+INFO  2020-12-22 14:56:27,152 271326ms AccountsController     ?                  - Tasks starts to create account | festypat9@gmail.com | 12/22/2020 2:56:27 PM
+INFO  2020-12-22 14:56:27,287 271461ms antRegistrationService ?                  - Initiating create merchant account | festypat9@gmail.com | 12/22/2020 2:56:27 PM
+INFO  2020-12-22 14:56:53,629 297804ms antRegistrationService ?                  - Initiating create merchant account was successful | festypat9@gmail.com | 12/22/2020 2:56:53 PM
+INFO  2020-12-22 15:08:01,698 327268ms antRegistrationService ?                  - Initiating OnboardMerchantBusinessInfo request | Tech | festypat9@gmail.com | 080302888482 | 12/22/2020 3:08:01 PM
+INFO  2020-12-22 15:08:22,441 348012ms antRegistrationService ?                  - Initiating OnboardMerchantBusinessInfo request was successful | Tech | festypat9@gmail.com | 080302888482 | 12/22/2020 3:08:22 PM
+INFO  2020-12-22 15:28:19,283 130029ms antRegistrationService ?                  - Initiating OnboardMerchantBusinessInfo request | Tech | festytech@gmail.com | 080382784787 | 12/22/2020 3:28:19 PM
+INFO  2020-12-22 15:28:28,773 139518ms antRegistrationService ?                  - Initiating OnboardMerchantBusinessInfo request was successful | Tech | festytech@gmail.com | 080382784787 | 12/22/2020 3:28:28 PM

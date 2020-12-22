@@ -180,7 +180,7 @@ namespace SocialPay.API
             //accepted escrow bank request
 
             services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
-            services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
+           // services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
             services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
 
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
