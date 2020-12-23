@@ -18,6 +18,8 @@ namespace SocialPay.Job.Repository.Fiorano
     {
         private readonly CreditDebitService _creditDebitService;
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(FioranoTransferPayWithCardRepository));
+
         public FioranoTransferPayWithCardRepository(IOptions<AppSettings> appSettings, CreditDebitService creditDebitService,
             IServiceProvider services)
         {
@@ -141,6 +143,8 @@ namespace SocialPay.Job.Repository.Fiorano
            string transactionRef, string creditAccountNo, bool tranType, string channel,
            string message, string paymentReference)
         {
+            _log4net.Info("Job Service" + "-" + "InititiateMerchantCredit fiorano request" + " | " + transactionRef + " | " + paymentReference + " | " + creditAccountNo + " | "+ debitAmount + " | "+ DateTime.Now);
+
             try
             {
                 using (var scope = Services.CreateScope())
@@ -196,6 +200,9 @@ namespace SocialPay.Job.Repository.Fiorano
                     await context.SaveChangesAsync();
 
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
+
+                    _log4net.Info("Job Service" + "-" + "InititiateMerchantCredit fiorano base response" + " | " + transactionRef + " | " + paymentReference + " | " + postTransaction.FTResponse + " | " + postTransaction.Message + " | " + DateTime.Now);
+
                     var logFioranoResponse = new FioranoT24TransactionResponse
                     {
                         PaymentReference = logRequest.PaymentReference,
@@ -222,7 +229,7 @@ namespace SocialPay.Job.Repository.Fiorano
             }
             catch (SqlException db)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = db.Message.ToString() };
             }
 
             catch (Exception ex)
@@ -232,10 +239,10 @@ namespace SocialPay.Job.Repository.Fiorano
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionRef + " | " + paymentReference + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction, Data = errorMessage };
                 }
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = errorMessage };
             }
         }
 

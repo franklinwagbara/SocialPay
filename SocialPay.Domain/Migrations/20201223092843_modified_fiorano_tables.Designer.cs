@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201223092843_modified_fiorano_tables")]
+    partial class modified_fiorano_tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -846,7 +848,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
-                        .HasColumnType("NVARCHAR(550)");
+                        .HasColumnType("NVARCHAR(350)");
 
                     b.Property<string>("TransactionReference")
                         .HasColumnType("NVARCHAR(90)");
@@ -883,13 +885,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("JsonRequest")
-                        .HasColumnType("NVARCHAR(950)");
+                        .HasColumnType("NVARCHAR(250)");
 
                     b.Property<string>("Message")
                         .HasColumnType("NVARCHAR(230)");
 
                     b.Property<string>("SessionId")
-                        .HasColumnType("NVARCHAR(90)");
+                        .HasColumnType("NVARCHAR(35)");
 
                     b.Property<string>("TransactionBranch")
                         .HasColumnType("NVARCHAR(20)");
@@ -910,7 +912,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("narrations")
-                        .HasColumnType("NVARCHAR(530)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.HasKey("PaymentReference");
 
@@ -998,7 +1000,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(30)");
 
                     b.Property<string>("JsonResponse")
-                        .HasColumnType("NVARCHAR(550)");
+                        .HasColumnType("NVARCHAR(250)");
 
                     b.Property<string>("PaymentReference")
                         .HasColumnType("NVARCHAR(90)");
@@ -1010,7 +1012,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("ResponseText")
-                        .HasColumnType("NVARCHAR(280)");
+                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
@@ -1610,13 +1612,13 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("JsonRequest")
-                        .HasColumnType("NVARCHAR(980)");
+                        .HasColumnType("NVARCHAR(550)");
 
                     b.Property<string>("Message")
-                        .HasColumnType("NVARCHAR(50)");
+                        .HasColumnType("NVARCHAR(350)");
 
                     b.Property<string>("SessionId")
-                        .HasColumnType("NVARCHAR(90)");
+                        .HasColumnType("NVARCHAR(35)");
 
                     b.Property<string>("TransactionBranch")
                         .HasColumnType("NVARCHAR(20)");
@@ -1637,7 +1639,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("narrations")
-                        .HasColumnType("NVARCHAR(530)");
+                        .HasColumnType("NVARCHAR(130)");
 
                     b.HasKey("PaymentReference");
 

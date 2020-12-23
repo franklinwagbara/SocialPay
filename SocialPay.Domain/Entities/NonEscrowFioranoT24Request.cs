@@ -30,17 +30,17 @@ namespace SocialPay.Domain.Entities
         public string CommissionCode { get; set; }
         [Column(TypeName = "NVARCHAR(10)")]
         public string VtellerAppID { get; set; }
-        [Column(TypeName = "NVARCHAR(130)")]
+        [Column(TypeName = "NVARCHAR(530)")]
         public string narrations { get; set; }
-        [Column(TypeName = "NVARCHAR(35)")]
+        [Column(TypeName = "NVARCHAR(90)")]
         public string SessionId { get; set; }
         [Column(TypeName = "NVARCHAR(30)")]
         public string TrxnLocation { get; set; }
-        [Column(TypeName = "NVARCHAR(250)")]
+        [Column(TypeName = "NVARCHAR(980)")]
         public string JsonRequest { get; set; }
         [Column(TypeName = "NVARCHAR(10)")]
         public string Channel { get; set; }
-        [Column(TypeName = "NVARCHAR(230)")]
+        [Column(TypeName = "NVARCHAR(50)")]
         public string Message { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
         // public virtual ICollection<FioranoT24TransactionResponse> FioranoT24TransactionResponse { get; set; }

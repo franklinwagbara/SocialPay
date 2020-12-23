@@ -28,11 +28,17 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+
                     var pendingTransactions = await context.TransactionLog
-                        .Where(x => x.OrderStatus == TransactionJourneyStatusCodes.Pending).ToListAsync();
+                        .Where(x => x.OrderStatus == 
+                        TransactionJourneyStatusCodes.Pending 
+                        && x.PaymentChannel != PaymentChannel.PayWithSpecta).ToListAsync();
+
                      _log4net.Info("Job Service" + "-" + "CreditMerchantWalletService pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                    
                     if (pendingTransactions.Count == 0)
                         return "No record";
+                   
                     await _transactions.ProcessTransactions(pendingTransactions);
                 }
 

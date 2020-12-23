@@ -13,7 +13,7 @@ namespace SocialPay.Domain.Entities
         public string ReferenceID { get; set; }
         [Column(TypeName = "NVARCHAR(20)")]
         public string ResponseCode { get; set; }
-        [Column(TypeName = "NVARCHAR(90)")]
+        [Column(TypeName = "NVARCHAR(280)")]
         public string ResponseText { get; set; }
         [Column(TypeName = "NVARCHAR(15)")]
         public string Balance { get; set; }
@@ -23,7 +23,7 @@ namespace SocialPay.Domain.Entities
         public string CHARGEAMT { get; set; }
         [Column(TypeName = "NVARCHAR(30)")]
         public string FTID { get; set; }
-        [Column(TypeName = "NVARCHAR(250)")]
+        [Column(TypeName = "NVARCHAR(550)")]
         public string JsonResponse { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
         //public virtual FioranoT24Request FioranoT24Request { get; set; }

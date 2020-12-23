@@ -49,7 +49,7 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-                //clientId = 30032;
+                //clientId = 17;
                 //userStatus = "00";
                 _log4net.Info("Initiating GeneratePaymentLink request" + " | " + clientId + " | " + paymentModel.PaymentLinkName + " | "+ DateTime.Now);
 
@@ -59,6 +59,7 @@ namespace SocialPay.Core.Services.Transaction
                 string userStatus = string.Empty;
                 var userInfo = new UserInfoViewModel { };
                 var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+
                 if (redisCustomerList != null)
                 {
                     serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
@@ -67,7 +68,9 @@ namespace SocialPay.Core.Services.Transaction
                 }
                 if (userStatus != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
-                if(paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic 
+
+
+                if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic 
                     || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow
                     || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink
                     || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
@@ -108,6 +111,7 @@ namespace SocialPay.Core.Services.Transaction
                    
                     model.TransactionReference = newGuid;
                     model.PaymentLinkUrl = _appSettings.paymentlinkUrl + model.TransactionReference;
+
                     if(paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow ||
                         paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
                     {
@@ -122,6 +126,7 @@ namespace SocialPay.Core.Services.Transaction
                         ClientAuthenticationId = clientId, Channel = paymentModel.PaymentCategory,
                         TransactionReference = newGuid
                     };
+
                     using(var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
@@ -172,16 +177,7 @@ namespace SocialPay.Core.Services.Transaction
                     }
 
                   
-                    ////if (paymentModel.PaymentCategory == MerchantPaymentCategory.Basic)
-                    ////{
-
-                    ////}
-
-                    ////model.DeliveryTime = paymentModel.DeliveryTime;
-                    ////model.PaymentMethod = paymentModel.PaymentMethod;
-                    ////await _context.MerchantPaymentSetup.AddAsync(model);
-                    ////await _context.SaveChangesAsync();
-                    ////return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
+                  
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentcategory };
                

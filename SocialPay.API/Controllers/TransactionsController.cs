@@ -34,7 +34,7 @@ namespace SocialPay.API.Controllers
             _disputeRepoService = disputeRepoService;
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
         [Route("generate-payment-link")]
         public async Task<IActionResult> GeneratePaymentLink([FromForm] MerchantpaymentLinkRequestDto model)

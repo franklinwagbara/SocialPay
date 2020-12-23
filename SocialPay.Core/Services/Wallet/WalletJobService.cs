@@ -36,7 +36,7 @@ namespace SocialPay.Core.Services.Wallet
             try
             {
                 var request = JsonConvert.SerializeObject(model);
-                var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.walletTowalletUrl,
+                var response = await _client.PostAsync($"{_appSettings.walletExtensionUrl}{_appSettings.walletTowalletUrl}",
                   new StringContent(request, Encoding.UTF8, "application/json"));
                 var result = await response.Content.ReadAsStringAsync();
                 _log4net.Info("Job Service" + "-" + "WalletToWalletTransferAsync response" + " | " + result + " | "+ model.toacct + " | " + model.paymentRef + " | " + model.frmacct + " | " + model.amt + " | " + DateTime.Now);

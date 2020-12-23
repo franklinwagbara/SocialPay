@@ -172,19 +172,19 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    using (var scope = Services.CreateScope())
-                    {
-                        var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                        var getTransInfo = await context.TransactionLog
-                          .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+                    //using (var scope = Services.CreateScope())
+                    //{
+                    //    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    //    var getTransInfo = await context.TransactionLog
+                    //      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                        getTransInfo.OrderStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
-                    }
+                    //    getTransInfo.OrderStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
+                    //    getTransInfo.LastDateModified = DateTime.Now;
+                    //    context.Update(getTransInfo);
+                    //    await context.SaveChangesAsync();
+                    //}
                        
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _log4net.Error("Job Service" + "-" + "Error occured. Duplicate transaction" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

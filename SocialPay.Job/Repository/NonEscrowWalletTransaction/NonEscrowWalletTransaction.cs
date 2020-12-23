@@ -30,6 +30,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
+
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
                         || x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
@@ -38,10 +39,11 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
                      _log4net.Info("Job Service. Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                  
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
+                    
                     await _transactions.ProcessTransactions(getNonEscrowTransactions);
-                    //return "No record";
                 }
 
                 Console.WriteLine("GenerateDailyReport : " + DateTime.Now.ToString());
@@ -50,7 +52,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
             }
             catch (Exception ex)
             {
-                 _log4net.Error("Job Service." + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                 _log4net.Error("Job Service." + "Error occured" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return "Error";
             }
 

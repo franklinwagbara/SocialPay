@@ -11,6 +11,8 @@ namespace SocialPay.Job.Repository.PayWithCard
     public class PayWithCardTransaction : IPayWithCardTransaction
     {
         private readonly PendingPayWithCardTransaction _transactions;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(PayWithCardTransaction));
+
         public PayWithCardTransaction(IServiceProvider services, PendingPayWithCardTransaction transactions)
         {
             Services = services;
@@ -22,7 +24,7 @@ namespace SocialPay.Job.Repository.PayWithCard
         {
             try
             {
-                //  _log4net.Info("Tasks starts to fetch awaiting transactions" + " | " + DateTime.Now);
+                _log4net.Info("Job Service" + "-" + "PendingPayWithCardTransaction transactions" + " | " +  DateTime.Now);
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -31,9 +33,11 @@ namespace SocialPay.Job.Repository.PayWithCard
                         && x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
                         && x.PaymentChannel == PaymentChannel.Card).ToListAsync();
 
-                    // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                    _log4net.Info("Job Service: Total number of pending cards transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                    
                     if (pendingTransactions.Count == 0)
                         return "No record";
+                    
                     await _transactions.InitiateTransactions(pendingTransactions);
                     //return "No record";
                 }
@@ -44,7 +48,7 @@ namespace SocialPay.Job.Repository.PayWithCard
             }
             catch (Exception ex)
             {
-                //  _log4net.Error("An error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Job Service: An error occured while fetching transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return "Error";
             }
 

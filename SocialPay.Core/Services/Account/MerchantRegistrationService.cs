@@ -456,9 +456,10 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
+                //clientId = 18;
+                _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + clientId + " | "+ DateTime.Now);
 
-                ///clientId = 40080;
+                
                 ////if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
                 //// x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
                 ////    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
@@ -581,9 +582,10 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+
+               // clientId = 18;
                 _log4net.Info("Initiating TransactionSetupRequest request" + " | " + model.ReceiveEmail + " | " + clientId + " | " + model.OutSideLagos + " | " + DateTime.Now);
 
-                //clientId = 10013;
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantWallet)
                     .Include(x => x.MerchantBankInfo)

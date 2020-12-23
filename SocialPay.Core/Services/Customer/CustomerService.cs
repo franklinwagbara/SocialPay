@@ -352,10 +352,11 @@ namespace SocialPay.Core.Services.Customer
                         }
                         var decryptResponse = DecryptAlt(decodeMessage);
                         model.Message = decryptResponse;
-                        var result = await _customerService.LogPaymentResponse(model);
                         _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
-                        return result;
+                        return await _customerService.LogPaymentResponse(model);
+
+                       // return result;
                     }
 
                     if (model.Channel == PaymentChannel.PayWithSpecta)
