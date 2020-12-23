@@ -58,6 +58,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
 
                         var getWalletInfo = await context.MerchantWallet
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+
                         if (getWalletInfo == null)
                             return null;
 
@@ -106,6 +107,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                                         message = initiateRequest.message,
                                         response = initiateRequest.response,
                                         responsedata = Convert.ToString(initiateRequest.responsedata),
+                                        PaymentReference = item.PaymentReference
                                     };
 
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
@@ -117,6 +119,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
                                     await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
+
                                     _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                                     return null;
@@ -153,19 +156,19 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    using (var scope = Services.CreateScope())
-                    {
-                        var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                        var getTransInfo = await context.TransactionLog
-                          .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+                    ////using (var scope = Services.CreateScope())
+                    ////{
+                    ////    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    ////    var getTransInfo = await context.TransactionLog
+                    ////      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
-                    }
+                    ////    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                    ////    getTransInfo.LastDateModified = DateTime.Now;
+                    ////    context.Update(getTransInfo);
+                    ////    await context.SaveChangesAsync();
+                    ////}
 
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

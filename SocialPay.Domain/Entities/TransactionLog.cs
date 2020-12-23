@@ -8,7 +8,7 @@ namespace SocialPay.Domain.Entities
         public long TransactionLogId { get; set; }
         public long ClientAuthenticationId { get; set; }
         public long CustomerInfo { get; set; }
-        [Column(TypeName = "NVARCHAR(30)")]
+        [Column(TypeName = "NVARCHAR(40)")]
         public string CustomerEmail { get; set; }
         [Column(TypeName = "NVARCHAR(10)")]
         public string Category { get; set; }
@@ -24,7 +24,7 @@ namespace SocialPay.Domain.Entities
         public string TransactionJourney { get; set; }
         [Column(TypeName = "NVARCHAR(5)")]
         public string DeliveryDayTransferStatus { get; set; }
-        [Column(TypeName = "NVARCHAR(50)")]
+        [Column(TypeName = "NVARCHAR(250)")]
         public string Message { get; set; }
         [Column(TypeName = "NVARCHAR(5)")]
         public string LinkCategory { get; set; }

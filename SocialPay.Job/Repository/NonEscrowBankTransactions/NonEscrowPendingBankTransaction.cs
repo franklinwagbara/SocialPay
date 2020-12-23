@@ -18,12 +18,12 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
     public class NonEscrowPendingBankTransaction
     {
         private readonly AppSettings _appSettings;
-        private readonly FioranoTransferPayWithCardRepository _fioranoTransferRepository;
+        private readonly FioranoTransferNonEscrowRepository _fioranoTransferRepository;
         private readonly InterBankPendingTransferService _interBankPendingTransferService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowPendingBankTransaction));
 
         public NonEscrowPendingBankTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
-             FioranoTransferPayWithCardRepository fioranoTransferRepository,
+             FioranoTransferNonEscrowRepository fioranoTransferRepository,
          InterBankPendingTransferService interBankPendingTransferService)
         {
             Services = service;
@@ -75,8 +75,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                             var initiateRequest = await _fioranoTransferRepository
                                .InititiateMerchantCredit(Convert.ToString(getTransInfo.TotalAmount),
                                "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
-                               " - " + item.PaymentReference, item.PaymentReference,
-                               getBankInfo.Nuban, true, item.TransactionReference, "Intra-Bank Transfer", 
+                               " - " + item.PaymentReference, item.TransactionReference,
+                               getBankInfo.Nuban, item.PaymentChannel, "Intra-Bank Transfer", 
                                item.PaymentReference);
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
@@ -97,6 +97,16 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
+
+                            var failedTransaction = new FailedTransactions
+                            {
+                                CustomerTransactionReference = item.CustomerTransactionReference,
+                                Message = initiateRequest.Message,
+                                TransactionReference = item.TransactionReference
+                            };
+                            await context.FailedTransactions.AddAsync(failedTransaction);
+                            await context.SaveChangesAsync();
+
                             _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction failed response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                             return null;

@@ -76,7 +76,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        //[AllowAnonymous]
+       // [AllowAnonymous]
         [HttpPost]
         [Route("onboarding-bank-info")]
         public async Task<IActionResult> MerchantBankInfo([FromBody] MerchantBankInfoRequestDto model)

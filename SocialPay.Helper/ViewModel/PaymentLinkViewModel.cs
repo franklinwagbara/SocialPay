@@ -83,6 +83,7 @@ namespace SocialPay.Helper.ViewModel
         public string BusinessPhoneNumber { get; set; }
         public string BusinessEmail { get; set; }
         public string Country { get; set; }
+        public bool HasSpectaMerchantID { get; set; }
         public string Chargebackemail { get; set; }
         public string Logo { get; set; }
      

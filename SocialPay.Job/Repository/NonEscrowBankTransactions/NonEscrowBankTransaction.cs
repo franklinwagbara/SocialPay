@@ -11,6 +11,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
     public class NonEscrowBankTransaction : INonEscrowBankTransaction
     {
         private readonly NonEscrowPendingBankTransaction _transactions;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowBankTransaction));
+
         public NonEscrowBankTransaction(NonEscrowPendingBankTransaction transactions, IServiceProvider services)
         {
             Services = services;
@@ -23,22 +25,24 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
         {
             try
             {
-                //  _log4net.Info("Tasks starts to fetch awaiting transactions" + " | " + DateTime.Now);
+                _log4net.Info("Job Service" + "-" + "NonEscrowBankTransaction request" + " | "+ DateTime.Now);
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    DateTime nextDay = DateTime.Now.Date.AddDays(1);
+          
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == 
                         TransactionJourneyStatusCodes.WalletTranferCompleted).ToListAsync();
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Basic
-                     || x.LinkCategory == MerchantPaymentLinkCategory.OneOffBasicLink).Take(1).ToList();
-                    // _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                     || x.LinkCategory == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
+                   
+                    _log4net.Info("Job Service: Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                  
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
+                   
                     await _transactions.ProcessTransactions(getNonEscrowTransactions);
-                    //return "No record";
                 }
 
                 Console.WriteLine("GenerateDailyReport : " + DateTime.Now.ToString());
@@ -47,7 +51,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
             }
             catch (Exception ex)
             {
-                //  _log4net.Error("An error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Job Service: An error occured while fetching transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return "Error";
             }
 

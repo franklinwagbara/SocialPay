@@ -272,6 +272,7 @@ namespace SocialPay.Core.Repositories.Customer
                 BusinessName = getMerchantInfo.BusinessName,
                 Chargebackemail = getMerchantInfo.Chargebackemail,
                 Country = getMerchantInfo.Country,
+                HasSpectaMerchantID = getMerchantInfo == null ? false : getMerchantInfo.HasSpectaMerchantID,
                 Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
             };
             //ProfilePhoto = getInvestors == null ? string.Empty : _appSettings.BaseApiUrl + getInvestors.IndividualInvestor.Select(x => x.FileLocation).First() + "/" + getInvestors.IndividualInvestor.Select(x => x.ProfilePhoto).First(),
@@ -538,11 +539,15 @@ namespace SocialPay.Core.Repositories.Customer
                 var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
                 var paymentSetupInfo = await _context.MerchantPaymentSetup
                .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+
                 if (paymentSetupInfo == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
                 var merchantInfo = await GetMerchantInfo(paymentSetupInfo.ClientAuthenticationId);
+
                 var getCustomerInfo = await _context.CustomerOtherPaymentsInfo
                     .SingleOrDefaultAsync(x => x.PaymentReference == model.PaymentReference);
+
                 if (linkInfo != null && linkInfo.Channel == MerchantPaymentLinkCategory.Escrow || linkInfo.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
                 {
                     var customerInfo = await _context.ClientAuthentication
@@ -569,6 +574,7 @@ namespace SocialPay.Core.Repositories.Customer
                     {
                         logconfirmation.Status = true;
                         logconfirmation.LastDateModified = DateTime.Now;
+
                         using (var transaction = await _context.Database.BeginTransactionAsync())
                         {
                             try
@@ -581,6 +587,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 //Send mail
                                 await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
                                     logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
+                                
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                             }
                             catch (Exception ex)
@@ -627,6 +634,7 @@ namespace SocialPay.Core.Repositories.Customer
                             //Send mail
                             await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
                                 logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
+                            
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                         }
                         catch (Exception ex)

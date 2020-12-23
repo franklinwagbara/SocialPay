@@ -14,6 +14,8 @@ namespace SocialPay.Job.Repository.Fiorano
     {
         private readonly HttpClient _client;
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CreditDebitService));
+
         public CreditDebitService(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
@@ -27,10 +29,13 @@ namespace SocialPay.Job.Repository.Fiorano
         {
             try
             {
+                _log4net.Info("Job Service: InitiateTransaction" + " | " + jsonRequest + " | " + DateTime.Now);
 
                 var response = await _client.PostAsync(_appSettings.fioranoFundsTransferUrl,
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
                 var result = await response.Content.ReadAsStringAsync();
+                _log4net.Info("Job Service: InitiateTransaction response" + " | " + result + " | " + DateTime.Now);
+
                 if (response.IsSuccessStatusCode)
                 {
                     var responseBody = JsonConvert.DeserializeObject<FTResponseDto>(result);
@@ -48,6 +53,8 @@ namespace SocialPay.Job.Repository.Fiorano
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service: An error occured while initiating fiorano transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new FTResponseDto { ResponseCode = AppResponseCodes.InternalError };
             }
         }

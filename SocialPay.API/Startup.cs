@@ -149,6 +149,7 @@ namespace SocialPay.API
             services.AddSingleton<AcceptedEscrowInterBankPendingTransferService>();
             services.AddSingleton<DeliveryDayInterBankPendingTransferService>();
             services.AddSingleton<DeliveryDayFioranoTransferRepository>();
+            services.AddSingleton<FioranoTransferNonEscrowRepository>();
             services.AddSingleton<IBSReposerviceJob>();
             services.AddSingleton<SqlRepository>();
 
@@ -195,13 +196,13 @@ namespace SocialPay.API
             //Non escrow wallet transaction
 
             services.AddScoped<INonEscrowWalletTransaction, NonEscrowWalletTransaction>();
-            //services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
+           // services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
             services.AddSingleton<NonEscrowWalletPendingTransaction>();
 
             //Non escrow bank transaction
 
             services.AddScoped<INonEscrowBankTransaction, NonEscrowBankTransaction>();
-            //services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
+          //  services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
             services.AddSingleton<NonEscrowPendingBankTransaction>();
 
             //Accepted order service

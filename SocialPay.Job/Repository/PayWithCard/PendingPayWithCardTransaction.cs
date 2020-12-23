@@ -21,11 +21,12 @@ namespace SocialPay.Job.Repository.PayWithCard
         //private readonly FioranoTransferPayWithCardRepository _fioranoTransferRepository;
         private readonly AppSettings _appSettings;
         private readonly CreditDebitService _creditDebitService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(PendingPayWithCardTransaction));
+
         public PendingPayWithCardTransaction(IServiceProvider services, 
             IOptions<AppSettings> appSettings, CreditDebitService creditDebitService)
         {
             Services = services;
-           // _fioranoTransferRepository = fioranoTransferRepository;
             _appSettings = appSettings.Value;
             _creditDebitService = creditDebitService;
         }
@@ -41,6 +42,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service" + "-" + "InitiateTransactions request" + " | " + item.PaymentReference + " | "+ item.TransactionReference + " | "+ DateTime.Now);
+
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
@@ -104,7 +107,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             TrxnLocation = _appSettings.fioranoTrxnLocation,
                             VtellerAppID = _appSettings.fioranoVtellerAppID,
                             Channel = item.PaymentChannel,
-                            Message = "Card payment",
+                            Message = "Card payment transaction",
                             PaymentReference = item.PaymentReference
                         };
                         await context.FioranoT24CardCreditRequest.AddAsync(logRequest);
@@ -191,19 +194,19 @@ namespace SocialPay.Job.Repository.PayWithCard
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    using (var scope = Services.CreateScope())
-                    {
-                        var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                        var getTransInfo = await context.TransactionLog
-                          .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
+                    //using (var scope = Services.CreateScope())
+                    //{
+                    //    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    //    var getTransInfo = await context.TransactionLog
+                    //      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
-                    }
+                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
+                    //    getTransInfo.LastDateModified = DateTime.Now;
+                    //    context.Update(getTransInfo);
+                    //    await context.SaveChangesAsync();
+                    //}
 
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
