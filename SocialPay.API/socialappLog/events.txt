@@ -264,3 +264,25 @@ INFO  2020-12-23 17:30:17,306 45471ms hantWalletTransactions ?                  
 INFO  2020-12-23 17:30:28,500 56665ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 08076683150 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 0000000002 | 1100.00 | 12/23/2020 5:30:28 PM
 INFO  2020-12-23 17:30:46,302 74467ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 08076683150 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 0000000002 | 1100.00 | 12/23/2020 5:30:46 PM
 INFO  2020-12-23 17:31:04,042 92207ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet saved | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/23/2020 5:31:04 PM
+INFO  2020-12-23 20:51:08,022 59099ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 12/23/2020 8:51:08 PM
+INFO  2020-12-23 20:51:09,258 60335ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 1 | 12/23/2020 8:51:09 PM
+INFO  2020-12-23 20:51:18,038 69115ms PayWithCardTransaction ?                  - Job Service-InitiateTransactions request | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/23/2020 8:51:18 PM
+INFO  2020-12-23 20:54:11,933 76156ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 12/23/2020 8:54:11 PM
+INFO  2020-12-23 20:54:13,197 77419ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 1 | 12/23/2020 8:54:13 PM
+INFO  2020-12-23 20:54:21,304 85527ms PayWithCardTransaction ?                  - Job Service-InitiateTransactions request | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/23/2020 8:54:21 PM
+INFO  2020-12-23 20:54:33,035 97257ms CreditDebitService     ?                  - Job Service: InitiateTransaction | {"FT_Request":{"TransactionBranch":"NG0020006","TransactionType":"ACVE","DebitAcctNo":"0063332884","DebitCurrency":"NGN","CreditCurrency":"NGN","DebitAmount":"1100.00","CreditAccountNo":"0065428109","CommissionCode":"W","VtellerAppID":"111","narrations":"CP from Nominated to Social Pay - 5baed68f-b92c-4212-9891-9bdf71baea54","SessionId":"571af715-f42f-4a1f-bd2e-8d0cc872a0b5","TrxnLocation":"::1"}} | 12/23/2020 8:54:33 PM
+INFO  2020-12-23 20:54:47,167 111389ms CreditDebitService     ?                  - Job Service: InitiateTransaction response | {"FTResponse":    {
+       "ReferenceID": "FT19296H0WM0",
+       "ResponseCode": "00",
+       "ResponseText": "SUCCESS",
+       "Balance": "9676214.04",
+       "COMMAMT": "0",
+       "CHARGEAMT": "0",
+       "FTID": "FT19296H0WM0"
+   }} | 12/23/2020 8:54:47 PM
+INFO  2020-12-23 21:00:10,559 71914ms scrowWalletTransaction ?                  - Job Service-to fetch awaiting transactions | 12/23/2020 9:00:10 PM
+INFO  2020-12-23 21:00:11,605 72959ms scrowWalletTransaction ?                  - Job Service. Total number of pending transactions | 1 | 12/23/2020 9:00:11 PM
+INFO  2020-12-23 21:00:26,902 88256ms lletPendingTransaction ?                  - Job Service-NonEscrowWalletPendingTransaction request | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/23/2020 9:00:26 PM
+INFO  2020-12-23 21:00:36,857 98212ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/23/2020 9:00:36 PM
+INFO  2020-12-23 21:00:45,287 106641ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/23/2020 9:00:45 PM
+INFO  2020-12-23 21:00:54,178 115533ms lletPendingTransaction ?                  - Job Service-NonEscrowWalletPendingTransaction successful | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/23/2020 9:00:54 PM

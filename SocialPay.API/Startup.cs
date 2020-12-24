@@ -196,7 +196,7 @@ namespace SocialPay.API
             //Non escrow wallet transaction
 
             services.AddScoped<INonEscrowWalletTransaction, NonEscrowWalletTransaction>();
-           // services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
+            //services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
             services.AddSingleton<NonEscrowWalletPendingTransaction>();
 
             //Non escrow bank transaction
@@ -213,7 +213,7 @@ namespace SocialPay.API
 
             //////Credit T24 account for card payments
             services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
-            //services.AddSingleton<IHostedService, CardPaymentTask>();
+           // services.AddSingleton<IHostedService, CardPaymentTask>();
             services.AddSingleton<FioranoTransferPayWithCardRepository>();
             services.AddSingleton<PendingPayWithCardTransaction>();
             services.AddSingleton<CreditDebitService>();
