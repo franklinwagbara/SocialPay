@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SocialPay.Job.Repository.NonEscrowWalletTransaction;
+using SocialPay.Job.Repository.NonEscrowCardWalletTransaction;
 using SocialPay.Job.Services;
 using System;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ namespace SocialPay.Job.TaskSchedules
 
         public override Task ProcessInScope(IServiceProvider scopeServiceProvider)
         {
-            INonEscrowWalletTransaction reportGenerator = scopeServiceProvider.GetRequiredService<INonEscrowWalletTransaction>();
+            INonEscrowCardWalletTransaction reportGenerator = scopeServiceProvider.GetRequiredService<INonEscrowCardWalletTransaction>();
             reportGenerator.GetPendingTransactions();
             return Task.CompletedTask;
         }

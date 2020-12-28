@@ -38,7 +38,8 @@ using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
 using SocialPay.Job.Repository.NonEscrowBankTransactions;
-using SocialPay.Job.Repository.NonEscrowWalletTransaction;
+using SocialPay.Job.Repository.NonEscrowCardWalletTransaction;
+using SocialPay.Job.Repository.NonEscrowOtherWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.TaskSchedules;
@@ -152,6 +153,9 @@ namespace SocialPay.API
             services.AddSingleton<FioranoTransferNonEscrowRepository>();
             services.AddSingleton<IBSReposerviceJob>();
             services.AddSingleton<SqlRepository>();
+            services.AddSingleton<FioranoAcceptedEscrowRepository>();
+            services.AddSingleton<FioranoTransferPayWithCardRepository>();
+
 
             var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
             var redisInstance = Configuration.GetSection("RedisConnectionStrings")["RedisInstance"];
@@ -176,16 +180,10 @@ namespace SocialPay.API
             ////services.AddScoped<IWalletTransactions, WalletTransactions>();
             ////services.AddSingleton<IHostedService, FundMerchantWalletTask>();
             ////services.AddSingleton<WalletRepoJobService>();
-            ////services.AddSingleton<PendingWalletRequestService>();
-
-            //accepted escrow bank request
-
-            services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
-           // services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
-            services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
+            ////services.AddSingleton<PendingWalletRequestService>();        
 
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
-           // services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            //services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
 
 
@@ -195,26 +193,36 @@ namespace SocialPay.API
 
             //Non escrow wallet transaction
 
-            services.AddScoped<INonEscrowWalletTransaction, NonEscrowWalletTransaction>();
-           // services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
-            services.AddSingleton<NonEscrowWalletPendingTransaction>();
+            services.AddScoped<INonEscrowCardWalletTransaction, NonEscrowCardWalletTransaction>();
+            //services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
+            services.AddSingleton<NonEscrowCardWalletPendingTransaction>();
+
+
+            services.AddScoped<INonEscrowOtherWalletTransaction, NonEscrowOtherWalletTransaction>();
+           // services.AddSingleton<IHostedService, NonEscrowOtherWalletTransactionTask>();
+            services.AddSingleton<NonEscrowOtherWalletPendingTransaction>();
 
             //Non escrow bank transaction
 
             services.AddScoped<INonEscrowBankTransaction, NonEscrowBankTransaction>();
-          //  services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
+            //services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
             services.AddSingleton<NonEscrowPendingBankTransaction>();
 
             //Accepted order service
 
             services.AddScoped<IAcceptedEscrowOrders, AcceptedEscrowOrders>();
-            //services.AddSingleton<IHostedService, AcceptedWalletOrderTask>();
+           // services.AddSingleton<IHostedService, AcceptedWalletOrderTask>();
             services.AddSingleton<AcceptedEscrowOrderTransactions>();
+
+            //accepted escrow bank request
+
+            services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
+           // services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
+            services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
 
             //////Credit T24 account for card payments
             services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
             //services.AddSingleton<IHostedService, CardPaymentTask>();
-            services.AddSingleton<FioranoTransferPayWithCardRepository>();
             services.AddSingleton<PendingPayWithCardTransaction>();
             services.AddSingleton<CreditDebitService>();
 
