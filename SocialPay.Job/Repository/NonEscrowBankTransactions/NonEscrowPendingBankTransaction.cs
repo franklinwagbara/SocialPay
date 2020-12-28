@@ -81,7 +81,6 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
-                                getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
                                 getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.LastDateModified = DateTime.Now;
@@ -92,7 +91,6 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                 return null;
                             }
 
-                            getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.TransactionFailed;
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
@@ -122,7 +120,6 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 
                         if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
                         {
-                            getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDirectFundTransfer;
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.LastDateModified = DateTime.Now;

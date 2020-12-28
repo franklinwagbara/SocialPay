@@ -28,6 +28,7 @@ namespace SocialPay.Job.Repository.NotificationService
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     DateTime nextDay = DateTime.Now.Date.AddDays(1);
+
                     var pendingTransactions = await context.TransactionLog
                         .Where(x =>x.IsNotified == false && x.ActivityStatus == TransactionJourneyStatusCodes.Pending
                         && x.DeliveryDate.Day == nextDay.Day).ToListAsync();
@@ -36,8 +37,10 @@ namespace SocialPay.Job.Repository.NotificationService
                          == MerchantPaymentLinkCategory.Escrow
                      || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
                      _log4net.Info("Job Service" + "-" + "Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                  
                     if (getvalidRequest.Count == 0)
                         return "No record";
+
                     await _transactions.InitiatePendingNotifications(getvalidRequest);
                     //return "No record";
                 }
@@ -48,7 +51,7 @@ namespace SocialPay.Job.Repository.NotificationService
             }
             catch (Exception ex)
             {
-                //  _log4net.Error("An error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Job Service. An error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return "Error";
             }
 

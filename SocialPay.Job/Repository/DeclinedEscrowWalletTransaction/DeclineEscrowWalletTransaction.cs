@@ -35,14 +35,15 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                         && x.TransactionStatus == TransactionJourneyStatusCodes.ItemAccepted
                         ).ToListAsync();
                     
-                    var getEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Escrow
-                    || x.LinkCategory == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
+                    var getEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Escrow
+                    || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
+
                      _log4net.Info("Job Service" + "-" + "DeclineEscrowWalletTransaction pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                    
                     if (getEscrowTransactions.Count == 0)
                         return "No record";
                     
-                    await _transactions.ProcessTransactions(pendingTransactions);
+                    await _transactions.ProcessTransactions(getEscrowTransactions);
                     //return "No record";
                 }
 

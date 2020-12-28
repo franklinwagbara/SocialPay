@@ -19,6 +19,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
     {
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayTransferService));
 
 
         public DeliveryDayTransferService(IServiceProvider service, IOptions<AppSettings> appSettings,
@@ -32,6 +33,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionId = 0;
             try
             {
                 using (var scope = Services.CreateScope())
@@ -39,14 +41,19 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service" + "-" + "Tasks starts to process deliveryday transaction" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var requestId = Guid.NewGuid().ToString();
                         var getWalletInfo = await context.MerchantWallet
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+
                         if (getWalletInfo == null)
                             return null;
 
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
+
+                        transactionId = getTransInfo.TransactionLogId;
 
                         getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.WalletFundingProgressFinalDeliveryDay;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.WalletFundingProgressFinalDeliveryDay;
@@ -65,7 +72,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                             channelID = 1,
                             TransferType = 1,
                             frmacct = getWalletInfo.Mobile,
-                            paymentRef = Guid.NewGuid().ToString(),
+                            paymentRef = item.PaymentReference,
                             remarks = "Social-Pay Delivery day wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
                         };
 
@@ -82,16 +89,17 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                             CustomerTransactionReference = item.CustomerTransactionReference,
                             TransferType = walletModel.TransferType,
                             ChannelMode = WalletTransferMode.MerchantToSocialPay,
-                            RequestId = requestId
+                            RequestId = requestId,
+                            ClientAuthenticationId = item.ClientAuthenticationId
                         };
 
                         await context.DeliveryDayWalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
 
-                        var walletResponseModel = new WalletTransferResponse();
-          
+                        var walletResponseModel = new WalletTransferResponse();          
 
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
+
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {
                             using(var transaction = await context.Database.BeginTransactionAsync())
@@ -102,7 +110,8 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                                     walletResponseModel.response = initiateRequest.response;
                                     walletResponseModel.sent = initiateRequest.data.sent;
                                     walletResponseModel.RequestId = walletRequestModel.RequestId;
-                                    walletResponseModel.responsedata = Convert.ToString(initiateRequest.responsedata);
+                                    walletResponseModel.PaymentReference = item.PaymentReference;
+                                    walletResponseModel.responsedata = Convert.ToString(initiateRequest.message);
                                     getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding;
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding;
                                     getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.CompletedDeliveryDayWalletFunding;
@@ -146,12 +155,14 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
 
             catch (Exception ex)
             {
+                _log4net.Error("Job Service: An error occured DeliveryDayTransferService." + " | " + transactionId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _log4net.Error("Job Service. DeliveryDayTransferService: An error occured. Duplicate transaction reference" + " | " + transactionId + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
