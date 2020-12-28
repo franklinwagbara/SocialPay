@@ -55,10 +55,12 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
 
                         var getWalletInfo = await context.MerchantWallet
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+
                         if (getWalletInfo == null)
                             return null;
 
                         transactionLogid = getTransInfo.TransactionLogId;
+
                         var walletModel = new WalletTransferRequestDto
                         {
                             CURRENCYCODE = _appSettings.walletcurrencyCode,
@@ -91,6 +93,7 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                         await context.SaveChangesAsync();
 
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
+
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {
                             using (var transaction = await context.Database.BeginTransactionAsync())
@@ -103,6 +106,7 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                                         sent = initiateRequest.data.sent,
                                         message = initiateRequest.message,
                                         response = initiateRequest.response,
+                                        PaymentReference = item.PaymentReference,
                                         responsedata = Convert.ToString(initiateRequest.responsedata),
                                     };
 
@@ -163,7 +167,7 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                     //    await context.SaveChangesAsync();
                     //}
 
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _log4net.Error("Job Service. An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

@@ -42,8 +42,10 @@ namespace SocialPay.Job.Repository.NotificationService
                         _log4net.Info("Job Service" + "-" + "Tasks starts to process transaction" + " | " + item.PaymentReference + " | "+ item.TransactionReference + " | "+ DateTime.Now);
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
+
                         if (getTransInfo == null)
                             return null;
+
                         getTransInfo.IsNotified = true;
                         getTransInfo.LastDateModified = DateTime.Now;
                         getTransInfo.DateNotified = DateTime.Now;
@@ -72,11 +74,12 @@ namespace SocialPay.Job.Repository.NotificationService
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
                         if(sendMail == "00")
                         {
                             await context.SaveChangesAsync();
                         }
-
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }

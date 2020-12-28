@@ -113,7 +113,6 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
                                     getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.WalletTranferCompleted;
                                     getTransInfo.LastDateModified = DateTime.Now;
-                                    getTransInfo.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
