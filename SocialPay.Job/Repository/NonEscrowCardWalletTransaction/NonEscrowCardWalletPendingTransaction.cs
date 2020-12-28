@@ -13,15 +13,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
+namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
 {
-    public class NonEscrowWalletPendingTransaction
+    public class NonEscrowCardWalletPendingTransaction
     {
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowWalletPendingTransaction));
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowCardWalletPendingTransaction));
 
-        public NonEscrowWalletPendingTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
+        public NonEscrowCardWalletPendingTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
             WalletRepoJobService walletRepoJobService)
         {
             Services = service;

@@ -286,3 +286,87 @@ INFO  2020-12-23 21:00:26,902 88256ms lletPendingTransaction ?                  
 INFO  2020-12-23 21:00:36,857 98212ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/23/2020 9:00:36 PM
 INFO  2020-12-23 21:00:45,287 106641ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/23/2020 9:00:45 PM
 INFO  2020-12-23 21:00:54,178 115533ms lletPendingTransaction ?                  - Job Service-NonEscrowWalletPendingTransaction successful | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/23/2020 9:00:54 PM
+INFO  2020-12-24 12:12:09,692 54369ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 12/24/2020 12:12:09 PM
+INFO  2020-12-24 12:12:11,616 56293ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 1 | 12/24/2020 12:12:11 PM
+INFO  2020-12-24 12:12:22,296 66973ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/24/2020 12:12:22 PM
+INFO  2020-12-24 12:12:33,878 78556ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 08076683150 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 0000000002 | 1100.00 | 12/24/2020 12:12:33 PM
+INFO  2020-12-24 12:12:49,740 94417ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 08076683150 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 0000000002 | 1100.00 | 12/24/2020 12:12:49 PM
+INFO  2020-12-24 12:13:04,921 109599ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet saved | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/24/2020 12:13:04 PM
+INFO  2020-12-24 12:18:05,882 186894ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 12/24/2020 12:18:05 PM
+INFO  2020-12-24 12:18:07,520 188532ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 1 | 12/24/2020 12:18:07 PM
+INFO  2020-12-24 12:18:13,571 194583ms PayWithCardTransaction ?                  - Job Service-InitiateTransactions request | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/24/2020 12:18:13 PM
+INFO  2020-12-24 12:18:24,853 205865ms CreditDebitService     ?                  - Job Service: InitiateTransaction | {"FT_Request":{"TransactionBranch":"NG0020006","TransactionType":"ACVE","DebitAcctNo":"0063332884","DebitCurrency":"NGN","CreditCurrency":"NGN","DebitAmount":"1100.00","CreditAccountNo":"0065428109","CommissionCode":"W","VtellerAppID":"111","narrations":"CP from Nominated to Social Pay - 5baed68f-b92c-4212-9891-9bdf71baea54","SessionId":"8b2869e6-fee3-4c2e-aede-7dbd87431e72","TrxnLocation":"::1"}} | 12/24/2020 12:18:24 PM
+INFO  2020-12-24 12:18:39,104 220116ms CreditDebitService     ?                  - Job Service: InitiateTransaction response | {"FTResponse":    {
+       "ReferenceID": "FT192961Y2J1",
+       "ResponseCode": "00",
+       "ResponseText": "SUCCESS",
+       "Balance": "9675114.04",
+       "COMMAMT": "0",
+       "CHARGEAMT": "0",
+       "FTID": "FT192961Y2J1"
+   }} | 12/24/2020 12:18:39 PM
+INFO  2020-12-24 12:39:04,537 101866ms scrowWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 12/24/2020 12:39:04 PM
+INFO  2020-12-24 12:39:06,063 103392ms scrowWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 1 | 12/24/2020 12:39:06 PM
+INFO  2020-12-24 12:39:34,604 131933ms lletPendingTransaction ?                  - Job Service-NonEscrowWalletPendingTransaction request | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/24/2020 12:39:34 PM
+INFO  2020-12-24 12:39:45,808 143137ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/24/2020 12:39:45 PM
+INFO  2020-12-24 12:39:59,027 156356ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/24/2020 12:39:59 PM
+INFO  2020-12-24 12:40:12,812 170141ms lletPendingTransaction ?                  - Job Service-NonEscrowWalletPendingTransaction successful | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/24/2020 12:40:12 PM
+INFO  2020-12-24 12:45:07,486 188205ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 12/24/2020 12:45:07 PM
+INFO  2020-12-24 12:45:08,835 189554ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 1 | 12/24/2020 12:45:08 PM
+INFO  2020-12-24 12:45:22,295 203014ms PendingBankTransaction ?                  - Job Service-NonEscrowPendingBankTransaction request | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/24/2020 12:45:22 PM
+INFO  2020-12-24 12:45:44,022 224741ms ferNonEscrowRepository ?                  - Job Service-InititiateMerchantCredit fiorano request | bf0f2c0f8550458d8467b994629035fe | 5baed68f-b92c-4212-9891-9bdf71baea54 | 0072443128 | 1100.00 | 12/24/2020 12:45:44 PM
+INFO  2020-12-24 12:45:51,194 231913ms CreditDebitService     ?                  - Job Service: InitiateTransaction | {"FT_Request":{"TransactionBranch":"NG0020006","TransactionType":"ACVE","DebitAcctNo":"0065428109","DebitCurrency":"NGN","CreditCurrency":"NGN","DebitAmount":"1100.00","CreditAccountNo":"0072443128","CommissionCode":"W","VtellerAppID":"111","narrations":"Credit Merchant Sterling Acc - bf0f2c0f8550458d8467b994629035fe - 5baed68f-b92c-4212-9891-9bdf71baea54","SessionId":"010b888e-9030-496f-80a5-3dd2645ae9dc","TrxnLocation":"::1"}} | 12/24/2020 12:45:51 PM
+INFO  2020-12-24 12:46:00,263 240982ms CreditDebitService     ?                  - Job Service: InitiateTransaction response | {"FTResponse":    {
+       "ReferenceID": "FT19296R9XVD",
+       "ResponseCode": "00",
+       "ResponseText": "SUCCESS",
+       "Balance": "19999906537.3",
+       "COMMAMT": "0",
+       "CHARGEAMT": "0",
+       "FTID": "FT19296R9XVD"
+   }} | 12/24/2020 12:46:00 PM
+INFO  2020-12-24 12:46:03,536 244255ms ferNonEscrowRepository ?                  - Job Service-InititiateMerchantCredit fiorano base response | bf0f2c0f8550458d8467b994629035fe | 5baed68f-b92c-4212-9891-9bdf71baea54 | SocialPay.Helper.Dto.Response.FTResponse | {"FTResponse":    {
+       "ReferenceID": "FT19296R9XVD",
+       "ResponseCode": "00",
+       "ResponseText": "SUCCESS",
+       "Balance": "19999906537.3",
+       "COMMAMT": "0",
+       "CHARGEAMT": "0",
+       "FTID": "FT19296R9XVD"
+   }} | 12/24/2020 12:46:03 PM
+INFO  2020-12-24 12:46:18,160 258879ms PendingBankTransaction ?                  - Job Service-NonEscrowPendingBankTransaction response | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/24/2020 12:46:18 PM
+INFO  2020-12-28 14:57:05,501 160102ms AcceptedEscrowOrders   ?                  - Job Service-AcceptedEscrowOrders | 12/28/2020 2:57:05 PM
+INFO  2020-12-28 14:57:09,302 163903ms AcceptedEscrowOrders   ?                  - Job Service-AcceptedEscrowOrders pending transactions | 1 | 12/28/2020 2:57:09 PM
+INFO  2020-12-28 14:57:36,192 190793ms scrowOrderTransactions ?                  - Job Service. AcceptedEscrowOrderTransactions-ProcessTransactions request | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 2:57:36 PM
+INFO  2020-12-28 14:58:07,575 222176ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/28/2020 2:58:07 PM
+INFO  2020-12-28 14:58:22,409 237010ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/28/2020 2:58:22 PM
+INFO  2020-12-28 14:58:32,707 247307ms scrowOrderTransactions ?                  - Job Service. AcceptedEscrowOrderTransactions-ProcessTransactions request was successful | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 2:58:32 PM
+INFO  2020-12-28 15:03:35,208 80497ms AcceptedEscrowOrders   ?                  - Job Service-AcceptedEscrowOrders | 12/28/2020 3:03:35 PM
+INFO  2020-12-28 15:03:38,718 84006ms AcceptedEscrowOrders   ?                  - Job Service-AcceptedEscrowOrders pending transactions | 1 | 12/28/2020 3:03:38 PM
+INFO  2020-12-28 15:03:45,722 91011ms scrowOrderTransactions ?                  - Job Service. AcceptedEscrowOrderTransactions-ProcessTransactions request | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 3:03:45 PM
+INFO  2020-12-28 15:03:55,083 100372ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/28/2020 3:03:55 PM
+INFO  2020-12-28 15:03:58,609 103898ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 0000000002 | 5baed68f-b92c-4212-9891-9bdf71baea54 | 08076683150 | 1100.00 | 12/28/2020 3:03:58 PM
+INFO  2020-12-28 15:04:14,855 120144ms scrowOrderTransactions ?                  - Job Service. AcceptedEscrowOrderTransactions-ProcessTransactions request was successful | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 3:04:14 PM
+INFO  2020-12-28 15:15:07,876 129074ms RequestBankTransaction ?                  - Job Service to fetch awaiting transactions | AcceptedEscrowRequestPendingBankTransaction | 12/28/2020 3:15:07 PM
+INFO  2020-12-28 15:15:09,103 130301ms RequestBankTransaction ?                  - Job Service total number of pending transactions | 1 | 12/28/2020 3:15:09 PM
+INFO  2020-12-28 15:15:23,807 145005ms PendingBankTransaction ?                  - Job Service-Accepted escrow bank transaction | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 3:15:23 PM
+INFO  2020-12-28 15:15:41,271 162469ms PendingBankTransaction ?                  - Job Service-Processing intra bank transaction | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 3:15:41 PM
+INFO  2020-12-28 15:30:14,316 97575ms RequestBankTransaction ?                  - Job Service to fetch awaiting transactions | AcceptedEscrowRequestPendingBankTransaction | 12/28/2020 3:30:14 PM
+INFO  2020-12-28 15:30:15,562 98822ms RequestBankTransaction ?                  - Job Service total number of pending transactions | 1 | 12/28/2020 3:30:15 PM
+INFO  2020-12-28 15:30:22,103 105362ms PendingBankTransaction ?                  - Job Service-Accepted escrow bank transaction | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 3:30:22 PM
+INFO  2020-12-28 15:30:24,647 107907ms PendingBankTransaction ?                  - Job Service-Processing intra bank transaction | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 3:30:24 PM
+INFO  2020-12-28 15:39:06,121 132165ms RequestBankTransaction ?                  - Job Service to fetch awaiting transactions | AcceptedEscrowRequestPendingBankTransaction | 12/28/2020 3:39:06 PM
+INFO  2020-12-28 15:39:07,561 133605ms RequestBankTransaction ?                  - Job Service total number of pending transactions | 1 | 12/28/2020 3:39:07 PM
+INFO  2020-12-28 15:39:13,130 139174ms PendingBankTransaction ?                  - Job Service-Accepted escrow bank transaction | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 3:39:13 PM
+INFO  2020-12-28 15:39:16,777 142821ms PendingBankTransaction ?                  - Job Service-Processing intra bank transaction | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 3:39:16 PM
+INFO  2020-12-28 15:39:51,501 177545ms CreditDebitService     ?                  - Job Service: InitiateTransaction | {"FT_Request":{"TransactionBranch":"NG0020006","TransactionType":"ACVE","DebitAcctNo":"0065428109","DebitCurrency":"NGN","CreditCurrency":"NGN","DebitAmount":"1100.00","CreditAccountNo":"0072443128","CommissionCode":"W","VtellerAppID":"111","narrations":"Credit Merchant Sterling Acc - bf0f2c0f8550458d8467b994629035fe - bf0f2c0f8550458d8467b994629035fe","SessionId":"dde9b0c5-be17-4281-8113-f4d46f6e84cd","TrxnLocation":"::1"}} | 12/28/2020 3:39:51 PM
+INFO  2020-12-28 15:40:26,028 212072ms CreditDebitService     ?                  - Job Service: InitiateTransaction response | {"FTResponse":    {
+       "ReferenceID": "FT19296QWTVG",
+       "ResponseCode": "00",
+       "ResponseText": "SUCCESS",
+       "Balance": "19999905437.3",
+       "COMMAMT": "0",
+       "CHARGEAMT": "0",
+       "FTID": "FT19296QWTVG"
+   }} | 12/28/2020 3:40:26 PM
+INFO  2020-12-28 15:40:38,021 224065ms PendingBankTransaction ?                  - Job Service-Accepted escrow bank request was successful | 5baed68f-b92c-4212-9891-9bdf71baea54 | bf0f2c0f8550458d8467b994629035fe | 12/28/2020 3:40:38 PM

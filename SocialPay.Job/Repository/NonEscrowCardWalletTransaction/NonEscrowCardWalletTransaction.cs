@@ -6,14 +6,14 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
+namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
 {
-    public class NonEscrowWalletTransaction : INonEscrowWalletTransaction
+    public class NonEscrowCardWalletTransaction : INonEscrowCardWalletTransaction
     {
-        private readonly NonEscrowWalletPendingTransaction _transactions;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowWalletTransaction));
+        private readonly NonEscrowCardWalletPendingTransaction _transactions;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowCardWalletTransaction));
 
-        public NonEscrowWalletTransaction(NonEscrowWalletPendingTransaction transactions, IServiceProvider services)
+        public NonEscrowCardWalletTransaction(NonEscrowCardWalletPendingTransaction transactions, IServiceProvider services)
         {
             Services = services;
             _transactions = transactions;
@@ -25,7 +25,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
         {
             try
             {
-                _log4net.Info("Job Service" + "-" + "to fetch awaiting transactions" + " | " + DateTime.Now);
+                _log4net.Info("Job Service" + "-" + "to fetch awaiting transactions for NonEscrowWalletTransaction" + " | " + DateTime.Now);
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -33,12 +33,13 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
 
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
-                        || x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
+                         && x.PaymentChannel == PaymentChannel.Card
+                        //|| x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
                         ).ToListAsync();
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
-                     _log4net.Info("Job Service. Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                     _log4net.Info("Job Service: NonEscrowWalletTransaction. Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                   
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
@@ -52,7 +53,7 @@ namespace SocialPay.Job.Repository.NonEscrowWalletTransaction
             }
             catch (Exception ex)
             {
-                 _log4net.Error("Job Service." + "Error occured" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                 _log4net.Error("Job Service. NonEscrowWalletTransaction" + "Error occured" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return "Error";
             }
 

@@ -29,15 +29,21 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    DateTime nextDay = DateTime.Now.Date.AddDays(1);
+                   
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.ActivityStatus == TransactionJourneyStatusCodes.WalletTranferCompleted
                         && x.TransactionStatus == TransactionJourneyStatusCodes.Approved
                         ).ToListAsync();
-                     _log4net.Info("Job Service total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
-                    if (pendingTransactions.Count == 0)
+
+                    var getEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Escrow
+                   || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
+
+                    _log4net.Info("Job Service total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                   
+                    if (getEscrowTransactions.Count == 0)
                         return "No record";
-                    await _transactions.ProcessTransactions(pendingTransactions);
+                    
+                    await _transactions.ProcessTransactions(getEscrowTransactions);
                     //return "No record";
                 }
 

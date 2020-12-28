@@ -18,12 +18,12 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
     public class AcceptedEscrowRequestPendingBankTransaction
     {
         private readonly AppSettings _appSettings;
-        private readonly FioranoTransferPayWithCardRepository _fioranoTransferRepository;
+        private readonly FioranoAcceptedEscrowRepository _fioranoTransferRepository;
         private readonly AcceptedEscrowInterBankPendingTransferService _interBankPendingTransferService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AcceptedEscrowRequestPendingBankTransaction));
 
         public AcceptedEscrowRequestPendingBankTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
-             FioranoTransferPayWithCardRepository fioranoTransferRepository,
+             FioranoAcceptedEscrowRepository fioranoTransferRepository,
          AcceptedEscrowInterBankPendingTransferService interBankPendingTransferService)
         {
             Services = service;
@@ -55,6 +55,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
 
                         if (getTransInfo == null)
                             return null;
+
                         transactionLogid = item.TransactionLogId;
 
                         string bankCode = string.Empty;
@@ -78,8 +79,8 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                             var initiateRequest = await _fioranoTransferRepository
                                .InititiateEscrowAcceptedRequest(Convert.ToString(getTransInfo.TotalAmount),
                                "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
-                               " - " + item.PaymentReference, item.PaymentReference,
-                               getBankInfo.Nuban, true, item.TransactionReference, "Intra-Bank Transfer", item.PaymentReference);
+                               " - " + item.TransactionReference, item.TransactionReference, getBankInfo.Nuban, item.PaymentChannel,
+                               "Intra-Bank Transfer", item.PaymentReference);
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                             {
