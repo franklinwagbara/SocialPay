@@ -49,7 +49,7 @@ namespace SocialPay.Core.Services.Wallet
                      apiResponse.responsedata = result;
                     return apiResponse;
                 }
-                if(result.Contains("Duplicate Records"))
+                if(result.Contains("Duplicate"))
                 {
                     apiResponse.response = AppResponseCodes.Success;
                     apiResponse.responsedata = result;

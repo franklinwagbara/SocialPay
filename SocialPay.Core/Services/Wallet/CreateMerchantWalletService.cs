@@ -32,11 +32,12 @@ namespace SocialPay.Core.Services.Wallet
 			_walletRepoService = walletRepoService;
 			_distributedCache = distributedCache;
 		}
+
 		public async Task<WebApiResponse> CreateWallet(long clientId)
         {
 			try
 			{
-				//clientId = 40080;
+				//clientId = 27;
 				_log4net.Info("Initiating CreateWallet request" + " | " + clientId + " | " + DateTime.Now);
 
 				var getUserInfo = await _context.ClientAuthentication
