@@ -54,7 +54,7 @@ namespace SocialPay.Core.Services.Wallet
 					firstname = getUserInfo.MerchantWallet.Select(x => x.Firstname).FirstOrDefault(),
 					lastname = getUserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault(),
 					Gender = getUserInfo.MerchantWallet.Select(x => x.Gender).FirstOrDefault(),
-					mobile = getUserInfo.PhoneNumber,
+					mobile = getUserInfo.PhoneNumber, AccountTier = "2"
 				};
 				var result = await _walletRepoService.CreateMerchantWallet(walletModel);
 				using(var transaction = await _context.Database.BeginTransactionAsync())

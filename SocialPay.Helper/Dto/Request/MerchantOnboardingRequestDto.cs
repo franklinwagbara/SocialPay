@@ -61,6 +61,7 @@ namespace SocialPay.Helper.Dto.Request
         public string DOB { get; set; }
         public string Gender { get; set; }
         public string CURRENCYCODE { get; set; }
+        public string AccountTier { get; set; }
         //public decimal customField { get; set; }
     }
 
