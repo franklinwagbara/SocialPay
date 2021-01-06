@@ -61,7 +61,7 @@ namespace SocialPay.Core.Services.IBS
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
             }
             catch (Exception ex)
-            {
+             {
                 _log4net.Error("Error occured" + " | " + "GetParticipatingBanks" + " | " + getBanksRequestModel.ReferenceID + " | " + getBanksRequestModel.RequestType + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

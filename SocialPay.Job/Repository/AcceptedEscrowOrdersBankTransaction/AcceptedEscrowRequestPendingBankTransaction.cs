@@ -158,7 +158,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction
                     //    await context.SaveChangesAsync();
                     //}
 
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

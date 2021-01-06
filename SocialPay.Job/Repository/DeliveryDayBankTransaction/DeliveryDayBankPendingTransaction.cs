@@ -19,6 +19,8 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
         private readonly AppSettings _appSettings;
         private readonly DeliveryDayFioranoTransferRepository _fioranoTransferRepository;
         private readonly DeliveryDayInterBankPendingTransferService _interBankPendingTransferService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayBankPendingTransaction));
+
         public DeliveryDayBankPendingTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
              DeliveryDayFioranoTransferRepository fioranoTransferRepository,
          DeliveryDayInterBankPendingTransferService interBankPendingTransferService)
@@ -33,6 +35,7 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
 
         public async Task<WebApiResponse> ProcessTransactions(List<TransactionLog> pendingRequest)
         {
+            long transactionLogId = 0;
             try
             {
                 using (var scope = Services.CreateScope())
@@ -40,18 +43,24 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service. Task starts to initiate DeliveryDayBankPendingTransaction" + " | " + item.PaymentReference + " | " +  " | " + DateTime.Now);
+
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
-                         .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                         && x.ActivityStatus == TransactionJourneyStatusCodes.WalletTranferCompleted
-                         && x.TransactionStatus == TransactionJourneyStatusCodes.Approved);
+                         .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
+
                         if (getTransInfo == null)
                             return null;
+
+                        transactionLogId = getTransInfo.TransactionLogId;
+
                         string bankCode = string.Empty;
                         var getBankInfo = await context.MerchantBankInfo
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+
                         if (getBankInfo == null)
                             return null;
+                        //getBankInfo.BankCode = "000014";
 
                         if (getBankInfo.BankCode == _appSettings.SterlingBankCode)
                         {
@@ -66,8 +75,8 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
                             var initiateRequest = await _fioranoTransferRepository
                                .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount),
                                "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
-                               " - " + item.PaymentReference, item.PaymentReference,
-                               getBankInfo.Nuban, true, item.PaymentChannel, "Intra-Bank Transfer", requestId,
+                               " - " + item.PaymentReference, item.TransactionReference,
+                               getBankInfo.Nuban, item.PaymentChannel, "Intra-Bank Transfer", item.PaymentReference,
                                getTransInfo.TransactionLogId);
 
                             if (initiateRequest.ResponseCode == AppResponseCodes.Success)
@@ -89,6 +98,7 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
                             await context.SaveChangesAsync();
                             return null;
                         }
+                      
                         var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
                             item.PaymentReference, item.TransactionReference);
@@ -115,7 +125,6 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
                         return null;
 
                         //Other banks transfer
-                        return null;
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
@@ -123,6 +132,7 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service An error occured. Base error" + " | " + transactionLogId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return null;
             }

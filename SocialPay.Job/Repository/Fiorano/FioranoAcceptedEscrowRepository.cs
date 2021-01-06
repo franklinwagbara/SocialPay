@@ -35,6 +35,8 @@ namespace SocialPay.Job.Repository.Fiorano
          string transactionRef, string creditAccountNo, string channel,
          string message, string paymentReference)
         {
+            _log4net.Info("Job Service: InititiateEscrowAcceptedRequest task starts" + " | " + paymentReference + " | " +  " | " + DateTime.Now);
+
             try
             {
                 using (var scope = Services.CreateScope())
@@ -113,12 +115,14 @@ namespace SocialPay.Job.Repository.Fiorano
 
             catch (Exception ex)
             {
+                _log4net.Error("Job Service: An error occured. Base error" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _log4net.Error("Job Service: An error occured. Duplicate transaction reference" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

@@ -21,6 +21,8 @@ namespace SocialPay.Job.Repository.InterBankService
         private readonly BankServiceRepositoryJobService _bankServiceRepositoryJobService;
         private readonly IBSReposerviceJob _iBSReposerviceJob;
         private readonly SqlRepository _sqlRepository;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayInterBankPendingTransferService));
+
         public DeliveryDayInterBankPendingTransferService(IServiceProvider service, IOptions<AppSettings> appSettings,
             BankServiceRepositoryJobService bankServiceRepositoryJobService,
             IBSReposerviceJob iBSReposerviceJob, SqlRepository sqlRepository)
@@ -38,8 +40,12 @@ namespace SocialPay.Job.Repository.InterBankService
             string desBankCode, string sourceAccount, long clientId, 
             string paymentReference, string transactionReference)
         {
+            _log4net.Info("Job Service: ProcessInterBankTransactions" + " | " + paymentReference + " | " +  " | " + DateTime.Now);
+
             try
             {
+               // destinationAccount = "0025998012";
+                //desBankCode = "000014";
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -74,7 +80,7 @@ namespace SocialPay.Job.Repository.InterBankService
                         CusNumVal = _appSettings.socialPayT24CustomerNum, DestinationBankCode = desBankCode,
                         ChannelCode = "2", LedCodeVal =  _appSettings.socialPayT24CustomerLedCode,
                         NESessionID = nipEnquiry.SessionID, AccountName = nipEnquiry.AccountName, AccountNumber = destinationAccount,
-                        BeneficiaryKYCLevel = nipEnquiry.KYCLevel, BeneficiaryBankVerificationNumber = nipEnquiry.BVN,
+                        BeneficiaryKYCLevel = nipEnquiry.KYCLevel, BeneficiaryBankVerificationNumber = "",
                         OriginatorAccountNumber = sourceAccount, OriginatorKYCLevel =nipEnquiry.KYCLevel,
                         OriginatorBankVerificationNumber = _appSettings.socialT24BVN, 
                         Fee = Convert.ToDecimal(getFeesAndVat.FeeAmount), Vat = Convert.ToDouble(getFeesAndVat.Vat),
@@ -109,6 +115,8 @@ namespace SocialPay.Job.Repository.InterBankService
             }
             catch (Exception ex)
             {
+                _log4net.Error("An error occured. Base error" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
@@ -126,7 +134,7 @@ namespace SocialPay.Job.Repository.InterBankService
                     //    await context.SaveChangesAsync();
                     //}
 
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + paymentReference + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction, Data = errorMessage };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

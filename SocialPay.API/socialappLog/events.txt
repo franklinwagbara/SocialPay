@@ -411,3 +411,60 @@ INFO  2020-12-28 23:02:27,846 69430ms WalletRepoJobService   ?                  
 INFO  2021-01-05 17:43:27,864 75506ms eMerchantWalletService ?                  - Initiating CreateWallet request | 27 | 1/5/2021 5:43:27 PM
 INFO  2021-01-05 17:43:43,883 91525ms WalletRepoService      ?                  - Initiating CreateMerchantWallet request | {"firstname":"Abayomi Sawyerr","lastname":"Abayomi Sawyerr","mobile":"08037015744","DOB":"1988-03-29","Gender":"Male","CURRENCYCODE":"NGN"} | 1/5/2021 5:43:43 PM
 INFO  2021-01-05 17:43:57,060 104702ms WalletRepoService      ?                  - Initiating CreateMerchantWallet response | {"message":"08037015744","response":"99","responsedata":"Could not create wallet","data":{"firstname":"Abayomi Sawyerr","lastname":"Abayomi Sawyerr","email":null,"mobile":"08037015744"}} | 1/5/2021 5:43:57 PM
+INFO  2021-01-06 10:42:16,201 110765ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 1/6/2021 10:42:16 AM
+INFO  2021-01-06 11:49:06,161 69671ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 1/6/2021 11:49:06 AM
+INFO  2021-01-06 11:49:07,552 71062ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 1 | 1/6/2021 11:49:07 AM
+INFO  2021-01-06 12:15:07,875 120247ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction | 1/6/2021 12:15:07 PM
+INFO  2021-01-06 12:15:08,848 121219ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction pending transactions | 1 | 1/6/2021 12:15:08 PM
+INFO  2021-01-06 12:24:08,729 198378ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction | 1/6/2021 12:24:08 PM
+INFO  2021-01-06 12:24:10,222 199871ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction pending transactions | 1 | 1/6/2021 12:24:10 PM
+INFO  2021-01-06 12:24:46,000 235649ms CreditDebitService     ?                  - Job Service: InitiateTransaction | {"FT_Request":{"TransactionBranch":"NG0020006","TransactionType":"ACVE","DebitAcctNo":"0063332884","DebitCurrency":"NGN","CreditCurrency":"NGN","DebitAmount":"1100.00","CreditAccountNo":"0072443128","CommissionCode":"W","VtellerAppID":"111","narrations":"Credit Merchant Sterling Acc - bf0f2c0f8550458d8467b994629035fe - 5baed68f-b92c-4212-9891-9bdf71baea54","SessionId":"1a281d4a-016c-45da-9622-2526728fff37","TrxnLocation":"::1"}} | 1/6/2021 12:24:45 PM
+INFO  2021-01-06 12:24:52,291 241940ms CreditDebitService     ?                  - Job Service: InitiateTransaction response | {"FTResponse":    {
+       "ReferenceID": "FT192960FY6D",
+       "ResponseCode": "00",
+       "ResponseText": "SUCCESS",
+       "Balance": "9674014.04",
+       "COMMAMT": "0",
+       "CHARGEAMT": "0",
+       "FTID": "FT192960FY6D"
+   }} | 1/6/2021 12:24:52 PM
+INFO  2021-01-06 13:35:36,632 209980ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/6/2021 1:35:36 PM
+INFO  2021-01-06 13:35:37,135 210483ms IBSReposervice         ?                  - Initiating GetParticipatingBanks request | 30678310-4807-4183-9c19-0035be8071d0 | 327 | 1/6/2021 1:35:37 PM
+INFO  2021-01-06 13:35:40,399 213747ms IBSReposervice         ?                  - Initiating GetParticipatingBanks xml request | <?xml version="1.0" encoding="utf-8"?><IBSRequest><ReferenceID>27a-466e-8a29-8b433f348c72 637455369403996304</ReferenceID><RequestType>327</RequestType></IBSRequest> | 327 | 1/6/2021 1:35:40 PM
+ERROR 2021-01-06 13:41:45,468 578816ms IBSReposervice         ?                  - Error occured | GetParticipatingBanks | 30678310-4807-4183-9c19-0035be8071d0 | 327 | An error occurred while sending the request. | 1/6/2021 1:41:45 PM
+INFO  2021-01-06 13:44:06,181 719529ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/6/2021 1:44:06 PM
+INFO  2021-01-06 13:44:06,183 719530ms IBSReposervice         ?                  - Initiating GetParticipatingBanks request | 5d47f3a5-5b51-4f94-8891-e55ce6868415 | 327 | 1/6/2021 1:44:06 PM
+INFO  2021-01-06 13:44:08,699 722047ms IBSReposervice         ?                  - Initiating GetParticipatingBanks xml request | <?xml version="1.0" encoding="utf-8"?><IBSRequest><ReferenceID>01f-4e8c-8aba-85b072dc0fb2 637455374486997204</ReferenceID><RequestType>327</RequestType></IBSRequest> | 327 | 1/6/2021 1:44:08 PM
+INFO  2021-01-06 13:44:12,386 725733ms IBSReposervice         ?                  - Initiating GetParticipatingBanks response | SterlingIBS.IBSBridgeResponse | 327 | 1/6/2021 1:44:12 PM
+INFO  2021-01-06 13:54:05,477 68182ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction | 1/6/2021 1:54:05 PM
+INFO  2021-01-06 13:54:06,294 68998ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction pending transactions | 1 | 1/6/2021 1:54:06 PM
+INFO  2021-01-06 13:54:14,791 77496ms BankPendingTransaction ?                  - Job Service. Task starts to initiate DeliveryDayBankPendingTransaction | 5baed68f-b92c-4212-9891-9bdf71baea54 |  | 1/6/2021 1:54:14 PM
+INFO  2021-01-06 13:54:27,560 90265ms PendingTransferService ?                  - Job Service: ProcessInterBankTransactions | 5baed68f-b92c-4212-9891-9bdf71baea54 |  | 1/6/2021 1:54:27 PM
+INFO  2021-01-06 13:54:39,518 102223ms ceRepositoryJobService ?                  - Job Service-LockAccountWithReasonAsync | 0065428109 | 1100.00 | 1/6/2021 12:10:00 AM | Funds transfer | 1/6/2021 12:00:00 AM | 1/6/2021 1:54:39 PM
+INFO  2021-01-06 13:54:49,110 111815ms ceRepositoryJobService ?                  - Job Service-LockAccountWithReasonAsync response | 0065428109 | 1100.00 | 1|ACLK19296M8DQF | 1/6/2021 1:54:49 PM
+INFO  2021-01-06 13:55:20,390 143095ms SqlRepository          ?                  - Job Service-SqlRepository | 1100.00 | 1/6/2021 1:55:20 PM
+INFO  2021-01-06 13:55:27,270 149975ms SqlRepository          ?                  - Job Service-SqlRepository calculated response | 10.00 | 1/6/2021 1:55:27 PM
+INFO  2021-01-06 14:03:03,506 145227ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction | 1/6/2021 2:03:03 PM
+INFO  2021-01-06 14:03:04,248 145969ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction pending transactions | 1 | 1/6/2021 2:03:04 PM
+INFO  2021-01-06 14:03:08,213 149934ms BankPendingTransaction ?                  - Job Service. Task starts to initiate DeliveryDayBankPendingTransaction | 5baed68f-b92c-4212-9891-9bdf71baea54 |  | 1/6/2021 2:03:08 PM
+INFO  2021-01-06 14:03:11,199 152920ms PendingTransferService ?                  - Job Service: ProcessInterBankTransactions | 5baed68f-b92c-4212-9891-9bdf71baea54 |  | 1/6/2021 2:03:11 PM
+INFO  2021-01-06 14:03:11,295 153016ms ceRepositoryJobService ?                  - Job Service-LockAccountWithReasonAsync | 0065428109 | 1100.00 | 1/6/2021 12:10:00 AM | Funds transfer | 1/6/2021 12:00:00 AM | 1/6/2021 2:03:11 PM
+INFO  2021-01-06 14:03:19,530 161251ms ceRepositoryJobService ?                  - Job Service-LockAccountWithReasonAsync response | 0065428109 | 1100.00 | 1|ACLK19296QR1ZB | 1/6/2021 2:03:19 PM
+INFO  2021-01-06 14:03:27,686 169407ms SqlRepository          ?                  - Job Service-SqlRepository | 1100.00 | 1/6/2021 2:03:27 PM
+INFO  2021-01-06 14:03:30,162 171883ms SqlRepository          ?                  - Job Service-SqlRepository calculated response | 10.00 | 1/6/2021 2:03:30 PM
+INFO  2021-01-06 14:06:00,212 93118ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction | 1/6/2021 2:06:00 PM
+INFO  2021-01-06 14:06:01,486 94393ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction pending transactions | 1 | 1/6/2021 2:06:01 PM
+INFO  2021-01-06 14:06:06,758 99664ms BankPendingTransaction ?                  - Job Service. Task starts to initiate DeliveryDayBankPendingTransaction | 5baed68f-b92c-4212-9891-9bdf71baea54 |  | 1/6/2021 2:06:06 PM
+INFO  2021-01-06 14:06:09,975 102881ms PendingTransferService ?                  - Job Service: ProcessInterBankTransactions | 5baed68f-b92c-4212-9891-9bdf71baea54 |  | 1/6/2021 2:06:09 PM
+INFO  2021-01-06 14:06:13,178 106084ms ceRepositoryJobService ?                  - Job Service-LockAccountWithReasonAsync | 0065428109 | 1100.00 | 1/6/2021 12:10:00 AM | Funds transfer | 1/6/2021 12:00:00 AM | 1/6/2021 2:06:13 PM
+INFO  2021-01-06 14:06:23,390 116296ms ceRepositoryJobService ?                  - Job Service-LockAccountWithReasonAsync response | 0065428109 | 1100.00 | 1|ACLK19296MWBKQ | 1/6/2021 2:06:23 PM
+INFO  2021-01-06 14:06:31,038 123944ms SqlRepository          ?                  - Job Service-SqlRepository | 1100.00 | 1/6/2021 2:06:31 PM
+INFO  2021-01-06 14:06:32,777 125683ms SqlRepository          ?                  - Job Service-SqlRepository calculated response | 10.00 | 1/6/2021 2:06:32 PM
+INFO  2021-01-06 14:15:00,145 181551ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction | 1/6/2021 2:15:00 PM
+INFO  2021-01-06 14:15:01,141 182547ms veryDayBankTransaction ?                  - Job Service-DeliveryDayBankTransaction pending transactions | 1 | 1/6/2021 2:15:01 PM
+INFO  2021-01-06 14:15:04,904 186310ms BankPendingTransaction ?                  - Job Service. Task starts to initiate DeliveryDayBankPendingTransaction | 5baed68f-b92c-4212-9891-9bdf71baea54 |  | 1/6/2021 2:15:04 PM
+INFO  2021-01-06 14:15:07,447 188852ms PendingTransferService ?                  - Job Service: ProcessInterBankTransactions | 5baed68f-b92c-4212-9891-9bdf71baea54 |  | 1/6/2021 2:15:07 PM
+INFO  2021-01-06 14:15:07,584 188990ms ceRepositoryJobService ?                  - Job Service-LockAccountWithReasonAsync | 0065428109 | 1100.00 | 1/6/2021 12:10:00 AM | Funds transfer | 1/6/2021 12:00:00 AM | 1/6/2021 2:15:07 PM
+INFO  2021-01-06 14:15:20,968 202374ms ceRepositoryJobService ?                  - Job Service-LockAccountWithReasonAsync response | 0065428109 | 1100.00 | 1|ACLK192965QMFJ | 1/6/2021 2:15:20 PM
+INFO  2021-01-06 14:15:49,944 231350ms SqlRepository          ?                  - Job Service-SqlRepository | 1100.00 | 1/6/2021 2:15:49 PM
+INFO  2021-01-06 14:15:51,593 232999ms SqlRepository          ?                  - Job Service-SqlRepository calculated response | 10.00 | 1/6/2021 2:15:51 PM

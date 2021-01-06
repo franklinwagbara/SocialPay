@@ -172,7 +172,7 @@ namespace SocialPay.API
             //});
 
             services.AddScoped<INotificationServices, NotificationService>();
-            //services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
+            services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
             services.AddSingleton<JobEmailService>();
             services.AddSingleton<NotificationTransactions>();
 
@@ -183,57 +183,57 @@ namespace SocialPay.API
             ////services.AddSingleton<PendingWalletRequestService>();        
 
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
-            //services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+            services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
 
 
             services.AddScoped<IDeclineEscrowWalletTransaction, DeclineEscrowWalletTransaction>();
-            //services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
+            services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
             services.AddSingleton<DeclineEscrowWalletPendingTransaction>();
 
             //Non escrow wallet transaction
 
             services.AddScoped<INonEscrowCardWalletTransaction, NonEscrowCardWalletTransaction>();
-            //services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
+            services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
             services.AddSingleton<NonEscrowCardWalletPendingTransaction>();
 
 
             services.AddScoped<INonEscrowOtherWalletTransaction, NonEscrowOtherWalletTransaction>();
-           // services.AddSingleton<IHostedService, NonEscrowOtherWalletTransactionTask>();
+            services.AddSingleton<IHostedService, NonEscrowOtherWalletTransactionTask>();
             services.AddSingleton<NonEscrowOtherWalletPendingTransaction>();
 
             //Non escrow bank transaction
 
             services.AddScoped<INonEscrowBankTransaction, NonEscrowBankTransaction>();
-            //services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
+            services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
             services.AddSingleton<NonEscrowPendingBankTransaction>();
 
             //Accepted order service
 
             services.AddScoped<IAcceptedEscrowOrders, AcceptedEscrowOrders>();
-           // services.AddSingleton<IHostedService, AcceptedWalletOrderTask>();
+            services.AddSingleton<IHostedService, AcceptedWalletOrderTask>();
             services.AddSingleton<AcceptedEscrowOrderTransactions>();
 
             //accepted escrow bank request
 
             services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
-           // services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
+            services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
             services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
 
             //////Credit T24 account for card payments
             services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
-            //services.AddSingleton<IHostedService, CardPaymentTask>();
+            services.AddSingleton<IHostedService, CardPaymentTask>();
             services.AddSingleton<PendingPayWithCardTransaction>();
             services.AddSingleton<CreditDebitService>();
 
             ////Credit Social pay wallet from merchant wallet
 
             services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
-            //services.AddSingleton<IHostedService, DeliveryDayWalletTask>();
+            services.AddSingleton<IHostedService, DeliveryDayWalletTask>();
             services.AddSingleton<DeliveryDayTransferService>();
 
             services.AddScoped<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
-            //services.AddSingleton<IHostedService, DeliveryDayBankTask>();
+            services.AddSingleton<IHostedService, DeliveryDayBankTask>();
             services.AddSingleton<DeliveryDayBankPendingTransaction>();
 
 
