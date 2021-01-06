@@ -114,25 +114,30 @@ namespace SocialPay.Job.Repository.Fiorano
 
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
                 using (var scope = Services.CreateScope())
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    var getTransInfo = await context.TransactionLog
-                      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
-
-                    var failedResponse = new FailedTransactions
+                    if (errorMessage.Contains("Violation") || code == 2627)
                     {
-                        CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
-                        Message = errorMessage,
-                        TransactionReference = getTransInfo.TransactionReference
-                    };
-                    await context.FailedTransactions.AddAsync(failedResponse);
-                    await context.SaveChangesAsync();
+                        //using (var scope = Services.CreateScope())
+                        //{
+                        //    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                        //    var getTransInfo = await context.TransactionLog
+                        //      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                    await context.SaveChangesAsync();
+                        //    getTransInfo.OrderStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
+                        //    getTransInfo.LastDateModified = DateTime.Now;
+                        //    context.Update(getTransInfo);
+                        //    await context.SaveChangesAsync();
+                        //}
+
+                        _log4net.Error("Job Service" + "-" + "Error occured. Duplicate transaction" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                    }
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

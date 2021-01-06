@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210106131015_modified_deliveryday_fiorano_table_2")]
+    partial class modified_deliveryday_fiorano_table_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,10 +93,10 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("AccountLockID")
-                        .HasColumnType("NVARCHAR(30)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("AccountName")
-                        .HasColumnType("NVARCHAR(50)");
+                        .HasColumnType("NVARCHAR(40)");
 
                     b.Property<string>("AccountNumber")
                         .HasColumnType("NVARCHAR(20)");
@@ -139,7 +141,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("NESessionID")
-                        .HasColumnType("NVARCHAR(50)");
+                        .HasColumnType("NVARCHAR(35)");
 
                     b.Property<string>("OriginatorAccountNumber")
                         .HasColumnType("NVARCHAR(20)");
@@ -151,7 +153,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("OrignatorName")
-                        .HasColumnType("NVARCHAR(50)");
+                        .HasColumnType("NVARCHAR(40)");
 
                     b.Property<string>("PaymentRef")
                         .HasColumnType("NVARCHAR(120)");
@@ -1026,10 +1028,10 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(90)");
 
                     b.Property<string>("AccountLockID")
-                        .HasColumnType("NVARCHAR(30)");
+                        .HasColumnType("NVARCHAR(15)");
 
                     b.Property<string>("AccountName")
-                        .HasColumnType("NVARCHAR(50)");
+                        .HasColumnType("NVARCHAR(40)");
 
                     b.Property<string>("AccountNumber")
                         .HasColumnType("NVARCHAR(20)");
@@ -1074,7 +1076,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(10)");
 
                     b.Property<string>("NESessionID")
-                        .HasColumnType("NVARCHAR(50)");
+                        .HasColumnType("NVARCHAR(35)");
 
                     b.Property<string>("OriginatorAccountNumber")
                         .HasColumnType("NVARCHAR(20)");
@@ -1086,7 +1088,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("NVARCHAR(20)");
 
                     b.Property<string>("OrignatorName")
-                        .HasColumnType("NVARCHAR(50)");
+                        .HasColumnType("NVARCHAR(40)");
 
                     b.Property<string>("PaymentRef")
                         .HasColumnType("NVARCHAR(120)");

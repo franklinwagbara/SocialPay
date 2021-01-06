@@ -95,6 +95,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
 
                         await context.DefaultWalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
+
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {

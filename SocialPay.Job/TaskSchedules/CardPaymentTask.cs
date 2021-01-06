@@ -12,8 +12,8 @@ namespace SocialPay.Job.TaskSchedules
         {
         }
 
-        protected override string Schedule => "*/" + 3 + " * * * *"; // every 4 min 
-
+        //protected override string Schedule => "*/" + 30 + " * * * *"; // every 4 min 
+        protected override string Schedule => "20 16 * * * "; // every 4 min 
         public override Task ProcessInScope(IServiceProvider scopeServiceProvider)
         {
             IPayWithCardTransaction reportGenerator = scopeServiceProvider.GetRequiredService<IPayWithCardTransaction>();

@@ -149,32 +149,15 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Job Service" + "-" + "Base Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    //using (var scope = Services.CreateScope())
-                    //{
-                    //    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    //    var getTransInfo = await context.TransactionLog
-                    //      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
-
-                    //    var failedResponse = new FailedTransactions
-                    //    {
-                    //        CustomerTransactionReference = getTransInfo.CustomerTransactionReference,
-                    //        Message = errorMessage,
-                    //        TransactionReference = getTransInfo.TransactionReference
-                    //    };
-                    //    await context.FailedTransactions.AddAsync(failedResponse);
-                    //    await context.SaveChangesAsync();
-
-                    //    await context.SaveChangesAsync();
-                    //}
-
-                    //_log4net.Error("An error occured. Duplicate transaction reference" + " | " + transferRequestDto.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                   
+                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

@@ -23,17 +23,17 @@ namespace SocialPay.Domain.Entities
         public string OriginatorBankVerificationNumber { get; set; }
         [Column(TypeName = "int")]
         public int AppID { get; set; }
-        [Column(TypeName = "NVARCHAR(15)")]
+        [Column(TypeName = "NVARCHAR(30)")]
         public string AccountLockID { get; set; }
         [Column(TypeName = "NVARCHAR(20)")]
         public string OriginatorAccountNumber { get; set; }
         [Column(TypeName = "NVARCHAR(20)")]
         public string AccountNumber { get; set; }
-        [Column(TypeName = "NVARCHAR(40)")]
+        [Column(TypeName = "NVARCHAR(50)")]
         public string AccountName { get; set; }
         [Column(TypeName = "NVARCHAR(10)")]
         public string DestinationBankCode { get; set; }
-        [Column(TypeName = "NVARCHAR(40)")]
+        [Column(TypeName = "NVARCHAR(50)")]
         public string OrignatorName { get; set; }
         [Column(TypeName = "NVARCHAR(10)")]
         public string SubAcctVal { get; set; }
@@ -53,7 +53,7 @@ namespace SocialPay.Domain.Entities
         public decimal Amount { get; set; }
         [Column(TypeName = "NVARCHAR(120)")]
         public string PaymentRef { get; set; }
-        [Column(TypeName = "NVARCHAR(35)")]
+        [Column(TypeName = "NVARCHAR(50)")]
         public string NESessionID { get; set; }
         [Column(TypeName = "NVARCHAR(10)")]
         public string ChannelCode { get; set; }
