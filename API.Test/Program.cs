@@ -13,12 +13,14 @@ namespace API.Test
         {
             string sDate = DateTime.Now.ToShortDateString();
 
-            Random random = new Random();
+            var random = new Random();
             string randomNumber = string.Join(string.Empty, Enumerable.Range(0, 10).Select(number => random.Next(0, 9).ToString()));
-
+           
             var timeString = DateTime.Now.ToString("hh:mm:ss");
             string date = DateTime.UtcNow.ToString("MM-dd-yyyy");
             string date2 = DateTime.UtcNow.ToString("MMddyyyyhhmmss");
+
+            string braCode = "000001" + date2 + randomNumber;
             //DateTime nextDay = DateTime.Now.Date;
             //String myDate = "05-12-2020";
             //DateTime sdate = DateTime.Parse(myDate);

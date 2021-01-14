@@ -488,3 +488,17 @@ INFO  2021-01-14 14:05:16,224 46580ms antRegistrationService ?                  
 INFO  2021-01-14 17:02:45,940 68441ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/14/2021 5:02:45 PM
 INFO  2021-01-14 17:02:47,209 69711ms IBSReposervice         ?                  - Initiating GetParticipatingBanks request | 1/14/2021 5:02:47 PM
 INFO  2021-01-14 17:02:48,486 70987ms IBSReposervice         ?                  - Initiating GetParticipatingBanks response | 273 | 1/14/2021 5:02:48 PM
+INFO  2021-01-14 17:31:14,265 73081ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo request | 000013 | string | string | 0 | 1/14/2021 5:31:14 PM
+INFO  2021-01-14 17:31:18,347 77163ms IBSReposervice         ?                  - Initiating InitiateNameEnquiry request | 3bef60e5-aff1-4be1-ade8-41506dd17575 | 000013 | 0025922225 | 1/14/2021 5:31:18 PM
+INFO  2021-01-14 17:34:20,215 48023ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo request | 000013 | string | string | 0 | 1/14/2021 5:34:20 PM
+INFO  2021-01-14 17:34:22,892 50699ms IBSReposervice         ?                  - Initiating InitiateNameEnquiry request | a4801f51-97aa-4ed1-a694-d9afe5862398 | 000013 | 0025922225 | 1/14/2021 5:34:22 PM
+INFO  2021-01-14 17:47:08,942 69359ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo request | 000013 | string | string | 0 | 1/14/2021 5:47:08 PM
+INFO  2021-01-14 17:47:11,113 71530ms IBSReposervice         ?                  - Initiating InitiateNameEnquiry request | d66e1b4b-e9d0-4f8f-8a64-19231e4c1e40 | 000013 | 0025922225 | 1/14/2021 5:47:11 PM
+INFO  2021-01-14 17:50:04,488 29668ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 1/14/2021 5:50:04 PM
+INFO  2021-01-14 17:50:05,542 30722ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 1/14/2021 5:50:05 PM
+INFO  2021-01-14 17:50:31,589 56769ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo request | 000013 | string | string | 0 | 1/14/2021 5:50:31 PM
+INFO  2021-01-14 17:50:33,637 58817ms IBSReposervice         ?                  - Initiating InitiateNameEnquiry request | 66a03d62-c5e3-417a-938d-f854786c3df3 | 000013 | 0025922225 | 1/14/2021 5:50:33 PM
+INFO  2021-01-14 18:08:44,320 60883ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo request | 000013 | string | string | 0 | 1/14/2021 6:08:44 PM
+INFO  2021-01-14 18:08:46,090 62653ms IBSReposervice         ?                  - Initiating InitiateNameEnquiry request | 2fec32e9-1b19-4661-91f8-12736f9f9cfe | 000013 | 0025922225 | 1/14/2021 6:08:45 PM
+INFO  2021-01-14 18:13:34,643 55550ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo request | 000013 | string | string | 0 | 1/14/2021 6:13:34 PM
+INFO  2021-01-14 18:13:38,645 59552ms IBSReposervice         ?                  - Initiating InitiateNameEnquiry request | 671e889b-6b55-4064-9284-29590989c8b9 | 000013 | 0025922225 | 1/14/2021 6:13:38 PM

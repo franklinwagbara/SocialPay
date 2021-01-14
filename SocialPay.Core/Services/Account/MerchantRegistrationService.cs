@@ -459,19 +459,20 @@ namespace SocialPay.Core.Services.Account
                 //clientId = 18;
                 _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + clientId + " | "+ DateTime.Now);
 
-                
+
                 ////if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
                 //// x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
                 ////    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
-                //var nibsRequestModelTest = new IBSNameEnquiryRequestDto
-                //{
-                //    ReferenceID = Guid.NewGuid().ToString(),
-                //    ToAccount = model.Nuban,
-                //    DestinationBankCode = model.BankCode,
-                //    RequestType = _appSettings.nameEnquiryRequestType,
-                //};
-                //var ibsRequestTest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModelTest);
+                ////var nibsRequestModel = new IBSNameEnquiryRequestDto
+                ////{
+                ////    ReferenceID = Guid.NewGuid().ToString(),
+                ////    ToAccount = model.Nuban,
+                ////    DestinationBankCode = model.BankCode,
+                ////    RequestType = _appSettings.nameEnquiryRequestType,
+                ////};
+
+                ////var ibsRequest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModel); ;
 
 
                 var getUserInfo = await _context.ClientAuthentication
@@ -531,6 +532,7 @@ namespace SocialPay.Core.Services.Account
                 }
                 _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
 
+
                 var nibsRequestModel = new IBSNameEnquiryRequestDto
                 {
                     ReferenceID = Guid.NewGuid().ToString(),
@@ -544,6 +546,7 @@ namespace SocialPay.Core.Services.Account
 
                 if (ibsRequest.BVN != model.BVN)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN };
+
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
