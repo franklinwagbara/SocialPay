@@ -715,7 +715,8 @@ namespace SocialPay.Core.Services.Account
                     ReferenceID = Guid.NewGuid().ToString(),
                     RequestType = _appSettings.getBanksRequestType
                 };
-                var result = await _iBSReposervice.GetParticipatingBanks(nibsRequestModel);
+               // var result = await _iBSReposervice.GetParticipatingBanks(nibsRequestModel);
+                var result = await _iBSReposervice.GetBanks();
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)

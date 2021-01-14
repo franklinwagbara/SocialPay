@@ -1,12 +1,16 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols;
 using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Utilities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.ViewModel;
 using SterlingIBS;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +27,50 @@ namespace SocialPay.Core.Services.IBS
         public IBSReposervice(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
+        }
+
+
+        public async Task<List<GetParticipatingBanksViewModel>> GetBanks()
+        {
+            var result = new List<GetParticipatingBanksViewModel>();
+            try
+            {
+                _log4net.Info("Initiating GetParticipatingBanks request" + " | " +  DateTime.Now);
+
+                using (SqlConnection conn = new SqlConnection(_appSettings.nipdbConnectionString))
+                {
+
+                    string queryString = "select bankcode, bankname, category, statusflag from tbl_participatingbanks order by bankname asc";
+                    SqlCommand oCmd = new SqlCommand(queryString, conn);
+                    await conn.OpenAsync();
+                    using (SqlDataReader oReader = await oCmd.ExecuteReaderAsync())
+                    {
+
+                        while (await oReader.ReadAsync())
+                        {
+                            var details = new GetParticipatingBanksViewModel();
+                            details.BankCode = oReader["bankcode"].ToString();
+                            details.BankName = oReader["bankname"].ToString();
+                            details.Category = oReader["category"].ToString();
+                            details.Statusflag = oReader["statusflag"].ToString();
+
+                            result.Add(details);
+                        }
+                        await conn.CloseAsync();
+                        await conn.DisposeAsync();
+                        _log4net.Info("Initiating GetParticipatingBanks response" + " | " + result.Count + " | " + DateTime.Now);
+
+                        return result;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetParticipatingBanks" + " | "  + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return result;
+            }
+
         }
 
 
