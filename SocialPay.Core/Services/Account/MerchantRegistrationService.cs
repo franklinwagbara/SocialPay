@@ -704,6 +704,24 @@ namespace SocialPay.Core.Services.Account
         }
 
 
+        public async Task<WebApiResponse> InitiateEnquiry()
+        {
+            try
+            {
+                _log4net.Info("Initiating GetListOfBanks request" + " | " + DateTime.Now);
+
+              
+                var result = await _iBSReposervice.GetParticipatingBanksTest();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetListOfBanks" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> GetListOfBanks()
         {
             try

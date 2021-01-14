@@ -138,7 +138,37 @@ namespace SocialPay.API.Controllers
             }
         }
 
-       // [AllowAnonymous]
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("Name-enquiry")]
+        public async Task<IActionResult> NameEnquiry()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    var result = await _merchantRegistrationService.InitiateEnquiry();
+
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+        // [AllowAnonymous]
         [HttpPost]
         [Route("transaction-setup")]
         public async Task<IActionResult> TransactionSetup([FromBody] MerchantActivitySetupRequestDto model)

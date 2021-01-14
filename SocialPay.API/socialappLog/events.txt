@@ -484,3 +484,7 @@ INFO  2021-01-14 12:07:37,781 68316ms antRegistrationService ?                  
 INFO  2021-01-14 12:07:39,837 70371ms IBSReposervice         ?                  - Initiating GetParticipatingBanks request | 1/14/2021 12:07:39 PM
 INFO  2021-01-14 12:07:41,449 71983ms IBSReposervice         ?                  - Initiating GetParticipatingBanks response | 1268 | 1/14/2021 12:07:41 PM
 INFO  2021-01-14 12:30:33,164 67100ms MerchantReportService  ?                  - Initiating GetAllUsers request | 1/14/2021 12:30:33 PM
+INFO  2021-01-14 14:05:16,224 46580ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/14/2021 2:05:16 PM
+INFO  2021-01-14 17:02:45,940 68441ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/14/2021 5:02:45 PM
+INFO  2021-01-14 17:02:47,209 69711ms IBSReposervice         ?                  - Initiating GetParticipatingBanks request | 1/14/2021 5:02:47 PM
+INFO  2021-01-14 17:02:48,486 70987ms IBSReposervice         ?                  - Initiating GetParticipatingBanks response | 273 | 1/14/2021 5:02:48 PM
