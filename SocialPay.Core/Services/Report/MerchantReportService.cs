@@ -192,6 +192,30 @@ namespace SocialPay.Core.Services.Report
         }
 
 
+        public async Task<WebApiResponse> GetAllUsers()
+        {
+            var result = new List<ItemDisputeViewModel>();
+            try
+            {
+                _log4net.Info("Initiating GetAllUsers request" + " | " +  DateTime.Now);
+
+                //clientId = 30032;
+                var response = await (from c in _context.ClientAuthentication                               
+                               select new { Email = c.Email, ClientAuthenticationId = c.ClientAuthenticationId,
+                               DateRegistered = c.DateEntered, StatusCode = c.StatusCode, UserRole = c.RoleName,
+                               UserName = c.UserName, PhoneNumber = c.PhoneNumber}).ToListAsync(); 
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllLoggedDisputes" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
 
         public async Task<WebApiResponse> GetAllInvoiceByMerchantId(long clientId)
         {
