@@ -219,13 +219,16 @@ namespace SocialPay.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("clear-user-account")]
-        public async Task<IActionResult> ClearUserDetails(string email)
+        public async Task<IActionResult> ClearUserDetails(string email, string reference)
         {
             _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
 
             var response = new WebApiResponse { };
             try
             {
+                if (reference != "sterling0007")
+                    return BadRequest();
+
                 if (ModelState.IsValid)
                 {
                     var result = await _transactionService.ClearUserAccount(email);
@@ -250,13 +253,16 @@ namespace SocialPay.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("clear-user-wallet")]
-        public async Task<IActionResult> ClearMerchantWallet(string phoneNumber)
+        public async Task<IActionResult> ClearMerchantWallet(string phoneNumber, string reference)
         {
             _log4net.Info("Tasks starts to clear user account" + " | " + phoneNumber + " | " + DateTime.Now);
 
             var response = new WebApiResponse { };
             try
             {
+                if (reference != "sterling002")
+                    return BadRequest();
+
                 if (ModelState.IsValid)
                 {
                     var result = await _createMerchantWalletService.ClearMerchantWalletInfo(phoneNumber);
@@ -292,6 +298,38 @@ namespace SocialPay.API.Controllers
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     var result = await _merchantReportService.GetAllLoggedDisputes(Convert.ToInt32(clientId), true);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-users")]
+        public async Task<IActionResult> Getusers([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if(reference != "sterling004")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    
+                    var result = await _merchantReportService.GetAllUsers();
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
