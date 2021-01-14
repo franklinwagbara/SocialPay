@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols;
+using NewIbsService;
 using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Utilities;
@@ -40,7 +41,7 @@ namespace SocialPay.Core.Services.IBS
                 using (SqlConnection conn = new SqlConnection(_appSettings.nipdbConnectionString))
                 {
 
-                    string queryString = "select bankcode, bankname, category, statusflag from tbl_participatingbanks order by bankname asc";
+                    string queryString = "select distinct bankcode, bankname from tbl_participatingbanks order by bankname asc";
                     SqlCommand oCmd = new SqlCommand(queryString, conn);
                     await conn.OpenAsync();
                     using (SqlDataReader oReader = await oCmd.ExecuteReaderAsync())
@@ -51,8 +52,8 @@ namespace SocialPay.Core.Services.IBS
                             var details = new GetParticipatingBanksViewModel();
                             details.BankCode = oReader["bankcode"].ToString();
                             details.BankName = oReader["bankname"].ToString();
-                            details.Category = oReader["category"].ToString();
-                            details.Statusflag = oReader["statusflag"].ToString();
+                            //details.Category = oReader["category"].ToString();
+                            //details.Statusflag = oReader["statusflag"].ToString();
 
                             result.Add(details);
                         }
@@ -71,6 +72,33 @@ namespace SocialPay.Core.Services.IBS
                 return result;
             }
 
+        }
+
+
+        public async Task<WebApiResponse> GetParticipatingBanksTest()
+        {
+          //  _log4net.Info("Initiating GetParticipatingBanks request" + " | " + getBanksRequestModel.ReferenceID + " | " + getBanksRequestModel.RequestType + " | " + DateTime.Now);
+
+            try
+            {
+                var ibsService = new NewIBSSoapClient(NewIBSSoapClient.EndpointConfiguration.NewIBSSoap);
+                string referenceId = Guid.NewGuid().ToString().Substring(10) + " " + Convert.ToString(DateTime.Now.Ticks);
+
+               
+               // var en = new EncryptDecrypt();
+                //var encryptRequest = en.Encrypt(getBanksStringRequest);
+                var encryptedDataRequest = await ibsService.NameEnquiryAsync(referenceId, "000014", "1", "0025998012");
+               // _log4net.Info("Initiating GetParticipatingBanks response" + " | " + encryptedDataRequest + " | " + getBanksRequestModel.RequestType + " | " + DateTime.Now);
+
+              
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+            }
+            catch (Exception ex)
+            {
+              //  _log4net.Error("Error occured" + " | " + "GetParticipatingBanks" + " | " + getBanksRequestModel.ReferenceID + " | " + getBanksRequestModel.RequestType + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
         }
 
 
