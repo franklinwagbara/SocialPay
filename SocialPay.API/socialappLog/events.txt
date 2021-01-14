@@ -468,3 +468,18 @@ INFO  2021-01-06 14:15:07,584 188990ms ceRepositoryJobService ?                 
 INFO  2021-01-06 14:15:20,968 202374ms ceRepositoryJobService ?                  - Job Service-LockAccountWithReasonAsync response | 0065428109 | 1100.00 | 1|ACLK192965QMFJ | 1/6/2021 2:15:20 PM
 INFO  2021-01-06 14:15:49,944 231350ms SqlRepository          ?                  - Job Service-SqlRepository | 1100.00 | 1/6/2021 2:15:49 PM
 INFO  2021-01-06 14:15:51,593 232999ms SqlRepository          ?                  - Job Service-SqlRepository calculated response | 10.00 | 1/6/2021 2:15:51 PM
+INFO  2021-01-14 10:34:09,898 126488ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/14/2021 10:34:09 AM
+INFO  2021-01-14 10:34:11,299 127889ms IBSReposervice         ?                  - Initiating GetParticipatingBanks request | 9a8f6aca-fadd-469e-8bf9-e2e58b99aab5 | 327 | 1/14/2021 10:34:11 AM
+INFO  2021-01-14 10:34:13,872 130462ms IBSReposervice         ?                  - Initiating GetParticipatingBanks xml request | <?xml version="1.0" encoding="utf-8"?><IBSRequest><ReferenceID>09a-4a74-80f7-a608c19b4ab3 637462172538722832</ReferenceID><RequestType>327</RequestType></IBSRequest> | 327 | 1/14/2021 10:34:13 AM
+INFO  2021-01-14 10:34:17,426 134016ms IBSReposervice         ?                  - Initiating GetParticipatingBanks response | SterlingIBS.IBSBridgeResponse | 327 | 1/14/2021 10:34:17 AM
+INFO  2021-01-14 10:37:11,218 44794ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/14/2021 10:37:11 AM
+INFO  2021-01-14 10:37:11,315 44891ms IBSReposervice         ?                  - Initiating GetParticipatingBanks request | 3ccb14e5-7436-4d35-97df-c97f5abb77fc | 327 | 1/14/2021 10:37:11 AM
+INFO  2021-01-14 10:37:12,592 46168ms IBSReposervice         ?                  - Initiating GetParticipatingBanks xml request | <?xml version="1.0" encoding="utf-8"?><IBSRequest><ReferenceID>ac4-4737-8284-b2e9947a5423 637462174325913160</ReferenceID><RequestType>327</RequestType></IBSRequest> | 327 | 1/14/2021 10:37:12 AM
+INFO  2021-01-14 10:37:15,711 49287ms IBSReposervice         ?                  - Initiating GetParticipatingBanks response | SterlingIBS.IBSBridgeResponse | 327 | 1/14/2021 10:37:15 AM
+INFO  2021-01-14 11:57:43,519 44532ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/14/2021 11:57:43 AM
+INFO  2021-01-14 11:59:58,782 40897ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/14/2021 11:59:58 AM
+INFO  2021-01-14 12:03:48,711 49234ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/14/2021 12:03:48 PM
+INFO  2021-01-14 12:03:49,919 50442ms IBSReposervice         ?                  - Initiating GetParticipatingBanks request | 1/14/2021 12:03:49 PM
+INFO  2021-01-14 12:07:37,781 68316ms antRegistrationService ?                  - Initiating GetListOfBanks request | 1/14/2021 12:07:37 PM
+INFO  2021-01-14 12:07:39,837 70371ms IBSReposervice         ?                  - Initiating GetParticipatingBanks request | 1/14/2021 12:07:39 PM
+INFO  2021-01-14 12:07:41,449 71983ms IBSReposervice         ?                  - Initiating GetParticipatingBanks response | 1268 | 1/14/2021 12:07:41 PM
