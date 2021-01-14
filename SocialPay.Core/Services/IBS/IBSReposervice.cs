@@ -13,6 +13,7 @@ using SterlingIBS;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -146,7 +147,7 @@ namespace SocialPay.Core.Services.IBS
 
 
 
-        public async Task<IBSNameEnquiryResponseDto> InitiateNameEnquiry(IBSNameEnquiryRequestDto iBSNameEnquiryRequestDto)
+        public async Task<IBSNameEnquiryResponseDto> InitiateNameEnquiryOld(IBSNameEnquiryRequestDto iBSNameEnquiryRequestDto)
         {
             _log4net.Info("Initiating InitiateNameEnquiry request" + " | " + iBSNameEnquiryRequestDto.ReferenceID + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " +  DateTime.Now);
 
@@ -182,6 +183,48 @@ namespace SocialPay.Core.Services.IBS
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "InitiateNameEnquiry" + " | " + iBSNameEnquiryRequestDto.ReferenceID + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
+                return new IBSNameEnquiryResponseDto { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<IBSNameEnquiryResponseDto> InitiateNameEnquiry(IBSNameEnquiryRequestDto iBSNameEnquiryRequestDto)
+        {
+            _log4net.Info("Initiating InitiateNameEnquiry request" + " | " + iBSNameEnquiryRequestDto.ReferenceID + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " + DateTime.Now);
+
+
+            try
+            {
+                var random = new Random();
+                string randomNumber = string.Join(string.Empty, Enumerable.Range(0, 10).Select(number => random.Next(0, 9).ToString()));
+
+                var dateFormat = DateTime.UtcNow.ToString("MMddyyyyhhmmss");
+
+                var sessionId = _appSettings.SterlingBankCode + dateFormat + randomNumber;
+
+                var ibsService = new NewIBSSoapClient(NewIBSSoapClient.EndpointConfiguration.NewIBSSoap, _appSettings.nfpliveUrl);
+                string referenceId = Guid.NewGuid().ToString().Substring(10) + " " + Convert.ToString(DateTime.Now.Ticks);
+
+                var sendRequest = await ibsService.NameEnquiryAsync(sessionId, iBSNameEnquiryRequestDto.DestinationBankCode, "1", iBSNameEnquiryRequestDto.ToAccount);
+                var response = sendRequest.Body.NameEnquiryResult.ToString();
+
+                if (!response.Contains("00"))
+                    return new IBSNameEnquiryResponseDto { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
+
+
+                //00:PATRICK FESTUS OREVAGHENE: 22341210148:2
+                var result = new IBSNameEnquiryResponseDto
+                {
+                    BVN = response.Split(":")[2],
+                    AccountName = response.Split(":")[1],
+                    ResponseCode = AppResponseCodes.Success
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "InitiateNameEnquiry" + " | " + iBSNameEnquiryRequestDto.ReferenceID + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return new IBSNameEnquiryResponseDto { ResponseCode = AppResponseCodes.InternalError };
             }
         }
