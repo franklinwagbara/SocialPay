@@ -202,10 +202,10 @@ namespace SocialPay.Core.Services.IBS
 
                 var sessionId = _appSettings.SterlingBankCode + dateFormat + randomNumber;
 
-                var ibsService = new NewIBSSoapClient(NewIBSSoapClient.EndpointConfiguration.NewIBSSoap, _appSettings.nfpliveUrl);
+                var nameEnquiryService = new NewIBSSoapClient(NewIBSSoapClient.EndpointConfiguration.NewIBSSoap);
                 string referenceId = Guid.NewGuid().ToString().Substring(10) + " " + Convert.ToString(DateTime.Now.Ticks);
 
-                var sendRequest = await ibsService.NameEnquiryAsync(sessionId, iBSNameEnquiryRequestDto.DestinationBankCode, "1", iBSNameEnquiryRequestDto.ToAccount);
+                var sendRequest = await nameEnquiryService.NameEnquiryAsync(sessionId, iBSNameEnquiryRequestDto.DestinationBankCode, _appSettings.nameEnquiryChannelCode, iBSNameEnquiryRequestDto.ToAccount);
                 var response = sendRequest.Body.NameEnquiryResult.ToString();
 
                 if (!response.Contains("00"))

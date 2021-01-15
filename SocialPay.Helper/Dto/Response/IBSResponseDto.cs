@@ -57,19 +57,5 @@ namespace SocialPay.Helper.Dto.Response
 		public NIPBanklist NIPBanklist { get; set; }
 	}
 
-	[XmlRoot(ElementName = "NameEnquiryResponse", Namespace = "http://tempuri.org/")]
-	//[JsonProperty("NameEnquiryResponse")]
-	public class NameEnquiryResponseDto
-	{
-		[XmlElement(ElementName = "NameEnquiryResult", Namespace = "http://tempuri.org/")]
-		public string NameEnquiryResult { get; set; }
-		[XmlAttribute(AttributeName = "xmlns")]
-		public string Xmlns { get; set; }
-		public string ResponseCode { get; set; }
-	}
-
-	[XmlRoot(ElementName = "NameEnquiryResult")]
-	public class NameEnquiryResult
-	{
-	}
+	
 }

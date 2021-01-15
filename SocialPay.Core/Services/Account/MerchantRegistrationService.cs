@@ -352,6 +352,7 @@ namespace SocialPay.Core.Services.Account
                 if (!string.IsNullOrEmpty(model.Tin))
                 {
                     var validateTin = await _tinService.ValidateTin(model.Tin);
+
                     if (validateTin.ResponseCode != AppResponseCodes.Success)
                         return validateTin;
                 }
@@ -362,8 +363,10 @@ namespace SocialPay.Core.Services.Account
 
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+               
                 if (getUserInfo.MerchantBusinessInfo.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
+
                 string fileName = string.Empty;
                 var merchantId = Guid.NewGuid().ToString("N").Substring(22);
                 var newFileName = string.Empty;
@@ -456,7 +459,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                //clientId = 18;
+                clientId = 18;
                 _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + clientId + " | "+ DateTime.Now);
 
 
@@ -478,6 +481,7 @@ namespace SocialPay.Core.Services.Account
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBankInfo).Include(x => x.MerchantBusinessInfo)
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
                 if (getUserInfo.MerchantBusinessInfo.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBusinessInfoRequired };
 
@@ -501,6 +505,7 @@ namespace SocialPay.Core.Services.Account
                     _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
 
                     var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban, model.BVN);
+
                     if (result.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
 
@@ -540,7 +545,9 @@ namespace SocialPay.Core.Services.Account
                     DestinationBankCode = model.BankCode,
                     RequestType = _appSettings.nameEnquiryRequestType,
                 };
+
                 var ibsRequest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModel);
+
                 if (ibsRequest.ResponseCode != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
 
@@ -595,6 +602,7 @@ namespace SocialPay.Core.Services.Account
                     .Include(x => x.MerchantActivitySetup).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
                 if (getUserInfo.MerchantBankInfo.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBankInfoRequired };
+
                 if (getUserInfo.MerchantActivitySetup.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
 
