@@ -17,7 +17,7 @@ namespace SocialPay.Domain.Entities
         public string LedCode { get; set; }
         [Column(TypeName = "NVARCHAR(15)")]
         public string Nuban { get; set; }
-        [Column(TypeName = "NVARCHAR(35)")]
+        [Column(TypeName = "NVARCHAR(65)")]
         public string AccountName { get; set; }
         [Column(TypeName = "NVARCHAR(10)")]
         public string Currency { get; set; }

@@ -99,6 +99,7 @@ namespace SocialPay.Core.Services.Account
                         };
                         await _context.ClientAuthentication.AddAsync(model);
                         await _context.SaveChangesAsync();
+
                         var merchantWallet = new MerchantWallet
                         {
                             ClientAuthenticationId = model.ClientAuthenticationId,
