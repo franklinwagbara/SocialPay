@@ -76,7 +76,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost]
         [Route("onboarding-bank-info")]
         public async Task<IActionResult> MerchantBankInfo([FromBody] MerchantBankInfoRequestDto model)
@@ -142,11 +142,14 @@ namespace SocialPay.API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("Name-enquiry")]
-        public async Task<IActionResult> NameEnquiry()
+        public async Task<IActionResult> NameEnquiry([FromQuery] string reference)
         {
             var response = new WebApiResponse { };
             try
             {
+                if (reference != "sterling00g4")
+                    return BadRequest();
+
                 if (ModelState.IsValid)
                 {
 

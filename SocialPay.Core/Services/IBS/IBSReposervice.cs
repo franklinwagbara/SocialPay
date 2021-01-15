@@ -76,23 +76,26 @@ namespace SocialPay.Core.Services.IBS
         }
 
 
-        public async Task<WebApiResponse> GetParticipatingBanksTest()
+        public async Task<WebApiResponse> InitiateNameEnquiryTestService()
         {
           //  _log4net.Info("Initiating GetParticipatingBanks request" + " | " + getBanksRequestModel.ReferenceID + " | " + getBanksRequestModel.RequestType + " | " + DateTime.Now);
 
             try
             {
-                var ibsService = new NewIBSSoapClient(NewIBSSoapClient.EndpointConfiguration.NewIBSSoap);
+                var random = new Random();
+                string randomNumber = string.Join(string.Empty, Enumerable.Range(0, 10).Select(number => random.Next(0, 9).ToString()));
+
+                var dateFormat = DateTime.UtcNow.ToString("MMddyyyyhhmmss");
+
+                var sessionId = _appSettings.SterlingBankCode + dateFormat + randomNumber;
+
+                var nameEnquiryService = new NewIBSSoapClient(NewIBSSoapClient.EndpointConfiguration.NewIBSSoap, _appSettings.nfpliveBaseUrl);
                 string referenceId = Guid.NewGuid().ToString().Substring(10) + " " + Convert.ToString(DateTime.Now.Ticks);
 
-               
-               // var en = new EncryptDecrypt();
-                //var encryptRequest = en.Encrypt(getBanksStringRequest);
-                var encryptedDataRequest = await ibsService.NameEnquiryAsync(referenceId, "000014", "1", "0025998012");
-               // _log4net.Info("Initiating GetParticipatingBanks response" + " | " + encryptedDataRequest + " | " + getBanksRequestModel.RequestType + " | " + DateTime.Now);
+                var sendRequest = await nameEnquiryService.NameEnquiryAsync(sessionId, "000014", "1", "0025998012");
+                var response = sendRequest.Body.NameEnquiryResult.ToString();
 
-              
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
             }
             catch (Exception ex)
             {

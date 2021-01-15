@@ -459,7 +459,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                clientId = 18;
+                //clientId = 18;
                 _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + clientId + " | "+ DateTime.Now);
 
 
@@ -719,10 +719,10 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                _log4net.Info("Initiating GetListOfBanks request" + " | " + DateTime.Now);
+                _log4net.Info("Initiating name enquiry request" + " | " + DateTime.Now);
 
               
-                var result = await _iBSReposervice.GetParticipatingBanksTest();
+                var result = await _iBSReposervice.InitiateNameEnquiryTestService();
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
