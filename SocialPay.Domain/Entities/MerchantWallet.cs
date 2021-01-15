@@ -7,9 +7,9 @@ namespace SocialPay.Domain.Entities
     {
         public long MerchantWalletId { get; set; }
         public long ClientAuthenticationId { get; set; }
-        [Column(TypeName = "NVARCHAR(20)")]
+        [Column(TypeName = "NVARCHAR(55)")]
         public string Firstname { get; set; }
-        [Column(TypeName = "NVARCHAR(20)")]
+        [Column(TypeName = "NVARCHAR(55)")]
         public string Lastname { get; set; }
         [Column(TypeName = "NVARCHAR(20)")]
         public string Mobile { get; set; }

@@ -8,9 +8,9 @@ namespace SocialPay.Domain.Entities
     public class ClientAuthentication
     {
         public long ClientAuthenticationId { get; set; }
-        [Column(TypeName = "NVARCHAR(30)")]
+        [Column(TypeName = "NVARCHAR(50)")]
         public string Email { get; set; }
-        [Column(TypeName = "NVARCHAR(35)")]
+        [Column(TypeName = "NVARCHAR(50)")]
         public string UserName { get; set; }
         [Column(TypeName = "NVARCHAR(15)")]
         public string PhoneNumber { get; set; }
