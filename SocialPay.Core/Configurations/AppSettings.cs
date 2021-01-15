@@ -10,7 +10,7 @@
         public string EwsServiceUrl { get; set; }
         public string LdapServiceUrl { get; set; }
         public string IBSserviceUrl { get; set; }
-        public string nfpliveUrl { get; set; }
+        public string nfpliveBaseUrl { get; set; }
         public string WebportalUrl { get; set; }
         public string BankServiceUrl { get; set; }
         public string nameEnquiryRequestType { get; set; }
@@ -73,5 +73,6 @@
         public string tinvalidationEndpointUrl { get; set; }
         public string accountLock { get; set; }
         public string accountReason { get; set; }
+        public string nameEnquiryChannelCode { get; set; }
     }
 }
