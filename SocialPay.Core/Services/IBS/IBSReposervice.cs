@@ -202,7 +202,7 @@ namespace SocialPay.Core.Services.IBS
 
                 var sessionId = _appSettings.SterlingBankCode + dateFormat + randomNumber;
 
-                var nameEnquiryService = new NewIBSSoapClient(NewIBSSoapClient.EndpointConfiguration.NewIBSSoap);
+                var nameEnquiryService = new NewIBSSoapClient(NewIBSSoapClient.EndpointConfiguration.NewIBSSoap, _appSettings.nfpliveBaseUrl);
                 string referenceId = Guid.NewGuid().ToString().Substring(10) + " " + Convert.ToString(DateTime.Now.Ticks);
 
                 var sendRequest = await nameEnquiryService.NameEnquiryAsync(sessionId, iBSNameEnquiryRequestDto.DestinationBankCode, _appSettings.nameEnquiryChannelCode, iBSNameEnquiryRequestDto.ToAccount);
@@ -212,7 +212,6 @@ namespace SocialPay.Core.Services.IBS
                     return new IBSNameEnquiryResponseDto { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
 
 
-                //00:PATRICK FESTUS OREVAGHENE: 22341210148:2
                 var result = new IBSNameEnquiryResponseDto
                 {
                     BVN = response.Split(":")[2],
