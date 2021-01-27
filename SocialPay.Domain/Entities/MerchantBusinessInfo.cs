@@ -12,6 +12,10 @@ namespace SocialPay.Domain.Entities
         public string MerchantReferenceId { get; set; }
         [Column(TypeName = "NVARCHAR(50)")]
         public string SpectaMerchantID { get; set; }
+        [Column(TypeName = "NVARCHAR(90)")]
+        public string SpectaMerchantKey { get; set; }
+        [Column(TypeName = "NVARCHAR(90)")]
+        public string SpectaMerchantKeyValue { get; set; }
         public bool HasSpectaMerchantID { get; set; }
         [Column(TypeName = "NVARCHAR(65)")]
         public string BusinessName { get; set; }

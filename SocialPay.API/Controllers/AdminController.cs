@@ -97,6 +97,35 @@ namespace SocialPay.API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("resend-guest-account-details")]
+        public async Task<IActionResult> SendGuestCredentials([FromBody] GuestAccountRequestDto model)
+        {
+            _log4net.Info("Tasks starts to disable account" + " | " + model.Email + " | " + DateTime.Now);
+
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _authRepoService.ResendGuestAccountDetails(model);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + model.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
 
 
         ////[HttpPost]

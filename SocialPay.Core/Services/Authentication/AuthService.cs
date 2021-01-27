@@ -372,6 +372,32 @@ namespace SocialPay.Core.Services.Authentication
         }
 
 
+        public async Task<WebApiResponse> ResendGuestAccountDetails(GuestAccountRequestDto updateUserRequestDto)
+        {
+            _log4net.Info("ModifyUserAccount request" + " | " + updateUserRequestDto.Email + " | " + DateTime.Now);
+
+            try
+            {
+                var validateUser = await _context.ClientAuthentication
+                    .SingleOrDefaultAsync(x => x.Email == updateUserRequestDto.Email);
+
+                if (validateUser == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
+
+               // validateUser.IsDeleted = updateUserRequestDto.Status;
+                validateUser.LastDateModified = DateTime.Now;
+                _context.Update(validateUser);
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "ModifyUserAccount" + " | " + updateUserRequestDto.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> UnlockUserAccount(UpdateUserRequestDto updateUserRequestDto)
         {
             try
