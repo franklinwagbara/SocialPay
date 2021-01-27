@@ -137,7 +137,8 @@ namespace SocialPay.Core.Services.Customer
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
 
                         var generateToken = await _payWithSpectaService
-                            .InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference, getMerchantId.SpectaMerchantID);
+                            .InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference,
+                            getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey, getMerchantId.SpectaMerchantKeyValue);
                         
                         if (generateToken.ResponseCode != AppResponseCodes.Success)
                         {
@@ -253,7 +254,8 @@ namespace SocialPay.Core.Services.Customer
                                  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
 
                                 var generateToken = await _payWithSpectaService
-                                    .InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef, getMerchantId.SpectaMerchantID);
+                                    .InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef, 
+                                    getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey, getMerchantId.SpectaMerchantKeyValue);
                                
                                 if (generateToken.ResponseCode != AppResponseCodes.Success)
                                 {
@@ -307,7 +309,8 @@ namespace SocialPay.Core.Services.Customer
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
 
                     var generateToken = await _payWithSpectaService
-                        .InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", paymentRef, getMerchantId.SpectaMerchantID);
+                        .InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", paymentRef,
+                        getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey, getMerchantId.SpectaMerchantKeyValue);
                    
                     if (generateToken.ResponseCode != AppResponseCodes.Success)
                     {
