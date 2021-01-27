@@ -11,7 +11,7 @@ namespace SocialPay.Domain.Entities
         public string TransactionReference { get; set; }
         [Column(TypeName = "NVARCHAR(90)")]
         public string PaymentReference { get; set; }
-        [Column(TypeName = "NVARCHAR(150)")]
+        [Column(TypeName = "NVARCHAR(550)")]
         public string Message { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
     }

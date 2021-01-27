@@ -24,7 +24,7 @@ namespace SocialPay.Domain.Entities
         public string Channel { get; set; }
         [Column(TypeName = "NVARCHAR(15)")]
         public string TransactionStatus { get; set; }
-        [Column(TypeName = "NVARCHAR(250)")]
+        [Column(TypeName = "NVARCHAR(550)")]
         public string Message { get; set; }
         public bool Status { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;

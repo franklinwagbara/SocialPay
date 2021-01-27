@@ -15,6 +15,8 @@ namespace SocialPay.Helper.Dto.Request
         public string BusinessEmail { get; set; }
         public string Tin { get; set; }
         public string SpectaMerchantID { get; set; }
+        public string SpectaMerchantKey { get; set; }
+        public string SpectaMerchantKeyValue { get; set; }
         [Required(ErrorMessage = "Business country")]
         public string Country { get; set; }       
         public string Chargebackemail { get; set; }

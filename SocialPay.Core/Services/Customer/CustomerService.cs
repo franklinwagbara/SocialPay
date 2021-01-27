@@ -343,7 +343,15 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-                _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+                ////var decodeMessageTest = System.Uri.UnescapeDataString(model.Message);
+                ////if (decodeMessageTest.Contains(" "))
+                ////{
+                ////    decodeMessageTest = decodeMessageTest.Replace(" ", "+");
+                ////}
+                ////var decryptResponseTest = DecryptAlt(decodeMessageTest);
+
+
+                _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " | "+ DateTime.Now);
 
                 var logResponse = new PaymentResponse
                 {
@@ -352,7 +360,9 @@ namespace SocialPay.Core.Services.Customer
                 };
                 await _context.PaymentResponse.AddAsync(logResponse);
                 await _context.SaveChangesAsync();
+
                 var validateLinkType = await _customerService.GetLinkCategorybyTranref(model.TransactionReference);
+
                 if(validateLinkType.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {
                     if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank)
@@ -380,6 +390,7 @@ namespace SocialPay.Core.Services.Customer
                     }
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPamentChannel };
                 }
+               
                 if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank || model.Channel == PaymentChannel.PayWithSpecta)
                 {
                     if(model.Channel == PaymentChannel.Card)
