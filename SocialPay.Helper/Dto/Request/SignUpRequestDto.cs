@@ -37,4 +37,10 @@ namespace SocialPay.Helper.Dto.Request
         public string Email { get; set; }
         public bool Status { get; set; }
     }
+
+    public class GuestAccountRequestDto
+    {
+        [Required(ErrorMessage = "Email is required.")]
+        public string Email { get; set; }
+    }
 }

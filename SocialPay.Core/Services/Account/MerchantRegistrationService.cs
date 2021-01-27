@@ -398,7 +398,9 @@ namespace SocialPay.Core.Services.Account
                             FileLocation = "MerchantLogo",
                             Logo = newFileName, 
                             HasSpectaMerchantID = string.IsNullOrEmpty(model.SpectaMerchantID) ? false : true,
-                            SpectaMerchantID = string.IsNullOrEmpty(model.SpectaMerchantID) ? string.Empty : model.SpectaMerchantID
+                            SpectaMerchantID = string.IsNullOrEmpty(model.SpectaMerchantID) ? string.Empty : model.SpectaMerchantID,
+                            SpectaMerchantKey = string.IsNullOrEmpty(model.SpectaMerchantKey) ? string.Empty : model.SpectaMerchantKey,
+                            SpectaMerchantKeyValue = string.IsNullOrEmpty(model.SpectaMerchantKeyValue) ? string.Empty : model.SpectaMerchantKeyValue
                         };
 
 
