@@ -319,23 +319,49 @@ namespace SocialPay.Core.Services.Authentication
                     password = newPassword;
                 }
                 _utilities.CreatePasswordHash(password.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
-                var model = new ClientAuthentication
+                                
+                using(var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    ClientSecretHash = passwordHash,
-                    ClientSecretSalt = passwordSalt,
-                    Email = email,
-                    StatusCode = MerchantOnboardingProcess.GuestAccount,
-                    FullName = fullname,
-                    IsDeleted = false,
-                    PhoneNumber = phoneNumber,
-                    RoleName = RoleDetails.CustomerAccount,
-                    LastDateModified = DateTime.Now
-                };
-                await _context.ClientAuthentication.AddAsync(model);
-                await _context.SaveChangesAsync();
-                _log4net.Info("CreateAccount was successful" + " | " + email + " | " + phoneNumber + " | " + DateTime.Now);
+                    try
+                    {
+                        var model = new ClientAuthentication
+                        {
+                            ClientSecretHash = passwordHash,
+                            ClientSecretSalt = passwordSalt,
+                            Email = email,
+                            StatusCode = MerchantOnboardingProcess.GuestAccount,
+                            FullName = fullname,
+                            IsDeleted = false,
+                            PhoneNumber = phoneNumber,
+                            RoleName = RoleDetails.CustomerAccount,
+                            LastDateModified = DateTime.Now
+                        };
+                        await _context.ClientAuthentication.AddAsync(model);
+                        await _context.SaveChangesAsync();
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.ClientAuthenticationId };
+                        var logGuestAccess = new GuestAccountLog
+                        {
+                            ClientAuthenticationId = model.ClientAuthenticationId,
+                            Status = false,
+                            Email = model.Email
+                        };
+
+                        await _context.GuestAccountLog.AddAsync(logGuestAccess);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        _log4net.Info("CreateAccount was successful" + " | " + email + " | " + phoneNumber + " | " + DateTime.Now);
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.ClientAuthenticationId };
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+
+                    }
+                }
+                
+               
             }
             catch (Exception ex)
             {
@@ -358,33 +384,6 @@ namespace SocialPay.Core.Services.Authentication
                     return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
 
                 validateUser.IsDeleted = updateUserRequestDto.Status;
-                validateUser.LastDateModified = DateTime.Now;
-                _context.Update(validateUser);
-                await _context.SaveChangesAsync();
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + "ModifyUserAccount" + " | " + updateUserRequestDto.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-            }
-        }
-
-
-        public async Task<WebApiResponse> ResendGuestAccountDetails(GuestAccountRequestDto updateUserRequestDto)
-        {
-            _log4net.Info("ModifyUserAccount request" + " | " + updateUserRequestDto.Email + " | " + DateTime.Now);
-
-            try
-            {
-                var validateUser = await _context.ClientAuthentication
-                    .SingleOrDefaultAsync(x => x.Email == updateUserRequestDto.Email);
-
-                if (validateUser == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
-
-               // validateUser.IsDeleted = updateUserRequestDto.Status;
                 validateUser.LastDateModified = DateTime.Now;
                 _context.Update(validateUser);
                 await _context.SaveChangesAsync();

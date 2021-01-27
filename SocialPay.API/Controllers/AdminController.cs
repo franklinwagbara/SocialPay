@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Report;
@@ -24,18 +25,21 @@ namespace SocialPay.API.Controllers
         private readonly AuthRepoService _authRepoService;
         private readonly MerchantReportService _merchantReportService;
         private readonly TransactionService _transactionService;
+        private readonly UserRepoService _userRepoService;
         private readonly CreateMerchantWalletService _createMerchantWalletService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AdminController));
 
         public AdminController(ADRepoService aDRepoService, MerchantReportService merchantReportService,
             TransactionService transactionService, AuthRepoService authRepoService,
-            CreateMerchantWalletService createMerchantWalletService)
+            CreateMerchantWalletService createMerchantWalletService,
+            UserRepoService userRepoService)
         {
             _aDRepoService = aDRepoService;
             _merchantReportService = merchantReportService;
             _transactionService = transactionService;
             _authRepoService = authRepoService;
             _createMerchantWalletService = createMerchantWalletService;
+            _userRepoService = userRepoService;
         }
 
         [HttpPost]
@@ -108,7 +112,11 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _authRepoService.ResendGuestAccountDetails(model);
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var result = await _userRepoService.ResendGuestAccountDetails(model, Convert.ToInt32(clientId));
                     return Ok(result);
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)

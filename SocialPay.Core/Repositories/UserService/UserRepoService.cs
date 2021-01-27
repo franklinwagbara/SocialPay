@@ -2,12 +2,14 @@
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
+using SocialPay.Core.Messaging;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Repositories.UserService
@@ -17,15 +19,17 @@ namespace SocialPay.Core.Repositories.UserService
         private readonly SocialPayDbContext _context;
         private readonly Utilities _utilities;
         private readonly AppSettings _appSettings;
+        private readonly EmailService _emailService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(UserRepoService));
 
 
         public UserRepoService(SocialPayDbContext context, Utilities utilities,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings, EmailService emailService)
         {
             _context = context;
             _utilities = utilities;
             _appSettings = appSettings.Value;
+            _emailService = emailService;
         }
 
         public async Task<ClientAuthentication> GetClientAuthenticationAsync(string email)
@@ -123,7 +127,57 @@ namespace SocialPay.Core.Repositories.UserService
             }
         }
 
+        public async Task<WebApiResponse> ResendGuestAccountDetails(GuestAccountRequestDto model, long clientId)
+        {
+            try
+            {
+                _log4net.Info("Resend guest account" + " | " + model.Email + " | " + DateTime.Now);
 
+                var newPassword = Guid.NewGuid().ToString();
+
+                var userInfo = await GetClientAuthenticationAsync(model.Email);
+                if (userInfo == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
+
+                byte[] passwordHash, passwordSalt;
+                _utilities.CreatePasswordHash(newPassword.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
+
+                userInfo.ClientSecretHash = passwordHash;
+                userInfo.ClientSecretSalt = passwordSalt;
+                userInfo.LastDateModified = DateTime.Now;
+                _context.ClientAuthentication.Update(userInfo);
+                await _context.SaveChangesAsync();
+                _log4net.Info("Resend guest account request updated" + " | " + clientId + " | " + DateTime.Now);
+
+
+                var emailModal = new EmailRequestDto
+                {
+                    Subject = "Guest Account Access",
+                    SourceEmail = "info@sterling.ng",
+                    DestinationEmail = model.Email,
+                    // DestinationEmail = "festypat9@gmail.com",
+                };
+
+                var mailBuilder = new StringBuilder();
+                mailBuilder.AppendLine("Dear" + " " + model.Email + "," + "<br />");
+                mailBuilder.AppendLine("<br />");
+                mailBuilder.AppendLine("You have successfully sign up as a Guest.<br />");
+                mailBuilder.AppendLine("Kindly use this token" + "  " + newPassword + "  " + "to login" + " " + "" + "<br />");
+                mailBuilder.AppendLine("Best Regards,");
+                emailModal.EmailBody = mailBuilder.ToString();
+
+                var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "Resend guest account" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
 
         public async Task<WebApiResponse> ResetPassword(ResetExistingPasswordDto model, long clientId)
         {
