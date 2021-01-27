@@ -152,7 +152,7 @@ namespace SocialPay.Core.Services.Customer
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef };
                     }
 
-                    encryptedText = _appSettings.mid + _appSettings.paymentCombination + CustomerTotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                    encryptedText =$"{_appSettings.mid}{_appSettings.paymentCombination}{CustomerTotalAmount}{_appSettings.paymentCombination}{paymentRef}";
                     encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                     paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                     paymentResponse.InvoiceReference = paymentRef; 
@@ -268,7 +268,7 @@ namespace SocialPay.Core.Services.Customer
                                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                             }
 
-                            encryptedText = _appSettings.mid + _appSettings.paymentCombination + logCustomerInfo.Amount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                            encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{logCustomerInfo.Amount}{_appSettings.paymentCombination}{paymentRef}";
                             encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                             paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                             paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
@@ -288,7 +288,7 @@ namespace SocialPay.Core.Services.Customer
                         ////    return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                         ////}
                         
-                        encryptedText = _appSettings.mid + _appSettings.paymentCombination + logCustomerInfo.Amount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                        encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{logCustomerInfo.Amount}{_appSettings.paymentCombination}{paymentRef}";
                         encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                         paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                         paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
@@ -326,7 +326,7 @@ namespace SocialPay.Core.Services.Customer
                 logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
                 await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                 await _context.SaveChangesAsync();
-                encryptedText = _appSettings.mid + _appSettings.paymentCombination + getPaymentDetails.TotalAmount + _appSettings.paymentCombination + Guid.NewGuid().ToString().Substring(0, 10);
+                encryptedText =$"{_appSettings.mid}{_appSettings.paymentCombination}{getPaymentDetails.TotalAmount}{_appSettings.paymentCombination}{paymentRef}";
                 encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                 //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
                 paymentData =  _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
