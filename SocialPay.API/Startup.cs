@@ -58,9 +58,9 @@ namespace SocialPay.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-            services.AddSwaggerGen();
             services.AddCors();
+            services.AddControllersWithViews();
+            services.AddSwaggerGen();         
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -267,10 +267,17 @@ namespace SocialPay.API
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
             app.UseCors(x => x
-             .AllowAnyOrigin()
-             .AllowAnyMethod()
-             .AllowAnyHeader());
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .SetIsOriginAllowed(origin => true) // allow any origin
+               .AllowCredentials()); // allow credentials
+
+            ////app.UseCors(x => x
+            //// .AllowAnyOrigin()
+            //// .AllowAnyMethod()
+            //// .AllowAnyHeader());
             //.AllowCredentials());
             app.UseRouting();
             app.UseAuthorization();

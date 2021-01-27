@@ -30,24 +30,35 @@ namespace API.Test
             //    eDate = DateTime.Today
             //};
 
-            var getFees = GetNIPFee(12000);
-            var dataList = getFees.Tables["Table"]
-               .AsEnumerable()
-               .Select(i => new FeesViewModel
-               {
-                   FeeAmount = i["feeAmount"].ToString(),
-                   Vat = i["vat"].ToString()
-               }).FirstOrDefault();
+            ////var getFees = GetNIPFee(12000);
+            ////var dataList = getFees.Tables["Table"]
+            ////   .AsEnumerable()
+            ////   .Select(i => new FeesViewModel
+            ////   {
+            ////       FeeAmount = i["feeAmount"].ToString(),
+            ////       Vat = i["vat"].ToString()
+            ////   }).FirstOrDefault();
 
             var sec = new EncryptDecrypt();
             var myUrl = "http://socialpay-web.sterlingapps.p.azurewebsites.net/#/confirm-payments?q=3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
-            var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6o%2FsE5lumxNYOWL5DuHvKaQ%3D%3D";
+            //var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6o%2FsE5lumxNYOWL5DuHvKaQ%3D%3D";
+            var decodeString = "QcKGLrMvsAUJ08snV7PKPNyYBnx6zErBI7T6l7BlDQa1ieYtT3NtjvKCZjjlBP7m2V1oVT7Zac1Jubh2DMld78wzibzRC1DBuRgq4XoUqqCKKM5sIxwSOWhJfhXlB6yGUw%20hu2W0nX6AHR8%2F89wCENwYIJYxi52w3rGHjWFDuxLU1FBjtsb5MayKcwPWSksx";
             var decodeMessage = System.Uri.UnescapeDataString(decodeString);
             if (decodeMessage.Contains(" "))
             {
                 decodeMessage = decodeMessage.Replace(" ", "+");
             }
             var getMessage = sec.DecryptAlt(decodeMessage);
+
+            var reference = getMessage.Split("^")[7];
+
+            string newRes = string.Empty;
+
+            if (getMessage.Contains("approve") || getMessage.Contains("success") || getMessage.Contains("Approve"))
+            {
+                newRes = "Approved";
+            }
+            newRes = "Failed";
             var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap,
                   "");
 

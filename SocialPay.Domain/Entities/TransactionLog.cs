@@ -24,7 +24,7 @@ namespace SocialPay.Domain.Entities
         public string TransactionJourney { get; set; }
         [Column(TypeName = "NVARCHAR(5)")]
         public string DeliveryDayTransferStatus { get; set; }
-        [Column(TypeName = "NVARCHAR(250)")]
+        [Column(TypeName = "NVARCHAR(550)")]
         public string Message { get; set; }
         [Column(TypeName = "NVARCHAR(5)")]
         public string LinkCategory { get; set; }
