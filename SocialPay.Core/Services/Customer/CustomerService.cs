@@ -353,7 +353,7 @@ namespace SocialPay.Core.Services.Customer
                 ////}
                 ////var decryptResponseTest = DecryptAlt(decodeMessageTest);
 
-
+                var otherPaymentReference = string.Empty;
                 _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " | "+ DateTime.Now);
 
                 var logResponse = new PaymentResponse
@@ -379,13 +379,24 @@ namespace SocialPay.Core.Services.Customer
                             }
                             var decryptResponse = DecryptAlt(decodeMessage);
                             model.Message = decryptResponse;
-                            var result = await _customerService.LogInvoicePaymentResponse(model);
+
+                            var newreference = model.Message.Split("^");
+
+                            foreach (var item in newreference)
+                            {
+                                if (item.Contains("SBP") || item.Contains("sbp"))
+                                {
+                                    otherPaymentReference = item;
+                                }
+                            }
+
+                            var result = await _customerService.LogInvoicePaymentResponse(model, otherPaymentReference);
                             _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
                             return result;
                         }
 
-                        var oneBankRequest = await _customerService.LogInvoicePaymentResponse(model);
+                        var oneBankRequest = await _customerService.LogInvoicePaymentResponse(model, otherPaymentReference);
                         _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
                         return oneBankRequest;
@@ -404,10 +415,22 @@ namespace SocialPay.Core.Services.Customer
                             decodeMessage = decodeMessage.Replace(" ", "+");
                         }
                         var decryptResponse = DecryptAlt(decodeMessage);
+
                         model.Message = decryptResponse;
+
+                        var newreference = model.Message.Split("^");
+
+                        foreach (var item in newreference)
+                        {
+                            if (item.Contains("SBP") || item.Contains("sbp"))
+                            {
+                                otherPaymentReference = item;
+                            }
+                        }
+
                         _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
-                        return await _customerService.LogPaymentResponse(model);
+                        return await _customerService.LogPaymentResponse(model, otherPaymentReference);
 
                        // return result;
                     }
@@ -418,10 +441,10 @@ namespace SocialPay.Core.Services.Customer
                         if(result.ResponseCode != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
                         model.Message = "success" + result.Message;
-                        return await _customerService.LogPaymentResponse(model);
+                        return await _customerService.LogPaymentResponse(model, string.Empty);
                     }
 
-                    var oneBankRequest = await _customerService.LogPaymentResponse(model);
+                    var oneBankRequest = await _customerService.LogPaymentResponse(model, string.Empty);
                     _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | "  + DateTime.Now);
 
                     return oneBankRequest;

@@ -373,7 +373,7 @@ namespace SocialPay.Core.Repositories.Customer
 
 
 
-        public async Task<WebApiResponse> LogInvoicePaymentResponse(PaymentValidationRequestDto model)
+        public async Task<WebApiResponse> LogInvoicePaymentResponse(PaymentValidationRequestDto model, string reference)
         {
             try
             {
@@ -407,6 +407,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
                                 logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Approved;
                                 logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Approved;
+                                logconfirmation.OtherPaymentReference = reference;
 
                                 var merchantInfo = await GetMerchantInfo(linkInfo.ClientAuthenticationId);
                                 var invoiceInfo = await GetInvoicePaymentAsync(model.TransactionReference);
@@ -524,7 +525,7 @@ namespace SocialPay.Core.Repositories.Customer
         }
 
 
-        public async Task<WebApiResponse> LogPaymentResponse(PaymentValidationRequestDto model)
+        public async Task<WebApiResponse> LogPaymentResponse(PaymentValidationRequestDto model, string reference)
         {
             try
             {
@@ -569,6 +570,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Pending;
                     logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Pending;
                     logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Pending;
+                    logconfirmation.OtherPaymentReference = reference;
 
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
