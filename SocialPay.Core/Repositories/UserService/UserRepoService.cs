@@ -37,6 +37,8 @@ namespace SocialPay.Core.Repositories.UserService
             return await _context.ClientAuthentication.SingleOrDefaultAsync(x => x.Email == email);
         }
 
+      
+
         public async Task<ClientLoginStatus> GetLoginAttemptAsync(long clientId)
         {
             return await _context.ClientLoginStatus.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);

@@ -521,3 +521,8 @@ INFO  2021-01-15 07:46:21,166 162427ms IBSReposervice         ?                 
 INFO  2021-01-15 08:10:36,458 90036ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo request | 000013 | First Bank of Nigeria | 22341210148 | 18 | 1/15/2021 8:10:36 AM
 INFO  2021-01-15 08:10:38,065 91643ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo intrabank request | 000013 | First Bank of Nigeria | 22341210148 | 1/15/2021 8:10:38 AM
 INFO  2021-01-15 08:10:42,102 95679ms IBSReposervice         ?                  - Initiating InitiateNameEnquiry request | 257be946-652b-408f-b384-0fe07f80fbd6 | 000013 | 3058350068 | 1/15/2021 8:10:41 AM
+INFO  2021-02-01 09:24:41,100 70666ms AccountResetService    ?                  - ResetGuestAccess | awodelefunmilayo@gmail.com | 2/1/2021 9:24:41 AM
+ERROR 2021-02-01 09:24:50,053 79619ms UserRepoService        ?                  - LogAccountReset request | 33 | a5b07d69-7 | 2/1/2021 9:24:50 AM
+ERROR 2021-02-01 09:24:50,788 80354ms UserRepoService        ?                  - LogAccountReset request saved | 33 | a5b07d69-7 | 2/1/2021 9:24:50 AM
+INFO  2021-02-01 09:24:59,953 89519ms AccountResetService    ?                  - GenerateResetToken sent | awodelefunmilayo@gmail.com | 2/1/2021 9:24:59 AM
+INFO  2021-02-01 09:27:49,260 258826ms AuthRepoService        ?                  - Authenticate | awodelefunmilayo@gmail.com | 2/1/2021 9:27:49 AM

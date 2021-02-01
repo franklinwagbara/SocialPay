@@ -169,6 +169,33 @@ namespace SocialPay.API.Controllers
 
 
         [HttpPost]
+        [Route("resend-guest-account-details")]
+        public async Task<IActionResult> SendGuestCredentials([FromBody] AccountResetDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _accountResetService.ResetGuestAccess(model.Email);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [HttpPost]
         [Route("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] PasswordResetDto model)
         {

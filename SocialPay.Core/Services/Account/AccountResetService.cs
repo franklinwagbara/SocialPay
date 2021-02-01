@@ -72,6 +72,55 @@ namespace SocialPay.Core.Services.Account
         }
 
 
+        public async Task<WebApiResponse> ResetGuestAccess(string email)
+        {
+            try
+            {
+                _log4net.Info("ResetGuestAccess" + " | " + email + " | " + DateTime.Now);
+
+                var getUser = await _userRepoService.GetClientAuthenticationAsync(email);
+                if (getUser == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                if(getUser.RoleName != "Guest")
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var token = Guid.NewGuid().ToString().Substring(0, 10);
+                var logRequest = await _userRepoService.LogAccountReset(getUser.ClientAuthenticationId, token);
+                if (logRequest.ResponseCode != AppResponseCodes.Success)
+                    return logRequest;
+
+                var emailModal = new EmailRequestDto
+                {
+                    Subject = "Account details request",
+                    SourceEmail = "info@sterling.ng",
+                    DestinationEmail = email,
+                    //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                };
+
+                var mailBuilder = new StringBuilder();
+                mailBuilder.AppendLine("Dear" + " " + email + "," + "<br />");
+                mailBuilder.AppendLine("<br />");
+                mailBuilder.AppendLine("You have successfully requested for account reset. Please complete this request by clicking the link below.<br />");
+                mailBuilder.AppendLine("Kindly use this token" + "  " + token + "  " + "and" + " " + _appSettings.newpasswordUrl + "<br />");
+                // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                mailBuilder.AppendLine("Best Regards,");
+                emailModal.EmailBody = mailBuilder.ToString();
+                var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                _log4net.Info("GenerateResetToken sent" + " | " + email + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "ResetGuestAccess" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+
         public async Task<WebApiResponse> ChangePassword(PasswordResetDto passwordResetDto)
         {
             try
