@@ -43,6 +43,8 @@ namespace SocialPay.Domain.Entities
         public bool TransactionCompleted { get; set; }
         [Column(TypeName = "NVARCHAR(90)")]
         public string PaymentReference { get; set; }
+        [Column(TypeName = "NVARCHAR(90)")]
+        public string OtherPaymentReference { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
         public DateTime DeliveryDate { get; set; }
