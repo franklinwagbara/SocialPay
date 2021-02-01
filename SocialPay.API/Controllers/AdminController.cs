@@ -101,38 +101,38 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("resend-guest-account-details")]
-        public async Task<IActionResult> SendGuestCredentials([FromBody] GuestAccountRequestDto model)
-        {
-            _log4net.Info("Tasks starts to disable account" + " | " + model.Email + " | " + DateTime.Now);
+        //[HttpPost]
+        //[Route("resend-guest-account-details")]
+        //public async Task<IActionResult> SendGuestCredentials([FromBody] GuestAccountRequestDto model)
+        //{
+        //    _log4net.Info("Tasks starts to disable account" + " | " + model.Email + " | " + DateTime.Now);
 
-            var response = new WebApiResponse { };
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var identity = User.Identity as ClaimsIdentity;
-                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _userRepoService.ResendGuestAccountDetails(model, Convert.ToInt32(clientId));
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        //    var response = new WebApiResponse { };
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var identity = User.Identity as ClaimsIdentity;
+        //            var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        //            var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        //            var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        //            var result = await _userRepoService.ResendGuestAccountDetails(model, Convert.ToInt32(clientId));
+        //            return Ok(result);
+        //        }
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //            .Select(e => e.ErrorMessage));
+        //        response.ResponseCode = AppResponseCodes.Failed;
+        //        response.Data = message;
+        //        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + model.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _log4net.Error("Error occured" + " | " + model.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        //        response.ResponseCode = AppResponseCodes.InternalError;
+        //        return BadRequest(response);
+        //    }
+        //}
 
 
 
