@@ -82,8 +82,8 @@ namespace SocialPay.Core.Services.Account
                 if (getUser == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                if(getUser.RoleName != "Guest")
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                //if(getUser.RoleName != "Guest")
+                //    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 var token = Guid.NewGuid().ToString().Substring(0, 10);
                 var logRequest = await _userRepoService.LogAccountReset(getUser.ClientAuthenticationId, token);
