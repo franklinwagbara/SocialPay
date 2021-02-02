@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace API.Test
@@ -11,6 +12,13 @@ namespace API.Test
     {
         static void Main(string[] args)
         {
+            //string iString = "2005-05-05 22:12 PM";
+            //yyyy-MM-dd
+            DateTime oDT = DateTime.ParseExact("05-Oct-2020", "dd-MMM-yyyy",
+                CultureInfo.InvariantCulture);
+
+            //string szDT = oDT.ToString("MM-dd-yyyy");
+            string szDT = oDT.ToString("yyyy-MM-dd");
             string data = "THExxQUICKxxBROWNxxFOX";
 
             var ho = data.Split(new string[] { "xx" }, StringSplitOptions.None);
