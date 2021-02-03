@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,6 +43,7 @@ using SocialPay.Job.Repository.NonEscrowCardWalletTransaction;
 using SocialPay.Job.Repository.NonEscrowOtherWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
+using SocialPay.Job.Services;
 using SocialPay.Job.TaskSchedules;
 
 namespace SocialPay.API
@@ -157,6 +159,70 @@ namespace SocialPay.API
             services.AddSingleton<FioranoTransferPayWithCardRepository>();
 
 
+            var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
+
+            services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.AcceptedEscrowBankOrderTask;
+            });
+
+            services.AddCronJob<AcceptedWalletOrderTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.AcceptedWalletOrderTask;
+            });
+
+            services.AddCronJob<CardPaymentTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CardPaymentTask;
+            });  
+            
+            services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            }); 
+            
+            services.AddCronJob<DeclinedEscrowWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.DeclinedEscrowWalletTask;
+            });  
+            
+            services.AddCronJob<DeliveryDayBankTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.DeliveryDayBankTask;
+            });             
+            
+            services.AddCronJob<DeliveryDayWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.DeliveryDayWalletTask;
+            });   
+            
+            services.AddCronJob<ExpiredProductNotificationTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.ExpiredProductNotificationTask;
+            });
+
+            services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
+            }); 
+            
+            
+            services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowWalletTransactionTask;
+            });
+
+
             var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
             var redisInstance = Configuration.GetSection("RedisConnectionStrings")["RedisInstance"];
 
@@ -172,7 +238,7 @@ namespace SocialPay.API
             //});
 
             services.AddScoped<INotificationServices, NotificationService>();
-            services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
+            //services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
             services.AddSingleton<JobEmailService>();
             services.AddSingleton<NotificationTransactions>();
 
@@ -183,57 +249,57 @@ namespace SocialPay.API
             ////services.AddSingleton<PendingWalletRequestService>();        
 
             services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
-            services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
+           // services.AddSingleton<IHostedService, CreditDefaultMerchantWalletTask>();
             services.AddSingleton<CreditMerchantWalletTransactions>();
 
 
             services.AddScoped<IDeclineEscrowWalletTransaction, DeclineEscrowWalletTransaction>();
-            services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
+            //services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
             services.AddSingleton<DeclineEscrowWalletPendingTransaction>();
 
             //Non escrow wallet transaction
 
             services.AddScoped<INonEscrowCardWalletTransaction, NonEscrowCardWalletTransaction>();
-            services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
+           // services.AddSingleton<IHostedService, NonEscrowWalletTransactionTask>();
             services.AddSingleton<NonEscrowCardWalletPendingTransaction>();
 
 
             services.AddScoped<INonEscrowOtherWalletTransaction, NonEscrowOtherWalletTransaction>();
-            services.AddSingleton<IHostedService, NonEscrowOtherWalletTransactionTask>();
+            //services.AddSingleton<IHostedService, NonEscrowOtherWalletTransactionTask>();
             services.AddSingleton<NonEscrowOtherWalletPendingTransaction>();
 
             //Non escrow bank transaction
 
             services.AddScoped<INonEscrowBankTransaction, NonEscrowBankTransaction>();
-            services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
+            //services.AddSingleton<IHostedService, NonEscrowBankTransactionTask>();
             services.AddSingleton<NonEscrowPendingBankTransaction>();
 
             //Accepted order service
 
             services.AddScoped<IAcceptedEscrowOrders, AcceptedEscrowOrders>();
-            services.AddSingleton<IHostedService, AcceptedWalletOrderTask>();
+            //services.AddSingleton<IHostedService, AcceptedWalletOrderTask>();
             services.AddSingleton<AcceptedEscrowOrderTransactions>();
 
             //accepted escrow bank request
 
             services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
-            services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
+           // services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
             services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
 
             //////Credit T24 account for card payments
             services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
-            services.AddSingleton<IHostedService, CardPaymentTask>();
+            ////services.AddSingleton<IHostedService, CardPaymentTask>();
             services.AddSingleton<PendingPayWithCardTransaction>();
             services.AddSingleton<CreditDebitService>();
 
             ////Credit Social pay wallet from merchant wallet
 
             services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
-            services.AddSingleton<IHostedService, DeliveryDayWalletTask>();
+            //services.AddSingleton<IHostedService, DeliveryDayWalletTask>();
             services.AddSingleton<DeliveryDayTransferService>();
 
             services.AddScoped<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
-            services.AddSingleton<IHostedService, DeliveryDayBankTask>();
+            //services.AddSingleton<IHostedService, DeliveryDayBankTask>();
             services.AddSingleton<DeliveryDayBankPendingTransaction>();
 
 
