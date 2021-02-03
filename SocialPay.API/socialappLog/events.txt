@@ -526,3 +526,270 @@ ERROR 2021-02-01 09:24:50,053 79619ms UserRepoService        ?                  
 ERROR 2021-02-01 09:24:50,788 80354ms UserRepoService        ?                  - LogAccountReset request saved | 33 | a5b07d69-7 | 2/1/2021 9:24:50 AM
 INFO  2021-02-01 09:24:59,953 89519ms AccountResetService    ?                  - GenerateResetToken sent | awodelefunmilayo@gmail.com | 2/1/2021 9:24:59 AM
 INFO  2021-02-01 09:27:49,260 258826ms AuthRepoService        ?                  - Authenticate | awodelefunmilayo@gmail.com | 2/1/2021 9:27:49 AM
+INFO  2021-02-03 13:54:11,780 138946ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 2/3/2021 1:54:11 PM
+INFO  2021-02-03 15:08:26,995 111124ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 2/3/2021 3:08:26 PM
+INFO  2021-02-03 15:08:26,995 111124ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/3/2021 3:08:26 PM
+INFO  2021-02-03 15:08:26,995 111125ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/3/2021 3:08:26 PM
+INFO  2021-02-03 15:08:27,786 111915ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 2/3/2021 3:08:27 PM
+INFO  2021-02-03 15:08:33,882 118011ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 2/3/2021 3:08:33 PM
+INFO  2021-02-03 15:08:37,919 122048ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 4 | 2/3/2021 3:08:37 PM
+INFO  2021-02-03 15:12:10,295 120978ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/3/2021 3:12:10 PM
+INFO  2021-02-03 15:12:10,295 120978ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 2/3/2021 3:12:10 PM
+INFO  2021-02-03 15:12:10,295 120978ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/3/2021 3:12:10 PM
+INFO  2021-02-03 15:12:11,605 122288ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 2/3/2021 3:12:11 PM
+INFO  2021-02-03 15:12:13,985 124668ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 2/3/2021 3:12:13 PM
+INFO  2021-02-03 15:12:16,294 126977ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 4 | 2/3/2021 3:12:16 PM
+INFO  2021-02-03 15:12:30,432 141114ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync request | 3030.00 | NGN1581300022001 | 2/3/2021 3:12:30 PM
+INFO  2021-02-03 15:12:41,050 151733ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync response | 3030.00 | NGN1581300022001 | <diffgr:diffgram xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:diffgr="urn:schemas-microsoft-com:xml-diffgram-v1">
+  <NewDataSet xmlns="">
+    <BankAccountFullInfo diffgr:id="BankAccountFullInfo1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <NUBAN>NGN1581300022001</NUBAN>
+      <BRA_CODE>NG0020001</BRA_CODE>
+      <DES_ENG>T24PROD-SBN</DES_ENG>
+      <CUS_NUM />
+      <CUR_CODE>NGN</CUR_CODE>
+      <CUS_SHO_NAME>Socialpay Settlement Account</CUS_SHO_NAME>
+      <AccountGroup />
+      <CustomerStatus />
+      <ADD_LINE1 xml:space="preserve"> </ADD_LINE1>
+      <ADD_LINE2 xml:space="preserve"> </ADD_LINE2>
+      <MOB_NUM />
+      <EMAIL />
+      <REST_IND>0</REST_IND>
+      <ACCT_NO>NGN1581300022001</ACCT_NO>
+      <MAP_ACC_NO>NGN1581300022001</MAP_ACC_NO>
+      <ACCT_TYPE>Interswitch Transfer Splitting S</ACCT_TYPE>
+      <TEL_NUM />
+      <DATE_OPEN>2021/01/05</DATE_OPEN>
+      <STA_CODE>ACTIVE</STA_CODE>
+      <CLE_BAL>-3059.50</CLE_BAL>
+      <CRNT_BAL>-3059.50</CRNT_BAL>
+      <TOT_BLO_FUND>0.00</TOT_BLO_FUND>
+      <INTRODUCER>4001</INTRODUCER>
+      <DATE_BAL_CHA>2021/01/28</DATE_BAL_CHA>
+      <NAME_LINE1 />
+      <NAME_LINE2 />
+      <ACCOUNTCATEGORY>15813</ACCOUNTCATEGORY>
+      <BVN />
+      <REST_FLAG>FALSE</REST_FLAG>
+      <IsSMSSubscriber>FALSE</IsSMSSubscriber>
+      <Alt_Currency>566</Alt_Currency>
+      <Currency_Code>NGN</Currency_Code>
+      <T24_BRA_CODE>NG0020001</T24_BRA_CODE>
+      <T24_CUS_NUM />
+      <T24_CUR_CODE>566</T24_CUR_CODE>
+      <T24_LED_CODE>15813</T24_LED_CODE>
+      <OnlineActualBalance>-3059.50</OnlineActualBalance>
+      <OnlineClearedBalance>-3059.50</OnlineClearedBalance>
+      <OpenActualBalance>-3059.50</OpenActualBalance>
+      <OpenClearedBalance>-3059.50</OpenClearedBalance>
+      <WorkingBalance>-3059.50</WorkingBalance>
+      <CustomerStatusCode />
+      <CustomerStatusDeecp />
+      <LimitID />
+      <LimitAmt>0</LimitAmt>
+      <MinimumBal>0</MinimumBal>
+      <UsableBal>-3059.5</UsableBal>
+      <AccountDescp>Interswitch Transfer Splitting S</AccountDescp>
+      <CourtesyTitle />
+      <AccountTitle>Socialpay Settlement Account</AccountTitle>
+      <AMFCharges>0</AMFCharges>
+    </BankAccountFullInfo>
+    <RestrictFlag diffgr:id="RestrictFlag1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <RestrCode />
+      <ResDescp />
+    </RestrictFlag>
+  </NewDataSet>
+</diffgr:diffgram> | 2/3/2021 3:12:40 PM
+INFO  2021-02-03 15:13:21,617 192300ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync request | 2020.00 | NGN1581300022001 | 2/3/2021 3:13:21 PM
+INFO  2021-02-03 15:13:24,000 194683ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync response | 2020.00 | NGN1581300022001 | <diffgr:diffgram xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:diffgr="urn:schemas-microsoft-com:xml-diffgram-v1">
+  <NewDataSet xmlns="">
+    <BankAccountFullInfo diffgr:id="BankAccountFullInfo1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <NUBAN>NGN1581300022001</NUBAN>
+      <BRA_CODE>NG0020001</BRA_CODE>
+      <DES_ENG>T24PROD-SBN</DES_ENG>
+      <CUS_NUM />
+      <CUR_CODE>NGN</CUR_CODE>
+      <CUS_SHO_NAME>Socialpay Settlement Account</CUS_SHO_NAME>
+      <AccountGroup />
+      <CustomerStatus />
+      <ADD_LINE1 xml:space="preserve"> </ADD_LINE1>
+      <ADD_LINE2 xml:space="preserve"> </ADD_LINE2>
+      <MOB_NUM />
+      <EMAIL />
+      <REST_IND>0</REST_IND>
+      <ACCT_NO>NGN1581300022001</ACCT_NO>
+      <MAP_ACC_NO>NGN1581300022001</MAP_ACC_NO>
+      <ACCT_TYPE>Interswitch Transfer Splitting S</ACCT_TYPE>
+      <TEL_NUM />
+      <DATE_OPEN>2021/01/05</DATE_OPEN>
+      <STA_CODE>ACTIVE</STA_CODE>
+      <CLE_BAL>-3059.50</CLE_BAL>
+      <CRNT_BAL>-3059.50</CRNT_BAL>
+      <TOT_BLO_FUND>0.00</TOT_BLO_FUND>
+      <INTRODUCER>4001</INTRODUCER>
+      <DATE_BAL_CHA>2021/01/28</DATE_BAL_CHA>
+      <NAME_LINE1 />
+      <NAME_LINE2 />
+      <ACCOUNTCATEGORY>15813</ACCOUNTCATEGORY>
+      <BVN />
+      <REST_FLAG>FALSE</REST_FLAG>
+      <IsSMSSubscriber>FALSE</IsSMSSubscriber>
+      <Alt_Currency>566</Alt_Currency>
+      <Currency_Code>NGN</Currency_Code>
+      <T24_BRA_CODE>NG0020001</T24_BRA_CODE>
+      <T24_CUS_NUM />
+      <T24_CUR_CODE>566</T24_CUR_CODE>
+      <T24_LED_CODE>15813</T24_LED_CODE>
+      <OnlineActualBalance>-3059.50</OnlineActualBalance>
+      <OnlineClearedBalance>-3059.50</OnlineClearedBalance>
+      <OpenActualBalance>-3059.50</OpenActualBalance>
+      <OpenClearedBalance>-3059.50</OpenClearedBalance>
+      <WorkingBalance>-3059.50</WorkingBalance>
+      <CustomerStatusCode />
+      <CustomerStatusDeecp />
+      <LimitID />
+      <LimitAmt>0</LimitAmt>
+      <MinimumBal>0</MinimumBal>
+      <UsableBal>-3059.5</UsableBal>
+      <AccountDescp>Interswitch Transfer Splitting S</AccountDescp>
+      <CourtesyTitle />
+      <AccountTitle>Socialpay Settlement Account</AccountTitle>
+      <AMFCharges>0</AMFCharges>
+    </BankAccountFullInfo>
+    <RestrictFlag diffgr:id="RestrictFlag1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <RestrCode />
+      <ResDescp />
+    </RestrictFlag>
+  </NewDataSet>
+</diffgr:diffgram> | 2/3/2021 3:13:23 PM
+INFO  2021-02-03 15:16:10,298 48599ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/3/2021 3:16:10 PM
+INFO  2021-02-03 15:16:10,298 48599ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 2/3/2021 3:16:10 PM
+INFO  2021-02-03 15:16:10,298 48599ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/3/2021 3:16:10 PM
+INFO  2021-02-03 15:16:11,149 49450ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 2/3/2021 3:16:11 PM
+INFO  2021-02-03 15:16:14,005 52306ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 2/3/2021 3:16:14 PM
+INFO  2021-02-03 15:16:15,619 53920ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 4 | 2/3/2021 3:16:15 PM
+INFO  2021-02-03 15:16:32,577 70878ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync request | 3030.00 | NGN1581300022001 | 2/3/2021 3:16:32 PM
+INFO  2021-02-03 15:16:40,978 79279ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync response | 3030.00 | NGN1581300022001 | <diffgr:diffgram xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:diffgr="urn:schemas-microsoft-com:xml-diffgram-v1">
+  <NewDataSet xmlns="">
+    <BankAccountFullInfo diffgr:id="BankAccountFullInfo1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <NUBAN>NGN1581300022001</NUBAN>
+      <BRA_CODE>NG0020001</BRA_CODE>
+      <DES_ENG>T24PROD-SBN</DES_ENG>
+      <CUS_NUM />
+      <CUR_CODE>NGN</CUR_CODE>
+      <CUS_SHO_NAME>Socialpay Settlement Account</CUS_SHO_NAME>
+      <AccountGroup />
+      <CustomerStatus />
+      <ADD_LINE1 xml:space="preserve"> </ADD_LINE1>
+      <ADD_LINE2 xml:space="preserve"> </ADD_LINE2>
+      <MOB_NUM />
+      <EMAIL />
+      <REST_IND>0</REST_IND>
+      <ACCT_NO>NGN1581300022001</ACCT_NO>
+      <MAP_ACC_NO>NGN1581300022001</MAP_ACC_NO>
+      <ACCT_TYPE>Interswitch Transfer Splitting S</ACCT_TYPE>
+      <TEL_NUM />
+      <DATE_OPEN>2021/01/05</DATE_OPEN>
+      <STA_CODE>ACTIVE</STA_CODE>
+      <CLE_BAL>-3059.50</CLE_BAL>
+      <CRNT_BAL>-3059.50</CRNT_BAL>
+      <TOT_BLO_FUND>0.00</TOT_BLO_FUND>
+      <INTRODUCER>4001</INTRODUCER>
+      <DATE_BAL_CHA>2021/01/28</DATE_BAL_CHA>
+      <NAME_LINE1 />
+      <NAME_LINE2 />
+      <ACCOUNTCATEGORY>15813</ACCOUNTCATEGORY>
+      <BVN />
+      <REST_FLAG>FALSE</REST_FLAG>
+      <IsSMSSubscriber>FALSE</IsSMSSubscriber>
+      <Alt_Currency>566</Alt_Currency>
+      <Currency_Code>NGN</Currency_Code>
+      <T24_BRA_CODE>NG0020001</T24_BRA_CODE>
+      <T24_CUS_NUM />
+      <T24_CUR_CODE>566</T24_CUR_CODE>
+      <T24_LED_CODE>15813</T24_LED_CODE>
+      <OnlineActualBalance>-3059.50</OnlineActualBalance>
+      <OnlineClearedBalance>-3059.50</OnlineClearedBalance>
+      <OpenActualBalance>-3059.50</OpenActualBalance>
+      <OpenClearedBalance>-3059.50</OpenClearedBalance>
+      <WorkingBalance>-3059.50</WorkingBalance>
+      <CustomerStatusCode />
+      <CustomerStatusDeecp />
+      <LimitID />
+      <LimitAmt>0</LimitAmt>
+      <MinimumBal>0</MinimumBal>
+      <UsableBal>-3059.5</UsableBal>
+      <AccountDescp>Interswitch Transfer Splitting S</AccountDescp>
+      <CourtesyTitle />
+      <AccountTitle>Socialpay Settlement Account</AccountTitle>
+      <AMFCharges>0</AMFCharges>
+    </BankAccountFullInfo>
+    <RestrictFlag diffgr:id="RestrictFlag1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <RestrCode />
+      <ResDescp />
+    </RestrictFlag>
+  </NewDataSet>
+</diffgr:diffgram> | 2/3/2021 3:16:40 PM
+INFO  2021-02-03 15:17:11,213 109515ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync request | 2020.00 | NGN1581300022001 | 2/3/2021 3:17:11 PM
+INFO  2021-02-03 15:17:15,418 113719ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync response | 2020.00 | NGN1581300022001 | <diffgr:diffgram xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:diffgr="urn:schemas-microsoft-com:xml-diffgram-v1">
+  <NewDataSet xmlns="">
+    <BankAccountFullInfo diffgr:id="BankAccountFullInfo1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <NUBAN>NGN1581300022001</NUBAN>
+      <BRA_CODE>NG0020001</BRA_CODE>
+      <DES_ENG>T24PROD-SBN</DES_ENG>
+      <CUS_NUM />
+      <CUR_CODE>NGN</CUR_CODE>
+      <CUS_SHO_NAME>Socialpay Settlement Account</CUS_SHO_NAME>
+      <AccountGroup />
+      <CustomerStatus />
+      <ADD_LINE1 xml:space="preserve"> </ADD_LINE1>
+      <ADD_LINE2 xml:space="preserve"> </ADD_LINE2>
+      <MOB_NUM />
+      <EMAIL />
+      <REST_IND>0</REST_IND>
+      <ACCT_NO>NGN1581300022001</ACCT_NO>
+      <MAP_ACC_NO>NGN1581300022001</MAP_ACC_NO>
+      <ACCT_TYPE>Interswitch Transfer Splitting S</ACCT_TYPE>
+      <TEL_NUM />
+      <DATE_OPEN>2021/01/05</DATE_OPEN>
+      <STA_CODE>ACTIVE</STA_CODE>
+      <CLE_BAL>-3059.50</CLE_BAL>
+      <CRNT_BAL>-3059.50</CRNT_BAL>
+      <TOT_BLO_FUND>0.00</TOT_BLO_FUND>
+      <INTRODUCER>4001</INTRODUCER>
+      <DATE_BAL_CHA>2021/01/28</DATE_BAL_CHA>
+      <NAME_LINE1 />
+      <NAME_LINE2 />
+      <ACCOUNTCATEGORY>15813</ACCOUNTCATEGORY>
+      <BVN />
+      <REST_FLAG>FALSE</REST_FLAG>
+      <IsSMSSubscriber>FALSE</IsSMSSubscriber>
+      <Alt_Currency>566</Alt_Currency>
+      <Currency_Code>NGN</Currency_Code>
+      <T24_BRA_CODE>NG0020001</T24_BRA_CODE>
+      <T24_CUS_NUM />
+      <T24_CUR_CODE>566</T24_CUR_CODE>
+      <T24_LED_CODE>15813</T24_LED_CODE>
+      <OnlineActualBalance>-3059.50</OnlineActualBalance>
+      <OnlineClearedBalance>-3059.50</OnlineClearedBalance>
+      <OpenActualBalance>-3059.50</OpenActualBalance>
+      <OpenClearedBalance>-3059.50</OpenClearedBalance>
+      <WorkingBalance>-3059.50</WorkingBalance>
+      <CustomerStatusCode />
+      <CustomerStatusDeecp />
+      <LimitID />
+      <LimitAmt>0</LimitAmt>
+      <MinimumBal>0</MinimumBal>
+      <UsableBal>-3059.5</UsableBal>
+      <AccountDescp>Interswitch Transfer Splitting S</AccountDescp>
+      <CourtesyTitle />
+      <AccountTitle>Socialpay Settlement Account</AccountTitle>
+      <AMFCharges>0</AMFCharges>
+    </BankAccountFullInfo>
+    <RestrictFlag diffgr:id="RestrictFlag1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <RestrCode />
+      <ResDescp />
+    </RestrictFlag>
+  </NewDataSet>
+</diffgr:diffgram> | 2/3/2021 3:17:15 PM

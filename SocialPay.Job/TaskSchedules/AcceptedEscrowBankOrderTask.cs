@@ -2,21 +2,41 @@
 using SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction;
 using SocialPay.Job.Services;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.TaskSchedules
 {
-    public class AcceptedEscrowBankOrderTask : ScheduledProcessor
+    //public class AcceptedEscrowBankOrderTask : ScheduledProcessor
+    //{
+    //    public AcceptedEscrowBankOrderTask(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
+    //    {
+    //    }
+
+    //    protected override string Schedule => "*/" + 100 + " * * * *"; // every 4 min 
+
+    //    public override Task ProcessInScope(IServiceProvider scopeServiceProvider)
+    //    {
+    //        IAcceptedEscrowRequestBankTransaction reportGenerator = scopeServiceProvider.GetRequiredService<IAcceptedEscrowRequestBankTransaction>();
+    //        reportGenerator.GetPendingTransactions();
+    //        return Task.CompletedTask;
+    //    }
+    //}
+
+    public class AcceptedEscrowBankOrderTask : CronJobService
     {
-        public AcceptedEscrowBankOrderTask(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
+        private readonly IServiceProvider _scopeServiceProvider;
+
+        public AcceptedEscrowBankOrderTask(IServiceProvider serviceProvider, IScheduleConfig<AcceptedEscrowBankOrderTask> config) : base(config.CronExpression, config.TimeZoneInfo)
         {
+            _scopeServiceProvider = serviceProvider;
         }
 
-        protected override string Schedule => "*/" + 100 + " * * * *"; // every 4 min 
-
-        public override Task ProcessInScope(IServiceProvider scopeServiceProvider)
+        public override Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            IAcceptedEscrowRequestBankTransaction reportGenerator = scopeServiceProvider.GetRequiredService<IAcceptedEscrowRequestBankTransaction>();
+            using var scope = _scopeServiceProvider.CreateScope();
+
+            IAcceptedEscrowRequestBankTransaction reportGenerator = scope.ServiceProvider.GetRequiredService<IAcceptedEscrowRequestBankTransaction>();
             reportGenerator.GetPendingTransactions();
             return Task.CompletedTask;
         }
