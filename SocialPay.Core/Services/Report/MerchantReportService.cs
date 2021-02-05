@@ -234,6 +234,41 @@ namespace SocialPay.Core.Services.Report
         }
 
 
+
+        public async Task<WebApiResponse> GetAllTransactions()
+        {
+            try
+            {
+                //clientId = 30032;
+                var result = await _context.TransactionLog.ToListAsync();
+
+                return new WebApiResponse { ResponseCode = "00", Data = result };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> GetAllFailedTransactions()
+        {
+            try
+            {
+                //clientId = 30032;
+                var result = await _context.FailedTransactions.ToListAsync();
+
+                return new WebApiResponse { ResponseCode = "00", Data = result };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
         public async Task<WebApiResponse> GetAllEscrowTransactions(long clientId, string status)
         {
             var result = new List<EscrowViewModel>();

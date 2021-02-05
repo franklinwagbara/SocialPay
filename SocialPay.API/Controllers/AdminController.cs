@@ -382,5 +382,70 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-transaction-logs")]
+        public async Task<IActionResult> GetTransactionLogAsync([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "sterling0014")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+
+                    var result = await _merchantReportService.GetAllTransactions();
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-failed-transaction-logs")]
+        public async Task<IActionResult> GetFailedTransactionLogAsync([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "sterling0f14")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+
+                    var result = await _merchantReportService.GetAllFailedTransactions();
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
     }
 }

@@ -14,9 +14,49 @@ namespace API.Test
         {
             //string iString = "2005-05-05 22:12 PM";
             //yyyy-MM-dd
-            DateTime oDT = DateTime.ParseExact("05-Oct-2020", "dd-MMM-yyyy",
+
+            DateTime firstDate = new DateTime(2017, 03, 03);
+
+            //Second Date
+            DateTime secondDate = new DateTime(2018, 06, 06); //DateTime.Now;
+
+
+            DateTime oDT = DateTime.ParseExact("05-Oct-2019", "dd-MMM-yyyy",
+             CultureInfo.InvariantCulture);
+
+            DateTime oDT1 = DateTime.ParseExact("05-Oct-2020", "dd-MMM-yyyy",
                 CultureInfo.InvariantCulture);
 
+            string startDate = "2019-10-01";
+            string endDate = "2020-9-01";
+
+            DateTime dateTime11 = DateTime.Parse(startDate);
+            DateTime dateTime12 = DateTime.Parse(endDate);
+
+            int months = MonthDiff(dateTime11, dateTime12);
+
+            Console.WriteLine("First Date  :" + firstDate);
+            Console.WriteLine("Second Date :" + secondDate);
+            Console.WriteLine("Months      :" + months);
+            Console.ReadLine();
+
+            CultureInfo culture = new CultureInfo("en-US");
+          
+           
+            DateTime stempDate = Convert.ToDateTime(startDate, culture);
+            DateTime etempDate = Convert.ToDateTime(endDate, culture);
+            DateTime date1 = new DateTime(2020, 8, 28);
+            DateTime date3 = new DateTime(2021, 11, 2);
+
+            int month2 = dateTime12.Month - dateTime11.Month;
+
+            int month1 = date3.Month - date1.Month;
+
+            int month = etempDate.Month - stempDate.Month;
+
+         
+
+            int month3 = oDT1.Month - oDT.Month;
             //string szDT = oDT.ToString("MM-dd-yyyy");
             string szDT = oDT.ToString("yyyy-MM-dd");
             string data = "THExxQUICKxxBROWNxxFOX";
@@ -158,6 +198,24 @@ namespace API.Test
             Process.Start(psi);
         }
         
+         public static int MonthDiff(DateTime d1, DateTime d2)
+        {
+            int m1;
+            int m2;
+            if(d1<d2)
+            {
+                m1 = (d2.Month - d1.Month);//for years
+                m2 = (d2.Year - d1.Year) * 12; //for months
+            }
+            else
+            {
+                m1 = (d1.Month - d2.Month);//for years
+                m2 = (d1.Year - d2.Year) * 12; //for months
+            }
+            
+            return  m1 + m2;
+        }
+
         public class TestApps
         {
             public DateTime? eDate { get; set; }
