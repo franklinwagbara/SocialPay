@@ -368,17 +368,26 @@ namespace SocialPay.Core.Services.Account
                 if (getUserInfo.MerchantBusinessInfo.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
 
+
                 string fileName = string.Empty;
                 var merchantId = Guid.NewGuid().ToString("N").Substring(22);
                 var newFileName = string.Empty;
-                fileName = (model.Logo.FileName);
+                var filePath = string.Empty;
+                var fileExtension = string.Empty;
 
-                var FileExtension = Path.GetExtension(fileName);
-                fileName = Path.Combine(_hostingEnvironment.WebRootPath, "MerchantLogo") + $@"\{newFileName}";
+                if (model.Logo.Length != 0)
+                {
+                    fileName = (model.Logo.FileName);
 
-                // concating  FileName + FileExtension
-                newFileName = merchantId + FileExtension;
-                var filePath = Path.Combine(fileName, newFileName);
+                    fileExtension = Path.GetExtension(fileName);
+                    fileName = Path.Combine(_hostingEnvironment.WebRootPath, "MerchantLogo") + $@"\{newFileName}";
+
+                    // concating  FileName + FileExtension
+                    newFileName = merchantId + fileExtension;
+                    filePath = Path.Combine(fileName, newFileName);
+                }
+
+                
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
@@ -434,6 +443,13 @@ namespace SocialPay.Core.Services.Account
                         .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                         .SetSlidingExpiration(TimeSpan.FromMinutes(15));
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+                        if(model.Logo.Length == 0)
+                        {
+                            await transaction.CommitAsync();
+                            _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
+
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo };
+                        }
                         model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
                         await transaction.CommitAsync();
                         _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);

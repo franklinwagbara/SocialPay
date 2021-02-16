@@ -27,6 +27,9 @@ namespace API.Test
             DateTime oDT1 = DateTime.ParseExact("05-Oct-2020", "dd-MMM-yyyy",
                 CultureInfo.InvariantCulture);
 
+
+            string s1 = oDT.ToString("yyyy-MM-dd");
+
             string startDate = "2019-10-01";
             string endDate = "2020-9-01";
 

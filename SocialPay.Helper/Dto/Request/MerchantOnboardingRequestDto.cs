@@ -20,7 +20,7 @@ namespace SocialPay.Helper.Dto.Request
         [Required(ErrorMessage = "Business country")]
         public string Country { get; set; }       
         public string Chargebackemail { get; set; }
-        [Required(ErrorMessage = "Please select a file.")]
+        //[Required(ErrorMessage = "Please select a file.")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]
         [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg" })]
