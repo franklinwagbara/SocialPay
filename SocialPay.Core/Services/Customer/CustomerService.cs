@@ -138,7 +138,7 @@ namespace SocialPay.Core.Services.Customer
 
                         var generateToken = await _payWithSpectaService
                             .InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference,
-                            getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey, getMerchantId.SpectaMerchantKeyValue);
+                            getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey);
                         
                         if (generateToken.ResponseCode != AppResponseCodes.Success)
                         {
@@ -223,14 +223,21 @@ namespace SocialPay.Core.Services.Customer
                 {
                     string fileName = string.Empty;
                     var newFileName = string.Empty;
-                    fileName = (model.Document.FileName);
-                    var documentId = Guid.NewGuid().ToString("N").Substring(22);
-                    var FileExtension = Path.GetExtension(fileName);
-                    fileName = Path.Combine(_hostingEnvironment.WebRootPath, "CustomerDocuments") + $@"\{newFileName}";
+                    var fileExtension = string.Empty;
+                    var filePath = string.Empty;
 
-                    // concating  FileName + FileExtension
-                    newFileName = documentId + FileExtension;
-                    var filePath = Path.Combine(fileName, newFileName);
+                    if (model.Document.Length !=0)
+                    {
+                        fileName = (model.Document.FileName);
+                        var documentId = Guid.NewGuid().ToString("N").Substring(22);
+                        fileExtension = Path.GetExtension(fileName);
+                        fileName = Path.Combine(_hostingEnvironment.WebRootPath, "CustomerDocuments") + $@"\{newFileName}";
+
+                        // concating  FileName + FileExtension
+                        newFileName = documentId + fileExtension;
+                        filePath = Path.Combine(fileName, newFileName);
+                    }
+                   
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         logCustomerInfo.Amount = model.CustomerAmount;
@@ -240,9 +247,20 @@ namespace SocialPay.Core.Services.Customer
                         await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                         await _context.SaveChangesAsync();
                         _log4net.Info("About to save uploaded document" + " | " + model.TransactionReference + " | " + DateTime.Now);
-                        model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
-                        await transaction.CommitAsync();
-                        _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
+                       
+                        if(model.Document.Length == 0)
+                        {
+                            model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
+                            await transaction.CommitAsync();
+                            _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
+                        }
+                        else
+                        {
+                            model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
+                            await transaction.CommitAsync();
+                            _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
+                        }
+                        
                         //decimal CustomerTotalAmount = model.CustomerAmount;// + getPaymentDetails.ShippingFee;
                         if(getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)
                         {
@@ -255,7 +273,7 @@ namespace SocialPay.Core.Services.Customer
 
                                 var generateToken = await _payWithSpectaService
                                     .InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef, 
-                                    getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey, getMerchantId.SpectaMerchantKeyValue);
+                                    getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey);
                                
                                 if (generateToken.ResponseCode != AppResponseCodes.Success)
                                 {
@@ -310,7 +328,7 @@ namespace SocialPay.Core.Services.Customer
 
                     var generateToken = await _payWithSpectaService
                         .InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", paymentRef,
-                        getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey, getMerchantId.SpectaMerchantKeyValue);
+                        getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey);
                    
                     if (generateToken.ResponseCode != AppResponseCodes.Success)
                     {

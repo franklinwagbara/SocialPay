@@ -69,12 +69,15 @@ namespace SocialPay.Core.Services.Transaction
                 if (userStatus != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
 
+                ////if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic
+                ////  || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow
+                ////  || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink
+                ////  || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
+                ////{
 
-                if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic 
-                    || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow
-                    || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink
-                    || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
-                {
+                    if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic                    
+                    || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)
+                    {
                     var model = new MerchantPaymentSetup { };
                    
                     model.PaymentLinkName = paymentModel.PaymentLinkName == null ? string.Empty : paymentModel.PaymentLinkName;
@@ -112,14 +115,14 @@ namespace SocialPay.Core.Services.Transaction
                     model.TransactionReference = newGuid;
                     model.PaymentLinkUrl = _appSettings.paymentlinkUrl + model.TransactionReference;
 
-                    if(paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow ||
-                        paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
-                    {
-                        addtionalAmount = model.TotalAmount * Convert.ToInt32(_appSettings.PaymentLinkPercentage) / 100;
-                        model.TotalAmount = model.TotalAmount + addtionalAmount;
-                        model.AdditionalCharges = addtionalAmount;
-                        model.HasAdditionalCharges = true;
-                    }
+                    //if(paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow ||
+                    //    paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
+                    //{
+                    //    addtionalAmount = model.TotalAmount * Convert.ToInt32(_appSettings.PaymentLinkPercentage) / 100;
+                    //    model.TotalAmount = model.TotalAmount + addtionalAmount;
+                    //    model.AdditionalCharges = addtionalAmount;
+                    //    model.HasAdditionalCharges = true;
+                    //}
 
                     var linkCatModel = new LinkCategory
                     {
@@ -175,8 +178,6 @@ namespace SocialPay.Core.Services.Transaction
                         }
                       
                     }
-
-                  
                   
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentcategory };
