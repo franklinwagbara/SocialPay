@@ -226,7 +226,7 @@ namespace SocialPay.Core.Services.Customer
                     var fileExtension = string.Empty;
                     var filePath = string.Empty;
 
-                    if (model.Document.Length !=0)
+                    if (model.Document != null || model.Document.Length != 0)
                     {
                         fileName = (model.Document.FileName);
                         var documentId = Guid.NewGuid().ToString("N").Substring(22);
@@ -247,8 +247,8 @@ namespace SocialPay.Core.Services.Customer
                         await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                         await _context.SaveChangesAsync();
                         _log4net.Info("About to save uploaded document" + " | " + model.TransactionReference + " | " + DateTime.Now);
-                       
-                        if(model.Document.Length == 0)
+
+                        if (model.Document != null || model.Document.Length != 0)
                         {
                             model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
                             await transaction.CommitAsync();
@@ -256,7 +256,6 @@ namespace SocialPay.Core.Services.Customer
                         }
                         else
                         {
-                            model.Document.CopyTo(new FileStream(filePath, FileMode.Create));
                             await transaction.CommitAsync();
                             _log4net.Info("Uploaded document was successfully saved" + " | " + model.TransactionReference + " | " + DateTime.Now);
                         }
