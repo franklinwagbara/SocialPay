@@ -375,7 +375,7 @@ namespace SocialPay.Core.Services.Account
                 var filePath = string.Empty;
                 var fileExtension = string.Empty;
 
-                if (model.Logo == null)
+                if (model.Logo != null)
                 {
                     fileName = (model.Logo.FileName);
 
