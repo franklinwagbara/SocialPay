@@ -36,7 +36,7 @@ namespace SocialPay.Core.Services.Specta
                 var model = new PaywithSpectRequestDto
                 {
                     amount = Convert.ToString(amount), callBackUrl = _appSettings.paywithSpectaCallBackUrl,
-                    description = description, merchantId = merchantId,
+                    description = description, merchantId = _appSettings.paywithspectamerchanId,
                     reference = transactionReference
                 };
                 var request = JsonConvert.SerializeObject(model);
@@ -47,8 +47,8 @@ namespace SocialPay.Core.Services.Specta
                 var response = await _client.PostAsync(_appSettings.paywithSpectaPurchaseUrlExtension,
                     new StringContent(request, Encoding.UTF8, "application/json"));
 
-                //_client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, _appSettings.paywithspectaHeaderValue);
-                _client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, merchantKey);
+                _client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, _appSettings.paywithspectaHeaderValue);
+                //_client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, merchantKey);
                
                 var result = await response.Content.ReadAsStringAsync();
                 _log4net.Info("InitiatePayment response" + " | " + transactionReference + " | " + amount + " | " + result + " | " + merchantId + " | "+ DateTime.Now);
