@@ -495,6 +495,26 @@ namespace SocialPay.Core.Services.Customer
             }
         }
 
+        public async Task<WebApiResponse> DecryptMessage(string message)
+        {
+            try
+            {
+                var decodeMessage = System.Uri.UnescapeDataString(message);
+                if (decodeMessage.Contains(" "))
+                {
+                    decodeMessage = decodeMessage.Replace(" ", "+");
+                }
+                var decryptResponse = DecryptAlt(decodeMessage);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = decryptResponse };
+
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
 
         public static String DecryptAlt(String val)
         {
