@@ -793,3 +793,11 @@ INFO  2021-02-03 15:17:15,418 113719ms ceRepositoryJobService ?                 
     </RestrictFlag>
   </NewDataSet>
 </diffgr:diffgram> | 2/3/2021 3:17:15 PM
+INFO  2021-02-17 11:23:59,148 294605ms CustomerController     ?                  - Task starts to initiate payments | fef1f5f8e2664634a63c65ee54323bde | 2/17/2021 11:23:59 AM
+INFO  2021-02-17 11:24:01,927 297384ms CustomerRepoService    ?                  - Task starts to save payments MakePayment info | fef1f5f8e2664634a63c65ee54323bde | 08185254717 | 2/17/2021 11:24:01 AM
+INFO  2021-02-17 11:30:01,586 34341ms wCardWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 2/17/2021 11:30:01 AM
+INFO  2021-02-17 11:30:03,235 35990ms wCardWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 2/17/2021 11:30:03 AM
+INFO  2021-02-17 11:30:21,242 53997ms CustomerController     ?                  - Task starts to initiate payments |  | 2/17/2021 11:30:21 AM
+INFO  2021-02-17 11:37:32,148 91622ms CustomerController     ?                  - Task starts to initiate payments |  | 2/17/2021 11:37:32 AM
+INFO  2021-02-17 11:39:59,255 99764ms CustomerController     ?                  - Task starts to initiate payments |  | 2/17/2021 11:39:59 AM
+INFO  2021-02-17 11:47:04,003 143189ms CustomerController     ?                  - Task starts to initiate payments |  | 2/17/2021 11:47:03 AM
