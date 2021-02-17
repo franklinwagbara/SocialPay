@@ -375,7 +375,7 @@ namespace SocialPay.Core.Services.Account
                 var filePath = string.Empty;
                 var fileExtension = string.Empty;
 
-                if (model.Logo.Length != 0)
+                if (model.Logo == null)
                 {
                     fileName = (model.Logo.FileName);
 
@@ -443,7 +443,7 @@ namespace SocialPay.Core.Services.Account
                         .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                         .SetSlidingExpiration(TimeSpan.FromMinutes(15));
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
-                        if(model.Logo.Length == 0)
+                        if(model.Logo == null)
                         {
                             await transaction.CommitAsync();
                             _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
