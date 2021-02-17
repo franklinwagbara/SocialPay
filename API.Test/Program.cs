@@ -30,41 +30,41 @@ namespace API.Test
 
             string s1 = oDT.ToString("yyyy-MM-dd");
 
-            string startDate = "2019-10-01";
-            string endDate = "2020-9-01";
+            //string startDate = "2019-10-01";
+            //string endDate = "2020-9-01";
 
-            DateTime dateTime11 = DateTime.Parse(startDate);
-            DateTime dateTime12 = DateTime.Parse(endDate);
+            //DateTime dateTime11 = DateTime.Parse(startDate);
+            //DateTime dateTime12 = DateTime.Parse(endDate);
 
-            int months = MonthDiff(dateTime11, dateTime12);
+            //int months = MonthDiff(dateTime11, dateTime12);
 
-            Console.WriteLine("First Date  :" + firstDate);
-            Console.WriteLine("Second Date :" + secondDate);
-            Console.WriteLine("Months      :" + months);
-            Console.ReadLine();
+            //Console.WriteLine("First Date  :" + firstDate);
+            //Console.WriteLine("Second Date :" + secondDate);
+            //Console.WriteLine("Months      :" + months);
+            //Console.ReadLine();
 
-            CultureInfo culture = new CultureInfo("en-US");
+            //CultureInfo culture = new CultureInfo("en-US");
           
            
-            DateTime stempDate = Convert.ToDateTime(startDate, culture);
-            DateTime etempDate = Convert.ToDateTime(endDate, culture);
-            DateTime date1 = new DateTime(2020, 8, 28);
-            DateTime date3 = new DateTime(2021, 11, 2);
+            //DateTime stempDate = Convert.ToDateTime(startDate, culture);
+            //DateTime etempDate = Convert.ToDateTime(endDate, culture);
+            //DateTime date1 = new DateTime(2020, 8, 28);
+            //DateTime date3 = new DateTime(2021, 11, 2);
 
-            int month2 = dateTime12.Month - dateTime11.Month;
+            //int month2 = dateTime12.Month - dateTime11.Month;
 
-            int month1 = date3.Month - date1.Month;
+            //int month1 = date3.Month - date1.Month;
 
-            int month = etempDate.Month - stempDate.Month;
+            //int month = etempDate.Month - stempDate.Month;
 
          
 
-            int month3 = oDT1.Month - oDT.Month;
-            //string szDT = oDT.ToString("MM-dd-yyyy");
-            string szDT = oDT.ToString("yyyy-MM-dd");
-            string data = "THExxQUICKxxBROWNxxFOX";
+            //////int month3 = oDT1.Month - oDT.Month;
+            ////////string szDT = oDT.ToString("MM-dd-yyyy");
+            //////string szDT = oDT.ToString("yyyy-MM-dd");
+            //////string data = "THExxQUICKxxBROWNxxFOX";
 
-            var ho = data.Split(new string[] { "xx" }, StringSplitOptions.None);
+            //////var ho = data.Split(new string[] { "xx" }, StringSplitOptions.None);
 
             var tranreference = string.Empty;
 
@@ -77,16 +77,16 @@ namespace API.Test
             //    }
             //}
 
-            string sDate = DateTime.Now.ToShortDateString();
+            //////string sDate = DateTime.Now.ToShortDateString();
 
-            var random = new Random();
-            string randomNumber = string.Join(string.Empty, Enumerable.Range(0, 10).Select(number => random.Next(0, 9).ToString()));
+            //////var random = new Random();
+            //////string randomNumber = string.Join(string.Empty, Enumerable.Range(0, 10).Select(number => random.Next(0, 9).ToString()));
            
-            var timeString = DateTime.Now.ToString("hh:mm:ss");
-            string date = DateTime.UtcNow.ToString("MM-dd-yyyy");
-            string date2 = DateTime.UtcNow.ToString("MMddyyyyhhmmss");
+            //////var timeString = DateTime.Now.ToString("hh:mm:ss");
+            //////string date = DateTime.UtcNow.ToString("MM-dd-yyyy");
+            //////string date2 = DateTime.UtcNow.ToString("MMddyyyyhhmmss");
 
-            string braCode = "000001" + date2 + randomNumber;
+            //////string braCode = "000001" + date2 + randomNumber;
             //DateTime nextDay = DateTime.Now.Date;
             //String myDate = "05-12-2020";
             //DateTime sdate = DateTime.Parse(myDate);
@@ -109,8 +109,9 @@ namespace API.Test
             var myUrl = "http://socialpay-web.sterlingapps.p.azurewebsites.net/#/confirm-payments?q=3Xd1AuUoqehJ2fK%20YXm9Yeq5ucFy5Na%205JXgmcDqdJERG78qIDVYKtyaAkmp%2F34tbnLqUDWUX3zM%2FmMhO4uZFw%3D%3D";
             //var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6o%2FsE5lumxNYOWL5DuHvKaQ%3D%3D";
             var decodeWorkingString = "QcKGLrMvsAUJ08snV7PKPNyYBnx6zErBI7T6l7BlDQa1ieYtT3NtjvKCZjjlBP7m2V1oVT7Zac1Jubh2DMld78wzibzRC1DBuRgq4XoUqqCKKM5sIxwSOWhJfhXlB6yGUw%20hu2W0nX6AHR8%2F89wCENwYIJYxi52w3rGHjWFDuxLU1FBjtsb5MayKcwPWSksx";
-            var decodeString = "eOnQBWdWVJ9cuPMmcDbEwCKVWtRxZgexLIOvor2YppSzR%20t%20flTqH2cm%208uY8bmi6jZbty28XpF1cL37r3GvycfIJBOgoBs6GM2GXb8TbsQy0LLRcX8LVjw9ake9EPjk";
-            var decodeMessage = System.Uri.UnescapeDataString(decodeWorkingString);
+            //var decodeString = "eOnQBWdWVJ9cuPMmcDbEwCKVWtRxZgexLIOvor2YppSzR%20t%20flTqH2cm%208uY8bmi6jZbty28XpF1cL37r3GvycfIJBOgoBs6GM2GXb8TbsQy0LLRcX8LVjw9ake9EPjk";
+            var decodeString = "CTogNoa78kRXhIcR0kUdjqJ9I7hy3qWqFuCdUH%2FuqzJ7d45aEVnGFVqRcRb%20pWxNWDXvAcVg%20ScGrngeIvx6M7nfrkNhDy1zeRQv9xmrzM%2F8VizuWfHRf1mvoA08LHqWJOussxApjiE%3D";
+            var decodeMessage = System.Uri.UnescapeDataString(decodeString);
             if (decodeMessage.Contains(" "))
             {
                 decodeMessage = decodeMessage.Replace(" ", "+");

@@ -65,11 +65,11 @@ namespace SocialPay.API.Controllers
 
             try
             {
+              
+
                 if (ModelState.IsValid)
                 {
-
-                    var result = await _customerRepoService.MakePayment(model);
-                    return Ok(result);
+                    return Ok(await _customerRepoService.MakePayment(model));
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
