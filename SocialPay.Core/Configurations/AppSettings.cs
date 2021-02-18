@@ -74,5 +74,8 @@
         public string accountLock { get; set; }
         public string accountReason { get; set; }
         public string nameEnquiryChannelCode { get; set; }
+        public string senderEmailInfo { get; set; }
+        public string successfulTransactionEmailSubject { get; set; }
+        public string failedTransactionEmailSubject { get; set; }
     }
 }

@@ -549,59 +549,59 @@ namespace SocialPay.Core.Repositories.Customer
                 var getCustomerInfo = await _context.CustomerOtherPaymentsInfo
                     .SingleOrDefaultAsync(x => x.PaymentReference == model.PaymentReference);
 
-                if (linkInfo != null && linkInfo.Channel == MerchantPaymentLinkCategory.Escrow || linkInfo.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
-                {
-                    var customerInfo = await _context.ClientAuthentication
-                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == model.CustomerId);
-                    logconfirmation.Category = linkInfo.Channel;
-                    logconfirmation.LinkCategory = paymentSetupInfo.PaymentCategory;
-                    logconfirmation.PaymentChannel = model.Channel;
-                    logconfirmation.ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId;
-                    logconfirmation.CustomerInfo = model.CustomerId;
-                    logconfirmation.CustomerEmail = customerInfo.Email;
-                    logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
-                    logconfirmation.TransactionReference = model.TransactionReference;
-                    logconfirmation.OrderStatus = TransactionJourneyStatusCodes.Pending;
-                    logconfirmation.Message = model.Message;
-                    logconfirmation.LastDateModified = DateTime.Now;
-                    logconfirmation.TotalAmount = getCustomerInfo.Amount;
-                    logconfirmation.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.Pending;
-                    logconfirmation.PaymentReference = model.PaymentReference;
-                    logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Pending;
-                    logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Pending;
-                    logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Pending;
-                    logconfirmation.OtherPaymentReference = reference;
+                ////if (linkInfo != null && linkInfo.Channel == MerchantPaymentLinkCategory.Escrow || linkInfo.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
+                ////{
+                ////    var customerInfo = await _context.ClientAuthentication
+                ////    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == model.CustomerId);
+                ////    logconfirmation.Category = linkInfo.Channel;
+                ////    logconfirmation.LinkCategory = paymentSetupInfo.PaymentCategory;
+                ////    logconfirmation.PaymentChannel = model.Channel;
+                ////    logconfirmation.ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId;
+                ////    logconfirmation.CustomerInfo = model.CustomerId;
+                ////    logconfirmation.CustomerEmail = customerInfo.Email;
+                ////    logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
+                ////    logconfirmation.TransactionReference = model.TransactionReference;
+                ////    logconfirmation.OrderStatus = TransactionJourneyStatusCodes.Pending;
+                ////    logconfirmation.Message = model.Message;
+                ////    logconfirmation.LastDateModified = DateTime.Now;
+                ////    logconfirmation.TotalAmount = getCustomerInfo.Amount;
+                ////    logconfirmation.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.Pending;
+                ////    logconfirmation.PaymentReference = model.PaymentReference;
+                ////    logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Pending;
+                ////    logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Pending;
+                ////    logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Pending;
+                ////    logconfirmation.OtherPaymentReference = reference;
 
-                    if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
-                    {
-                        logconfirmation.Status = true;
-                        logconfirmation.LastDateModified = DateTime.Now;
+                ////    if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
+                ////    {
+                ////        logconfirmation.Status = true;
+                ////        logconfirmation.LastDateModified = DateTime.Now;
 
-                        using (var transaction = await _context.Database.BeginTransactionAsync())
-                        {
-                            try
-                            {
-                                logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
-                                logconfirmation.DeliveryFinalDate = logconfirmation.DeliveryDate.AddDays(2);
-                                await _context.TransactionLog.AddAsync(logconfirmation);
-                                await _context.SaveChangesAsync();
-                                await transaction.CommitAsync();
-                                //Send mail
-                                await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
-                                    logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
+                ////        using (var transaction = await _context.Database.BeginTransactionAsync())
+                ////        {
+                ////            try
+                ////            {
+                ////                logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
+                ////                logconfirmation.DeliveryFinalDate = logconfirmation.DeliveryDate.AddDays(2);
+                ////                await _context.TransactionLog.AddAsync(logconfirmation);
+                ////                await _context.SaveChangesAsync();
+                ////                await transaction.CommitAsync();
+                ////                //Send mail
+                ////                await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
+                ////                    logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
                                 
-                                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
-                            }
-                            catch (Exception ex)
-                            {
-                                await transaction.RollbackAsync();
-                                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-                            }
-                        }
-                    }
+                ////                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                ////            }
+                ////            catch (Exception ex)
+                ////            {
+                ////                await transaction.RollbackAsync();
+                ////                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                ////            }
+                ////        }
+                ////    }
 
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
-                }
+                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
+                ////}
               
 
                 if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
@@ -636,7 +636,37 @@ namespace SocialPay.Core.Repositories.Customer
                             //Send mail
                             await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
                                 logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
-                            
+
+                            var emailModal = new EmailRequestDto
+                            {
+                                Subject = $"{_appSettings.successfulTransactionEmailSubject}{"-"}{model.TransactionReference}{"-"}",
+                                DestinationEmail = merchantInfo.BusinessEmail,
+                            };
+                            var mailBuilder = new StringBuilder();
+                            mailBuilder.AppendLine("Dear" + " " + merchantInfo.BusinessName + "," + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Customer was able to make payment successfully. See details below.<br />");
+                            mailBuilder.AppendLine();
+                            mailBuilder.AppendLine("Customer Name" + "  " + getCustomerInfo.Fullname + "<br />");
+                            mailBuilder.AppendLine();
+                            mailBuilder.AppendLine("Customer Phone number" + "  " + getCustomerInfo.PhoneNumber + "<br />");
+                            // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                            mailBuilder.AppendLine("Best Regards,");
+                            emailModal.EmailBody = mailBuilder.ToString();
+
+                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+
+                            emailModal.DestinationEmail = getCustomerInfo.Email;
+                            mailBuilder.AppendLine("Dear" + " " + getCustomerInfo.Fullname + "," + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Your payment was successful. See details below.<br />");
+                            mailBuilder.AppendLine();
+                            // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                            mailBuilder.AppendLine("Best Regards,");
+                            emailModal.EmailBody = mailBuilder.ToString();
+                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                         }
                         catch (Exception ex)
