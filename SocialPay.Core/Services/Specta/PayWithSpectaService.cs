@@ -42,12 +42,11 @@ namespace SocialPay.Core.Services.Specta
                 var request = JsonConvert.SerializeObject(model);
 
                 _log4net.Info("InitiatePayment pay with specta request" + " | " + transactionReference + " | " + merchantId + " | " + request + " | "+ DateTime.Now);
-
+                _client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, _appSettings.paywithspectaHeaderValue);
 
                 var response = await _client.PostAsync(_appSettings.paywithSpectaPurchaseUrlExtension,
                     new StringContent(request, Encoding.UTF8, "application/json"));
 
-                _client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, _appSettings.paywithspectaHeaderValue);
                 //_client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, merchantKey);
                
                 var result = await response.Content.ReadAsStringAsync();
