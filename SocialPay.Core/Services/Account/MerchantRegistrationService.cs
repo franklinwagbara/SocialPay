@@ -65,6 +65,7 @@ namespace SocialPay.Core.Services.Account
             {
                 if (await _context.ClientAuthentication.AnyAsync(x => x.Email == signUpRequestDto.Email))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail };
+
                 var token = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
                 var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
@@ -139,7 +140,6 @@ namespace SocialPay.Core.Services.Account
                         var emailModal = new EmailRequestDto
                         {
                             Subject = "Merchant Signed Up",
-                            SourceEmail = "info@sterling.ng",
                             DestinationEmail = signUpRequestDto.Email,
                             // DestinationEmail = "festypat9@gmail.com",
                             //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
