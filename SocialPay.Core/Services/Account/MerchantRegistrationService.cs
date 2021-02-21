@@ -63,8 +63,9 @@ namespace SocialPay.Core.Services.Account
 
             try
             {
-                if (await _context.ClientAuthentication.AnyAsync(x => x.Email == signUpRequestDto.Email))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail };
+                if (await _context.ClientAuthentication.AnyAsync(x => x.Email == signUpRequestDto.Email
+                || x.PhoneNumber == signUpRequestDto.PhoneNumber))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
                 var token = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
