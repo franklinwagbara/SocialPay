@@ -161,11 +161,11 @@ namespace SocialPay.API
 
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
 
-            //services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.AcceptedEscrowBankOrderTask;
-            //});
+            services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.AcceptedEscrowBankOrderTask;
+            });
 
             services.AddCronJob<AcceptedWalletOrderTask>(c =>
             {
@@ -183,14 +183,14 @@ namespace SocialPay.API
             {
                 c.TimeZoneInfo = TimeZoneInfo.Local;
                 c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            }); 
-            
-            //services.AddCronJob<DeclinedEscrowWalletTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.DeclinedEscrowWalletTask;
-            //});  
-            
+            });
+
+            services.AddCronJob<DeclinedEscrowWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.DeclinedEscrowWalletTask;
+            });
+
             services.AddCronJob<DeliveryDayBankTask>(c =>
             {
                 c.TimeZoneInfo = TimeZoneInfo.Local;
