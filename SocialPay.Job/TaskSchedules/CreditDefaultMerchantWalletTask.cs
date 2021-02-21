@@ -28,7 +28,7 @@ namespace SocialPay.Job.TaskSchedules
     {
         private readonly IServiceProvider _scopeServiceProvider;
 
-        public CreditDefaultMerchantWalletTask(IServiceProvider serviceProvider, IScheduleConfig<CardPaymentTask> config) : base(config.CronExpression, config.TimeZoneInfo)
+        public CreditDefaultMerchantWalletTask(IServiceProvider serviceProvider, IScheduleConfig<CreditDefaultMerchantWalletTask> config) : base(config.CronExpression, config.TimeZoneInfo)
         {
             _scopeServiceProvider = serviceProvider;
         }

@@ -16,5 +16,6 @@ namespace SocialPay.Core.Configurations
         public string ExpiredProductNotificationTask { get; set; }
         public string NonEscrowOtherWalletTransactionTask { get; set; }
         public string NonEscrowWalletTransactionTask { get; set; }
+        public string NonEscrowBankTransactionTask { get; set; }
     }
 }
