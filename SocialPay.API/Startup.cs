@@ -177,66 +177,66 @@ namespace SocialPay.API
 
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
 
-            services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.AcceptedEscrowBankOrderTask;
-            });
-
-            services.AddCronJob<AcceptedWalletOrderTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.AcceptedWalletOrderTask;
-            });
-
-            //services.AddCronJob<CardPaymentTask>(c =>
+            //services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
             //{
             //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.CardPaymentTask;
+            //    c.CronExpression = options.AcceptedEscrowBankOrderTask;
             //});
 
-            services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            });
+            //services.AddCronJob<AcceptedWalletOrderTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.AcceptedWalletOrderTask;
+            //});
 
-            services.AddCronJob<DeclinedEscrowWalletTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.DeclinedEscrowWalletTask;
-            });
+            ////services.AddCronJob<CardPaymentTask>(c =>
+            ////{
+            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////    c.CronExpression = options.CardPaymentTask;
+            ////});
 
-            services.AddCronJob<DeliveryDayBankTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.DeliveryDayBankTask;
-            });
+            //services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            //});
 
-            services.AddCronJob<DeliveryDayWalletTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.DeliveryDayWalletTask;
-            });
+            //services.AddCronJob<DeclinedEscrowWalletTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.DeclinedEscrowWalletTask;
+            //});
 
-            services.AddCronJob<ExpiredProductNotificationTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.ExpiredProductNotificationTask;
-            });
+            //services.AddCronJob<DeliveryDayBankTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.DeliveryDayBankTask;
+            //});
 
-            services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
-            });
+            //services.AddCronJob<DeliveryDayWalletTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.DeliveryDayWalletTask;
+            //});
+
+            //services.AddCronJob<ExpiredProductNotificationTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.ExpiredProductNotificationTask;
+            //});
+
+            //services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
+            //});
 
 
-            services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.NonEscrowWalletTransactionTask;
-            });
+            //services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.NonEscrowWalletTransactionTask;
+            //});
 
 
             var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
