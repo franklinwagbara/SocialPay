@@ -148,7 +148,9 @@ namespace SocialPay.API
             services.AddScoped<TinService>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<InterBankPendingTransferService>();
+            services.AddSingleton<SqlRepository>();
             services.AddSingleton<BankServiceRepositoryJobService>();
+            services.AddSingleton<IBSReposerviceJob>();
             //services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
             //services.AddSingleton<CreditMerchantWalletTransactions>();
             //services.AddScoped<INonEscrowCardWalletTransaction, NonEscrowCardWalletTransaction>();
@@ -189,11 +191,11 @@ namespace SocialPay.API
             //    c.CronExpression = options.AcceptedWalletOrderTask;
             //});
 
-            ////services.AddCronJob<CardPaymentTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.CardPaymentTask;
-            ////});
+            services.AddCronJob<CardPaymentTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CardPaymentTask;
+            });
 
             //services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
             //{
@@ -270,9 +272,9 @@ namespace SocialPay.API
             services.AddSingleton<CreditMerchantWalletTransactions>();
 
 
-            services.AddScoped<IDeclineEscrowWalletTransaction, DeclineEscrowWalletTransaction>();
+            //services.AddScoped<IDeclineEscrowWalletTransaction, DeclineEscrowWalletTransaction>();
             //services.AddSingleton<IHostedService, DeclinedEscrowWalletTask>();
-            services.AddSingleton<DeclineEscrowWalletPendingTransaction>();
+            //services.AddSingleton<DeclineEscrowWalletPendingTransaction>();
 
             //Non escrow wallet transaction
 
@@ -293,46 +295,44 @@ namespace SocialPay.API
 
             //Accepted order service
 
-            services.AddScoped<IAcceptedEscrowOrders, AcceptedEscrowOrders>();
-            //services.AddSingleton<IHostedService, AcceptedWalletOrderTask>();
-            services.AddSingleton<AcceptedEscrowOrderTransactions>();
+            //services.AddScoped<IAcceptedEscrowOrders, AcceptedEscrowOrders>();
+            ////services.AddSingleton<IHostedService, AcceptedWalletOrderTask>();
+            //services.AddSingleton<AcceptedEscrowOrderTransactions>();
 
             //accepted escrow bank request
 
-            services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
-            // services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
-            services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
+            //services.AddScoped<IAcceptedEscrowRequestBankTransaction, AcceptedEscrowRequestBankTransaction>();
+            //// services.AddSingleton<IHostedService, AcceptedEscrowBankOrderTask>();
+            //services.AddSingleton<AcceptedEscrowRequestPendingBankTransaction>();
 
             //////Credit T24 account for card payments
             //services.AddScoped<IPayWithCardTransaction, PayWithCardTransaction>();
             ////services.AddSingleton<IHostedService, CardPaymentTask>();
-           // services.AddSingleton<PendingPayWithCardTransaction>();
+            //services.AddSingleton<PendingPayWithCardTransaction>();
            // services.AddSingleton<CreditDebitService>();
 
             ////Credit Social pay wallet from merchant wallet
 
-            services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
+           // services.AddScoped<IDeliveryDayMerchantTransfer, DeliveryDayMerchantTransfer>();
             //services.AddSingleton<IHostedService, DeliveryDayWalletTask>();
-            services.AddSingleton<DeliveryDayTransferService>();
+            //services.AddSingleton<DeliveryDayTransferService>();
 
-            services.AddScoped<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
+           // services.AddScoped<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
             //services.AddSingleton<IHostedService, DeliveryDayBankTask>();
-            services.AddSingleton<DeliveryDayBankPendingTransaction>();
+          //  services.AddSingleton<DeliveryDayBankPendingTransaction>();
 
 
             //Intrabank transactions
            // services.AddScoped<IIntraBankTransferService, IntraBankTransferService>();
-            services.AddSingleton<IHostedService, IntraBankTask>();
+           // services.AddSingleton<IHostedService, IntraBankTask>();
            // services.AddSingleton<IntraBankPendingTransactions>();
 
             //Interbank transactions
 
            // services.AddScoped<IIntraBankTransferService, IntraBankTransferService>();
-            services.AddSingleton<IHostedService, IntraBankTask>();
+           // services.AddSingleton<IHostedService, IntraBankTask>();
            // services.AddSingleton<IntraBankPendingTransactions>();
-            services.AddSingleton<SqlRepository>();
-            services.AddSingleton<BankServiceRepositoryJobService>();
-            services.AddSingleton<IBSReposerviceJob>();
+       
 
         }
 
