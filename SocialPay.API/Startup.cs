@@ -197,11 +197,11 @@ namespace SocialPay.API
                 c.CronExpression = options.CardPaymentTask;
             });
 
-            //services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            //});
+            services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            });
 
             //services.AddCronJob<DeclinedEscrowWalletTask>(c =>
             //{
@@ -227,18 +227,18 @@ namespace SocialPay.API
             //    c.CronExpression = options.ExpiredProductNotificationTask;
             //});
 
-            //services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
-            //});
+            services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
+            });
 
 
-            //services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.NonEscrowWalletTransactionTask;
-            //});
+            services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowWalletTransactionTask;
+            });
 
 
             var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
