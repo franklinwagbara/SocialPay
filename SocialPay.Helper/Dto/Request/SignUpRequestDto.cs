@@ -7,12 +7,17 @@ namespace SocialPay.Helper.Dto.Request
         [Required(ErrorMessage = "Email")]
         public string Email { get; set; }
         [Required(ErrorMessage = "Phone Number")]
-        public string PhoneNumber { get; set; }
+        [RegularExpression(@"^\d*[0-9]\d*$", ErrorMessage = "Only number between 0 - 9 allowed")]
+        [MaxLength(15, ErrorMessage = "Phone Number cannot be greater than 15")]
+        public long PhoneNumber { get; set; }
         [Required(ErrorMessage = "FullName")]
+        [MaxLength(45, ErrorMessage = "Full name cannot be greater than 45")]
         public string Fullname { get; set; }
         [Required(ErrorMessage = "Date of birth")]
+        [MaxLength(15, ErrorMessage = "Date of birth cannot be greater than 15")]
         public string DateOfBirth { get; set; }
         [Required(ErrorMessage = "Gender")]
+        [MaxLength(10, ErrorMessage = "Gender cannot be greater than 10")]
         public string Gender { get; set; }
         [Required(ErrorMessage = "Password")]
         public string Password { get; set; }
