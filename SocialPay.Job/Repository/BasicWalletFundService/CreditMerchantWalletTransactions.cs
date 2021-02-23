@@ -64,6 +64,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         if (getWalletInfo == null)
                             return null;
 
+                        var walletReference = $"{"So-Pay-"}{Guid.NewGuid().ToString().Substring(0, 15)}";
+
                         var walletModel = new WalletTransferRequestDto
                         {
                             CURRENCYCODE = _appSettings.walletcurrencyCode,
@@ -72,8 +74,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             channelID = 1,
                             TransferType = 1,
                             frmacct = _appSettings.SterlingWalletPoolAccount,
-                            paymentRef = item.PaymentReference,
-                            remarks = "Social-Pay Core pool to merchant wallet" + " - " + item.PaymentReference + " - " + item.PaymentChannel
+                            paymentRef = walletReference,
+                            remarks = "Social-Pay Core pool to merchant wallet" + " - " + item.PaymentReference + " - " + walletReference
                         };
 
                         var walletRequestModel = new DefaultWalletTransferRequestLog
@@ -90,7 +92,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             TransferType = walletModel.TransferType,
                             ChannelMode = WalletTransferMode.SocialPayToMerchant,
                             ClientAuthenticationId = item.ClientAuthenticationId,
-                            RequestId = requestId
+                            RequestId = requestId,
+                            WalletPaymentReference = walletReference
                         };
 
                         await context.DefaultWalletTransferRequestLog.AddAsync(walletRequestModel);
