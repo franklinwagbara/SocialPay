@@ -220,5 +220,33 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("decrypt-specta-transaction")]
+        public async Task<IActionResult> DecryptSpectaTransactions([FromQuery] string responseMessage)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _customerRepoService.DecryptSpectaMessage(responseMessage));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
     }
 }

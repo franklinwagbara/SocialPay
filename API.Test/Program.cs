@@ -1,10 +1,12 @@
 ﻿using bankService;
+using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 
 namespace API.Test
 {
@@ -113,8 +115,8 @@ namespace API.Test
             //var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6o%2FsE5lumxNYOWL5DuHvKaQ%3D%3D";
             var decodeWorkingString = "QcKGLrMvsAUJ08snV7PKPNyYBnx6zErBI7T6l7BlDQa1ieYtT3NtjvKCZjjlBP7m2V1oVT7Zac1Jubh2DMld78wzibzRC1DBuRgq4XoUqqCKKM5sIxwSOWhJfhXlB6yGUw%20hu2W0nX6AHR8%2F89wCENwYIJYxi52w3rGHjWFDuxLU1FBjtsb5MayKcwPWSksx";
             //var decodeString = "eOnQBWdWVJ9cuPMmcDbEwCKVWtRxZgexLIOvor2YppSzR%20t%20flTqH2cm%208uY8bmi6jZbty28XpF1cL37r3GvycfIJBOgoBs6GM2GXb8TbsQy0LLRcX8LVjw9ake9EPjk";
-            var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE60LiRjaVmSG4Ny4Feorf2ABmp37pDyErMvt3%2FirixaL0YYrQpqnhqFJB9KhmQ3xZahL5mdwr2aMo%3D";
-            var decodeMessage = System.Uri.UnescapeDataString(decodeString);
+            var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6jtaoY8Rz7uHUNnHn10CclMU39USagI5FR%2FEKXma9RnT53tvjMiQw5sw1Xjjnzbtpsa%2FGCxzAm0k%3D";
+            var decodeMessage = System.Uri.UnescapeDataString(decodeString);           
             if (decodeMessage.Contains(" "))
             {
                 decodeMessage = decodeMessage.Replace(" ", "+");
@@ -204,8 +206,11 @@ namespace API.Test
             psi.Arguments = "https://pass.sterling.ng/sterlinggateway/?q=+hgnDAzlw5UjYY5b8shjSOVFQz2r29q8/";
             Process.Start(psi);
         }
-        
-         public static int MonthDiff(DateTime d1, DateTime d2)
+        public class PayWithSpectaVerificationRequestDto
+        {
+            public string verificationToken { get; set; }
+        }
+        public static int MonthDiff(DateTime d1, DateTime d2)
         {
             int m1;
             int m2;
