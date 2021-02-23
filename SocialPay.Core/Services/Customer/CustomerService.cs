@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Utilities;
 using SocialPay.Core.Messaging;
@@ -14,6 +15,7 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -514,6 +516,35 @@ namespace SocialPay.Core.Services.Customer
             }
         }
 
+
+        public async Task<WebApiResponse> DecryptSpectaMessage(string message)
+        {
+            try
+            {
+                var decodeMessage = System.Uri.UnescapeDataString(message);
+
+                var model = new PayWithSpectaVerificationRequestDto
+                {
+                    verificationToken = decodeMessage,
+                };
+                var request = JsonConvert.SerializeObject(model);
+
+                var client = new HttpClient();
+                client.BaseAddress = new Uri(_appSettings.paywithSpectaBaseUrl);
+                var response = await client.PostAsync(_appSettings.paywithSpectaverifyPaymentUrl,
+                    new StringContent(request, Encoding.UTF8, "application/json"));
+
+                var result = await response.Content.ReadAsStringAsync();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
 
         public static String DecryptAlt(String val)
         {
