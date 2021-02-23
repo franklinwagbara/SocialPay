@@ -77,7 +77,7 @@ namespace SocialPay.Core.Services.Specta
             var apiResponse = new WebApiResponse { };
             try
             {
-                var decodeMessage = System.Uri.UnescapeDataString(message);
+                var decodeMessage = Uri.UnescapeDataString(message);
                 var model = new PayWithSpectaVerificationRequestDto
                 {
                     verificationToken = decodeMessage,
@@ -96,9 +96,13 @@ namespace SocialPay.Core.Services.Specta
                     apiResponse.Data = successfulResponse.Result;
                     apiResponse.ResponseCode = AppResponseCodes.Success;
                     apiResponse.Message = Convert.ToString(successfulResponse.Result.Data.PaymentReference);
+                    _log4net.Info("PaymentVerification was successful" + " | " + apiResponse.Message + " | " + result + " | " + DateTime.Now);
+
                     return apiResponse;
                 }
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+                _log4net.Info("PaymentVerification failed" + " | " + apiResponse.Message + " | " + result + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = result };
             }
             catch (Exception ex)
             {
