@@ -813,3 +813,90 @@ INFO  2021-02-18 13:44:27,693 135196ms PayWithSpectaService   ?                 
 INFO  2021-02-18 13:44:37,802 145306ms PayWithSpectaService   ?                  - InitiatePayment pay with specta request | c53eca1b-9bbd-403c-b05f-051c81a3fd80 | 4607 | {"callBackUrl":"http://socialpay-web.sterlingapps.p.azurewebsites.net/#/confirm-payments","reference":"c53eca1b-9bbd-403c-b05f-051c81a3fd80","merchantId":"7","description":"Social pay","amount":"25000.00"} | 2/18/2021 1:44:37 PM
 INFO  2021-02-18 13:45:01,854 169357ms PayWithSpectaService   ?                  - InitiatePayment response | c53eca1b-9bbd-403c-b05f-051c81a3fd80 | 25000.00 | {"result":"https://spectapay-frontend.sterlingapps.p.azurewebsites.net/pay?token=g%2fTSyvzSOUTDTXqyzBQmlA%2ftE8TH%2fr9X732fBrL4a6%2bbE%2bIu470Cjq%2bqL31EfZaFYe75hLxpXeQt890hplY9oczoLAHqeGx8d7w0is1ZRanZW4epTVWu%2bSuQLeLeaxL2js8nqSl1bE47r0Ek%2f467rR8JDeZOmEE4cNWx0X09pTZvuu1uqzW2MwJyAkR2Vl6ngFqmyPgTHpoJf5MtF3KECd4662BHPspkjwZ8M9Q%2fhqmt2DSlYSoYHZgJl0%2bTj1N1eVZ0rBH0JEvyum9tf5zm0IYM6dPSOcUw","targetUrl":null,"success":true,"error":null,"unAuthorizedRequest":false,"__abp":true} | 4607 | 2/18/2021 1:45:01 PM
 INFO  2021-02-18 13:45:18,440 185944ms CustomerRepoService    ?                  - MakePayment info was successful | 700a46583ab04d6e8192e7a154d128b1 | 08030523654 | 2/18/2021 1:45:18 PM
+INFO  2021-02-23 08:12:00,092 179934ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 2/23/2021 8:12:00 AM
+INFO  2021-02-23 08:12:00,635 180478ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 0 | 2/23/2021 8:12:00 AM
+INFO  2021-02-23 08:18:20,980 35552ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 2/23/2021 8:18:20 AM
+INFO  2021-02-23 08:21:21,136 109034ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/23/2021 8:21:21 AM
+INFO  2021-02-23 08:21:34,347 122244ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 2/23/2021 8:21:34 AM
+INFO  2021-02-23 08:24:07,293 132593ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/23/2021 8:24:07 AM
+INFO  2021-02-23 09:30:15,750 95830ms wCardWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 2/23/2021 9:30:15 AM
+INFO  2021-02-23 09:30:15,751 95830ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/23/2021 9:30:15 AM
+INFO  2021-02-23 09:30:15,751 95830ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 2/23/2021 9:30:15 AM
+INFO  2021-02-23 09:30:15,750 95830ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 2/23/2021 9:30:15 AM
+INFO  2021-02-23 09:39:05,541 121885ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/23/2021 9:39:05 AM
+INFO  2021-02-23 09:39:13,423 129767ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 1 | 2/23/2021 9:39:13 AM
+INFO  2021-02-23 09:39:22,425 138769ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet | b3436c14-1885-4082-bc9b-4fbd621ee68d | 187fbd3923554e5ea90bccd78ebf3c0c | 2/23/2021 9:39:22 AM
+INFO  2021-02-23 09:39:35,574 151918ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 08185254717 | b3436c14-1885-4082-bc9b-4fbd621ee68d | 0000000002 | 25000.00 | 2/23/2021 9:39:35 AM
+INFO  2021-02-23 09:39:37,990 154334ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 08185254717 | b3436c14-1885-4082-bc9b-4fbd621ee68d | 0000000002 | 25000.00 | 2/23/2021 9:39:37 AM
+INFO  2021-02-23 09:39:54,594 170937ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet saved | b3436c14-1885-4082-bc9b-4fbd621ee68d | 187fbd3923554e5ea90bccd78ebf3c0c | 2/23/2021 9:39:54 AM
+INFO  2021-02-23 09:45:13,984 191328ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 2/23/2021 9:45:13 AM
+INFO  2021-02-23 09:45:14,634 191979ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 1 | 2/23/2021 9:45:14 AM
+INFO  2021-02-23 09:45:42,921 220265ms lletPendingTransaction ?                  - Job Service-NonEscrowWalletPendingTransaction request | bcb039c2-a6db-41b8-a308-2fe2fc897408 | 899cc2e82b6342908e8a91d04fa1a638 | 2/23/2021 9:45:42 AM
+INFO  2021-02-23 09:45:57,434 234778ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 0000000002 | bcb039c2-a6db-41b8-a308-2fe2fc897408 | 08185254717 | 1500.00 | 2/23/2021 9:45:57 AM
+INFO  2021-02-23 09:45:59,251 236595ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Duplicate payment reference, please generate a unique payment reference per transfer","response":"97","responsedata":null,"data":{"sent":false}} | 0000000002 | bcb039c2-a6db-41b8-a308-2fe2fc897408 | 08185254717 | 1500.00 | 2/23/2021 9:45:59 AM
+INFO  2021-02-23 09:54:25,385 187107ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 2/23/2021 9:54:25 AM
+INFO  2021-02-23 09:54:25,966 187687ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 2/23/2021 9:54:25 AM
+INFO  2021-02-23 10:03:02,888 139062ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 2/23/2021 10:03:02 AM
+INFO  2021-02-23 10:03:03,538 139713ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 1 | 2/23/2021 10:03:03 AM
+INFO  2021-02-23 10:03:13,726 149901ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync request | 25000.00 | NGN1581300022001 | 2/23/2021 10:03:13 AM
+INFO  2021-02-23 10:03:39,523 175698ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync response | 25000.00 | NGN1581300022001 | <diffgr:diffgram xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:diffgr="urn:schemas-microsoft-com:xml-diffgram-v1">
+  <NewDataSet xmlns="">
+    <BankAccountFullInfo diffgr:id="BankAccountFullInfo1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <NUBAN>NGN1581300022001</NUBAN>
+      <BRA_CODE>NG0020001</BRA_CODE>
+      <DES_ENG>T24PROD-SBN</DES_ENG>
+      <CUS_NUM />
+      <CUR_CODE>NGN</CUR_CODE>
+      <CUS_SHO_NAME>Socialpay Settlement Account</CUS_SHO_NAME>
+      <AccountGroup />
+      <CustomerStatus />
+      <ADD_LINE1 xml:space="preserve"> </ADD_LINE1>
+      <ADD_LINE2 xml:space="preserve"> </ADD_LINE2>
+      <MOB_NUM />
+      <EMAIL />
+      <REST_IND>0</REST_IND>
+      <ACCT_NO>NGN1581300022001</ACCT_NO>
+      <MAP_ACC_NO>NGN1581300022001</MAP_ACC_NO>
+      <ACCT_TYPE>Interswitch Transfer Splitting S</ACCT_TYPE>
+      <TEL_NUM />
+      <DATE_OPEN>2021/01/05</DATE_OPEN>
+      <STA_CODE>ACTIVE</STA_CODE>
+      <CLE_BAL>3179.00</CLE_BAL>
+      <CRNT_BAL>3179.00</CRNT_BAL>
+      <TOT_BLO_FUND>0.00</TOT_BLO_FUND>
+      <INTRODUCER>4001</INTRODUCER>
+      <DATE_BAL_CHA>2021/02/22</DATE_BAL_CHA>
+      <NAME_LINE1 />
+      <NAME_LINE2 />
+      <ACCOUNTCATEGORY>15813</ACCOUNTCATEGORY>
+      <BVN />
+      <REST_FLAG>FALSE</REST_FLAG>
+      <IsSMSSubscriber>FALSE</IsSMSSubscriber>
+      <Alt_Currency>566</Alt_Currency>
+      <Currency_Code>NGN</Currency_Code>
+      <T24_BRA_CODE>NG0020001</T24_BRA_CODE>
+      <T24_CUS_NUM />
+      <T24_CUR_CODE>566</T24_CUR_CODE>
+      <T24_LED_CODE>15813</T24_LED_CODE>
+      <OnlineActualBalance>3179.00</OnlineActualBalance>
+      <OnlineClearedBalance>3179.00</OnlineClearedBalance>
+      <OpenActualBalance>3179.00</OpenActualBalance>
+      <OpenClearedBalance>3179.00</OpenClearedBalance>
+      <WorkingBalance>3179.00</WorkingBalance>
+      <CustomerStatusCode />
+      <CustomerStatusDeecp />
+      <LimitID />
+      <LimitAmt>0</LimitAmt>
+      <MinimumBal>0</MinimumBal>
+      <UsableBal>3179</UsableBal>
+      <AccountDescp>Interswitch Transfer Splitting S</AccountDescp>
+      <CourtesyTitle />
+      <AccountTitle>Socialpay Settlement Account</AccountTitle>
+      <AMFCharges>0</AMFCharges>
+    </BankAccountFullInfo>
+    <RestrictFlag diffgr:id="RestrictFlag1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <RestrCode />
+      <ResDescp />
+    </RestrictFlag>
+  </NewDataSet>
+</diffgr:diffgram> | 2/23/2021 10:03:39 AM

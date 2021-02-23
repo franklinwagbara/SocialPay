@@ -179,17 +179,17 @@ namespace SocialPay.API
 
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
 
-            //services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.AcceptedEscrowBankOrderTask;
-            //});
+            ////////services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
+            ////////{
+            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////////    c.CronExpression = options.AcceptedEscrowBankOrderTask;
+            ////////});
 
-            //services.AddCronJob<AcceptedWalletOrderTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.AcceptedWalletOrderTask;
-            //});
+            ////////services.AddCronJob<AcceptedWalletOrderTask>(c =>
+            ////////{
+            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////////    c.CronExpression = options.AcceptedWalletOrderTask;
+            ////////});
 
             services.AddCronJob<CardPaymentTask>(c =>
             {
@@ -209,30 +209,6 @@ namespace SocialPay.API
                 c.CronExpression = options.NonEscrowBankTransactionTask;
             });
 
-            //services.AddCronJob<DeclinedEscrowWalletTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.DeclinedEscrowWalletTask;
-            //});
-
-            //services.AddCronJob<DeliveryDayBankTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.DeliveryDayBankTask;
-            //});
-
-            //services.AddCronJob<DeliveryDayWalletTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.DeliveryDayWalletTask;
-            //});
-
-            //services.AddCronJob<ExpiredProductNotificationTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.ExpiredProductNotificationTask;
-            //});
-
             services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
             {
                 c.TimeZoneInfo = TimeZoneInfo.Local;
@@ -245,6 +221,32 @@ namespace SocialPay.API
                 c.TimeZoneInfo = TimeZoneInfo.Local;
                 c.CronExpression = options.NonEscrowWalletTransactionTask;
             });
+
+            ////////services.AddCronJob<DeclinedEscrowWalletTask>(c =>
+            ////////{
+            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////////    c.CronExpression = options.DeclinedEscrowWalletTask;
+            ////////});
+
+            ////////services.AddCronJob<DeliveryDayBankTask>(c =>
+            ////////{
+            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////////    c.CronExpression = options.DeliveryDayBankTask;
+            ////////});
+
+            ////////services.AddCronJob<DeliveryDayWalletTask>(c =>
+            ////////{
+            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////////    c.CronExpression = options.DeliveryDayWalletTask;
+            ////////});
+
+            ////////services.AddCronJob<ExpiredProductNotificationTask>(c =>
+            ////////{
+            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////////    c.CronExpression = options.ExpiredProductNotificationTask;
+            ////////});
+
+
 
 
             var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
