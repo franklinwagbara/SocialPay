@@ -26,6 +26,8 @@ namespace SocialPay.Core.Repositories.Customer
         private readonly AppSettings _appSettings;
         private readonly EmailService _emailService;
         private readonly TransactionReceipt _transactionReceipt;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ICustomerService));
+
         public ICustomerService(SocialPayDbContext context, AuthRepoService authRepoService,
             IOptions<AppSettings> appSettings, EmailService emailService,
             TransactionReceipt transactionReceipt) : base(context)
@@ -142,6 +144,7 @@ namespace SocialPay.Core.Repositories.Customer
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetCustomerPaymentsByMerchantPayRef" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -246,67 +249,85 @@ namespace SocialPay.Core.Repositories.Customer
 
         public async Task<dynamic> GetTransactionDetails(string refId)
         {
-            var paymentview = new PaymentLinkViewModel();
-
-            var validateLink = await GetLinkCategorybyTranref(refId);
-            if (validateLink == null)
-                return new PaymentLinkViewModel { };
-            var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
-            if (getMerchantInfo == null)
-                return new PaymentLinkViewModel { };
-            if (validateLink.Channel == MerchantPaymentLinkCategory.InvoiceLink)
+            try
             {
-                return await GetInvoiceTransactionDetails(refId);
+                var paymentview = new PaymentLinkViewModel();
+
+                var validateLink = await GetLinkCategorybyTranref(refId);
+                if (validateLink == null)
+                    return new PaymentLinkViewModel { };
+                var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
+                if (getMerchantInfo == null)
+                    return new PaymentLinkViewModel { };
+                if (validateLink.Channel == MerchantPaymentLinkCategory.InvoiceLink)
+                {
+                    return await GetInvoiceTransactionDetails(refId);
+                }
+                var validateReference = await GetTransactionReference(refId);
+                if (validateReference == null)
+                    return new PaymentLinkViewModel { };
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
+                var mapper = config.CreateMapper();
+                paymentview = mapper.Map<PaymentLinkViewModel>(validateReference);
+                paymentview.MerchantDocument = validateReference == null ? string.Empty : _appSettings.BaseApiUrl + validateReference.FileLocation + "/" + validateReference.Document;
+                paymentview.MerchantInfo = new MerchantInfoViewModel
+                {
+                    BusinessEmail = getMerchantInfo.BusinessEmail,
+                    BusinessPhoneNumber = getMerchantInfo.BusinessPhoneNumber,
+                    BusinessName = getMerchantInfo.BusinessName,
+                    Chargebackemail = getMerchantInfo.Chargebackemail,
+                    Country = getMerchantInfo.Country,
+                    HasSpectaMerchantID = getMerchantInfo == null ? false : getMerchantInfo.HasSpectaMerchantID,
+                    Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
+                };
+
+                return paymentview;
             }
-            var validateReference = await GetTransactionReference(refId);
-            if (validateReference == null)
-                return new PaymentLinkViewModel { };          
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
-            var mapper = config.CreateMapper();
-            paymentview = mapper.Map<PaymentLinkViewModel>(validateReference);
-            paymentview.MerchantDocument = validateReference == null ? string.Empty : _appSettings.BaseApiUrl + validateReference.FileLocation + "/" + validateReference.Document;
-            paymentview.MerchantInfo = new MerchantInfoViewModel
+            catch (Exception ex)
             {
-                BusinessEmail = getMerchantInfo.BusinessEmail,
-                BusinessPhoneNumber = getMerchantInfo.BusinessPhoneNumber,
-                BusinessName = getMerchantInfo.BusinessName,
-                Chargebackemail = getMerchantInfo.Chargebackemail,
-                Country = getMerchantInfo.Country,
-                HasSpectaMerchantID = getMerchantInfo == null ? false : getMerchantInfo.HasSpectaMerchantID,
-                Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
-            };
-            //ProfilePhoto = getInvestors == null ? string.Empty : _appSettings.BaseApiUrl + getInvestors.IndividualInvestor.Select(x => x.FileLocation).First() + "/" + getInvestors.IndividualInvestor.Select(x => x.ProfilePhoto).First(),
+                _log4net.Error("Error occured" + " | " + "GetTransactionDetails" + " | " + refId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-            return paymentview;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
         }
 
 
         public async Task<InvoiceViewModel> GetInvoiceTransactionDetails(string refId)
         {
-            var paymentview = new InvoiceViewModel();
-
-            var validateLink = await GetLinkCategorybyTranref(refId);
-            if (validateLink == null)
-                return new InvoiceViewModel { };
-            var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);           
-            var validateReference = await GetInvoicePaymentAsync(refId);
-            if (validateReference == null)
-                return new InvoiceViewModel { };         
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<InvoicePaymentLink, InvoiceViewModel>());
-            var mapper = config.CreateMapper();
-            paymentview = mapper.Map<InvoiceViewModel>(validateReference);
-            //paymentview.MerchantDocument = validateReference == null ? string.Empty : _appSettings.BaseApiUrl + validateReference.FileLocation + "/" + validateReference.Document;
-            paymentview.MerchantInfo = new MerchantInfoViewModel
+            try
             {
-                BusinessEmail = getMerchantInfo.BusinessEmail,
-                BusinessPhoneNumber = getMerchantInfo.BusinessPhoneNumber,
-                BusinessName = getMerchantInfo.BusinessName,
-                Chargebackemail = getMerchantInfo.Chargebackemail,
-                Country = getMerchantInfo.Country,
-                Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
-            };
+                var paymentview = new InvoiceViewModel();
 
-            return paymentview;
+                var validateLink = await GetLinkCategorybyTranref(refId);
+                if (validateLink == null)
+                    return new InvoiceViewModel { };
+                var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
+                var validateReference = await GetInvoicePaymentAsync(refId);
+                if (validateReference == null)
+                    return new InvoiceViewModel { };
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<InvoicePaymentLink, InvoiceViewModel>());
+                var mapper = config.CreateMapper();
+                paymentview = mapper.Map<InvoiceViewModel>(validateReference);
+                //paymentview.MerchantDocument = validateReference == null ? string.Empty : _appSettings.BaseApiUrl + validateReference.FileLocation + "/" + validateReference.Document;
+                paymentview.MerchantInfo = new MerchantInfoViewModel
+                {
+                    BusinessEmail = getMerchantInfo.BusinessEmail,
+                    BusinessPhoneNumber = getMerchantInfo.BusinessPhoneNumber,
+                    BusinessName = getMerchantInfo.BusinessName,
+                    Chargebackemail = getMerchantInfo.Chargebackemail,
+                    Country = getMerchantInfo.Country,
+                    Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
+                };
+
+                return paymentview;
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetInvoiceTransactionDetails" + " | " + refId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return null;
+            }
         }
 
 
@@ -347,6 +368,7 @@ namespace SocialPay.Core.Repositories.Customer
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "GetCustomerOrders" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -382,10 +404,13 @@ namespace SocialPay.Core.Repositories.Customer
                 if (linkInfo != null & linkInfo.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {
                     var getpaymentInfo = await GetInvoicePaymentInfo(model.TransactionReference, model.InvoiceReference);
+                   
                     if (getpaymentInfo == null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
+                   
                     if(getpaymentInfo.TransactionStatus == TransactionJourneyStatusCodes.Approved)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                   
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
                         using(var transaction = await _context.Database.BeginTransactionAsync())
@@ -453,6 +478,12 @@ namespace SocialPay.Core.Repositories.Customer
                             _context.Update(getpaymentInfo);
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
+                            if(model.Message.Contains("Incorrect PIN"))
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.IncorrectTransactionPin, Data = "Incorrect Transaction Pin" };
+
+                            if (model.Message.Contains("Insufficient"))
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.InsufficientFunds, Data = "Insufficient Funds" };
+                           
                             return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
                         }
                         catch (Exception ex)
@@ -538,6 +569,7 @@ namespace SocialPay.Core.Repositories.Customer
 
                 var logconfirmation = new TransactionLog { };
                 var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
+
                 var paymentSetupInfo = await _context.MerchantPaymentSetup
                .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
 
@@ -677,11 +709,41 @@ namespace SocialPay.Core.Repositories.Customer
                     }
                 }
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var logFailedResponse = new FailedTransactions();
+
+                        //logFailedResponse.CustomerTransactionReference = model.CustomerTransactionReference;
+                        logFailedResponse.TransactionReference = model.TransactionReference;
+                        logFailedResponse.Message = model.Message;
+                        await _context.FailedTransactions.AddAsync(logFailedResponse);
+                        await _context.SaveChangesAsync();                       
+                        await transaction.CommitAsync();
+
+                        if (model.Message.Contains("Incorrect PIN"))
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.IncorrectTransactionPin, Data = "Incorrect Transaction Pin" };
+
+                        if (model.Message.Contains("Insufficient"))
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InsufficientFunds, Data = "Insufficient Funds" };
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
+                    }
+                    catch (Exception ex)
+                    {
+                        _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
               
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }

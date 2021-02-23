@@ -397,6 +397,7 @@ namespace SocialPay.Core.Services.Customer
                             }
                             var decryptResponse = DecryptAlt(decodeMessage);
                             model.Message = decryptResponse;
+                            _log4net.Info("PaymentConfirmation decrypted message" + " | " + model.PaymentReference + " | " + model.Message + " | " + DateTime.Now);
 
                             var newreference = model.Message.Split("^");
 

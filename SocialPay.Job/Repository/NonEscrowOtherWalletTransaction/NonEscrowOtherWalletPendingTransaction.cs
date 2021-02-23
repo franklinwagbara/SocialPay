@@ -43,7 +43,7 @@ namespace SocialPay.Job.Repository.NonEscrowOtherWalletTransaction
                     {
                         _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
-                        var requestId = Guid.NewGuid().ToString();
+                        var requestId = $"{"So-Pay-"}{Guid.NewGuid().ToString().Substring(0, 22)}";
                         var getTransInfo = await context.TransactionLog
                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
 
@@ -70,8 +70,8 @@ namespace SocialPay.Job.Repository.NonEscrowOtherWalletTransaction
                             channelID = 1,
                             TransferType = 1,
                             frmacct = getWalletInfo.Mobile,
-                            paymentRef = item.PaymentReference,
-                            remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
+                            paymentRef = requestId,
+                            remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + requestId
                         };
 
                         var walletRequestModel = new DebitMerchantWalletTransferRequestLog

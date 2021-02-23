@@ -900,3 +900,169 @@ INFO  2021-02-23 10:03:39,523 175698ms ceRepositoryJobService ?                 
     </RestrictFlag>
   </NewDataSet>
 </diffgr:diffgram> | 2/23/2021 10:03:39 AM
+INFO  2021-02-23 15:12:06,418 56485ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 2/23/2021 3:12:06 PM
+INFO  2021-02-23 15:12:07,191 57259ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 1 | 2/23/2021 3:12:07 PM
+INFO  2021-02-23 15:12:18,137 68205ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet | e9906e63-a661-4974-a4b0-f849612e8d32 | 97d678b8ab5f4ea3a16421fa60095751 | 2/23/2021 3:12:18 PM
+INFO  2021-02-23 15:12:35,291 85359ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 08185254717 | So-Pay-f7bb71ea-341a-4 | 0000000002 | 3500.00 | 2/23/2021 3:12:35 PM
+INFO  2021-02-23 15:12:45,400 95468ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 08185254717 | So-Pay-f7bb71ea-341a-4 | 0000000002 | 3500.00 | 2/23/2021 3:12:45 PM
+INFO  2021-02-23 15:12:57,580 107647ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet saved | e9906e63-a661-4974-a4b0-f849612e8d32 | 97d678b8ab5f4ea3a16421fa60095751 | 2/23/2021 3:12:57 PM
+INFO  2021-02-23 15:33:06,850 77232ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 2/23/2021 3:33:06 PM
+INFO  2021-02-23 15:33:09,889 80272ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 1 | 2/23/2021 3:33:09 PM
+INFO  2021-02-23 15:33:20,229 90612ms lletPendingTransaction ?                  - Job Service-NonEscrowWalletPendingTransaction request | e9906e63-a661-4974-a4b0-f849612e8d32 | 97d678b8ab5f4ea3a16421fa60095751 | 2/23/2021 3:33:20 PM
+INFO  2021-02-23 15:33:37,394 107777ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync | 0000000002 | So-Pay-64545438-562d-41b7-a09 | 08185254717 | 3500.00 | 2/23/2021 3:33:37 PM
+INFO  2021-02-23 15:33:47,378 117760ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 0000000002 | So-Pay-64545438-562d-41b7-a09 | 08185254717 | 3500.00 | 2/23/2021 3:33:47 PM
+INFO  2021-02-23 15:33:59,705 130087ms lletPendingTransaction ?                  - Job Service-NonEscrowWalletPendingTransaction successful | e9906e63-a661-4974-a4b0-f849612e8d32 | 97d678b8ab5f4ea3a16421fa60095751 | 2/23/2021 3:33:59 PM
+INFO  2021-02-23 15:57:00,169 10269ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 2/23/2021 3:57:00 PM
+INFO  2021-02-23 15:57:00,790 10890ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 1 | 2/23/2021 3:57:00 PM
+INFO  2021-02-23 15:57:11,321 21421ms PendingBankTransaction ?                  - Job Service-NonEscrowPendingBankTransaction request | e9906e63-a661-4974-a4b0-f849612e8d32 | 97d678b8ab5f4ea3a16421fa60095751 | 2/23/2021 3:57:11 PM
+INFO  2021-02-23 16:18:03,021 178652ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 2/23/2021 4:18:03 PM
+INFO  2021-02-23 16:18:03,621 179253ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 1 | 2/23/2021 4:18:03 PM
+INFO  2021-02-23 16:18:11,751 187382ms PendingBankTransaction ?                  - Job Service-NonEscrowPendingBankTransaction request | e9906e63-a661-4974-a4b0-f849612e8d32 | 97d678b8ab5f4ea3a16421fa60095751 | 2/23/2021 4:18:11 PM
+INFO  2021-02-23 16:18:14,438 190070ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync request | 3500.00 | 0065428109 | 2/23/2021 4:18:14 PM
+INFO  2021-02-23 16:18:39,194 214825ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync response | 3500.00 | 0065428109 | <diffgr:diffgram xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:diffgr="urn:schemas-microsoft-com:xml-diffgram-v1">
+  <NewDataSet xmlns="">
+    <BankAccountFullInfo diffgr:id="BankAccountFullInfo1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <NUBAN>0065428109</NUBAN>
+      <BRA_CODE>NG0020006</BRA_CODE>
+      <DES_ENG>HEAD OFFICE BRANCH</DES_ENG>
+      <CUS_NUM>13727998</CUS_NUM>
+      <CUR_CODE>NGN</CUR_CODE>
+      <CUS_SHO_NAME>FESTUS OREVAGHENE PATRICK</CUS_SHO_NAME>
+      <AccountGroup>CURRENT</AccountGroup>
+      <CustomerStatus>1</CustomerStatus>
+      <ADD_LINE1>3 ALUJONNU IBERU STREET JIBOWU ROAD U-TURN</ADD_LINE1>
+      <ADD_LINE2>3 ALUJONNU IBERU STREET JIBOWU ROAD U-TURN</ADD_LINE2>
+      <MOB_NUM>08030523654</MOB_NUM>
+      <EMAIL>festypat9@gmail.com</EMAIL>
+      <REST_IND>0</REST_IND>
+      <ACCT_NO>0065428109</ACCT_NO>
+      <MAP_ACC_NO>0065428109</MAP_ACC_NO>
+      <ACCT_TYPE>Individual-Current</ACCT_TYPE>
+      <TEL_NUM>08030523654</TEL_NUM>
+      <DATE_OPEN>2017/07/31</DATE_OPEN>
+      <STA_CODE>ACTIVE</STA_CODE>
+      <CLE_BAL>2313.90</CLE_BAL>
+      <CRNT_BAL>2313.90</CRNT_BAL>
+      <TOT_BLO_FUND>1595.60</TOT_BLO_FUND>
+      <INTRODUCER>511092</INTRODUCER>
+      <DATE_BAL_CHA>2021/02/15</DATE_BAL_CHA>
+      <NAME_LINE1>FESTUS</NAME_LINE1>
+      <NAME_LINE2>PATRICK</NAME_LINE2>
+      <ACCOUNTCATEGORY>1000</ACCOUNTCATEGORY>
+      <BVN>22341210148</BVN>
+      <REST_FLAG>FALSE</REST_FLAG>
+      <IsSMSSubscriber>TRUE</IsSMSSubscriber>
+      <Alt_Currency>566</Alt_Currency>
+      <Currency_Code>NGN</Currency_Code>
+      <T24_BRA_CODE>NG0020006</T24_BRA_CODE>
+      <T24_CUS_NUM>13727998</T24_CUS_NUM>
+      <T24_CUR_CODE>566</T24_CUR_CODE>
+      <T24_LED_CODE>1000</T24_LED_CODE>
+      <OnlineActualBalance>2313.90</OnlineActualBalance>
+      <OnlineClearedBalance>2313.90</OnlineClearedBalance>
+      <OpenActualBalance>2313.90</OpenActualBalance>
+      <OpenClearedBalance>2313.90</OpenClearedBalance>
+      <WorkingBalance>2313.90</WorkingBalance>
+      <CustomerStatusCode>1</CustomerStatusCode>
+      <CustomerStatusDeecp>Individual Customer</CustomerStatusDeecp>
+      <LimitID />
+      <LimitAmt>0</LimitAmt>
+      <MinimumBal>0</MinimumBal>
+      <UsableBal>182.5</UsableBal>
+      <AccountDescp>Individual-Current</AccountDescp>
+      <CourtesyTitle>MR</CourtesyTitle>
+      <AccountTitle>FESTUS OREVAGHENE PATRICK</AccountTitle>
+      <AMFCharges>535.8</AMFCharges>
+    </BankAccountFullInfo>
+    <RestrictFlag diffgr:id="RestrictFlag1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <RestrCode />
+      <ResDescp />
+    </RestrictFlag>
+  </NewDataSet>
+</diffgr:diffgram> | 2/23/2021 4:18:39 PM
+INFO  2021-02-23 17:18:02,878 167424ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 2/23/2021 5:18:02 PM
+INFO  2021-02-23 17:18:03,585 168131ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 1 | 2/23/2021 5:18:03 PM
+INFO  2021-02-23 17:18:11,922 176468ms PendingBankTransaction ?                  - Job Service-NonEscrowPendingBankTransaction request | e9906e63-a661-4974-a4b0-f849612e8d32 | 97d678b8ab5f4ea3a16421fa60095751 | 2/23/2021 5:18:11 PM
+INFO  2021-02-23 17:18:14,022 178568ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync request | 3500.00 | 0065428109 | 2/23/2021 5:18:14 PM
+INFO  2021-02-23 17:18:40,193 204739ms ceRepositoryJobService ?                  - Initiating GetAccountFullInfoAsync response | 3500.00 | 0065428109 | <diffgr:diffgram xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:diffgr="urn:schemas-microsoft-com:xml-diffgram-v1">
+  <NewDataSet xmlns="">
+    <BankAccountFullInfo diffgr:id="BankAccountFullInfo1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <NUBAN>0065428109</NUBAN>
+      <BRA_CODE>NG0020006</BRA_CODE>
+      <DES_ENG>HEAD OFFICE BRANCH</DES_ENG>
+      <CUS_NUM>13727998</CUS_NUM>
+      <CUR_CODE>NGN</CUR_CODE>
+      <CUS_SHO_NAME>FESTUS OREVAGHENE PATRICK</CUS_SHO_NAME>
+      <AccountGroup>CURRENT</AccountGroup>
+      <CustomerStatus>1</CustomerStatus>
+      <ADD_LINE1>3 ALUJONNU IBERU STREET JIBOWU ROAD U-TURN</ADD_LINE1>
+      <ADD_LINE2>3 ALUJONNU IBERU STREET JIBOWU ROAD U-TURN</ADD_LINE2>
+      <MOB_NUM>08030523654</MOB_NUM>
+      <EMAIL>festypat9@gmail.com</EMAIL>
+      <REST_IND>0</REST_IND>
+      <ACCT_NO>0065428109</ACCT_NO>
+      <MAP_ACC_NO>0065428109</MAP_ACC_NO>
+      <ACCT_TYPE>Individual-Current</ACCT_TYPE>
+      <TEL_NUM>08030523654</TEL_NUM>
+      <DATE_OPEN>2017/07/31</DATE_OPEN>
+      <STA_CODE>ACTIVE</STA_CODE>
+      <CLE_BAL>2313.90</CLE_BAL>
+      <CRNT_BAL>2313.90</CRNT_BAL>
+      <TOT_BLO_FUND>1595.60</TOT_BLO_FUND>
+      <INTRODUCER>511092</INTRODUCER>
+      <DATE_BAL_CHA>2021/02/15</DATE_BAL_CHA>
+      <NAME_LINE1>FESTUS</NAME_LINE1>
+      <NAME_LINE2>PATRICK</NAME_LINE2>
+      <ACCOUNTCATEGORY>1000</ACCOUNTCATEGORY>
+      <BVN>22341210148</BVN>
+      <REST_FLAG>FALSE</REST_FLAG>
+      <IsSMSSubscriber>TRUE</IsSMSSubscriber>
+      <Alt_Currency>566</Alt_Currency>
+      <Currency_Code>NGN</Currency_Code>
+      <T24_BRA_CODE>NG0020006</T24_BRA_CODE>
+      <T24_CUS_NUM>13727998</T24_CUS_NUM>
+      <T24_CUR_CODE>566</T24_CUR_CODE>
+      <T24_LED_CODE>1000</T24_LED_CODE>
+      <OnlineActualBalance>2313.90</OnlineActualBalance>
+      <OnlineClearedBalance>2313.90</OnlineClearedBalance>
+      <OpenActualBalance>2313.90</OpenActualBalance>
+      <OpenClearedBalance>2313.90</OpenClearedBalance>
+      <WorkingBalance>2313.90</WorkingBalance>
+      <CustomerStatusCode>1</CustomerStatusCode>
+      <CustomerStatusDeecp>Individual Customer</CustomerStatusDeecp>
+      <LimitID />
+      <LimitAmt>0</LimitAmt>
+      <MinimumBal>0</MinimumBal>
+      <UsableBal>182.5</UsableBal>
+      <AccountDescp>Individual-Current</AccountDescp>
+      <CourtesyTitle>MR</CourtesyTitle>
+      <AccountTitle>FESTUS OREVAGHENE PATRICK</AccountTitle>
+      <AMFCharges>535.8</AMFCharges>
+    </BankAccountFullInfo>
+    <RestrictFlag diffgr:id="RestrictFlag1" msdata:rowOrder="0" diffgr:hasChanges="inserted">
+      <RestrCode />
+      <ResDescp />
+    </RestrictFlag>
+  </NewDataSet>
+</diffgr:diffgram> | 2/23/2021 5:18:40 PM
+INFO  2021-02-23 17:19:32,794 257340ms ferNonEscrowRepository ?                  - Job Service-InititiateMerchantCredit fiorano request | 97d678b8ab5f4ea3a16421fa60095751 | e9906e63-a661-4974-a4b0-f849612e8d32 | 0072443128 | 3500.00 | 2/23/2021 5:19:32 PM
+INFO  2021-02-23 17:19:47,631 272177ms CreditDebitService     ?                  - Job Service: InitiateTransaction | {"FT_Request":{"TransactionBranch":"NG0020006","TransactionType":"ACVE","DebitAcctNo":"0065428109","DebitCurrency":"NGN","CreditCurrency":"NGN","DebitAmount":"3500.00","CreditAccountNo":"0072443128","CommissionCode":"W","VtellerAppID":"111","narrations":"Credit Merchant Sterling Acc - 97d678b8ab5f4ea3a16421fa60095751 - e9906e63-a661-4974-a4b0-f849612e8d32","SessionId":"17dd7ddf-cb41-4d08-9fb5-c00888c58f44","TrxnLocation":"::1"}} | 2/23/2021 5:19:47 PM
+INFO  2021-02-23 17:19:54,327 278873ms CreditDebitService     ?                  - Job Service: InitiateTransaction response | {"FTResponse":    {
+       "ReferenceID": "FT19296YHX9W",
+       "ResponseCode": "00",
+       "ResponseText": "SUCCESS",
+       "Balance": "19999918871.56",
+       "COMMAMT": "0",
+       "CHARGEAMT": "0",
+       "FTID": "FT19296YHX9W"
+   }} | 2/23/2021 5:19:54 PM
+INFO  2021-02-23 17:20:07,848 292394ms ferNonEscrowRepository ?                  - Job Service-InititiateMerchantCredit fiorano base response | 97d678b8ab5f4ea3a16421fa60095751 | e9906e63-a661-4974-a4b0-f849612e8d32 | SocialPay.Helper.Dto.Response.FTResponse | {"FTResponse":    {
+       "ReferenceID": "FT19296YHX9W",
+       "ResponseCode": "00",
+       "ResponseText": "SUCCESS",
+       "Balance": "19999918871.56",
+       "COMMAMT": "0",
+       "CHARGEAMT": "0",
+       "FTID": "FT19296YHX9W"
+   }} | 2/23/2021 5:20:07 PM
+INFO  2021-02-23 17:20:09,498 294044ms PendingBankTransaction ?                  - Job Service-NonEscrowPendingBankTransaction response | e9906e63-a661-4974-a4b0-f849612e8d32 | 97d678b8ab5f4ea3a16421fa60095751 | 2/23/2021 5:20:09 PM
