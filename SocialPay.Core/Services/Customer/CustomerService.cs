@@ -457,9 +457,15 @@ namespace SocialPay.Core.Services.Customer
                     if (model.Channel == PaymentChannel.PayWithSpecta)
                     {
                         var result = await _payWithSpectaService.PaymentVerification(model.Message);
+
                         if(result.ResponseCode != AppResponseCodes.Success)
+                        {
+                            _log4net.Info("PaymentConfirmation failed" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
                             return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
-                        model.Message = "success" + result.Message;
+                        }
+
+                        model.Message = $"{"success"}{result.Message}";
+
                         return await _customerService.LogPaymentResponse(model, string.Empty);
                     }
 
@@ -522,7 +528,7 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-                var decodeMessage = System.Uri.UnescapeDataString(message);
+                var decodeMessage = Uri.UnescapeDataString(message);
 
                 var model = new PayWithSpectaVerificationRequestDto
                 {

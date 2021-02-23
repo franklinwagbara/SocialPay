@@ -565,7 +565,10 @@ namespace SocialPay.Core.Repositories.Customer
                     .SingleOrDefaultAsync(x => x.Message == model.Message);
 
                 if (validateDuplicateTransaction != null)
+                {
+                    _log4net.Info("LogPaymentResponse" + " - " + model.PaymentReference + " - " + "validateDuplicateTransaction. DuplicateTransaction" + " - " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
+                }
 
                 var logconfirmation = new TransactionLog { };
                 var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
@@ -574,7 +577,10 @@ namespace SocialPay.Core.Repositories.Customer
                .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
 
                 if (paymentSetupInfo == null)
+                {
+                    _log4net.Info("LogPaymentResponse" + " - " + model.PaymentReference + " - " + "paymentSetupInfo. RecordNotFound" + " - " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                }
 
                 var merchantInfo = await GetMerchantInfo(paymentSetupInfo.ClientAuthenticationId);
 
@@ -699,10 +705,13 @@ namespace SocialPay.Core.Repositories.Customer
                             emailModal.EmailBody = mailBuilder.ToString();
                             await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
+                            _log4net.Info("Emails was successfully sent" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                         }
                         catch (Exception ex)
                         {
+                            _log4net.Error("Database Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                             await transaction.RollbackAsync();
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                         }
@@ -711,6 +720,8 @@ namespace SocialPay.Core.Repositories.Customer
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
+                    _log4net.Info("Transaction failed" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - "+ DateTime.Now);
+
                     try
                     {
                         var logFailedResponse = new FailedTransactions();
