@@ -1066,3 +1066,4 @@ INFO  2021-02-23 17:20:07,848 292394ms ferNonEscrowRepository ?                 
        "FTID": "FT19296YHX9W"
    }} | 2/23/2021 5:20:07 PM
 INFO  2021-02-23 17:20:09,498 294044ms PendingBankTransaction ?                  - Job Service-NonEscrowPendingBankTransaction response | e9906e63-a661-4974-a4b0-f849612e8d32 | 97d678b8ab5f4ea3a16421fa60095751 | 2/23/2021 5:20:09 PM
+INFO  2021-02-23 19:35:30,930 211629ms CustomerRepoService    ?                  - PaymentVerification was successful | FT21053WR3H0 | {"result":{"status":200,"data":{"isSuccessful":true,"reference":"cbc04f71-0270-4dc5-a420-55b661108b2c","amount":21000.00,"percentDiscountApplied":0.0,"amountSettled":21000.00,"paymentReference":"FT21053WR3H0","dateOfCompletion":"2021-02-22T10:41:17.5973396"},"message":"Completed"},"targetUrl":null,"success":true,"error":null,"unAuthorizedRequest":false,"__abp":true} | 2/23/2021 7:35:30 PM
