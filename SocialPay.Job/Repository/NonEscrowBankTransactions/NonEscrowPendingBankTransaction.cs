@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
+using SocialPay.Core.Services.Validations;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -20,16 +21,19 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
         private readonly AppSettings _appSettings;
         private readonly FioranoTransferNonEscrowRepository _fioranoTransferRepository;
         private readonly InterBankPendingTransferService _interBankPendingTransferService;
+        private readonly BankServiceRepositoryJobService _bankServiceRepositoryJobService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowPendingBankTransaction));
 
         public NonEscrowPendingBankTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
              FioranoTransferNonEscrowRepository fioranoTransferRepository,
-         InterBankPendingTransferService interBankPendingTransferService)
+         InterBankPendingTransferService interBankPendingTransferService,
+         BankServiceRepositoryJobService bankServiceRepositoryJobService)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _fioranoTransferRepository = fioranoTransferRepository;
             _interBankPendingTransferService = interBankPendingTransferService;
+            _bankServiceRepositoryJobService = bankServiceRepositoryJobService;
         }
         public IServiceProvider Services { get; }
 
@@ -47,98 +51,116 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                     {
                         _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
-                        var requestId = Guid.NewGuid().ToString();
-                        var getTransInfo = await context.TransactionLog
-                         .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                         && x.TransactionJourney == TransactionJourneyStatusCodes.WalletTranferCompleted);
-                        if (getTransInfo == null)
-                            return null;
+                        var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
 
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
-
-                        transactionLogid = getTransInfo.TransactionLogId;
-
-                        string bankCode = string.Empty;
-
-                        var getBankInfo = await context.MerchantBankInfo
-                           .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
-                        if (getBankInfo == null)
-                            return null;
-
-                        if (getBankInfo.BankCode == _appSettings.SterlingBankCode)
+                        if (validateNuban.ResponseCode == AppResponseCodes.Success)
                         {
-                            bankCode = getBankInfo.BankCode;
+                            var requestId = Guid.NewGuid().ToString();
+                            var getTransInfo = await context.TransactionLog
+                             .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                             && x.TransactionJourney == TransactionJourneyStatusCodes.WalletTranferCompleted);
+                            if (getTransInfo == null)
+                                return null;
 
-                            var initiateRequest = await _fioranoTransferRepository
-                               .InititiateMerchantCredit(Convert.ToString(getTransInfo.TotalAmount),
-                               "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
-                               " - " + item.PaymentReference, item.TransactionReference,
-                               getBankInfo.Nuban, item.PaymentChannel, "Intra-Bank Transfer", 
-                               item.PaymentReference);
+                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.BankTransferProcessing;
+                            getTransInfo.LastDateModified = DateTime.Now;
+                            context.Update(getTransInfo);
+                            await context.SaveChangesAsync();
 
-                            if (initiateRequest.ResponseCode == AppResponseCodes.Success)
+                            transactionLogid = getTransInfo.TransactionLogId;
+
+                            string bankCode = string.Empty;
+
+                            var getBankInfo = await context.MerchantBankInfo
+                               .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+                           
+                            if (getBankInfo == null)
+                                return null;
+
+                            if (getBankInfo.BankCode == _appSettings.SterlingBankCode)
+                            {
+                                bankCode = getBankInfo.BankCode;
+
+                                var initiateRequest = await _fioranoTransferRepository
+                                   .InititiateMerchantCredit(Convert.ToString(getTransInfo.TotalAmount),
+                                   "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
+                                   " - " + item.PaymentReference, item.TransactionReference,
+                                   getBankInfo.Nuban, item.PaymentChannel, "Intra-Bank Transfer",
+                                   item.PaymentReference);
+
+                                if (initiateRequest.ResponseCode == AppResponseCodes.Success)
+                                {
+                                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
+                                    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                                    getTransInfo.LastDateModified = DateTime.Now;
+                                    context.Update(getTransInfo);
+                                    await context.SaveChangesAsync();
+                                    _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
+                                    return null;
+                                }
+
+                                getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
+                                getTransInfo.LastDateModified = DateTime.Now;
+                                context.Update(getTransInfo);
+                                await context.SaveChangesAsync();
+
+                                var failedTransaction = new FailedTransactions
+                                {
+                                    CustomerTransactionReference = item.CustomerTransactionReference,
+                                    Message = initiateRequest.Message,
+                                    TransactionReference = item.TransactionReference
+                                };
+                                await context.FailedTransactions.AddAsync(failedTransaction);
+                                await context.SaveChangesAsync();
+
+                                _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction failed response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
+                                return null;
+                            }
+
+                            _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
+
+                            var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
+                                getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
+                                item.PaymentReference, item.TransactionReference);
+                            _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
+                            if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
                             {
                                 getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
                                 await context.SaveChangesAsync();
-                                _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
-
                                 return null;
                             }
 
-                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
-                            getTransInfo.LastDateModified = DateTime.Now;
-                            context.Update(getTransInfo);
-                            await context.SaveChangesAsync();
-
-                            var failedTransaction = new FailedTransactions
+                            var failedResponse = new FailedTransactions
                             {
                                 CustomerTransactionReference = item.CustomerTransactionReference,
-                                Message = initiateRequest.Message,
+                                Message = initiateInterBankRequest.Data.ToString(),
                                 TransactionReference = item.TransactionReference
                             };
-                            await context.FailedTransactions.AddAsync(failedTransaction);
+                            await context.FailedTransactions.AddAsync(failedResponse);
                             await context.SaveChangesAsync();
-
-                            _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction failed response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                            _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response failed" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                             return null;
                         }
 
-                        _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
-
-
-                        var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
-                            getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
-                            item.PaymentReference, item.TransactionReference);
-                        _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response" + " | " + initiateInterBankRequest.ResponseCode + " | "+ item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
-
-                        if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
+                        else
                         {
-                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
-                            getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                            getTransInfo.LastDateModified = DateTime.Now;
-                            context.Update(getTransInfo);
+                            var failedResponse = new FailedTransactions
+                            {
+                                CustomerTransactionReference = item.CustomerTransactionReference,
+                                Message = "Name enquiry failed" + "-" + validateNuban.UsableBal + "-" + item.TotalAmount + "-" + validateNuban.ResponseCode + "-" + item.PaymentReference,
+                                TransactionReference = item.TransactionReference
+                            };
+                            await context.FailedTransactions.AddAsync(failedResponse);
                             await context.SaveChangesAsync();
-                            return null;
                         }
-
-                        var failedResponse = new FailedTransactions
-                        {
-                            CustomerTransactionReference = item.CustomerTransactionReference,
-                            Message = initiateInterBankRequest.Data.ToString(),
-                            TransactionReference = item.TransactionReference
-                        };
-                        await context.FailedTransactions.AddAsync(failedResponse);
-                        await context.SaveChangesAsync();
-                        _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response failed" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
-
-                        return null;
 
                     }
 

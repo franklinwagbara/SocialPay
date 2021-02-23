@@ -51,16 +51,10 @@ namespace SocialPay.Core.Services.Validations
             {
                 _log4net.Info("Initiating GetAccountFullInfoAsync request" + " | " + amount + " | " + nuban + " | " + DateTime.Now);
 
-                //var validateBvn = await BvnValidation(bvn, "");
-                //if (validateBvn.ResponseCode != AppResponseCodes.Success)
-                //    return validateBvn;
                 var banks = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
-
-                //var validatebvn = await banks.GetBvnAsync(bvn);
 
                 var getUserInfo = await banks.getAccountFullInfoAsync(nuban);
 
-                // var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, ServicesPoint.CoreBanking);
                 var validAccount = getUserInfo.Nodes[1];
                 _log4net.Info("Initiating GetAccountFullInfoAsync response" + " | " + amount + " | " + nuban + " | " + validAccount + " | " + DateTime.Now);
 
@@ -89,12 +83,13 @@ namespace SocialPay.Core.Services.Validations
 
                 decimal usableBalance = Convert.ToDecimal(accountDetail.UsableBal);
 
-                if(usableBalance < amount)
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InsufficientBanlance, NUBAN = nuban, UsableBal = accountDetail.UsableBal };
+                //if(usableBalance < amount)
+                //{
+                //    _log4net.Info("Insufficient funds" + " | " + amount + " | " + nuban + " | " + validAccount + " | " + usableBalance + "-" + DateTime.Now);
 
-                //if (accountDetail.UsableBal != "ACTIVE")
-                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InActiveAccountNumber, NUBAN = nuban };
-                //accountDetail.ResponseCode = AppResponseCodes.Success;
+                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InsufficientBanlance, NUBAN = nuban, UsableBal = accountDetail.UsableBal };
+                //}
+                accountDetail.ResponseCode = AppResponseCodes.Success;
                 return accountDetail;
             }
             catch (Exception ex)
@@ -105,7 +100,5 @@ namespace SocialPay.Core.Services.Validations
             }
 
         }
-
-
     }
 }

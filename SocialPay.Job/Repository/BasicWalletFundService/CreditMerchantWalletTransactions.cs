@@ -35,8 +35,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
         {
             long transactionLogid = 0;
             try
-            {
-                
+            {                
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -44,7 +43,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                     {
                         _log4net.Info("Job Service" + "-" + "Credit merchant wallet" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
-                        var requestId = Guid.NewGuid().ToString();
+                        var requestId = $"{"So-Pay-"}{Guid.NewGuid().ToString().Substring(0, 22)}";
                         var getTransInfo = await context.TransactionLog
                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
                            && x.OrderStatus == TransactionJourneyStatusCodes.Pending);
@@ -61,10 +60,9 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
 
                         var getWalletInfo = await context.MerchantWallet
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+                       
                         if (getWalletInfo == null)
                             return null;
-
-                        var walletReference = $"{"So-Pay-"}{Guid.NewGuid().ToString().Substring(0, 15)}";
 
                         var walletModel = new WalletTransferRequestDto
                         {
@@ -74,8 +72,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             channelID = 1,
                             TransferType = 1,
                             frmacct = _appSettings.SterlingWalletPoolAccount,
-                            paymentRef = walletReference,
-                            remarks = "Social-Pay Core pool to merchant wallet" + " - " + item.PaymentReference + " - " + walletReference
+                            paymentRef = requestId,
+                            remarks = "Social-Pay Core pool to merchant wallet" + " - " + item.PaymentReference + " - " + requestId
                         };
 
                         var walletRequestModel = new DefaultWalletTransferRequestLog
@@ -93,7 +91,6 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             ChannelMode = WalletTransferMode.SocialPayToMerchant,
                             ClientAuthenticationId = item.ClientAuthenticationId,
                             RequestId = requestId,
-                            WalletPaymentReference = walletReference
                         };
 
                         await context.DefaultWalletTransferRequestLog.AddAsync(walletRequestModel);
