@@ -10,6 +10,9 @@ namespace SocialPay.Domain.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column(TypeName = "NVARCHAR(90)")]
         public string PaymentReference { get; set; }
+
+        [Column(TypeName = "NVARCHAR(90)")]
+        public string WalletPaymentReference { get; set; }
         [Column(TypeName = "NVARCHAR(90)")]
         public string RequestId { get; set; }
         public long ClientAuthenticationId { get; set; }
