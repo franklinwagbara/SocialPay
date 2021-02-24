@@ -587,6 +587,7 @@ namespace SocialPay.Core.Repositories.Customer
                 var getCustomerInfo = await _context.CustomerOtherPaymentsInfo
                     .SingleOrDefaultAsync(x => x.PaymentReference == model.PaymentReference);
 
+                //for escrow if need to activate
                 ////if (linkInfo != null && linkInfo.Channel == MerchantPaymentLinkCategory.Escrow || linkInfo.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
                 ////{
                 ////    var customerInfo = await _context.ClientAuthentication
