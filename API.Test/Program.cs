@@ -1,6 +1,7 @@
 ﻿using bankService;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -14,6 +15,8 @@ namespace API.Test
     {
         static void Main(string[] args)
         {
+
+            
 
             var newRef = $"{"So-Pay-"}{Guid.NewGuid().ToString().Substring(0, 15)}";
 
