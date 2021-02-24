@@ -4,14 +4,15 @@ namespace SocialPay.Helper.Dto.Request
 {
     public class SignUpRequestDto
     {
+        [MaxLength(50, ErrorMessage = "Phone Number cannot be greater than 50")]
         [Required(ErrorMessage = "Email")]
         public string Email { get; set; }
         [Required(ErrorMessage = "Phone Number")]
         [RegularExpression(@"^\d*[0-9]\d*$", ErrorMessage = "Only number between 0 - 9 allowed")]
-        [MaxLength(15, ErrorMessage = "Phone Number cannot be greater than 15")]
+        [MaxLength(20, ErrorMessage = "Phone Number cannot be greater than 20")]
         public long PhoneNumber { get; set; }
         [Required(ErrorMessage = "FullName")]
-        [MaxLength(45, ErrorMessage = "Full name cannot be greater than 45")]
+        [MaxLength(55, ErrorMessage = "Full name cannot be greater than 55")]
         public string Fullname { get; set; }
         [Required(ErrorMessage = "Date of birth")]
         [MaxLength(15, ErrorMessage = "Date of birth cannot be greater than 15")]
