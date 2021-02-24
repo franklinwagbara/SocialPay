@@ -42,9 +42,9 @@
         public const string OtpExpired = "38";               
         public const string NipFeesCalculationFailed = "39";               
         public const string TinValidationFailed = "40";               
-        public const string InsufficientBanlance = "41";               
+        public const string InsufficientFunds = "41";               
         public const string IncorrectTransactionPin = "42";               
-        public const string InsufficientFunds = "43";               
+       // public const string InsufficientFunds = "43";               
        // public const string TinIsRequired = "41";               
     }
 
