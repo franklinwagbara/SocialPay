@@ -15,6 +15,7 @@ namespace SocialPay.Helper.Dto.Response
     {
         public string ResponseCode { get; set; }
         public string PaymentRef { get; set; }
+        public string TransactionReference { get; set; }
         public Object Data { get; set; }
     }
 

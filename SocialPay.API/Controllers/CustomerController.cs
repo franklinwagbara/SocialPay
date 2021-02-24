@@ -69,7 +69,7 @@ namespace SocialPay.API.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    return Ok(await _customerRepoService.MakePayment(model));
+                    return Ok(await _customerRepoService.InitiatePayment(model));
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
