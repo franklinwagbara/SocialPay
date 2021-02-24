@@ -7,13 +7,18 @@ namespace SocialPay.Helper.Dto.Request
     public class MerchantOnboardingInfoRequestDto
     {
         [Required(ErrorMessage = "Business Name")]
+        [MaxLength(65, ErrorMessage = "Business name cannot be greater than 65")]
         public string BusinessName { get; set; }
         [Required(ErrorMessage = "Business Phone number")]
-       // [PhoneNumberValidationAttribute]
+        [MaxLength(20, ErrorMessage = "Business Phone number can not be greater than 20")]
+        [RegularExpression(@"^\d*[0-9]\d*$", ErrorMessage = "Only number between 0 - 9 allowed")]
         public string BusinessPhoneNumber { get; set; }
         [Required(ErrorMessage = "Business email")]
+        [MaxLength(40, ErrorMessage = "Business Email can not be greater than 40")]
         public string BusinessEmail { get; set; }
+        [MaxLength(40, ErrorMessage = "Tin can not be greater than 40")]
         public string Tin { get; set; }
+        [MaxLength(50, ErrorMessage = "Specta Merchant ID can not be greater than 50")]
         public string SpectaMerchantID { get; set; }
         public string SpectaMerchantKey { get; set; }
         public string SpectaMerchantKeyValue { get; set; }

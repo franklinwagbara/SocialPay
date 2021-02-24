@@ -25,7 +25,7 @@ namespace SocialPay.Domain.Entities
         public string BusinessEmail { get; set; }
         [Column(TypeName = "NVARCHAR(25)")]
         public string Country { get; set; }
-        [Column(TypeName = "NVARCHAR(20)")]
+        [Column(TypeName = "NVARCHAR(40)")]
         public string Tin { get; set; }
         [Column(TypeName = "NVARCHAR(40)")]
         public string Chargebackemail { get; set; }

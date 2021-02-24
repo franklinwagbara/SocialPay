@@ -12,9 +12,9 @@ namespace SocialPay.Domain.Entities
         public string Email { get; set; }
         [Column(TypeName = "NVARCHAR(50)")]
         public string UserName { get; set; }
-        [Column(TypeName = "NVARCHAR(15)")]
+        [Column(TypeName = "NVARCHAR(20)")]
         public string PhoneNumber { get; set; }
-        [Column(TypeName = "NVARCHAR(45)")]
+        [Column(TypeName = "NVARCHAR(55)")]
         public string FullName { get; set; }
         public byte[] ClientSecretHash { get; set; }
         public byte[] ClientSecretSalt { get; set; }
