@@ -33,11 +33,13 @@ namespace SocialPay.Core.Services.Customer
         private readonly EncryptDecrypt _encryptDecrypt;
         private readonly PayWithSpectaService _payWithSpectaService;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly TransactionReceipt _transactionReceipt;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CustomerRepoService));
         public CustomerRepoService(ICustomerService customerService, IOptions<AppSettings> appSettings,
             EncryptDecryptAlgorithm encryptDecryptAlgorithm, EncryptDecrypt encryptDecrypt,
             EmailService emailService, IHostingEnvironment environment,
-            SocialPayDbContext context, PayWithSpectaService payWithSpectaService)
+            SocialPayDbContext context, PayWithSpectaService payWithSpectaService,
+            TransactionReceipt transactionReceipt)
         {
             _customerService = customerService;
             _appSettings = appSettings.Value;
@@ -47,6 +49,7 @@ namespace SocialPay.Core.Services.Customer
             _hostingEnvironment = environment;
             _context = context;
             _payWithSpectaService = payWithSpectaService;
+            _transactionReceipt = transactionReceipt;
         }
 
         public async Task<WebApiResponse> GetLinkDetails(string transactionReference)
@@ -112,7 +115,7 @@ namespace SocialPay.Core.Services.Customer
                 string encryptData = string.Empty;
                 string paymentData = string.Empty;
                 var paymentResponse = new CustomerResponseDto { };
-                var paymentRef = Guid.NewGuid().ToString();
+                var paymentRef = $"{"SP-"}{Guid.NewGuid().ToString()}";
                 var getLinkType = await _customerService.GetLinkCategorybyTranref(model.TransactionReference);
 
                 if(getLinkType != null && getLinkType.Channel == MerchantPaymentLinkCategory.InvoiceLink)
@@ -364,12 +367,6 @@ namespace SocialPay.Core.Services.Customer
         {
             try
             {
-                ////var decodeMessageTest = System.Uri.UnescapeDataString(model.Message);
-                ////if (decodeMessageTest.Contains(" "))
-                ////{
-                ////    decodeMessageTest = decodeMessageTest.Replace(" ", "+");
-                ////}
-                ////var decryptResponseTest = DecryptAlt(decodeMessageTest);
 
                 var otherPaymentReference = string.Empty;
                 _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " | "+ DateTime.Now);
@@ -539,7 +536,7 @@ namespace SocialPay.Core.Services.Customer
                 var request = JsonConvert.SerializeObject(model);
 
                 var client = new HttpClient();
-                client.BaseAddress = new Uri("https://paywithspectaapi.sterling.ng/");
+                client.BaseAddress = new Uri(_appSettings.paywithSpectaBaseUrl);
                 var response = await client.PostAsync(_appSettings.paywithSpectaverifyPaymentUrl,
                     new StringContent(request, Encoding.UTF8, "application/json"));
 
@@ -563,6 +560,194 @@ namespace SocialPay.Core.Services.Customer
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
+        }
+
+
+        public async Task<WebApiResponse> ValidateSpectaResponse(string paymentReference, string transactionReference)
+        {
+            try
+            {
+                var apiResponse = new WebApiResponse { };
+
+                var confirmTransaction = await _context.TransactionLog
+                   .SingleOrDefaultAsync(x => x.PaymentReference == paymentReference
+                   && x.TransactionReference == transactionReference);
+
+                if (confirmTransaction == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var validateRequest = await _context.PaymentResponse
+                    .SingleOrDefaultAsync(x => x.PaymentReference == paymentReference
+                    && x.TransactionReference == transactionReference);
+                
+                if (validateRequest == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };             
+
+                var decodeMessage = Uri.UnescapeDataString(validateRequest.Message);
+
+                var model = new PayWithSpectaVerificationRequestDto
+                {
+                    verificationToken = decodeMessage,
+                };
+                var request = JsonConvert.SerializeObject(model);
+
+                var client = new HttpClient();
+                client.BaseAddress = new Uri(_appSettings.paywithSpectaBaseUrl);
+                var response = await client.PostAsync(_appSettings.paywithSpectaverifyPaymentUrl,
+                    new StringContent(request, Encoding.UTF8, "application/json"));
+
+                var result = await response.Content.ReadAsStringAsync();
+
+                var message = string.Empty;
+                if (response.IsSuccessStatusCode)
+                {
+                    var successfulResponse = JsonConvert.DeserializeObject<PaymentVerificationResponseDto>(result);
+                    apiResponse.Data = successfulResponse.Result;
+                    apiResponse.ResponseCode = AppResponseCodes.Success;
+                    apiResponse.Message = Convert.ToString(successfulResponse.Result.Data.PaymentReference);
+
+                    message = $"{"success"}{apiResponse.Message}";
+
+                    var linkInfo = await GetLinkCategorybyTranref(transactionReference);
+
+                    var paymentSetupInfo = await _context.MerchantPaymentSetup
+                   .SingleOrDefaultAsync(x => x.TransactionReference == transactionReference);
+
+                    if (paymentSetupInfo == null)
+                    {
+                        _log4net.Info("LogPaymentResponse" + " - " + paymentReference + " - " + "paymentSetupInfo. RecordNotFound" + " - " + DateTime.Now);
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                    }
+
+                    var merchantInfo = await GetMerchantInfo(paymentSetupInfo.ClientAuthenticationId);
+
+                    var getCustomerInfo = await _context.CustomerOtherPaymentsInfo
+                        .SingleOrDefaultAsync(x => x.PaymentReference == paymentReference);
+
+
+                    if (message.Contains("approve") || message.Contains("success") || message.Contains("Approve"))
+                    {
+                        var logconfirmation = new TransactionLog { };
+                        logconfirmation.Category = linkInfo.Channel;
+                        logconfirmation.LinkCategory = paymentSetupInfo.PaymentCategory;
+                        logconfirmation.PaymentChannel = "03";
+                        logconfirmation.ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId;
+                        logconfirmation.CustomerTransactionReference = Guid.NewGuid().ToString();
+                        logconfirmation.TransactionReference = transactionReference;
+                        logconfirmation.OrderStatus = TransactionJourneyStatusCodes.Pending;
+                        logconfirmation.Message = message;
+                        logconfirmation.LastDateModified = DateTime.Now;
+                        logconfirmation.TotalAmount = getCustomerInfo.Amount;
+                        logconfirmation.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.Pending;
+                        logconfirmation.PaymentReference = paymentReference;
+                        logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Approved;
+                        logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
+                        logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Approved;
+                        // logconfirmation.CustomerEmail = model.e;
+                        using (var transaction = await _context.Database.BeginTransactionAsync())
+                        {
+                            try
+                            {
+                                logconfirmation.Status = true;
+                                logconfirmation.DeliveryDate = DateTime.Now.AddDays(paymentSetupInfo.DeliveryTime);
+                                logconfirmation.DeliveryFinalDate = logconfirmation.DeliveryDate.AddDays(2);
+                                await _context.TransactionLog.AddAsync(logconfirmation);
+                                await _context.SaveChangesAsync();
+                                await transaction.CommitAsync();
+                                //Send mail
+                                await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
+                                    logconfirmation.TransactionDate, transactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
+
+                                var emailModal = new EmailRequestDto
+                                {
+                                    Subject = $"{_appSettings.successfulTransactionEmailSubject}{"-"}{transactionReference}{"-"}",
+                                    DestinationEmail = merchantInfo.BusinessEmail,
+                                };
+
+                                var mailBuilder = new StringBuilder();
+                                mailBuilder.AppendLine("Dear" + " " + merchantInfo.BusinessName + "," + "<br />");
+                                mailBuilder.AppendLine("<br />");
+                                mailBuilder.AppendLine("Customer was able to make payment successfully. See details below.<br />");
+                                mailBuilder.AppendLine();
+                                mailBuilder.AppendLine("Customer Name" + "  " + getCustomerInfo.Fullname + "<br />");
+                                mailBuilder.AppendLine();
+                                mailBuilder.AppendLine("Customer Phone number" + "  " + getCustomerInfo.PhoneNumber + "<br />");
+                                // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                                mailBuilder.AppendLine("Best Regards,");
+                                emailModal.EmailBody = mailBuilder.ToString();
+
+                                await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+
+                                emailModal.DestinationEmail = getCustomerInfo.Email;
+                                mailBuilder.AppendLine("Dear" + " " + getCustomerInfo.Fullname + "," + "<br />");
+                                mailBuilder.AppendLine("<br />");
+                                mailBuilder.AppendLine("Your payment was successful. See details below.<br />");
+                                mailBuilder.AppendLine();
+                                // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                                mailBuilder.AppendLine("Best Regards,");
+                                emailModal.EmailBody = mailBuilder.ToString();
+                                await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                                _log4net.Info("Emails was successfully sent" + " | " + "LogPaymentResponse" + " | " + paymentReference + " | " + transactionReference + " | " + DateTime.Now);
+
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                            }
+                            catch (Exception ex)
+                            {
+                                _log4net.Error("Database Error occured" + " | " + "LogPaymentResponse" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                                await transaction.RollbackAsync();
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                            }
+                        }
+                    }
+
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        _log4net.Info("Transaction failed" + " | " + "LogPaymentResponse" + " | " + paymentReference + " | " + transactionReference + " | " + message + " - " + DateTime.Now);
+
+                        try
+                        {
+                            var logFailedResponse = new FailedTransactions();
+
+                            //logFailedResponse.CustomerTransactionReference = model.CustomerTransactionReference;
+                            logFailedResponse.TransactionReference = transactionReference;
+                            logFailedResponse.Message = message;
+                            await _context.FailedTransactions.AddAsync(logFailedResponse);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                         
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
+                        }
+                        catch (Exception ex)
+                        {
+                            _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                            await transaction.RollbackAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        }
+                    }
+                }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+        public async Task<MerchantBusinessInfo> GetMerchantInfo(long clientId)
+        {
+            return await _context.MerchantBusinessInfo.SingleOrDefaultAsync(p => p.ClientAuthenticationId
+             == clientId
+           );
+        }
+        public async Task<LinkCategory> GetLinkCategorybyTranref(string tranRef)
+        {
+            return await _context.LinkCategory.SingleOrDefaultAsync(p => p.TransactionReference
+             == tranRef
+           );
         }
 
         public static String DecryptAlt(String val)

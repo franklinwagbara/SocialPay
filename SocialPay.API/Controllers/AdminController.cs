@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
+using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Helper;
@@ -26,13 +27,14 @@ namespace SocialPay.API.Controllers
         private readonly MerchantReportService _merchantReportService;
         private readonly TransactionService _transactionService;
         private readonly UserRepoService _userRepoService;
+        private readonly CustomerRepoService _customerRepoService;
         private readonly CreateMerchantWalletService _createMerchantWalletService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AdminController));
 
         public AdminController(ADRepoService aDRepoService, MerchantReportService merchantReportService,
             TransactionService transactionService, AuthRepoService authRepoService,
             CreateMerchantWalletService createMerchantWalletService,
-            UserRepoService userRepoService)
+            UserRepoService userRepoService, CustomerRepoService customerRepoService)
         {
             _aDRepoService = aDRepoService;
             _merchantReportService = merchantReportService;
@@ -40,6 +42,7 @@ namespace SocialPay.API.Controllers
             _authRepoService = authRepoService;
             _createMerchantWalletService = createMerchantWalletService;
             _userRepoService = userRepoService;
+            _customerRepoService = customerRepoService;
         }
 
         [HttpPost]
@@ -281,6 +284,38 @@ namespace SocialPay.API.Controllers
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("log-pay-with-specta-requests")]
+        public async Task<IActionResult> ValidatePaywithSpecta(string paymentReference, string transactionReference)
+        {
+            _log4net.Info("Tasks starts to log specta responset" + " | " + paymentReference + " | " + DateTime.Now);
+
+            var response = new WebApiResponse { };
+            try
+            {               
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _customerRepoService.ValidateSpectaResponse(paymentReference, transactionReference));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 response.ResponseCode = AppResponseCodes.InternalError;
                 return BadRequest(response);
             }
