@@ -4,7 +4,7 @@ namespace SocialPay.Helper.Dto.Request
 {
     public class SignUpRequestDto
     {
-        [MaxLength(50, ErrorMessage = "Phone Number cannot be greater than 50")]
+        [MaxLength(50, ErrorMessage = "Email cannot be greater than 50")]
         [Required(ErrorMessage = "Email")]
         public string Email { get; set; }
         [Required(ErrorMessage = "Phone Number")]
