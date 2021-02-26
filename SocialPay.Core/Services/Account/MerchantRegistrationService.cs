@@ -64,7 +64,7 @@ namespace SocialPay.Core.Services.Account
             try
             {
                 if (await _context.ClientAuthentication.AnyAsync(x => x.Email == signUpRequestDto.Email
-                || x.PhoneNumber == Convert.ToString(signUpRequestDto.PhoneNumber)))
+                || x.PhoneNumber == signUpRequestDto.PhoneNumber))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
                 var token = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
@@ -93,7 +93,7 @@ namespace SocialPay.Core.Services.Account
                             StatusCode = MerchantOnboardingProcess.CreateAccount,
                             FullName = signUpRequestDto.Fullname,
                             IsDeleted = false,
-                            PhoneNumber = Convert.ToString(signUpRequestDto.PhoneNumber),
+                            PhoneNumber = signUpRequestDto.PhoneNumber,
                             RoleName = RoleDetails.Merchant,
                             LastDateModified = DateTime.Now,
                             UserName = signUpRequestDto.Email,
@@ -109,7 +109,7 @@ namespace SocialPay.Core.Services.Account
                             DoB = signUpRequestDto.DateOfBirth,
                             Firstname = signUpRequestDto.Fullname,
                             Lastname = model.FullName,
-                            Mobile = Convert.ToString(signUpRequestDto.PhoneNumber),
+                            Mobile = signUpRequestDto.PhoneNumber,
                             Gender = signUpRequestDto.Gender,
                             LastDateModified = DateTime.Now,
                             status = MerchantWalletProcess.CreateAccount
