@@ -13,6 +13,8 @@ namespace SocialPay.Core.Services.Report
     public class TransactionService
     {
         private readonly SocialPayDbContext _context;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(TransactionService));
+
         public TransactionService(SocialPayDbContext context)
         {
             _context = context;
@@ -20,6 +22,7 @@ namespace SocialPay.Core.Services.Report
 
         public async Task<WebApiResponse> GetCustomerOrders(string category)
         {
+            _log4net.Info("Task start to GetCustomerOrders" + " - " + category + " - " + DateTime.Now);
             var request = new List<OrdersViewModel>();
             try
             {
@@ -34,25 +37,35 @@ namespace SocialPay.Core.Services.Report
                                 select new OrdersViewModel { MerchantAmount = m.UnitPrice, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
                                  MerchantDescription = m.Description, ClientId = c.ClientAuthenticationId, CustomerTransactionReference = c.CustomerTransactionReference,
-                                TotalAmount = m.TotalAmount, PaymentCategory = category,
-                                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
+                                TotalAmount = m.TotalAmount, PaymentCategory = category, TransactionDate = Convert.ToString(c.TransactionDate),
+                                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId})
+                                .OrderByDescending(x=>x.TransactionDate).ToList();
                     request = invoiceResponse;
+                    _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
                 }
 
                 var otherLinksresponse = (from c in getCustomerOrders
                                 join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
+                                join a in _context.MerchantBusinessInfo on m.ClientAuthenticationId equals a.ClientAuthenticationId
+                                join b in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals b.PaymentReference
                                 select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
                                 DeliveryMethod = m.DeliveryMethod, MerchantDescription = m.MerchantDescription,
                                 TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory, ClientId = c.ClientAuthenticationId,
-                                CustomerTransactionReference = c.CustomerTransactionReference,
-                                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
+                                CustomerTransactionReference = c.CustomerTransactionReference, MerchantName = a.BusinessName,
+                                CustomerName = b.Fullname, PaymentReference = c.PaymentReference,
+                                    TransactionDate = Convert.ToString(c.TransactionDate),
+                                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId})
+                                .OrderByDescending(x => x.TransactionDate).ToList();
                 request = otherLinksresponse;
+                _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - "+ DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
             }
             catch (Exception ex)
             {
+                _log4net.Error("An error occured while trying to initiateGetCustomerOrders" + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

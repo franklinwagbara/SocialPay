@@ -198,6 +198,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
+        //[AllowAnonymous]
         [HttpGet]
         [Route("get-transactions")]
         public async Task<IActionResult> GetCustomerTransactions([FromQuery] string category)
@@ -209,8 +210,7 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _transactionService.GetCustomerOrders(category);
-                    return Ok(result);
+                    return Ok(await _transactionService.GetCustomerOrders(category));
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
