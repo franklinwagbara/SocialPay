@@ -54,8 +54,8 @@ namespace SocialPay.Core.Services.Report
                                 DeliveryMethod = m.DeliveryMethod, MerchantDescription = m.MerchantDescription,
                                 TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory, ClientId = c.ClientAuthenticationId,
                                 CustomerTransactionReference = c.CustomerTransactionReference, MerchantName = a.BusinessName,
-                                CustomerName = b.Fullname, PaymentReference = c.PaymentReference,
-                                    TransactionDate = Convert.ToString(c.TransactionDate),
+                                CustomerName = b.Fullname, PaymentReference = c.PaymentReference, TransactionStatus = c.TransactionJourney,
+                                TransactionDate = Convert.ToString(c.TransactionDate),
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId})
                                 .OrderByDescending(x => x.TransactionDate).ToList();
                 request = otherLinksresponse;
