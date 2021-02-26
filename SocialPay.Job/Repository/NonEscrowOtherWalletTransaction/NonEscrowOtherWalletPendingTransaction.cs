@@ -80,7 +80,7 @@ namespace SocialPay.Job.Repository.NonEscrowOtherWalletTransaction
                             channelID = walletModel.channelID,
                             CURRENCYCODE = walletModel.CURRENCYCODE,
                             frmacct = walletModel.frmacct,
-                            PaymentReference = walletModel.paymentRef,
+                            PaymentReference = item.PaymentReference,
                             remarks = walletModel.remarks,
                             toacct = walletModel.toacct,
                             TransactionReference = item.TransactionReference,
