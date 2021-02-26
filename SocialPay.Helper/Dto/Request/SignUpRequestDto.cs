@@ -10,7 +10,7 @@ namespace SocialPay.Helper.Dto.Request
         [Required(ErrorMessage = "Phone Number")]
         [RegularExpression(@"^\d*[0-9]\d*$", ErrorMessage = "Only number between 0 - 9 allowed")]
         [MaxLength(20, ErrorMessage = "Phone Number cannot be greater than 20")]
-        public long PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         [Required(ErrorMessage = "FullName")]
         [MaxLength(55, ErrorMessage = "Full name cannot be greater than 55")]
         public string Fullname { get; set; }
