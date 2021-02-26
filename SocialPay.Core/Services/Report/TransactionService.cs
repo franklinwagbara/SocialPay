@@ -38,6 +38,7 @@ namespace SocialPay.Core.Services.Report
                                 ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
                                  MerchantDescription = m.Description, ClientId = c.ClientAuthenticationId, CustomerTransactionReference = c.CustomerTransactionReference,
                                 TotalAmount = m.TotalAmount, PaymentCategory = category, TransactionDate = Convert.ToString(c.TransactionDate),
+                                PaymentMethod = c.PaymentChannel, PaymentReference = c.PaymentReference,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId})
                                 .OrderByDescending(x=>x.TransactionDate).ToList();
                     request = invoiceResponse;
@@ -55,7 +56,7 @@ namespace SocialPay.Core.Services.Report
                                 TotalAmount = m.TotalAmount, PaymentCategory = m.PaymentCategory, ClientId = c.ClientAuthenticationId,
                                 CustomerTransactionReference = c.CustomerTransactionReference, MerchantName = a.BusinessName,
                                 CustomerName = b.Fullname, PaymentReference = c.PaymentReference, TransactionStatus = c.TransactionJourney,
-                                TransactionDate = Convert.ToString(c.TransactionDate),
+                                TransactionDate = Convert.ToString(c.TransactionDate), PaymentMethod = c.PaymentChannel,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId})
                                 .OrderByDescending(x => x.TransactionDate).ToList();
                 request = otherLinksresponse;
