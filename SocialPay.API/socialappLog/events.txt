@@ -1240,3 +1240,5 @@ INFO  2021-02-26 10:25:47,750 330299ms ferNonEscrowRepository ?                 
        "FTID": "FT1929681Y96"
    }} | 2/26/2021 10:25:47 AM
 INFO  2021-02-26 10:26:13,544 356093ms PendingBankTransaction ?                  - Job Service-NonEscrowPendingBankTransaction response | 1cfac8ca-e29d-40fd-b2d4-23b16be8dfa9 | 2ced307cbb5e42aebc1dcf154e315870 | 2/26/2021 10:26:13 AM
+INFO  2021-02-26 12:01:47,372 124685ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 2/26/2021 12:01:47 PM
+INFO  2021-02-26 12:01:49,179 126492ms TransactionService     ?                  - Response for GetCustomerOrders -  - 11 - 2/26/2021 12:01:49 PM
