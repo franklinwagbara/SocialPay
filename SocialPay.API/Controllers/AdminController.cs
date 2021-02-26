@@ -482,5 +482,35 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-payment-response-logs")]
+        public async Task<IActionResult> GetPaymentResponseLogsAsync([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "sterling0v8g1")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.GetAllPaymentResponseLogs());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
     }
 }
