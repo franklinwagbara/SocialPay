@@ -691,7 +691,7 @@ namespace SocialPay.Core.Repositories.Customer
                             mailBuilder.AppendLine("Customer Phone number:" + "  " + getCustomerInfo.PhoneNumber + "<br />");
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
-                            // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                            mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
 
@@ -702,8 +702,9 @@ namespace SocialPay.Core.Repositories.Customer
                             mailBuilder.AppendLine("Dear," + " " + getCustomerInfo.Fullname + "," + "<br />");
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Your payment was successful. See details below.<br />");
-                            mailBuilder.AppendLine();
-                            // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
+                            mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
                             await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
