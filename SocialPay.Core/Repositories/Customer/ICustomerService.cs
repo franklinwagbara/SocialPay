@@ -682,13 +682,15 @@ namespace SocialPay.Core.Repositories.Customer
                                 DestinationEmail = merchantInfo.BusinessEmail,
                             };
                             var mailBuilder = new StringBuilder();
-                            mailBuilder.AppendLine("Dear" + " " + merchantInfo.BusinessName + "," + "<br />");
+                            mailBuilder.AppendLine("Dear," + " " + merchantInfo.BusinessName + "," + "<br />");
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Customer was able to make payment successfully. See details below.<br />");
-                            mailBuilder.AppendLine();
-                            mailBuilder.AppendLine("Customer Name" + "  " + getCustomerInfo.Fullname + "<br />");
-                            mailBuilder.AppendLine();
-                            mailBuilder.AppendLine("Customer Phone number" + "  " + getCustomerInfo.PhoneNumber + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Customer Name:" + "  " + getCustomerInfo.Fullname + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Customer Phone number:" + "  " + getCustomerInfo.PhoneNumber + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
                             // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
                             mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
@@ -697,7 +699,7 @@ namespace SocialPay.Core.Repositories.Customer
 
 
                             emailModal.DestinationEmail = getCustomerInfo.Email;
-                            mailBuilder.AppendLine("Dear" + " " + getCustomerInfo.Fullname + "," + "<br />");
+                            mailBuilder.AppendLine("Dear," + " " + getCustomerInfo.Fullname + "," + "<br />");
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Your payment was successful. See details below.<br />");
                             mailBuilder.AppendLine();
