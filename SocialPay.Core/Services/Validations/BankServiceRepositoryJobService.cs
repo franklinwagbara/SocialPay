@@ -83,12 +83,12 @@ namespace SocialPay.Core.Services.Validations
 
                 decimal usableBalance = Convert.ToDecimal(accountDetail.UsableBal);
 
-                //if(usableBalance < amount)
-                //{
-                //    _log4net.Info("Insufficient funds" + " | " + amount + " | " + nuban + " | " + validAccount + " | " + usableBalance + "-" + DateTime.Now);
+                if (usableBalance < amount)
+                {
+                    _log4net.Info("Insufficient funds" + " | " + amount + " | " + nuban + " | " + validAccount + " | " + usableBalance + "-" + DateTime.Now);
 
-                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InsufficientBanlance, NUBAN = nuban, UsableBal = accountDetail.UsableBal };
-                //}
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InsufficientFunds, NUBAN = nuban, UsableBal = accountDetail.UsableBal };
+                }
                 accountDetail.ResponseCode = AppResponseCodes.Success;
                 return accountDetail;
             }

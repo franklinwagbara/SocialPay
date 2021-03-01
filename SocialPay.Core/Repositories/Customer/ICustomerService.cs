@@ -738,10 +738,17 @@ namespace SocialPay.Core.Repositories.Customer
                         await transaction.CommitAsync();
 
                         if (model.Message.Contains("Incorrect PIN"))
+                        {
+                            _log4net.Info("Transaction failed" + " | " + "Incorrect PIN" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.IncorrectTransactionPin, Data = "Incorrect Transaction Pin" };
+                        }
 
                         if (model.Message.Contains("Insufficient"))
+                        {
+                            _log4net.Info("Transaction failed" + " | " + "Insufficient" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InsufficientFunds, Data = "Insufficient Funds" };
+                        }
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
                     }
