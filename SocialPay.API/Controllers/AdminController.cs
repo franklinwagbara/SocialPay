@@ -266,7 +266,7 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (reference != "sterling0007")
+                if (reference != "sterling02107")
                     return BadRequest();
 
                 if (ModelState.IsValid)
@@ -290,37 +290,6 @@ namespace SocialPay.API.Controllers
         }
 
 
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("log-pay-with-specta-requests")]
-        public async Task<IActionResult> ValidatePaywithSpecta(string paymentReference, string transactionReference)
-        {
-            _log4net.Info("Tasks starts to log specta responset" + " | " + paymentReference + " | " + DateTime.Now);
-
-            var response = new WebApiResponse { };
-            try
-            {               
-
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _customerRepoService.ValidateSpectaResponse(paymentReference, transactionReference));
-                }
-
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
-
 
         [AllowAnonymous]
         [HttpPost]
@@ -332,7 +301,7 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (reference != "sterling002")
+                if (reference != "sterling193t02")
                     return BadRequest();
 
                 if (ModelState.IsValid)
@@ -395,7 +364,7 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (reference != "sterling004")
+                if (reference != "sterling02x04")
                     return BadRequest();
 
                 if (ModelState.IsValid)
@@ -428,7 +397,7 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (reference != "sterling0014")
+                if (reference != "sterling01p014")
                     return BadRequest();
 
                 if (ModelState.IsValid)
@@ -460,7 +429,7 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (reference != "sterling0f14")
+                if (reference != "sterling120f14")
                     return BadRequest();
 
                 if (ModelState.IsValid)
@@ -492,12 +461,42 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (reference != "sterling0v8g1")
+                if (reference != "sterling0k1v8g1")
                     return BadRequest();
 
                 if (ModelState.IsValid)
                 {
                     return Ok(await _merchantReportService.GetAllPaymentResponseLogs());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-default-merchant-wallet-logs")]
+        public async Task<IActionResult> GetDefaultWalletLogs([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "sterling0k818g1")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.GetAllDefaultWalletLogsAsync());
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));

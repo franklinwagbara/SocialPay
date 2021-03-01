@@ -287,6 +287,21 @@ namespace SocialPay.Core.Services.Report
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+
+        public async Task<WebApiResponse> GetAllDefaultWalletLogsAsync()
+        {
+            try
+            {
+                return new WebApiResponse { ResponseCode = "00", Data = await _context.DebitMerchantWalletTransferRequestLog.OrderByDescending(x => x.DateEntered).ToListAsync() };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
         public async Task<WebApiResponse> GetAllEscrowTransactions(long clientId, string status)
         {
             var result = new List<EscrowViewModel>();

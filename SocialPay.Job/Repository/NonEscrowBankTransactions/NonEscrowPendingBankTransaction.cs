@@ -152,6 +152,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 
                         else
                         {
+
                             var failedResponse = new FailedTransactions
                             {
                                 CustomerTransactionReference = item.CustomerTransactionReference,
