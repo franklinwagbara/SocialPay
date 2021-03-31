@@ -295,7 +295,8 @@ namespace SocialPay.Core.Services.Customer
                             encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{logCustomerInfo.Amount}{_appSettings.paymentCombination}{paymentRef}";
                             encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                             paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
-                            paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+                            paymentResponse.CustomerId = customerId; 
+                            paymentResponse.PaymentLink = paymentData;
                             _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                             return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
