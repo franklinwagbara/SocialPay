@@ -417,10 +417,14 @@ namespace SocialPay.Core.Services.Authentication
                 validateUser.LastDateModified = DateTime.Now;
                 _context.Update(validateUser);
                 await _context.SaveChangesAsync();
+
+                _log4net.Info($"{"Account was successfully unblocked. - "}{updateUserRequestDto.Email} {" - "}{DateTime.Now}");
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
+                _log4net.Error($"{"Error occured while trying to unblock user. - "}{updateUserRequestDto.Email} {" - "}{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
