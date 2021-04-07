@@ -201,7 +201,6 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-               
 
                 if (ModelState.IsValid)
                 {

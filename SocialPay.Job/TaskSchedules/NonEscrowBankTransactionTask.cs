@@ -41,6 +41,7 @@ namespace SocialPay.Job.TaskSchedules
 
             INonEscrowBankTransaction reportGenerator = scope.ServiceProvider.GetRequiredService<INonEscrowBankTransaction>();
             reportGenerator.GetPendingTransactions();
+           
             return Task.CompletedTask;
         }
     }

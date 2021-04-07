@@ -64,8 +64,10 @@ namespace SocialPay.Core.Repositories.UserService
                     ClientAuthenticationId = clientId, IsCompleted = false, Token = token,
                     LastDateModified = DateTime.Now,
                 };
+
                 await _context.AccountResetRequest.AddAsync(resetRequest);
                 await _context.SaveChangesAsync();
+
                 _log4net.Error("LogAccountReset request saved" + " | " + clientId + " | " + token + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }

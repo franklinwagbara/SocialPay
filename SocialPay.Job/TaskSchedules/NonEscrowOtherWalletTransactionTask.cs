@@ -38,6 +38,7 @@ namespace SocialPay.Job.TaskSchedules
 
             INonEscrowOtherWalletTransaction reportGenerator = scope.ServiceProvider.GetRequiredService<INonEscrowOtherWalletTransaction>();
             reportGenerator.GetPendingTransactions();
+            
             return Task.CompletedTask;
         }
     }

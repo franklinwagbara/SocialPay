@@ -71,14 +71,21 @@ namespace SocialPay.Core.Services.Account
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
                 var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
                 var encryptedPin = newPin.Encrypt(_appSettings.appKey);
+
                 if (await _context.PinRequest.AnyAsync(x => x.Pin == encryptedPin))
                 {
                     newPin = string.Empty;
                     newPin = Utilities.GeneratePin();
+
+                    encryptedPin = newPin.Encrypt(_appSettings.appKey);
                 }
+
                 byte[] passwordHash, passwordSalt;
+
                 var resetUrl = _appSettings.WebportalUrl + encryptedToken;
+
                 string urlPath = "<a href=\"" + resetUrl + "\">Click to confirm your sign up process</a>";
+
                 _utilities.CreatePasswordHash(signUpRequestDto.Password.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -138,6 +145,7 @@ namespace SocialPay.Core.Services.Account
 
                         await _context.PinRequest.AddAsync(pinRequestModel);
                         await _context.SaveChangesAsync();
+
                         var emailModal = new EmailRequestDto
                         {
                             Subject = "Merchant Signed Up",
@@ -145,6 +153,7 @@ namespace SocialPay.Core.Services.Account
                             // DestinationEmail = "festypat9@gmail.com",
                             //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
                         };
+
                         var mailBuilder = new StringBuilder();
                         mailBuilder.AppendLine("Dear" + " " + signUpRequestDto.Email + "," + "<br />");
                         mailBuilder.AppendLine("<br />");
@@ -155,8 +164,10 @@ namespace SocialPay.Core.Services.Account
                         emailModal.EmailBody = mailBuilder.ToString();
 
                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
                         if (sendMail != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+
                         await transaction.CommitAsync();
                         _log4net.Info("Initiating create merchant account was successful" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
 
@@ -365,7 +376,7 @@ namespace SocialPay.Core.Services.Account
 
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
-               
+
                 if (getUserInfo.MerchantBusinessInfo.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
 
@@ -388,12 +399,12 @@ namespace SocialPay.Core.Services.Account
                     filePath = Path.Combine(fileName, newFileName);
                 }
 
-                
+
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                       
+
 
                         var businessInfoModel = new MerchantBusinessInfo
                         {
@@ -406,7 +417,7 @@ namespace SocialPay.Core.Services.Account
                             Tin = model.Tin,
                             MerchantReferenceId = merchantId,
                             FileLocation = "MerchantLogo",
-                            Logo = newFileName, 
+                            Logo = newFileName,
                             HasSpectaMerchantID = string.IsNullOrEmpty(model.SpectaMerchantID) ? false : true,
                             SpectaMerchantID = string.IsNullOrEmpty(model.SpectaMerchantID) ? string.Empty : model.SpectaMerchantID,
                             SpectaMerchantKey = string.IsNullOrEmpty(model.SpectaMerchantKey) ? string.Empty : model.SpectaMerchantKey,
@@ -444,7 +455,7 @@ namespace SocialPay.Core.Services.Account
                         .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                         .SetSlidingExpiration(TimeSpan.FromMinutes(15));
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
-                        if(model.Logo == null)
+                        if (model.Logo == null)
                         {
                             await transaction.CommitAsync();
                             _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
@@ -480,7 +491,7 @@ namespace SocialPay.Core.Services.Account
             try
             {
                 //clientId = 18;
-                _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + clientId + " | "+ DateTime.Now);
+                _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + clientId + " | " + DateTime.Now);
 
 
                 ////if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
@@ -613,7 +624,7 @@ namespace SocialPay.Core.Services.Account
             try
             {
 
-               // clientId = 18;
+                // clientId = 18;
                 _log4net.Info("Initiating TransactionSetupRequest request" + " | " + model.ReceiveEmail + " | " + clientId + " | " + model.OutSideLagos + " | " + DateTime.Now);
 
                 var getUserInfo = await _context.ClientAuthentication
@@ -718,7 +729,7 @@ namespace SocialPay.Core.Services.Account
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                        _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -741,7 +752,7 @@ namespace SocialPay.Core.Services.Account
             {
                 _log4net.Info("Initiating name enquiry request" + " | " + DateTime.Now);
 
-              
+
                 var result = await _iBSReposervice.InitiateNameEnquiryTestService();
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
@@ -757,23 +768,107 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                _log4net.Info("Initiating GetListOfBanks request" + " | " +  DateTime.Now);
+                _log4net.Info("Initiating GetListOfBanks request" + " | " + DateTime.Now);
 
                 var nibsRequestModel = new IBSGetBanksRequestDto
                 {
                     ReferenceID = Guid.NewGuid().ToString(),
                     RequestType = _appSettings.getBanksRequestType
                 };
-               // var result = await _iBSReposervice.GetParticipatingBanks(nibsRequestModel);
+                // var result = await _iBSReposervice.GetParticipatingBanks(nibsRequestModel);
                 var result = await _iBSReposervice.GetBanks();
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetListOfBanks" + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "GetListOfBanks" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+        public async Task<WebApiResponse> ResendSignupEmailAsync(string email)
+        {
+            try
+            {
+                var validateRequest = await _context.ClientAuthentication
+                    .SingleOrDefaultAsync(x => x.Email == email && x.StatusCode == MerchantOnboardingProcess.CreateAccount);
+
+                if (validateRequest == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var token = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
+                var encryptedToken = token.Encrypt(_appSettings.appKey);
+                var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
+                var encryptedPin = newPin.Encrypt(_appSettings.appKey);
+
+                if (await _context.PinRequest.AnyAsync(x => x.Pin == encryptedPin))
+                {
+                    newPin = string.Empty;
+                    newPin = Utilities.GeneratePin();
+
+                    encryptedPin = newPin.Encrypt(_appSettings.appKey);
+                }
+
+                var resetUrl = _appSettings.WebportalUrl + encryptedToken;
+
+                string urlPath = "<a href=\"" + resetUrl + "\">Click to confirm your sign up process</a>";
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var validatepinrequest = await _context.PinRequest
+                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateRequest.ClientAuthenticationId);
+
+                        validatepinrequest.Pin = encryptedPin;
+                        _context.Update(validatepinrequest);
+                        await _context.SaveChangesAsync();
+
+                        var emailModal = new EmailRequestDto
+                        {
+                            Subject = "Merchant Signed Up",
+                            DestinationEmail = email,
+                            // DestinationEmail = "festypat9@gmail.com",
+                            //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                        };
+
+                        var mailBuilder = new StringBuilder();
+                        mailBuilder.AppendLine("Dear" + " " + email + "," + "<br />");
+                        mailBuilder.AppendLine("<br />");
+                        mailBuilder.AppendLine("You have successfully sign up. Please confirm your sign up by clicking the link below.<br />");
+                        mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
+                        // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                        mailBuilder.AppendLine("Best Regards,");
+                        emailModal.EmailBody = mailBuilder.ToString();
+
+                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                        if (sendMail != AppResponseCodes.Success)
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+
+                        await transaction.CommitAsync();
+                        _log4net.Info("Initiating create merchant account was successful" + " | " + email + " | " + DateTime.Now);
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+                    catch (Exception ex)
+                    {
+                        _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
+        }
+
     }
 }
