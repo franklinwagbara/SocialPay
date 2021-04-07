@@ -79,6 +79,7 @@ namespace SocialPay.Core.Services.Account
                 _log4net.Info("ResetGuestAccess" + " | " + email + " | " + DateTime.Now);
 
                 var getUser = await _userRepoService.GetClientAuthenticationAsync(email);
+
                 if (getUser == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
@@ -86,7 +87,9 @@ namespace SocialPay.Core.Services.Account
                 //    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 var token = Guid.NewGuid().ToString().Substring(0, 10);
+
                 var logRequest = await _userRepoService.LogAccountReset(getUser.ClientAuthenticationId, token);
+
                 if (logRequest.ResponseCode != AppResponseCodes.Success)
                     return logRequest;
 

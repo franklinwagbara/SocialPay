@@ -49,6 +49,7 @@ namespace SocialPay.Job.Repository.NonEscrowOtherWalletTransaction
 
                         if (getTransInfo == null)
                             return null;
+
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.ProcessingFinalWalletRequest;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);

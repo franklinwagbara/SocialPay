@@ -17,12 +17,13 @@ namespace SocialPay.Core.Services.IBS
 {
     public class IBSReposerviceJob
     {
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(IBSReposerviceJob));
+
         private readonly AppSettings _appSettings;
         public IBSReposerviceJob(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
         }
-
 
         public async Task<WebApiResponse> GetParticipatingBanks(IBSGetBanksRequestDto getBanksRequestModel)
         {
@@ -61,14 +62,15 @@ namespace SocialPay.Core.Services.IBS
         }
 
 
-
         public async Task<IBSNameEnquiryResponseDto> InitiateNameEnquiry(IBSNameEnquiryRequestDto iBSNameEnquiryRequestDto)
         {
+            _log4net.Info("Job Service" + "-" + "InitiateNameEnquiry" + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ReferenceID + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " + DateTime.Now);
 
             try
             {
                 var ibsService = new BSServicesSoapClient(BSServicesSoapClient.EndpointConfiguration.IBSServicesSoap, _appSettings.IBSserviceUrl);
-                string referenceId = Guid.NewGuid().ToString().Substring(10) + " " + Convert.ToString(DateTime.Now.Ticks);
+               
+                var referenceId = Guid.NewGuid().ToString().Substring(10) + " " + Convert.ToString(DateTime.Now.Ticks);
 
                 var nameEnquiryStringBuilder = new StringBuilder();
                 nameEnquiryStringBuilder.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -78,6 +80,7 @@ namespace SocialPay.Core.Services.IBS
                 nameEnquiryStringBuilder.Append("<ToAccount>" + iBSNameEnquiryRequestDto.ToAccount + "</ToAccount>");
                 nameEnquiryStringBuilder.Append("<DestinationBankCode>" + iBSNameEnquiryRequestDto.DestinationBankCode + "</DestinationBankCode>");
                 nameEnquiryStringBuilder.Append("</IBSRequest>");
+
                 var nameEnquiryStringRequest = nameEnquiryStringBuilder.ToString();
 
                 var en = new EncryptDecrypt();
@@ -86,14 +89,19 @@ namespace SocialPay.Core.Services.IBS
                 var encryptedDataRequest = await ibsService.IBSBridgeAsync(encryptRequest, Convert.ToInt32(_appSettings.appId));
 
                 var decryptResponse = en.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
+
                 var deserializeResponseObject = ObjectToXML(decryptResponse, typeof(IBSNameEnquiryResponseDto));
 
                 var serializeResponse = JsonConvert.SerializeObject(deserializeResponseObject);
+
                 var result = JsonConvert.DeserializeObject<IBSNameEnquiryResponseDto>(serializeResponse);
+
                 return result;
             }
             catch (Exception ex)
             {
+                _log4net.Error("An error occured. InitiateNameEnquiry service" + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new IBSNameEnquiryResponseDto { ResponseCode = AppResponseCodes.InternalError };
             }
         }

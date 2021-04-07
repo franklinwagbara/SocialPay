@@ -27,7 +27,6 @@ namespace SocialPay.Core.Services.Wallet
 
         }
 
-
         public async Task<WalletToWalletResponseDto> WalletToWalletTransferAsync(WalletTransferRequestDto model)
         {
             var apiResponse = new WalletToWalletResponseDto { };

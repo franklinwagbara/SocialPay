@@ -195,6 +195,24 @@ namespace SocialPay.API.Controllers
         }
 
 
+
+        [HttpGet]
+        [Route("resend-signup-email-verification")]
+        public async Task<IActionResult> ResendSignUpEmailVerification([FromQuery] string email)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                return Ok(await _merchantRegistrationService.ResendSignupEmailAsync(email));
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
         [HttpPost]
         [Route("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] PasswordResetDto model)

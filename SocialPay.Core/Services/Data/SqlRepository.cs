@@ -72,49 +72,52 @@ namespace SocialPay.Core.Services.Data
         {
             try
             {
+                _log4net.Info("Job Service" + "-" + "Task starts to InsertNipTransferRequest. NIp request was successfully inserted" + " | " + model.NESessionID + " | " + model.DestinationBankCode + " | " + model.AccountNumber + " | " + DateTime.Now);
+
 
                 //var getFeesAndVat = GetNIPFee(model.Amount);
                 //if (getFeesAndVat == null)
                 //    return new WebApiResponse { ResponseCode = AppResponseCodes.NipFeesCalculationFailed };
 
-                using (SqlConnection con = new SqlConnection(_appSettings.nipdbConnectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("FundsTransfer_InsertNIPTransaction", con))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
+                using SqlConnection con = new SqlConnection(_appSettings.nipdbConnectionString);
+                using SqlCommand cmd = new SqlCommand("FundsTransfer_InsertNIPTransaction", con);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                        cmd.Parameters.Add("@NESessionID", SqlDbType.Char).Value = model.NESessionID;
-                        cmd.Parameters.Add("@LedCodeVal", SqlDbType.VarChar).Value = model.LedCodeVal;
-                        cmd.Parameters.Add("@AccountLockID", SqlDbType.VarChar).Value = model.AccountLockID;
-                        cmd.Parameters.Add("@AccountName", SqlDbType.VarChar).Value = model.AccountName;
-                        cmd.Parameters.Add("@AccountNumber", SqlDbType.VarChar).Value = model.AccountNumber;
-                        cmd.Parameters.Add("@Amount", SqlDbType.Decimal).Value = model.Amount;
-                        cmd.Parameters.Add("@AppID", SqlDbType.Int).Value = model.AppID;
-                        cmd.Parameters.Add("@BeneficiaryBankVerificationNumber", SqlDbType.VarChar).Value = model.BeneficiaryBankVerificationNumber;
-                        cmd.Parameters.Add("@BeneficiaryKYCLevel", SqlDbType.VarChar).Value = model.BeneficiaryKYCLevel;
-                        cmd.Parameters.Add("@BraCodeVal", SqlDbType.VarChar).Value = model.BraCodeVal;
-                        cmd.Parameters.Add("@CurCodeVal", SqlDbType.VarChar).Value = model.CurCodeVal;
-                        cmd.Parameters.Add("@CusNumVal", SqlDbType.VarChar).Value = model.CusNumVal;
-                        cmd.Parameters.Add("@Fee", SqlDbType.Decimal).Value = model.Fee;
-                        cmd.Parameters.Add("@Vat", SqlDbType.Decimal).Value = model.Vat;
-                        cmd.Parameters.Add("@OrignatorName", SqlDbType.VarChar).Value = model.OrignatorName;
-                        cmd.Parameters.Add("@OriginatorAccountNumber", SqlDbType.VarChar).Value = model.OriginatorAccountNumber;
-                        cmd.Parameters.Add("@OriginatorBankVerificationNumber", SqlDbType.VarChar).Value = model.OriginatorBankVerificationNumber;
-                        cmd.Parameters.Add("@PaymentRef", SqlDbType.VarChar).Value = model.PaymentRef;
-                        cmd.Parameters.Add("@OriginatorKYCLevel", SqlDbType.VarChar).Value = model.OriginatorKYCLevel;
-                        cmd.Parameters.Add("@SubAcctVal", SqlDbType.VarChar).Value = model.SubAcctVal;
-                        cmd.Parameters.Add("@DestinationBankCode", SqlDbType.VarChar).Value = model.DestinationBankCode;
-                        cmd.Parameters.Add("@ChannelCode", SqlDbType.TinyInt).Value = model.ChannelCode;
-                        await con.OpenAsync();
-                        await cmd.ExecuteNonQueryAsync();
-                        await con.CloseAsync();
+                cmd.Parameters.Add("@NESessionID", SqlDbType.Char).Value = model.NESessionID;
+                cmd.Parameters.Add("@LedCodeVal", SqlDbType.VarChar).Value = model.LedCodeVal;
+                cmd.Parameters.Add("@AccountLockID", SqlDbType.VarChar).Value = model.AccountLockID;
+                cmd.Parameters.Add("@AccountName", SqlDbType.VarChar).Value = model.AccountName;
+                cmd.Parameters.Add("@AccountNumber", SqlDbType.VarChar).Value = model.AccountNumber;
+                cmd.Parameters.Add("@Amount", SqlDbType.Decimal).Value = model.Amount;
+                cmd.Parameters.Add("@AppID", SqlDbType.Int).Value = model.AppID;
+                cmd.Parameters.Add("@BeneficiaryBankVerificationNumber", SqlDbType.VarChar).Value = model.BeneficiaryBankVerificationNumber;
+                cmd.Parameters.Add("@BeneficiaryKYCLevel", SqlDbType.VarChar).Value = model.BeneficiaryKYCLevel;
+                cmd.Parameters.Add("@BraCodeVal", SqlDbType.VarChar).Value = model.BraCodeVal;
+                cmd.Parameters.Add("@CurCodeVal", SqlDbType.VarChar).Value = model.CurCodeVal;
+                cmd.Parameters.Add("@CusNumVal", SqlDbType.VarChar).Value = model.CusNumVal;
+                cmd.Parameters.Add("@Fee", SqlDbType.Decimal).Value = model.Fee;
+                cmd.Parameters.Add("@Vat", SqlDbType.Decimal).Value = model.Vat;
+                cmd.Parameters.Add("@OrignatorName", SqlDbType.VarChar).Value = model.OrignatorName;
+                cmd.Parameters.Add("@OriginatorAccountNumber", SqlDbType.VarChar).Value = model.OriginatorAccountNumber;
+                cmd.Parameters.Add("@OriginatorBankVerificationNumber", SqlDbType.VarChar).Value = model.OriginatorBankVerificationNumber;
+                cmd.Parameters.Add("@PaymentRef", SqlDbType.VarChar).Value = model.PaymentRef;
+                cmd.Parameters.Add("@OriginatorKYCLevel", SqlDbType.VarChar).Value = model.OriginatorKYCLevel;
+                cmd.Parameters.Add("@SubAcctVal", SqlDbType.VarChar).Value = model.SubAcctVal;
+                cmd.Parameters.Add("@DestinationBankCode", SqlDbType.VarChar).Value = model.DestinationBankCode;
+                cmd.Parameters.Add("@ChannelCode", SqlDbType.TinyInt).Value = model.ChannelCode;
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
-                    }
-                }
+                await con.OpenAsync();
+                await cmd.ExecuteNonQueryAsync();
+                await con.CloseAsync();
+
+                _log4net.Info("Job Service" + "-" + "InsertNipTransferRequest. NIp request was successfully inserted" + " | " + model.NESessionID + " | " + model.DestinationBankCode + " | " + model.AccountNumber + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
+                _log4net.Error("Job Service" + "-" + "InsertNipTransferRequest. Error occured" + " | " + model.NESessionID + " | " + model.DestinationBankCode + " | " + model.AccountNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
