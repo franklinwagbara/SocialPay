@@ -25,11 +25,10 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
         {
             try
             {
-                _log4net.Info("Job Service" + "-" + "to fetch awaiting transactions for NonEscrowWalletTransaction" + " | " + DateTime.Now);
+                _log4net.Info("Job Service" + "-" + "to fetch awaiting transactions for Non Escrow Card Wallet Transaction" + " | " + DateTime.Now);
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    DateTime nextDay = DateTime.Now.Date.AddDays(1);
 
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
@@ -39,7 +38,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
-                     _log4net.Info("Job Service: NonEscrowWalletTransaction. Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                     _log4net.Info("Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                   
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
@@ -53,7 +52,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
             }
             catch (Exception ex)
             {
-                 _log4net.Error("Job Service. NonEscrowWalletTransaction" + "Error occured" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                 _log4net.Error("Job Service. Non Escrow Card Wallet Transaction" + "Error occured" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return "Error";
             }
 

@@ -41,7 +41,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
-                        _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                        _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
@@ -49,6 +49,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
 
                         if (getTransInfo == null)
                             return null;
+
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.ProcessingFinalWalletRequest;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
@@ -94,6 +95,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                         await context.SaveChangesAsync();
 
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
+
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {
                             using (var transaction = await context.Database.BeginTransactionAsync())
@@ -119,7 +121,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                                     await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
 
-                                    _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                                    _log4net.Info("Job Service" + "-" + "NonEscrowCardWalletPendingTransaction successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                                     return null;
                                 }
