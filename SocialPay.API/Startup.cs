@@ -191,35 +191,39 @@ namespace SocialPay.API
             ////////    c.CronExpression = options.AcceptedWalletOrderTask;
             ////////});
 
-            //services.AddCronJob<CardPaymentTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.CardPaymentTask;
-            //});
+            ///Main jobs starts
 
-            //services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            //});
+            services.AddCronJob<CardPaymentTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CardPaymentTask;
+            });
 
-            ////services.AddCronJob<NonEscrowBankTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowBankTransactionTask;
-            ////});
+            services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            });
 
-            //services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
-            //});
+            services.AddCronJob<NonEscrowBankTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowBankTransactionTask;
+            });
 
-            //services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.NonEscrowWalletTransactionTask;
-            //});
+            services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
+            });
+
+            services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowWalletTransactionTask;
+            });
+
+            ///Main jobs ends
 
             ////////services.AddCronJob<DeclinedEscrowWalletTask>(c =>
             ////////{

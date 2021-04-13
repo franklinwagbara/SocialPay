@@ -30,13 +30,16 @@ namespace SocialPay.Core.Services.Wallet
         public async Task<WalletToWalletResponseDto> WalletToWalletTransferAsync(WalletTransferRequestDto model)
         {
             var apiResponse = new WalletToWalletResponseDto { };
+
             _log4net.Info("Job Service" + "-" + "WalletToWalletTransferAsync" + " | " + model.toacct + " | " + model.paymentRef + " | " + model.frmacct + " | "+ model.amt + " | "+ DateTime.Now);
 
             try
             {
                 var request = JsonConvert.SerializeObject(model);
+
                 var response = await _client.PostAsync($"{_appSettings.walletExtensionUrl}{_appSettings.walletTowalletUrl}",
                   new StringContent(request, Encoding.UTF8, "application/json"));
+
                 var result = await response.Content.ReadAsStringAsync();
                 _log4net.Info("Job Service" + "-" + "WalletToWalletTransferAsync response" + " | " + result + " | "+ model.toacct + " | " + model.paymentRef + " | " + model.frmacct + " | " + model.amt + " | " + DateTime.Now);
 
@@ -44,10 +47,13 @@ namespace SocialPay.Core.Services.Wallet
                 {
                     apiResponse = JsonConvert.DeserializeObject<WalletToWalletResponseDto>(result);
                     apiResponse.responsedata = result;
+
                     return apiResponse;
                 }
+
                 apiResponse.response = AppResponseCodes.Failed;
                 apiResponse.responsedata = result;
+
                 return apiResponse;
             }
             catch (Exception ex)
