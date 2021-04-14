@@ -35,13 +35,14 @@ namespace SocialPay.Job.Repository.Fiorano
            string transactionRef, string creditAccountNo, string channel,
            string message, string paymentReference)
         {
-            _log4net.Info("Job Service" + "-" + "InititiateMerchantCredit fiorano request" + " | " + transactionRef + " | " + paymentReference + " | " + creditAccountNo + " | "+ debitAmount + " | "+ DateTime.Now);
+            _log4net.Info("Job Service" + "-" + "Inititiate Merchant Credit fiorano request" + " | " + transactionRef + " | " + paymentReference + " | " + creditAccountNo + " | "+ debitAmount + " | "+ DateTime.Now);
 
             try
             {
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+
                     var fioranoRequestBody = new FTRequest
                     {
                         SessionId = Guid.NewGuid().ToString(),
@@ -60,6 +61,7 @@ namespace SocialPay.Job.Repository.Fiorano
 
                    
                     var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
+
                     var jsonRequest = JsonConvert.SerializeObject(request);
 
                     var logRequest = new NonEscrowFioranoT24Request
@@ -104,12 +106,14 @@ namespace SocialPay.Job.Repository.Fiorano
                     };
 
                     await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
+
                     await context.SaveChangesAsync();
 
                     if (postTransaction.ResponseCode == AppResponseCodes.Success)
                     {
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed, Message = logFioranoResponse.ResponseText };
                 }
 

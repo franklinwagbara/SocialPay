@@ -1,9 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SocialPay.Helper.Validator;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SocialPay.Helper.Dto.Request
 {
+
+
+    public class TestVideoDto
+    {
+        public int Amount { get; set; }
+        public virtual IList<string> AllowedCountries { get; set; } = new List<string>();
+    }
     public class CustomerRequestDto
     {
         public string TransactionReference { get; set; }

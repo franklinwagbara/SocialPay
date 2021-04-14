@@ -39,6 +39,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+
                     foreach (var item in pendingRequest)
                     {
                         _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
@@ -53,6 +54,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.ProcessingFinalWalletRequest;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
+
                         await context.SaveChangesAsync();
 
                         transactionLogid = getTransInfo.TransactionLogId;
@@ -92,6 +94,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                         };
 
                         await context.DebitMerchantWalletTransferRequestLog.AddAsync(walletRequestModel);
+
                         await context.SaveChangesAsync();
 
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);

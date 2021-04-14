@@ -49,7 +49,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
-                        _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                        _log4net.Info("Job Service" + "-" + "Non Escrow Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                         var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
 
@@ -99,6 +99,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                     getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     context.Update(getTransInfo);
+
                                     await context.SaveChangesAsync();
                                     _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
@@ -108,6 +109,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                 getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
+
                                 await context.SaveChangesAsync();
 
                                 var failedTransaction = new FailedTransactions
@@ -116,6 +118,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                     Message = initiateRequest.Message,
                                     TransactionReference = item.TransactionReference
                                 };
+
                                 await context.FailedTransactions.AddAsync(failedTransaction);
                                 await context.SaveChangesAsync();
 
@@ -140,6 +143,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                 getTransInfo.LastDateModified = DateTime.Now;
                                 context.Update(getTransInfo);
                                 await context.SaveChangesAsync();
+
                                 return null;
                             }
 
@@ -149,6 +153,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                 Message = initiateInterBankRequest.Data.ToString(),
                                 TransactionReference = item.TransactionReference
                             };
+
                             await context.FailedTransactions.AddAsync(failedResponse);
                             await context.SaveChangesAsync();
                             _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response failed" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);

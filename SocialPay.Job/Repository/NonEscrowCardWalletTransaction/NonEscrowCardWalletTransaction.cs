@@ -34,7 +34,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                         .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FioranoFirstFundingCompleted
                          && x.PaymentChannel == PaymentChannel.Card
                         //|| x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
-                        ).ToListAsync();
+                        ).Take(1).ToListAsync();
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
