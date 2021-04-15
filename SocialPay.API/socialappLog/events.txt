@@ -1556,3 +1556,26 @@ INFO  2021-04-15 08:00:38,989 166407ms antRegistrationService ?                 
 INFO  2021-04-15 08:04:34,361 401779ms antRegistrationService ?                  - Initiating create merchant account was successful | debbievalour@gmail.com | 4/15/2021 8:04:34 AM
 INFO  2021-04-15 08:05:02,384 429802ms antRegistrationService ?                  - Initiating confirm signup | 957195 | 4/15/2021 8:05:01 AM
 INFO  2021-04-15 08:06:01,391 488809ms antRegistrationService ?                  - Initiating confirm signup was successful | 957195 | 4/15/2021 8:06:01 AM
+INFO  2021-04-15 10:03:51,607 250283ms antRegistrationService ?                  - Initiating create merchant account was successful | esther.nwowo@sterling.ng | 4/15/2021 10:03:51 AM
+INFO  2021-04-15 10:36:44,965 2223640ms antRegistrationService ?                  - Initiating create merchant account was successful | esther.nwowo@sterling.ng | 4/15/2021 10:36:44 AM
+INFO  2021-04-15 10:38:37,187 2335863ms antRegistrationService ?                  - Initiating confirm signup | 524364 | 4/15/2021 10:38:36 AM
+INFO  2021-04-15 10:39:12,018 2370694ms antRegistrationService ?                  - Initiating confirm signup was successful | 524364 | 4/15/2021 10:39:12 AM
+INFO  2021-04-15 20:24:00,438 140472ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 4/15/2021 8:24:00 PM
+INFO  2021-04-15 20:24:02,481 142515ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 4/15/2021 8:24:02 PM
+INFO  2021-04-15 20:26:00,140 260174ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 4/15/2021 8:26:00 PM
+INFO  2021-04-15 20:26:00,719 260753ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 4/15/2021 8:26:00 PM
+INFO  2021-04-15 20:30:00,186 42963ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 4/15/2021 8:30:00 PM
+INFO  2021-04-15 20:30:01,217 43993ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 4/15/2021 8:30:01 PM
+INFO  2021-04-15 20:31:00,013 102789ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 4/15/2021 8:31:00 PM
+INFO  2021-04-15 20:31:00,304 103080ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 4/15/2021 8:31:00 PM
+INFO  2021-04-15 20:34:05,427 56558ms sMerchantWalletService ?                  - Job Service-to fetch awaiting transactions for Non Escrow Card Wallet Transaction | 4/15/2021 8:34:05 PM
+INFO  2021-04-15 20:34:12,380 63512ms sMerchantWalletService ?                  - Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions | 0 | 4/15/2021 8:34:12 PM
+INFO  2021-04-15 20:42:04,880 82267ms sMerchantWalletService ?                  - Job Service-to fetch awaiting transactions for Non Escrow Card Wallet Transaction | 4/15/2021 8:42:04 PM
+INFO  2021-04-15 20:42:06,813 84199ms sMerchantWalletService ?                  - Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions | 1 | 4/15/2021 8:42:06 PM
+INFO  2021-04-15 20:46:03,823 69842ms sMerchantWalletService ?                  - Job Service-to fetch awaiting transactions for Non Escrow Card Wallet Transaction | 4/15/2021 8:46:03 PM
+INFO  2021-04-15 20:46:06,358 72376ms sMerchantWalletService ?                  - Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions | 1 | 4/15/2021 8:46:06 PM
+INFO  2021-04-15 20:46:15,749 81767ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet | c2e0ec55-ac6d-4295-9508-68d145c7dab7 | 4cbc4b1f015a46e29708f5faab72657f | 4/15/2021 8:46:15 PM
+INFO  2021-04-15 20:46:34,951 100969ms hantWalletTransactions ?                  - Job Service-ProcessMerchantWalletTransactions merchant wallet request was successfully logged | c2e0ec55-ac6d-4295-9508-68d145c7dab7 | 4cbc4b1f015a46e29708f5faab72657f | 4/15/2021 8:46:34 PM
+INFO  2021-04-15 20:46:36,675 102693ms WalletRepoJobService   ?                  - Job Service-Wallet To Wallet TransferAsync | 08032094353 | So-Pay-4e86b640-4edf-4652-b4a | 0000000002 | 500.00 | 4/15/2021 8:46:36 PM
+INFO  2021-04-15 20:46:42,383 108402ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | {"message":"Successfully Paid","response":"00","responsedata":null,"data":{"sent":true}} | 08032094353 | So-Pay-4e86b640-4edf-4652-b4a | 0000000002 | 500.00 | 4/15/2021 8:46:42 PM
+INFO  2021-04-15 20:47:04,172 130191ms hantWalletTransactions ?                  - Job Service-Non Escrow Card Wallet Pending Transaction successfully updated | c2e0ec55-ac6d-4295-9508-68d145c7dab7 | 4cbc4b1f015a46e29708f5faab72657f | 4/15/2021 8:47:03 PM

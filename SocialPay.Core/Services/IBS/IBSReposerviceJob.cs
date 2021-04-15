@@ -92,10 +92,15 @@ namespace SocialPay.Core.Services.IBS
 
                 var deserializeResponseObject = ObjectToXML(decryptResponse, typeof(IBSNameEnquiryResponseDto));
 
+                _log4net.Info("Job Service" + "-" + "InitiateNameEnquiry deserializeResponseObject Response" + " | " + deserializeResponseObject + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " - " + iBSNameEnquiryRequestDto.ReferenceID + " - " + DateTime.Now);
+
+
                 var serializeResponse = JsonConvert.SerializeObject(deserializeResponseObject);
 
                 var result = JsonConvert.DeserializeObject<IBSNameEnquiryResponseDto>(serializeResponse);
 
+                _log4net.Info("Job Service" + "-" + "InitiateNameEnquiry Response" + " | " + result + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " - " + iBSNameEnquiryRequestDto.ReferenceID + " - " + DateTime.Now);
+               
                 return result;
             }
             catch (Exception ex)
