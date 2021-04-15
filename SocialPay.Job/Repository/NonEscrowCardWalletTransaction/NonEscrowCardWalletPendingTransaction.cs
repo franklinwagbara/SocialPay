@@ -63,7 +63,11 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
 
                         if (getWalletInfo == null)
+                        {
+                            _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction wallet info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                             return null;
+                        }
 
                         var walletModel = new WalletTransferRequestDto
                         {
@@ -122,8 +126,10 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
+
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
                                     await context.SaveChangesAsync();
+
                                     await transaction.CommitAsync();
 
                                     _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction successfully updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);

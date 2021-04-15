@@ -38,6 +38,7 @@ namespace SocialPay.Job.TaskSchedules
 
             IPayWithCardTransaction reportGenerator = scope.ServiceProvider.GetRequiredService<IPayWithCardTransaction>();
             reportGenerator.GetPendingTransactions();
+
             return Task.CompletedTask;
         }
     }

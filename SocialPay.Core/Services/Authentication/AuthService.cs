@@ -94,6 +94,7 @@ namespace SocialPay.Core.Services.Authentication
                 var key = Encoding.ASCII.GetBytes(_appSettings.SecretKey);
                 var tokenDescriptor = new SecurityTokenDescriptor();
                 var tokenHandler = new JwtSecurityTokenHandler();
+
                 if (validateuserInfo.RoleName == "Super Administrator")
                 {
                     _log4net.Info("Authenticate for super admin" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
@@ -101,6 +102,7 @@ namespace SocialPay.Core.Services.Authentication
                     var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
                     if(validateUserAD.ResponseCode != AppResponseCodes.Success)
                     return validateUserAD;
+
                     tokenDescriptor = new SecurityTokenDescriptor
                     {
                      Subject = new ClaimsIdentity(new Claim[]
@@ -176,6 +178,7 @@ namespace SocialPay.Core.Services.Authentication
                 validateuserInfo.IsLocked = false;
                 _context.ClientAuthentication.Update(validateuserInfo);
                 await _context.SaveChangesAsync();
+
                 if (validateuserInfo.RoleName == "Guest")
                 {
                     tokenDescriptor = new SecurityTokenDescriptor
@@ -223,6 +226,7 @@ namespace SocialPay.Core.Services.Authentication
 
                 double availableWalletBalance = 0;
                 var getwalletInfo = await _walletRepoService.GetWalletDetailsAsync(validateuserInfo.PhoneNumber);
+
                 if(getwalletInfo != null)
                 {
                     availableWalletBalance = getwalletInfo.Data == null ? 0 : getwalletInfo.Data.Availablebalance;
@@ -243,11 +247,14 @@ namespace SocialPay.Core.Services.Authentication
                     Expires = DateTime.UtcNow.AddDays(1),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
+
                 cacheKey = Convert.ToString(validateuserInfo.ClientAuthenticationId);
                 userInfo.Email = validateuserInfo.Email;
                 userInfo.StatusCode = validateuserInfo.StatusCode;
                 string serializedCustomerList = string.Empty;
+
                 var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+
                 if(redisCustomerList == null)
                 {
                     await _distributedCache.RemoveAsync(cacheKey);
@@ -256,6 +263,7 @@ namespace SocialPay.Core.Services.Authentication
                     var options = new DistributedCacheEntryOptions()
                     .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
                     .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+
                     await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
                 }
                 

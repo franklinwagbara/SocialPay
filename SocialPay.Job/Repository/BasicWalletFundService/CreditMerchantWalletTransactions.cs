@@ -63,7 +63,11 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
                        
                         if (getWalletInfo == null)
+                        {
+                            _log4net.Info("Job Service" + "-" + "Credit merchant wallet. Bank info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                             return null;
+                        }
 
                         var walletModel = new WalletTransferRequestDto
                         {
