@@ -96,7 +96,10 @@ namespace SocialPay.Job.Repository.NonEscrowOtherWalletTransaction
 
                         await context.SaveChangesAsync();
 
+                        _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction for DebitMerchantWalletTransferRequestLog request was successfully logged" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
+
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {
                             using (var transaction = await context.Database.BeginTransactionAsync())
@@ -118,8 +121,10 @@ namespace SocialPay.Job.Repository.NonEscrowOtherWalletTransaction
                                     getTransInfo.LastDateModified = DateTime.Now;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
+
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
                                     await context.SaveChangesAsync();
+
                                     await transaction.CommitAsync();
 
                                     _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
@@ -136,22 +141,26 @@ namespace SocialPay.Job.Repository.NonEscrowOtherWalletTransaction
                             }
                         }
 
+                        _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction request was Failed" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var failedResponse = new FailedTransactions
                         {
                             CustomerTransactionReference = item.CustomerTransactionReference,
                             Message = initiateRequest.message,
                             TransactionReference = item.TransactionReference
                         };
+
                         await context.FailedTransactions.AddAsync(failedResponse);
                         await context.SaveChangesAsync();
                     }
+
                     return null;
                 }
 
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Job Service" + "-" + "Error occured. NonEscrowWalletPendingTransaction" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;

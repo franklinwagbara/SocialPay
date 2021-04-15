@@ -39,6 +39,7 @@ namespace SocialPay.Job.TaskSchedules
 
             ICreditMerchantWalletService reportGenerator = scope.ServiceProvider.GetRequiredService<ICreditMerchantWalletService>();
             reportGenerator.GetPendingTransactions();
+
             return Task.CompletedTask;
         }
     }

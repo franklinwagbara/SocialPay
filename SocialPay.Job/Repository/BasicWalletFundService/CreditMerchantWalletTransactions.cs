@@ -54,6 +54,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         getTransInfo.OrderStatus = TransactionJourneyStatusCodes.WalletFundingProgress;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
+
                         await context.SaveChangesAsync();
 
                         transactionLogid = getTransInfo.TransactionLogId;
@@ -96,7 +97,10 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         await context.DefaultWalletTransferRequestLog.AddAsync(walletRequestModel);
                         await context.SaveChangesAsync();
 
+                        _log4net.Info("Job Service" + "-" + "DefaultWalletTransferRequestLog merchant wallet request was successfully logged" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
+
                         if (initiateRequest.response == AppResponseCodes.Success)
                         {
                             using(var transaction = await context.Database.BeginTransactionAsync())
@@ -129,10 +133,13 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                     getTransInfo.WalletFundDate = DateTime.Now;
                                     context.Update(getTransInfo);
                                     await context.SaveChangesAsync();
+
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
                                     await context.SaveChangesAsync();
+
                                     await transaction.CommitAsync();
-                                    _log4net.Info("Job Service" + "-" + "Credit merchant wallet saved" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
+                                    _log4net.Info("Job Service" + "-" + "Credit merchant wallet saved and updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                                 }
                                 catch (Exception ex)
@@ -150,6 +157,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             Message = initiateRequest.message,
                             TransactionReference = item.TransactionReference
                         };
+
                         await context.FailedTransactions.AddAsync(failedResponse);
                         await context.SaveChangesAsync();
                     }

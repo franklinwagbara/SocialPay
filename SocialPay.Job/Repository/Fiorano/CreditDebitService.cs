@@ -29,26 +29,33 @@ namespace SocialPay.Job.Repository.Fiorano
         {
             try
             {
-                _log4net.Info("Job Service: InitiateTransaction" + " | " + jsonRequest + " | " + DateTime.Now);
+                _log4net.Info("Job Service: Initiate Fiorano transfer service" + " | " + jsonRequest + " | " + DateTime.Now);
 
                 var response = await _client.PostAsync(_appSettings.fioranoFundsTransferUrl,
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
+
                 var result = await response.Content.ReadAsStringAsync();
+
                 _log4net.Info("Job Service: InitiateTransaction response" + " | " + result + " | " + DateTime.Now);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var responseBody = JsonConvert.DeserializeObject<FTResponseDto>(result);
+
                     if(responseBody.FTResponse.ResponseCode != AppResponseCodes.Success)
                     {
                         responseBody.Message = result;
                         responseBody.ResponseCode = AppResponseCodes.TransactionFailed;
+
                         return responseBody;
                     }
+
                     responseBody.Message = result;
                     responseBody.ResponseCode = AppResponseCodes.Success;
+
                     return responseBody;
                 }
+
                 return new FTResponseDto { ResponseCode = AppResponseCodes.FiranoDebitError, Message = result };
             }
             catch (Exception ex)

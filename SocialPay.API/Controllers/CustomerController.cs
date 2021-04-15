@@ -86,6 +86,28 @@ namespace SocialPay.API.Controllers
             }
         }
 
+
+
+
+        [HttpPost]
+        [Route("initiate-test")]
+        public async Task<IActionResult> Test([FromBody] TestVideoDto model)
+        {
+            var response = new WebApiResponse { };
+
+            try
+            {
+                return Ok(model);             
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
         [HttpPost]
         [Route("payment-confirmation")]
         public async Task<IActionResult> ValidatePayment([FromBody] PaymentValidationRequestDto model)

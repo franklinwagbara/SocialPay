@@ -822,7 +822,10 @@ namespace SocialPay.Core.Services.Account
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateRequest.ClientAuthenticationId);
 
                         validatepinrequest.Pin = encryptedPin;
+                        validatepinrequest.TokenSecret = encryptedToken;
+                        validatepinrequest.LastDateModified = DateTime.Now;
                         _context.Update(validatepinrequest);
+
                         await _context.SaveChangesAsync();
 
                         var emailModal = new EmailRequestDto
