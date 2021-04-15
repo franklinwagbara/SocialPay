@@ -62,7 +62,11 @@ namespace SocialPay.Job.Repository.NonEscrowOtherWalletTransaction
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
 
                         if (getWalletInfo == null)
+                        {
+                            _log4net.Info("Job Service" + "-" + "NonEscrowWalletPendingTransaction Transaction wallet info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                             return null;
+                        }
 
                         var walletModel = new WalletTransferRequestDto
                         {
