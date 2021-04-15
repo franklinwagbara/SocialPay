@@ -34,7 +34,7 @@ namespace SocialPay.Job.Repository.NonEscrowOtherWalletTransaction
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
                          && x.PaymentChannel != PaymentChannel.Card
-                        ).ToListAsync();
+                        ).Take(1).ToListAsync();
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();

@@ -46,6 +46,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
+                        _log4net.Info("Job Service" + "-" + "Tasks starts to initiate name enquiry request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                         var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialPayNominatedAccountNo, item.TotalAmount);
 
@@ -70,6 +71,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                             var getWalletInfo = await context.MerchantWallet
                                 .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+
                             if (getWalletInfo == null)
                                 return null;
 
@@ -119,8 +121,11 @@ namespace SocialPay.Job.Repository.PayWithCard
                                 Message = "Card payment transaction",
                                 PaymentReference = item.PaymentReference
                             };
+
                             await context.FioranoT24CardCreditRequest.AddAsync(logRequest);
                             await context.SaveChangesAsync();
+
+                            _log4net.Info("Job Service" + "-" + "FioranoT24CardCreditRequest request was successfully logged" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                             var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
 
@@ -152,6 +157,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                                         await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
                                         await context.SaveChangesAsync();
                                         await transaction.CommitAsync();
+
+                                        _log4net.Info("Job Service" + "-" + "PendingPayWithCardTransaction request was successfully updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                                         return null;
                                     }
@@ -207,6 +214,8 @@ namespace SocialPay.Job.Repository.PayWithCard
             }
             catch (SqlException db)
             {
+                _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionLogid +  " | " + db.Message + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 

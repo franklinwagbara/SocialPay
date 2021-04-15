@@ -35,6 +35,7 @@ namespace SocialPay.Job.Repository.Fiorano
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
 
                 var result = await response.Content.ReadAsStringAsync();
+
                 _log4net.Info("Job Service: InitiateTransaction response" + " | " + result + " | " + DateTime.Now);
 
                 if (response.IsSuccessStatusCode)

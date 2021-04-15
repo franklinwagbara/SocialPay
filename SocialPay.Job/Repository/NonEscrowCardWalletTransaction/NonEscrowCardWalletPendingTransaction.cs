@@ -97,6 +97,8 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
 
                         await context.SaveChangesAsync();
 
+                        _log4net.Info("Job Service" + "-" + "Saved default wallet details. Trying  to log wallet transfer" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
 
                         if (initiateRequest.response == AppResponseCodes.Success)
@@ -124,7 +126,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                                     await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
 
-                                    _log4net.Info("Job Service" + "-" + "NonEscrowCardWalletPendingTransaction successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                                    _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction successfully updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
                                     return null;
                                 }
@@ -137,6 +139,9 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                                 }
                             }
                         }
+
+                        _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction Failed" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
 
                         var failedResponse = new FailedTransactions
                         {

@@ -509,5 +509,123 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-merchant-bank-info")]
+        public async Task<IActionResult> GetMerchantBankInfo([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "sterling2v@m11")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.GetMerchantBankInfoAsync());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-merchant-business-info")]
+        public async Task<IActionResult> GetMerchantBusinessInfo([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "sterling2vxytq@k1")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.GetMerchantBusinessInfoAsync());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-Customer-OtherPayment")]
+        public async Task<IActionResult> GetCustomerOtherPayment([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "sterling2rk11")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.GetCustomerOtherTransactionInfo());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-admin-transactions-default")]
+        public async Task<IActionResult> GetCustomerTransactionsAdmin([FromQuery] string category, string reference)
+        {
+            // _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
+            if (reference != "sterling3j80sa11")
+                return BadRequest();
+
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _transactionService.GetCustomerOrders(category));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                // _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
     }
 }

@@ -1544,3 +1544,15 @@ INFO  2021-04-06 21:56:59,474 273312ms SqlRepository          ?                 
 INFO  2021-04-06 21:57:04,211 278050ms SqlRepository          ?                  - Job Service-Task starts to InsertNipTransferRequest. NIp request was successfully inserted | 999232210406215650150552462152 | 000014 | 0025998012 | 4/6/2021 9:57:04 PM
 INFO  2021-04-06 21:57:05,357 279196ms SqlRepository          ?                  - Job Service-InsertNipTransferRequest. NIp request was successfully inserted | 999232210406215650150552462152 | 000014 | 0025998012 | 4/6/2021 9:57:05 PM
 INFO  2021-04-06 21:57:05,358 279197ms PendingBankTransaction ?                  - Job Service-NonEscrowPendingBankTransaction inter bank response | 00 | SP-99439dd1-36bf-40df-9c5d-58b169fef9b2 | 899cc2e82b6342908e8a91d04fa1a638 | 4/6/2021 9:57:05 PM
+INFO  2021-04-15 07:36:37,356 217807ms AccountsController     ?                  - Tasks starts to create account | debbievalour@gmail.com | 4/15/2021 7:36:37 AM
+INFO  2021-04-15 07:36:41,464 221915ms antRegistrationService ?                  - Initiating create merchant account | debbievalour@gmail.com | 4/15/2021 7:36:41 AM
+INFO  2021-04-15 07:37:34,423 274874ms antRegistrationService ?                  - Initiating create merchant account was successful | debbievalour@gmail.com | 4/15/2021 7:37:34 AM
+INFO  2021-04-15 07:44:21,177 681629ms antRegistrationService ?                  - Initiating create merchant account was successful | debbievalour@gmail.com | 4/15/2021 7:44:21 AM
+INFO  2021-04-15 07:46:10,286 790737ms antRegistrationService ?                  - Initiating create merchant account was successful | debbievalour@gmail.com | 4/15/2021 7:46:10 AM
+INFO  2021-04-15 07:47:23,003 863454ms antRegistrationService ?                  - Initiating confirm signup | 269144 | 4/15/2021 7:47:22 AM
+INFO  2021-04-15 07:54:19,870 181170ms antRegistrationService ?                  - Initiating create merchant account was successful | debbievalour@gmail.com | 4/15/2021 7:54:19 AM
+INFO  2021-04-15 07:55:09,893 231194ms antRegistrationService ?                  - Initiating confirm signup | 511199 | 4/15/2021 7:55:09 AM
+INFO  2021-04-15 08:00:38,989 166407ms antRegistrationService ?                  - Initiating create merchant account was successful | debbievalour@gmail.com | 4/15/2021 8:00:38 AM
+INFO  2021-04-15 08:04:34,361 401779ms antRegistrationService ?                  - Initiating create merchant account was successful | debbievalour@gmail.com | 4/15/2021 8:04:34 AM
+INFO  2021-04-15 08:05:02,384 429802ms antRegistrationService ?                  - Initiating confirm signup | 957195 | 4/15/2021 8:05:01 AM
+INFO  2021-04-15 08:06:01,391 488809ms antRegistrationService ?                  - Initiating confirm signup was successful | 957195 | 4/15/2021 8:06:01 AM

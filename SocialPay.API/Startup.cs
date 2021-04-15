@@ -192,6 +192,7 @@ namespace SocialPay.API
             ////////});
 
             ///Main jobs starts
+           
 
             services.AddCronJob<CardPaymentTask>(c =>
             {

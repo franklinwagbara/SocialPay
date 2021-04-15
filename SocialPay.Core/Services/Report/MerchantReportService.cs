@@ -377,6 +377,46 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
+        public async Task<WebApiResponse> GetMerchantBankInfoAsync()
+        {
+            try
+            {
+                return new WebApiResponse { ResponseCode = "00", Data = await _context.MerchantBankInfo.OrderByDescending(x => x.DateEntered).ToListAsync() };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<WebApiResponse> GetMerchantBusinessInfoAsync()
+        {
+            try
+            {
+                return new WebApiResponse { ResponseCode = "00", Data = await _context.MerchantBusinessInfo.OrderByDescending(x => x.DateEntered).ToListAsync() };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+        public async Task<WebApiResponse> GetCustomerOtherTransactionInfo()
+        {
+            try
+            {
+                return new WebApiResponse { ResponseCode = "00", Data = await _context.CustomerOtherPaymentsInfo.OrderByDescending(x => x.DateEntered).ToListAsync() };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
 
         public async Task<UserInfoViewModel> RedisCacheTest()
         {

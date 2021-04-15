@@ -31,7 +31,7 @@ namespace SocialPay.Core.Services.Wallet
         {
             var apiResponse = new WalletToWalletResponseDto { };
 
-            _log4net.Info("Job Service" + "-" + "WalletToWalletTransferAsync" + " | " + model.toacct + " | " + model.paymentRef + " | " + model.frmacct + " | "+ model.amt + " | "+ DateTime.Now);
+            _log4net.Info("Job Service" + "-" + "Wallet To Wallet TransferAsync" + " | " + model.toacct + " | " + model.paymentRef + " | " + model.frmacct + " | "+ model.amt + " | "+ DateTime.Now);
 
             try
             {
@@ -41,6 +41,7 @@ namespace SocialPay.Core.Services.Wallet
                   new StringContent(request, Encoding.UTF8, "application/json"));
 
                 var result = await response.Content.ReadAsStringAsync();
+                
                 _log4net.Info("Job Service" + "-" + "WalletToWalletTransferAsync response" + " | " + result + " | "+ model.toacct + " | " + model.paymentRef + " | " + model.frmacct + " | " + model.amt + " | " + DateTime.Now);
 
                 if (response.IsSuccessStatusCode)

@@ -76,7 +76,11 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
                            
                             if (getBankInfo == null)
+                            {
+                                _log4net.Info("Job Service" + "-" + "Non Escrow PendingBank Transaction Bank info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+
                                 return null;
+                            }
 
                             //For test purpose
                             ////getBankInfo.BankCode = "000014";
