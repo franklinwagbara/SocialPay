@@ -17,5 +17,6 @@ namespace SocialPay.Core.Configurations
         public string NonEscrowOtherWalletTransactionTask { get; set; }
         public string NonEscrowWalletTransactionTask { get; set; }
         public string NonEscrowBankTransactionTask { get; set; }
+        public string ProcessFailedMerchantWalletTask { get; set; }
     }
 }

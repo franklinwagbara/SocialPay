@@ -138,6 +138,7 @@
         public const string WalletTranferCompletedForRefund = "25"; 
         public const string WalletFundingProgressFinalDeliveryDay = "26"; 
         public const string DuplicateTransaction = "27"; 
+        public const string RecordNotFound = "28"; 
     }
     public class RoleDetails
     {

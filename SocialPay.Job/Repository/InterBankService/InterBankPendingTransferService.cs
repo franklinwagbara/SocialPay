@@ -42,6 +42,9 @@ namespace SocialPay.Job.Repository.InterBankService
         {
             try
             {
+                _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions Bank info" + " | " + destinationAccount + " | " +  paymentReference + " | " + sourceAccount + " - "+ DateTime.Now);
+
+
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -67,6 +70,7 @@ namespace SocialPay.Job.Repository.InterBankService
                     //if (lockAccount.Contains(""))
                     //    return new WebApiResponse { ResponseCode = AppResponseCodes.AccountLockFailed }; 
                     var nipEnquiry = await _iBSReposerviceJob.InitiateNameEnquiry(nameEnquiryModel);
+
                     if (nipEnquiry.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
 

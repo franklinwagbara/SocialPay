@@ -175,7 +175,8 @@ namespace SocialPay.API
             ////services.AddSingleton<IHostedService, CardPaymentTask>();
             services.AddSingleton<PendingPayWithCardTransaction>();
             services.AddSingleton<CreditDebitService>();
-
+            services.AddScoped<IProcessMerchantWalletService, ProcessMerchantWalletService>();
+            services.AddSingleton<ProcessMerchantWalletTransactions>();
 
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
 
@@ -192,7 +193,6 @@ namespace SocialPay.API
             ////////});
 
             ///Main jobs starts
-           
 
             services.AddCronJob<CardPaymentTask>(c =>
             {
@@ -222,6 +222,12 @@ namespace SocialPay.API
             {
                 c.TimeZoneInfo = TimeZoneInfo.Local;
                 c.CronExpression = options.NonEscrowWalletTransactionTask;
+            });
+
+            services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.ProcessFailedMerchantWalletTask;
             });
 
             ///Main jobs ends
