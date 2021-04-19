@@ -69,7 +69,6 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             return null;
                         }
 
-                       
 
                         var validateWallet = await context.DebitMerchantWalletTransferRequestLog
                             .SingleOrDefaultAsync(x => x.PaymentReference == item.PaymentReference);

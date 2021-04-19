@@ -418,6 +418,58 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
+        public async Task<WebApiResponse> ValidateMerchantInfo(string reference)
+        {
+            try
+            {
+                var validateMerchant = await _context.DebitMerchantWalletTransferRequestLog
+                    .SingleOrDefaultAsync(x => x.PaymentReference == reference);
+
+                if(validateMerchant != null)
+                {
+                     _context.Remove(validateMerchant);
+                    await _context.SaveChangesAsync();
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data ="Successful" };
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record Not found" };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<WebApiResponse> ValidateInfo(string reference)
+        {
+            try
+            {
+                var validateMerchant = await _context.TransactionLog
+                    .SingleOrDefaultAsync(x => x.PaymentReference == reference);
+
+                if (validateMerchant != null)
+                {
+                    validateMerchant.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
+                    _context.Update(validateMerchant);
+                    await _context.SaveChangesAsync();
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record Not found" };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
         public async Task<UserInfoViewModel> RedisCacheTest()
         {
             try

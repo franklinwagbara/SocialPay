@@ -598,34 +598,96 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("get-admin-transactions-default")]
-        public async Task<IActionResult> GetCustomerTransactionsAdmin([FromQuery] string category, string reference)
-        {
-            // _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
-            if (reference != "sterling3j80sa11")
-                return BadRequest();
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("get-latest-OtherPayment")]
+        //public async Task<IActionResult> GetMerchantDetails([FromQuery] string reference, string merchant)
+        //{
+        //    var response = new WebApiResponse { };
+        //    try
+        //    {
+        //        if (reference != "34dft1")
+        //            return BadRequest();
 
-            var response = new WebApiResponse { };
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _transactionService.GetCustomerOrders(category));
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        //        if (ModelState.IsValid)
+        //        {
+        //            return Ok(await _merchantReportService.ValidateMerchantInfo(merchant));
+        //        }
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //            .Select(e => e.ErrorMessage));
+        //        response.ResponseCode = AppResponseCodes.Failed;
+        //        response.Data = message;
+        //        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                // _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.ResponseCode = AppResponseCodes.InternalError;
+        //        return BadRequest(response);
+        //    }
+        //}
+
+
+
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("get-payment-details")]
+        //public async Task<IActionResult> ValidatePayment([FromQuery] string reference, string merchant)
+        //{
+        //    var response = new WebApiResponse { };
+        //    try
+        //    {
+        //        if (reference != "3dd22")
+        //            return BadRequest();
+
+        //        if (ModelState.IsValid)
+        //        {
+        //            return Ok(await _merchantReportService.ValidateInfo(merchant));
+        //        }
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //            .Select(e => e.ErrorMessage));
+        //        response.ResponseCode = AppResponseCodes.Failed;
+        //        response.Data = message;
+        //        return BadRequest(response);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.ResponseCode = AppResponseCodes.InternalError;
+        //        return BadRequest(response);
+        //    }
+        //}
+
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("get-admin-transactions-default")]
+        //public async Task<IActionResult> GetCustomerTransactionsAdmin([FromQuery] string category, string reference)
+        //{
+        //    // _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
+        //    if (reference != "12345")
+        //        return BadRequest();
+
+        //    var response = new WebApiResponse { };
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            return Ok(await _transactionService.GetCustomerOrders(category));
+        //        }
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //            .Select(e => e.ErrorMessage));
+        //        response.ResponseCode = AppResponseCodes.Failed;
+        //        response.Data = message;
+        //        return BadRequest(response);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        //        response.ResponseCode = AppResponseCodes.InternalError;
+        //        return BadRequest(response);
+        //    }
+        //}
+
     }
 }
