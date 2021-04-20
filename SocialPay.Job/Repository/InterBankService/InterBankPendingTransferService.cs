@@ -44,7 +44,6 @@ namespace SocialPay.Job.Repository.InterBankService
             {
                 _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions Bank info" + " | " + destinationAccount + " | " +  paymentReference + " | " + sourceAccount + " - "+ DateTime.Now);
 
-
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -72,11 +71,20 @@ namespace SocialPay.Job.Repository.InterBankService
                     var nipEnquiry = await _iBSReposerviceJob.InitiateNameEnquiry(nameEnquiryModel);
 
                     if (nipEnquiry.ResponseCode != AppResponseCodes.Success)
+                    {
+                        _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions Name enquiry failed" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
+                    }
 
                     var getFeesAndVat = _sqlRepository.GetNIPFee(amount);
+
                     if (getFeesAndVat == null)
+                    {
+                        _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions getFeesAndVat is null" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.NipFeesCalculationFailed };
+                    }
 
                     var nipRequestModel = new NipFundstransferRequestDto
                     {
@@ -104,6 +112,8 @@ namespace SocialPay.Job.Repository.InterBankService
                         OrignatorName = _appSettings.socialPayT24AccountName,
                         SubAcctVal = "0"
                     };
+
+                    _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions to save records InterBankTransactionRequest" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
 
                     var logInterBankRequest = new InterBankTransactionRequest
                     {
@@ -137,13 +147,15 @@ namespace SocialPay.Job.Repository.InterBankService
                     await context.InterBankTransactionRequest.AddAsync(logInterBankRequest);
                     await context.SaveChangesAsync();
 
+                    _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions InterBankTransactionRequest was saved" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
+
                     return await _sqlRepository.InsertNipTransferRequest(nipRequestModel);
                 }
 
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured. Base error" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("An error occured. For interbank transactions" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
@@ -163,6 +175,7 @@ namespace SocialPay.Job.Repository.InterBankService
                     //}
 
                     _log4net.Error("An error occured. Duplicate transaction reference" + " | " + paymentReference + " | " + errorMessage + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction, Data = errorMessage };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

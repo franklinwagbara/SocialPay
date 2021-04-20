@@ -404,6 +404,22 @@ namespace SocialPay.Core.Services.Report
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+
+        public async Task<WebApiResponse> GetInterBankRequestAsync()
+        {
+            try
+            {
+                return new WebApiResponse { ResponseCode = "00", Data = await _context.InterBankTransactionRequest.OrderByDescending(x => x.DateEntered).ToListAsync() };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> GetCustomerOtherTransactionInfo()
         {
             try
@@ -453,6 +469,33 @@ namespace SocialPay.Core.Services.Report
                 if (validateMerchant != null)
                 {
                     validateMerchant.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
+                    _context.Update(validateMerchant);
+                    await _context.SaveChangesAsync();
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record Not found" };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> InterRequestAsync(string reference)
+        {
+            try
+            {
+                var validateMerchant = await _context.TransactionLog
+                    .SingleOrDefaultAsync(x => x.PaymentReference == reference);
+
+                if (validateMerchant != null)
+                {
+                    validateMerchant.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
                     _context.Update(validateMerchant);
                     await _context.SaveChangesAsync();
 

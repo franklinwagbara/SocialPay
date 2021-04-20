@@ -552,9 +552,12 @@ namespace SocialPay.Core.Services.Account
                             await _context.SaveChangesAsync();
                             getUserInfo.StatusCode = MerchantOnboardingProcess.BankInfo;
                             getUserInfo.LastDateModified = DateTime.Now;
+
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
+
                             _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
+                           
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
                         }
                         catch (Exception ex)
