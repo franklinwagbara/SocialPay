@@ -571,6 +571,36 @@ namespace SocialPay.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
+        [Route("get-all-interbank-default-info")]
+        public async Task<IActionResult> GetInterBankRequest([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "213@k1")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.GetInterBankRequestAsync());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
         [Route("get-Customer-OtherPayment")]
         public async Task<IActionResult> GetCustomerOtherPayment([FromQuery] string reference)
         {
@@ -658,21 +688,21 @@ namespace SocialPay.API.Controllers
         //    }
         //}
 
+
         //[AllowAnonymous]
         //[HttpGet]
-        //[Route("get-admin-transactions-default")]
-        //public async Task<IActionResult> GetCustomerTransactionsAdmin([FromQuery] string category, string reference)
+        //[Route("get-request-details")]
+        //public async Task<IActionResult> ValidateRequests([FromQuery] string reference, string merchant)
         //{
-        //    // _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
-        //    if (reference != "12345")
-        //        return BadRequest();
-
         //    var response = new WebApiResponse { };
         //    try
         //    {
+        //        if (reference != "34df12")
+        //            return BadRequest();
+
         //        if (ModelState.IsValid)
         //        {
-        //            return Ok(await _transactionService.GetCustomerOrders(category));
+        //            return Ok(await _merchantReportService.InterRequestAsync(merchant));
         //        }
         //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
         //            .Select(e => e.ErrorMessage));
@@ -683,11 +713,43 @@ namespace SocialPay.API.Controllers
         //    }
         //    catch (Exception ex)
         //    {
-        //        // _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
         //        response.ResponseCode = AppResponseCodes.InternalError;
         //        return BadRequest(response);
         //    }
         //}
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-admin-transactions-default")]
+        public async Task<IActionResult> GetCustomerTransactionsAdmin([FromQuery] string category, string reference)
+        {
+            if (reference != "12vg345")
+                return BadRequest();
+
+            var response = new WebApiResponse { };
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _transactionService.GetCustomerOrders(category));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return BadRequest(response);
+            }
+        }
 
     }
 }

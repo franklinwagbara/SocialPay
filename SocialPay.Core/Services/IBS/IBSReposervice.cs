@@ -195,7 +195,6 @@ namespace SocialPay.Core.Services.IBS
         {
             _log4net.Info("Initiating InitiateNameEnquiry request" + " | " + iBSNameEnquiryRequestDto.ReferenceID + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " + DateTime.Now);
 
-
             try
             {
                 var random = new Random();
@@ -212,8 +211,11 @@ namespace SocialPay.Core.Services.IBS
                 var response = sendRequest.Body.NameEnquiryResult.ToString();
 
                 if (!response.Contains("00"))
-                    return new IBSNameEnquiryResponseDto { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
+                {
+                    _log4net.Info("InitiateNameEnquiry request failed" + " | " + iBSNameEnquiryRequestDto.ReferenceID + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " + DateTime.Now);
 
+                    return new IBSNameEnquiryResponseDto { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
+                }
 
                 var result = new IBSNameEnquiryResponseDto
                 {

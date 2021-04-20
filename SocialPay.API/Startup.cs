@@ -165,7 +165,7 @@ namespace SocialPay.API
             //services.AddSingleton<NotificationTransactions>();
 
 
-            services.AddSingleton<DeliveryDayFioranoTransferRepository>();
+           // services.AddSingleton<DeliveryDayFioranoTransferRepository>();
             services.AddSingleton<FioranoTransferNonEscrowRepository>();
             services.AddSingleton<IBSReposerviceJob>();
             services.AddSingleton<SqlRepository>();
