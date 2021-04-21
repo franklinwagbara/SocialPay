@@ -1,17 +1,18 @@
 ﻿using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace SocialPay.Core.Extensions.Utilities
 {
-    public class EncryptDecrypt
+    public class EncryptDecryptJob
     {
         private readonly AppSettings _appSettings;
-     
-        public EncryptDecrypt(IOptions<AppSettings> appSettings)
+
+        public EncryptDecryptJob(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
         }
@@ -78,7 +79,7 @@ namespace SocialPay.Core.Extensions.Utilities
         ////    // return Convert.ToBase64String(ms.ToArray());
         ////}
 
-        public  String Encrypt(String val)
+        public String Encrypt(String val)
         {
             MemoryStream ms = new MemoryStream();
             string rsp = "";
@@ -109,7 +110,7 @@ namespace SocialPay.Core.Extensions.Utilities
             }
             return Convert.ToBase64String(ms.ToArray());
         }
-        public  String Decrypt(String val)
+        public String Decrypt(String val)
         {
             MemoryStream ms = new MemoryStream();
             string rsp = "";
@@ -143,5 +144,4 @@ namespace SocialPay.Core.Extensions.Utilities
             return Encoding.UTF8.GetString(ms.ToArray());
         }
     }
-
 }

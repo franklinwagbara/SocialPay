@@ -24,11 +24,13 @@ namespace SocialPay.Core.Services.IBS
     public class IBSReposervice
     {
         private readonly AppSettings _appSettings;
+        private readonly EncryptDecrypt _encryptDecrypt;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(IBSReposervice));
 
-        public IBSReposervice(IOptions<AppSettings> appSettings)
+        public IBSReposervice(IOptions<AppSettings> appSettings, EncryptDecrypt encryptDecrypt)
         {
             _appSettings = appSettings.Value;
+            _encryptDecrypt = encryptDecrypt;
         }
 
 
@@ -125,12 +127,12 @@ namespace SocialPay.Core.Services.IBS
 
                 _log4net.Info("Initiating GetParticipatingBanks xml request" + " | " + getBanksStringRequest + " | " + getBanksRequestModel.RequestType + " | " + DateTime.Now);
 
-                var en = new EncryptDecrypt();
-                var encryptRequest = en.Encrypt(getBanksStringRequest);
+                //var en = new EncryptDecrypt();
+                var encryptRequest = _encryptDecrypt.Encrypt(getBanksStringRequest);
                 var encryptedDataRequest = await ibsService.IBSBridgeAsync(encryptRequest, Convert.ToInt32(_appSettings.appId));
                 _log4net.Info("Initiating GetParticipatingBanks response" + " | " + encryptedDataRequest + " | " + getBanksRequestModel.RequestType + " | " + DateTime.Now);
                
-                var decryptResponse = en.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
+                var decryptResponse = _encryptDecrypt.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
                 var deserializeResponseObject = ObjectToXML(decryptResponse, typeof(IBSGetBanksResponse));
 
                 var serializeResponse = JsonConvert.SerializeObject(deserializeResponseObject);
@@ -170,13 +172,13 @@ namespace SocialPay.Core.Services.IBS
                 nameEnquiryStringBuilder.Append("</IBSRequest>");
                 var nameEnquiryStringRequest = nameEnquiryStringBuilder.ToString();
 
-                var en = new EncryptDecrypt();
-                var encryptRequest = en.Encrypt(nameEnquiryStringRequest);
+               // var en = new EncryptDecrypt();
+                var encryptRequest = _encryptDecrypt.Encrypt(nameEnquiryStringRequest);
                               
                 var encryptedDataRequest = await ibsService.IBSBridgeAsync(encryptRequest, Convert.ToInt32(_appSettings.appId));
                 _log4net.Info("Initiating InitiateNameEnquiry response" + " | " + encryptedDataRequest + " | " + iBSNameEnquiryRequestDto.ToAccount + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | "+ DateTime.Now);
 
-                var decryptResponse = en.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
+                var decryptResponse = _encryptDecrypt.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
                 var deserializeResponseObject = ObjectToXML(decryptResponse, typeof(IBSNameEnquiryResponseDto));
 
                 var serializeResponse = JsonConvert.SerializeObject(deserializeResponseObject);

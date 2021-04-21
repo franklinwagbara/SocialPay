@@ -22,9 +22,12 @@ namespace SocialPay.Core.Services.IBS
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(IBSReposerviceJob));
 
         private readonly AppSettings _appSettings;
-        public IBSReposerviceJob(IOptions<AppSettings> appSettings)
+        private readonly EncryptDecryptJob _encryptDecrypt;
+
+        public IBSReposerviceJob(IOptions<AppSettings> appSettings, EncryptDecryptJob encryptDecrypt)
         {
             _appSettings = appSettings.Value;
+            _encryptDecrypt = encryptDecrypt;
         }
 
         public async Task<WebApiResponse> GetParticipatingBanks(IBSGetBanksRequestDto getBanksRequestModel)
@@ -43,11 +46,11 @@ namespace SocialPay.Core.Services.IBS
                 getBanksStringBuilder.Append("</IBSRequest>");
                 var getBanksStringRequest = getBanksStringBuilder.ToString();
 
-                var en = new EncryptDecrypt();
-                var encryptRequest = en.Encrypt(getBanksStringRequest);
+                //var en = new EncryptDecrypt();
+                var encryptRequest = _encryptDecrypt.Encrypt(getBanksStringRequest);
                 var encryptedDataRequest = await ibsService.IBSBridgeAsync(encryptRequest, Convert.ToInt32(_appSettings.appId));
 
-                var decryptResponse = en.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
+                var decryptResponse = _encryptDecrypt.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
                 var deserializeResponseObject = ObjectToXML(decryptResponse, typeof(IBSGetBanksResponse));
 
                 var serializeResponse = JsonConvert.SerializeObject(deserializeResponseObject);
@@ -133,15 +136,15 @@ namespace SocialPay.Core.Services.IBS
 
                 var nameEnquiryStringRequest = nameEnquiryStringBuilder.ToString();
 
-                var en = new EncryptDecrypt();
-                var encryptRequest = en.Encrypt(nameEnquiryStringRequest);
+               // var en = new EncryptDecrypt();
+                var encryptRequest = _encryptDecrypt.Encrypt(nameEnquiryStringRequest);
 
                 var encryptedDataRequest = await ibsService.IBSBridgeAsync(encryptRequest, Convert.ToInt32(_appSettings.appId));
 
                 _log4net.Info("Job Service" + "-" + "InitiateNameEnquiry encryptedDataRequest" + " | " + encryptedDataRequest + " | " + iBSNameEnquiryRequestDto.DestinationBankCode + " | " + iBSNameEnquiryRequestDto.ToAccount + " - " + iBSNameEnquiryRequestDto.ReferenceID + " - " + DateTime.Now);
 
 
-                var decryptResponse = en.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
+                var decryptResponse = _encryptDecrypt.Decrypt(encryptedDataRequest.Body.IBSBridgeResult.ToString());
 
                 var deserializeResponseObject = ObjectToXML(decryptResponse, typeof(IBSNameEnquiryResponseDto));
 

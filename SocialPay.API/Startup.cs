@@ -136,7 +136,7 @@ namespace SocialPay.API
             services.AddScoped<CustomerRepoService>();
             services.AddScoped<ICustomerService>();
             services.AddScoped<EncryptDecryptAlgorithm>();
-            services.AddScoped<EncryptDecrypt>();
+           // services.AddScoped<EncryptDecrypt>();
             services.AddScoped<TransactionReceipt>();
             services.AddScoped<InvoiceService>();
             services.AddScoped<PayWithSpectaService>();
@@ -151,6 +151,8 @@ namespace SocialPay.API
             services.AddSingleton<SqlRepository>();
             services.AddSingleton<BankServiceRepositoryJobService>();
             services.AddSingleton<IBSReposerviceJob>();
+            services.AddSingleton<EncryptDecryptJob>();
+            services.AddSingleton<EncryptDecrypt>();
             //services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
             //services.AddSingleton<CreditMerchantWalletTransactions>();
             //services.AddScoped<INonEscrowCardWalletTransaction, NonEscrowCardWalletTransaction>();
@@ -165,7 +167,7 @@ namespace SocialPay.API
             //services.AddSingleton<NotificationTransactions>();
 
 
-           // services.AddSingleton<DeliveryDayFioranoTransferRepository>();
+            // services.AddSingleton<DeliveryDayFioranoTransferRepository>();
             services.AddSingleton<FioranoTransferNonEscrowRepository>();
             services.AddSingleton<IBSReposerviceJob>();
             services.AddSingleton<SqlRepository>();

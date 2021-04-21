@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Extentions\" />
     <Folder Include="Repository\DeclinedEscrowBankTransaction\" />
     <Folder Include="Repository\NewFolder\" />
   </ItemGroup>
