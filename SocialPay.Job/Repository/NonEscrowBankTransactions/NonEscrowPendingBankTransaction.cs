@@ -174,8 +174,11 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                 Message = "Name enquiry failed" + "-" + validateNuban.UsableBal + "-" + item.TotalAmount + "-" + validateNuban.ResponseCode + "-" + item.PaymentReference,
                                 TransactionReference = item.TransactionReference
                             };
+
                             await context.FailedTransactions.AddAsync(failedResponse);
                             await context.SaveChangesAsync();
+
+                            return null;
                         }
 
                     }

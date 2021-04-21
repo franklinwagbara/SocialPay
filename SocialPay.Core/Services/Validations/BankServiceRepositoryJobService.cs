@@ -31,9 +31,12 @@ namespace SocialPay.Core.Services.Validations
                     model.amt, model.reasonForLocking);
                 // var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, ServicesPoint.CoreBanking);
                 var result = getUserInfo.LockAmountWithReasonResult;
+
+                var response = result.Split("|")[1];               
+
                 _log4net.Info("Job Service" + "-" + "LockAccountWithReasonAsync response" + " | " + model.acct + " | " + model.amt + " | " + result + " | " + DateTime.Now);
 
-                return result;
+                return response; ;
             }
             catch (Exception ex)
             {
