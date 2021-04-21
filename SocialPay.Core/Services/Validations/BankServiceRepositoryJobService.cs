@@ -75,11 +75,16 @@ namespace SocialPay.Core.Services.Validations
                     }).FirstOrDefault();
 
                 if (accountDetail == null)
+                {
+                    _log4net.Info("Invalid account" + " | " + amount + " | " + nuban + " | " + validAccount + " | " +  DateTime.Now);
+
                     return new AccountInfoViewModel
                     {
                         ResponseCode = AppResponseCodes.InvalidAccountNo,
                         NUBAN = nuban
                     };
+                }
+                    
 
                 decimal usableBalance = Convert.ToDecimal(accountDetail.UsableBal);
 
@@ -89,7 +94,9 @@ namespace SocialPay.Core.Services.Validations
 
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InsufficientFunds, NUBAN = nuban, UsableBal = accountDetail.UsableBal };
                 }
+
                 accountDetail.ResponseCode = AppResponseCodes.Success;
+
                 return accountDetail;
             }
             catch (Exception ex)

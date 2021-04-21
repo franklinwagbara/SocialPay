@@ -77,5 +77,7 @@
         public string senderEmailInfo { get; set; }
         public string successfulTransactionEmailSubject { get; set; }
         public string failedTransactionEmailSubject { get; set; }
+        public string sharedkeyval { get; set; }
+        public string sharedvectorval { get; set; }
     }
 }
