@@ -35,28 +35,38 @@ namespace SocialPay.Core.Services.Wallet
             var apiResponse = new WalletResponseDto { };
             try
             {
-                
                 var request = JsonConvert.SerializeObject(model);
+
                 _log4net.Info("Initiating CreateMerchantWallet request" + " | " + request + " | " + DateTime.Now);
 
                 var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.createwalletUrl,
                     new StringContent(request, Encoding.UTF8, "application/json"));
+
                 var result = await response.Content.ReadAsStringAsync();
+
                 _log4net.Info("Initiating CreateMerchantWallet response" + " | " + result + " | " + DateTime.Now);
+
                 if (response.IsSuccessStatusCode)
                 {
-                     apiResponse = JsonConvert.DeserializeObject<WalletResponseDto>(result);
-                     apiResponse.responsedata = result;
-                    return apiResponse;
-                }
-                if(result.Contains("Duplicate"))
-                {
-                    apiResponse.response = AppResponseCodes.Success;
+                    apiResponse = JsonConvert.DeserializeObject<WalletResponseDto>(result);
                     apiResponse.responsedata = result;
+
                     return apiResponse;
                 }
+
+                if (result.Contains("Duplicate"))
+                {
+                    _log4net.Info("Duplicate merchant details" + " - " + result + " - " + model.mobile + " - " + DateTime.Now);
+
+                    apiResponse.response = AppResponseCodes.DuplicateMerchantDetails;
+                    apiResponse.responsedata = result;
+
+                    return apiResponse;
+                }
+
                 apiResponse.response = AppResponseCodes.Failed;
                 apiResponse.responsedata = result;
+
                 return apiResponse;
             }
             catch (Exception ex)
@@ -75,7 +85,7 @@ namespace SocialPay.Core.Services.Wallet
             try
             {
 
-                var response = await _client.GetAsync(_appSettings.walletExtensionUrl 
+                var response = await _client.GetAsync(_appSettings.walletExtensionUrl
                     + _appSettings.clearwalletUrl + phoneNumber);
                 var result = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
@@ -121,7 +131,7 @@ namespace SocialPay.Core.Services.Wallet
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured GetWalletDetailsAsync" + " | " + phoneNumber + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured GetWalletDetailsAsync" + " | " + phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 apiResponse.Response = AppResponseCodes.InternalError;
                 apiResponse.Responsedata = "An error occured while creating wallet";

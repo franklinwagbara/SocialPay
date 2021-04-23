@@ -171,7 +171,7 @@ namespace SocialPay.API.Controllers
         [Route("get-merchants")]
         public async Task<IActionResult> GetMerchants()
         {
-           // _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
+            // _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
 
             var response = new WebApiResponse { };
             try
@@ -190,7 +190,7 @@ namespace SocialPay.API.Controllers
             }
             catch (Exception ex)
             {
-               // _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                // _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 response.ResponseCode = AppResponseCodes.InternalError;
                 return BadRequest(response);
             }
@@ -225,7 +225,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-       //[AllowAnonymous]
+        //[AllowAnonymous]
         [HttpGet]
         [Route("get-user-signup-status")]
         public async Task<IActionResult> GetSignUpStatus()
@@ -254,73 +254,75 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("clear-user-account")]
-        public async Task<IActionResult> ClearUserDetails(string email, string reference)
-        {
-            _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
-
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "sterling02107")
-                    return BadRequest();
-
-                if (ModelState.IsValid)
-                {
-                    var result = await _transactionService.ClearUserAccount(email);
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
 
 
+        ////[AllowAnonymous]
+        ////[HttpPost]
+        ////[Route("clear-user-account")]
+        ////public async Task<IActionResult> ClearUserDetails(string email, string reference)
+        ////{
+        ////    _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
 
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("clear-user-wallet")]
-        public async Task<IActionResult> ClearMerchantWallet(string phoneNumber, string reference)
-        {
-            _log4net.Info("Tasks starts to clear user account" + " | " + phoneNumber + " | " + DateTime.Now);
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "sterling02107")
+        ////            return BadRequest();
 
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "sterling193t02")
-                    return BadRequest();
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            var result = await _transactionService.ClearUserAccount(email);
+        ////            return Ok(result);
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-                if (ModelState.IsValid)
-                {
-                    var result = await _createMerchantWalletService.ClearMerchantWalletInfo(phoneNumber);
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+
+
+        ////[AllowAnonymous]
+        ////[HttpPost]
+        ////[Route("clear-user-wallet")]
+        ////public async Task<IActionResult> ClearMerchantWallet(string phoneNumber, string reference)
+        ////{
+        ////    _log4net.Info("Tasks starts to clear user account" + " | " + phoneNumber + " | " + DateTime.Now);
+
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "sterling193t02")
+        ////            return BadRequest();
+
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            var result = await _createMerchantWalletService.ClearMerchantWalletInfo(phoneNumber);
+        ////            return Ok(result);
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _log4net.Error("Error occured" + " | " + phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
         [HttpGet]
@@ -367,7 +369,7 @@ namespace SocialPay.API.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    
+
                     var result = await _merchantReportService.GetAllUsers();
                     return Ok(result);
                 }
@@ -451,305 +453,402 @@ namespace SocialPay.API.Controllers
         }
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-all-payment-response-logs")]
-        public async Task<IActionResult> GetPaymentResponseLogsAsync([FromQuery] string reference)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "sterling0k1v8g1")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-all-payment-response-logs")]
+        ////public async Task<IActionResult> GetPaymentResponseLogsAsync([FromQuery] string reference)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "sterling0k1v8g1")
+        ////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.GetAllPaymentResponseLogs());
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.GetAllPaymentResponseLogs());
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
-
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-all-default-merchant-wallet-logs")]
-        public async Task<IActionResult> GetDefaultWalletLogs([FromQuery] string reference)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "sterling0k818g1")
-                    return BadRequest();
-
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.GetAllDefaultWalletLogsAsync());
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-all-merchant-bank-info")]
-        public async Task<IActionResult> GetMerchantBankInfo([FromQuery] string reference)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "sterling2v@m11")
-                    return BadRequest();
-
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.GetMerchantBankInfoAsync());
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-all-merchant-business-info")]
-        public async Task<IActionResult> GetMerchantBusinessInfo([FromQuery] string reference)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "sterling2vxytq@k1")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-all-default-merchant-wallet-logs")]
+        ////public async Task<IActionResult> GetDefaultWalletLogs([FromQuery] string reference)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "sterling0k818g1")
+        ////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.GetMerchantBusinessInfoAsync());
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.GetAllDefaultWalletLogsAsync());
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-all-interbank-default-info")]
-        public async Task<IActionResult> GetInterBankRequest([FromQuery] string reference)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "213@k1")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-all-merchant-bank-info")]
+        ////public async Task<IActionResult> GetMerchantBankInfo([FromQuery] string reference)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "sterling2v@m11")
+        ////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.GetInterBankRequestAsync());
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.GetMerchantBankInfoAsync());
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-Customer-OtherPayment")]
-        public async Task<IActionResult> GetCustomerOtherPayment([FromQuery] string reference)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "sterling2rk11")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-all-merchant-business-info")]
+        ////public async Task<IActionResult> GetMerchantBusinessInfo([FromQuery] string reference)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "sterling2vxytq@k1")
+        ////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.GetCustomerOtherTransactionInfo());
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.GetMerchantBusinessInfoAsync());
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-latest-OtherPayment")]
-        //public async Task<IActionResult> GetMerchantDetails([FromQuery] string reference, string merchant)
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "34dft1")
-        //            return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-all-interbank-default-info")]
+        ////public async Task<IActionResult> GetInterBankRequest([FromQuery] string reference)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "213@k1")
+        ////            return BadRequest();
 
-        //        if (ModelState.IsValid)
-        //        {
-        //            return Ok(await _merchantReportService.ValidateMerchantInfo(merchant));
-        //        }
-        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage));
-        //        response.ResponseCode = AppResponseCodes.Failed;
-        //        response.Data = message;
-        //        return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.GetInterBankRequestAsync());
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
+
+
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-all-non-escrow-trans")]
+        ////public async Task<IActionResult> GetTransactions([FromQuery] string reference)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "09hgx21")
+        ////            return BadRequest();
+
+        ////        return Ok(await _merchantReportService.GetNonEscrowBankTransactions());
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
+
+
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-user-trans")]
+        ////public async Task<IActionResult> GetFioranoTransactions([FromQuery] string reference)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "334fds2")
+        ////            return BadRequest();
+
+        ////        return Ok(await _merchantReportService.GetFioranoTransactions());
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-payment-details")]
-        //public async Task<IActionResult> ValidatePayment([FromQuery] string reference, string merchant)
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "3dd22")
-        //            return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-payment-links")]
+        ////public async Task<IActionResult> PaymentLinks([FromQuery] string reference)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "232gaw9")
+        ////            return BadRequest();
 
-        //        if (ModelState.IsValid)
-        //        {
-        //            return Ok(await _merchantReportService.ValidateInfo(merchant));
-        //        }
-        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage));
-        //        response.ResponseCode = AppResponseCodes.Failed;
-        //        response.Data = message;
-        //        return BadRequest(response);
+        ////        return Ok(await _merchantReportService.GetPaymentLinks());
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-request-details")]
-        //public async Task<IActionResult> ValidateRequests([FromQuery] string reference, string merchant)
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "34df12")
-        //            return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-Customer-OtherPayment")]
+        ////public async Task<IActionResult> GetCustomerOtherPayment([FromQuery] string reference)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "sterling2rk11")
+        ////            return BadRequest();
 
-        //        if (ModelState.IsValid)
-        //        {
-        //            return Ok(await _merchantReportService.InterRequestAsync(merchant));
-        //        }
-        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage));
-        //        response.ResponseCode = AppResponseCodes.Failed;
-        //        response.Data = message;
-        //        return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.GetCustomerOtherTransactionInfo());
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-admin-transactions-default")]
-        public async Task<IActionResult> GetCustomerTransactionsAdmin([FromQuery] string category, string reference)
-        {
-            if (reference != "12vg345")
-                return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-latest-OtherPayment")]
+        ////public async Task<IActionResult> GetMerchantDetails([FromQuery] string reference, string merchant)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "34dft1")
+        ////            return BadRequest();
 
-            var response = new WebApiResponse { };
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.ValidateMerchantInfo(merchant));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _transactionService.GetCustomerOrders(category));
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
 
-                return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-payment-details")]
+        ////public async Task<IActionResult> ValidatePayment([FromQuery] string reference, string merchant)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "3dd22")
+        ////            return BadRequest();
 
-                return BadRequest(response);
-            }
-        }
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.ValidateInfo(merchant));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
+
+
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-user-wallet-info")]
+        ////public async Task<IActionResult> ValidateuserWallet([FromQuery] string reference, string merchant)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "345hsa2")
+        ////            return BadRequest();
+
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.ValidateWalletInfo(merchant));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
+
+
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-request-details")]
+        ////public async Task<IActionResult> ValidateRequests([FromQuery] string reference, string merchant)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "34df12")
+        ////            return BadRequest();
+
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.InterRequestAsync(merchant));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
+
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-admin-transactions-default")]
+        ////public async Task<IActionResult> GetCustomerTransactionsAdmin([FromQuery] string category, string reference)
+        ////{
+        ////    if (reference != "12vg345")
+        ////        return BadRequest();
+
+        ////    var response = new WebApiResponse { };
+
+        ////    try
+        ////    {
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _transactionService.GetCustomerOrders(category));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
     }
 }
