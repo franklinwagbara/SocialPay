@@ -56,7 +56,9 @@ namespace SocialPay.Core.Services.Wallet
 					Gender = getUserInfo.MerchantWallet.Select(x => x.Gender).FirstOrDefault(),
 					mobile = getUserInfo.PhoneNumber, AccountTier = "2"
 				};
+
 				var result = await _walletRepoService.CreateMerchantWallet(walletModel);
+
 				using(var transaction = await _context.Database.BeginTransactionAsync())
 				{
 					try
@@ -67,14 +69,18 @@ namespace SocialPay.Core.Services.Wallet
 							getWalletInfo.status = AppResponseCodes.Success;
 							_context.Update(getWalletInfo);
 							await _context.SaveChangesAsync();
+
 							getUserInfo.StatusCode = AppResponseCodes.Success;
 							_context.Update(getUserInfo);
 							await _context.SaveChangesAsync();
+
 							await transaction.CommitAsync();
+
 							var cacheKey = Convert.ToString(clientId);
 							string serializedCustomerList;
 							var userInfo = new UserInfoViewModel { };
 							var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+
 							if (redisCustomerList != null)
 							{
 								await _distributedCache.RemoveAsync(cacheKey);
@@ -87,8 +93,10 @@ namespace SocialPay.Core.Services.Wallet
 								.SetSlidingExpiration(TimeSpan.FromMinutes(15));
 								await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
 								_log4net.Info("CreateWallet response for" + " | " + clientId + " | " + DateTime.Now);
+
 								return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = AppResponseCodes.Success };
 							}
+
 							await _distributedCache.RemoveAsync(cacheKey);
 							userInfo.Email = getUserInfo.Email;
 							userInfo.StatusCode = AppResponseCodes.Success;
@@ -98,7 +106,58 @@ namespace SocialPay.Core.Services.Wallet
 							.SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
 							.SetSlidingExpiration(TimeSpan.FromMinutes(15));
 							await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+
 							_log4net.Info("CreateWallet response for" + " | " + clientId + " | " + DateTime.Now);
+
+							return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = AppResponseCodes.Success };
+						}
+
+						if (result.response == AppResponseCodes.DuplicateMerchantDetails)
+						{
+							var getWalletInfo = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+							getWalletInfo.status = AppResponseCodes.Success;
+							_context.Update(getWalletInfo);
+							await _context.SaveChangesAsync();
+
+							getUserInfo.StatusCode = AppResponseCodes.Success;
+							_context.Update(getUserInfo);
+							await _context.SaveChangesAsync();
+
+							await transaction.CommitAsync();
+
+							var cacheKey = Convert.ToString(clientId);
+							string serializedCustomerList;
+							var userInfo = new UserInfoViewModel { };
+							var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+
+							if (redisCustomerList != null)
+							{
+								await _distributedCache.RemoveAsync(cacheKey);
+								userInfo.Email = getUserInfo.Email;
+								userInfo.StatusCode = AppResponseCodes.Success;
+								serializedCustomerList = JsonConvert.SerializeObject(userInfo);
+								redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+								var options1 = new DistributedCacheEntryOptions()
+								.SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
+								.SetSlidingExpiration(TimeSpan.FromMinutes(15));
+								await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
+								_log4net.Info("CreateWallet response for" + " | " + clientId + " | " + DateTime.Now);
+
+								return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = AppResponseCodes.Success };
+							}
+
+							await _distributedCache.RemoveAsync(cacheKey);
+							userInfo.Email = getUserInfo.Email;
+							userInfo.StatusCode = AppResponseCodes.Success;
+							serializedCustomerList = JsonConvert.SerializeObject(userInfo);
+							redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+							var options = new DistributedCacheEntryOptions()
+							.SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
+							.SetSlidingExpiration(TimeSpan.FromMinutes(15));
+							await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+
+							_log4net.Info("CreateWallet response for" + " | " + clientId + " | " + DateTime.Now);
+
 							return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = AppResponseCodes.Success };
 						}
 						return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
