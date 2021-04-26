@@ -47,6 +47,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+
                     foreach (var item in pendingRequest)
                     {
                         _log4net.Info("Job Service" + "-" + "Non Escrow Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);

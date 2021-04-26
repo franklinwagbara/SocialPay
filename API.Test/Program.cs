@@ -16,7 +16,13 @@ namespace API.Test
         static void Main(string[] args)
         {
 
-            
+            var random = new Random();
+
+            string randomNumber = string.Join(string.Empty, Enumerable.Range(0, 10).Select(number => random.Next(0, 9).ToString()));
+
+            var dateFormat = DateTime.UtcNow.ToString("MMddyyyyhhmmss");
+
+            var sessionId = $"{"sterlingbankcode here"}{dateFormat}{randomNumber}";
 
             var newRef = $"{"So-Pay-"}{Guid.NewGuid().ToString().Substring(0, 15)}";
 
