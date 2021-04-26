@@ -219,10 +219,9 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _createMerchantWalletService.CreateWallet(Convert.ToInt32(clientId));
                     //if (result.ResponseCode != AppResponseCodes.Success)
                     //    return BadRequest(result);
-                    return Ok(result);
+                    return Ok(await _createMerchantWalletService.CreateWallet(Convert.ToInt32(clientId)));
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
