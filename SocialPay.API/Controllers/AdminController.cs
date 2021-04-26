@@ -364,7 +364,7 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (reference != "sterling02x04")
+                if (reference != "45fth1")
                     return BadRequest();
 
                 if (ModelState.IsValid)
@@ -397,7 +397,7 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (reference != "sterling01p014")
+                if (reference != "34sfg2e")
                     return BadRequest();
 
                 if (ModelState.IsValid)
