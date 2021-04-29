@@ -14,19 +14,5 @@ namespace SocialPay.Job.Repository.Wallet
         {
             _walletRepoService = walletRepoService;
         }
-
-        public async Task<WalletToWalletResponseDto> InitiateWalletToWalletTransfer(WalletTransferRequestDto model)
-        {
-            try
-            {
-                var fundsTransfer = await _walletRepoService.WalletToWalletTransferAsync(model);
-                return fundsTransfer;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-        }
     }
 }
