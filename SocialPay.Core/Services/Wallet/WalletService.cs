@@ -29,7 +29,6 @@ namespace SocialPay.Core.Services.Wallet
             };
 
         }
-
         public async Task<WalletResponseDto> CreateMerchantWallet(MerchantWalletRequestDto model)
         {
             var apiResponse = new WalletResponseDto { };
@@ -106,27 +105,28 @@ namespace SocialPay.Core.Services.Wallet
             }
         }
 
-
         public async Task<GetWalletInfoResponseDto> GetWalletDetailsAsync(string phoneNumber)
         {
             var apiResponse = new GetWalletInfoResponseDto { };
             try
-            {
+            {               
                 _log4net.Info("Initiating GetWalletDetailsAsync request" + " | " + phoneNumber + " | " + DateTime.Now);
 
-                var response = await _client.GetAsync(_appSettings.walletExtensionUrl
-                    + _appSettings.getwalletDetailsUrl + phoneNumber);
+                var response = await _client.GetAsync($"{_appSettings.walletExtensionUrl}{ _appSettings.getwalletDetailsUrl}{ phoneNumber}");
+               
                 var result = await response.Content.ReadAsStringAsync();
                 _log4net.Info("Initiating GetWalletDetailsAsync response" + " | " + result + " | " + DateTime.Now);
 
                 if (response.IsSuccessStatusCode)
                 {
                     apiResponse = JsonConvert.DeserializeObject<GetWalletInfoResponseDto>(result);
-                    apiResponse.Response = AppResponseCodes.Success;
+
                     return apiResponse;
                 }
+
                 apiResponse.Response = AppResponseCodes.Failed;
                 apiResponse.Responsedata = result;
+
                 return apiResponse;
             }
             catch (Exception ex)
@@ -135,32 +135,8 @@ namespace SocialPay.Core.Services.Wallet
 
                 apiResponse.Response = AppResponseCodes.InternalError;
                 apiResponse.Responsedata = "An error occured while creating wallet";
-                return apiResponse;
-            }
-        }
 
-        public async Task<WalletToWalletResponseDto> WalletToWalletTransferAsync(WalletTransferRequestDto model)
-        {
-            var apiResponse = new WalletToWalletResponseDto { };
-            try
-            {
-                var request = JsonConvert.SerializeObject(model);
-                var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.walletTowalletUrl,
-                  new StringContent(request, Encoding.UTF8, "application/json"));
-                var result = await response.Content.ReadAsStringAsync();
-                if (response.IsSuccessStatusCode)
-                {
-                    apiResponse = JsonConvert.DeserializeObject<WalletToWalletResponseDto>(result);
-                    apiResponse.responsedata = result;
-                    return apiResponse;
-                }
-                apiResponse.response = AppResponseCodes.Failed;
-                apiResponse.responsedata = result;
                 return apiResponse;
-            }
-            catch (Exception ex)
-            {
-                return new WalletToWalletResponseDto { response = AppResponseCodes.InternalError };
             }
         }
     }
