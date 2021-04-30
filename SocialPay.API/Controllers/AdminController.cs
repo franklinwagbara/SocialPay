@@ -387,8 +387,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
-
         [AllowAnonymous]
         [HttpGet]
         [Route("get-all-transaction-logs")]
