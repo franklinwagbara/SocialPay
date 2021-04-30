@@ -205,7 +205,7 @@ namespace SocialPay.API.Controllers
         }
 
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost]
         [Route("create-merchant-wallet")]
         public async Task<IActionResult> CreateWallet([FromBody] WalletRequestDto model)

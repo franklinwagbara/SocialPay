@@ -37,7 +37,7 @@ namespace SocialPay.Core.Services.Wallet
         {
 			try
 			{
-				clientId = 135;
+				//clientId = 135;
 				_log4net.Info("Initiating CreateWallet request" + " | " + clientId + " | " + DateTime.Now);
 
 				var getUserInfo = await _context.ClientAuthentication
