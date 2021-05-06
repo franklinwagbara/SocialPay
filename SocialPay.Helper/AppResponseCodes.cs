@@ -44,7 +44,7 @@
         public const string TinValidationFailed = "40";               
         public const string InsufficientFunds = "41";               
         public const string IncorrectTransactionPin = "42";               
-       // public const string InsufficientFunds = "43";               
+        public const string DuplicateLinkName = "43";               
        // public const string TinIsRequired = "41";               
     }
 
