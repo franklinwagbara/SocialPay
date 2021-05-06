@@ -49,7 +49,7 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-                //clientId = 17;
+                //clientId = 144;
                 //userStatus = "00";
                 _log4net.Info("Initiating GeneratePaymentLink request" + " | " + clientId + " | " + paymentModel.PaymentLinkName + " | "+ DateTime.Now);
 
@@ -66,16 +66,11 @@ namespace SocialPay.Core.Services.Transaction
                     var result = JsonConvert.DeserializeObject<UserInfoViewModel>(serializedCustomerList);
                     userStatus = result.StatusCode;
                 }
+
                 if (userStatus != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
 
-                ////if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic
-                ////  || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow
-                ////  || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink
-                ////  || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
-                ////{
-
-                    if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic                    
+                if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic                    
                     || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)
                     {
                     var model = new MerchantPaymentSetup { };
@@ -93,36 +88,30 @@ namespace SocialPay.Core.Services.Transaction
                     model.TotalAmount = model.MerchantAmount + model.ShippingFee;
                     model.DeliveryTime = paymentModel.DeliveryTime < 1 ? 0 : paymentModel.DeliveryTime;
                     model.PaymentMethod = paymentModel.PaymentMethod == null ? string.Empty : paymentModel.PaymentMethod;
+
                     var newGuid = Guid.NewGuid().ToString("N");
                     var token = model.MerchantAmount + "," + model.PaymentCategory + "," + model.PaymentLinkName + "," + newGuid;
-                    var encryptedToken = token.Encrypt(_appSettings.appKey);
-                    //var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
-                    //var encryptedPin = newPin.Encrypt(_appSettings.appKey);
-                    //byte[] HashReference, SaltReference;
-                    //_utilities.CreatePasswordHash(encryptedPin, out HashReference, out SaltReference);
+                    var encryptedToken = token.Encrypt(_appSettings.appKey);                   
+
+                    if(await _context.MerchantPaymentSetup.AnyAsync(x=>x.CustomUrl == paymentModel.CustomUrl))
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name" };
+
                     if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))
                     {
                         newGuid = Guid.NewGuid().ToString("N");
                         token = string.Empty;
                         encryptedToken = string.Empty;
-                        token = model.MerchantAmount + model.PaymentCategory + model.PaymentLinkName + newGuid;
-                        encryptedToken = token.Encrypt(_appSettings.appKey);
-                        //newPin = string.Empty;
-                        //newPin = Utilities.GeneratePin();
-                        //encryptedPin = newPin.Encrypt(_appSettings.appKey);
+                        token = $"{model.MerchantAmount}{model.PaymentCategory}{model.PaymentLinkName}{newGuid}";
+                        encryptedToken = token.Encrypt(_appSettings.appKey);                        
                     }
                    
                     model.TransactionReference = newGuid;
-                    model.PaymentLinkUrl = _appSettings.paymentlinkUrl + model.TransactionReference;
-
-                    //if(paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Escrow ||
-                    //    paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink)
-                    //{
-                    //    addtionalAmount = model.TotalAmount * Convert.ToInt32(_appSettings.PaymentLinkPercentage) / 100;
-                    //    model.TotalAmount = model.TotalAmount + addtionalAmount;
-                    //    model.AdditionalCharges = addtionalAmount;
-                    //    model.HasAdditionalCharges = true;
-                    //}
+                    model.PaymentLinkUrl =$"{_appSettings.paymentlinkUrl}{model.CustomUrl}";  
+                    
+                    if(string.IsNullOrEmpty(model.CustomUrl))
+                    {
+                        model.PaymentLinkUrl = $"{_appSettings.paymentlinkUrl}{model.TransactionReference}";
+                    }
 
                     var linkCatModel = new LinkCategory
                     {
@@ -138,6 +127,7 @@ namespace SocialPay.Core.Services.Transaction
                                 paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic)
                             {
                                 string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.MerchantLinkPaymentDocument);
+                               
                                 if (!Directory.Exists(path))
                                 {
                                     Directory.CreateDirectory(path);
@@ -149,39 +139,43 @@ namespace SocialPay.Core.Services.Transaction
                                 var FileExtension = Path.GetExtension(fileName);
                                 fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.MerchantLinkPaymentDocument) + $@"\{newFileName}";
 
-                                // concating  FileName + FileExtension
-                                newFileName = documentId + FileExtension;
+                                newFileName = $"{documentId}{FileExtension}";
                                 var filePath = Path.Combine(fileName, newFileName);
                                 model.Document = newFileName;
                                 model.FileLocation = _appSettings.MerchantLinkPaymentDocument;
                                 await _context.MerchantPaymentSetup.AddAsync(model);
+
                                 paymentModel.Document.CopyTo(new FileStream(filePath, FileMode.Create));
+
                                 await _context.SaveChangesAsync();
                                 await _context.LinkCategory.AddAsync(linkCatModel);
                                 await _context.SaveChangesAsync();
-                                await transaction.CommitAsync();
-                                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
 
+                                await transaction.CommitAsync();
+
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
                             }
+
                             await _context.MerchantPaymentSetup.AddAsync(model);
                             await _context.SaveChangesAsync();
                             await _context.LinkCategory.AddAsync(linkCatModel);
                             await _context.SaveChangesAsync();
+
                             await transaction.CommitAsync();
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.PaymentLinkUrl };
                         }
                         catch (Exception ex)
                         {
                             _log4net.Error("Error occured" + " | " + "GeneratePaymentLink" + " | " + clientId + " | " + paymentModel.PaymentLinkName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                             await transaction.RollbackAsync();
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError};
-                        }
-                      
-                    }
-                  
+                        }                      
+                    }                  
                 }
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentcategory };
-               
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentcategory };               
             }
             catch (Exception ex)
             {
@@ -208,7 +202,6 @@ namespace SocialPay.Core.Services.Transaction
             }
         }
 
-
         public async Task<WebApiResponse> GetCustomerPayments(long clientId)
         {
             try
@@ -226,6 +219,25 @@ namespace SocialPay.Core.Services.Transaction
             }
         }
 
+        public async Task<WebApiResponse> ValidateUrlAsync(string customUrl)
+        {
+            try
+            {
+                // clientId = 40072;
+                _log4net.Info("Initiating get validate custom url" + " | " + customUrl + " | " + DateTime.Now);
+                var result = await _customerService.ValidateCustomerUrl(customUrl);
+
+                if (result)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name" };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Link name not available" };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "validate custom url" + " | " + customUrl + " | " + ex + " | " + DateTime.Now);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
 
         public async Task<WebApiResponse> GetCustomers(long clientId)
         {
@@ -270,26 +282,30 @@ namespace SocialPay.Core.Services.Transaction
                     {
                         await _context.InvoicePaymentLink.AddAsync(model);
                         await _context.SaveChangesAsync();
+
                         var linkCatModel = new LinkCategory
                         {
                             ClientAuthenticationId = clientId,
                             Channel = MerchantPaymentLinkCategory.InvoiceLink,
                             TransactionReference = transactionReference
                         };
+
                         await _context.LinkCategory.AddAsync(linkCatModel);
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
+
                         await _invoiceService.SendInvoiceAsync(invoiceRequestDto.CustomerEmail,
                             invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName,
                             model.TransactionReference
                             );
                         //send mail
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data ="Success" };
                     }
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "GenerateInvoice" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
+                        
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
                 }

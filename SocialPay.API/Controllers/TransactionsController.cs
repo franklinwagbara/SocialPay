@@ -34,7 +34,7 @@ namespace SocialPay.API.Controllers
             _disputeRepoService = disputeRepoService;
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost]
         [Route("generate-payment-link")]
         public async Task<IActionResult> GeneratePaymentLink([FromForm] MerchantpaymentLinkRequestDto model)
@@ -49,26 +49,63 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var userStatus = identity.Claims.FirstOrDefault(c => c.Type == "UserStatus")?.Value;
-                    var result = await _merchantPaymentLinkService
-                        .GeneratePaymentLink(model, Convert.ToInt32(clientId));                   
-                    return Ok(result);
+                    var userStatus = identity.Claims.FirstOrDefault(c => c.Type == "UserStatus")?.Value;                
+                    
+                    return Ok(await _merchantPaymentLinkService
+                        .GeneratePaymentLink(model, Convert.ToInt32(clientId)));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
-       // [AllowAnonymous]
+
+        [HttpGet]
+        [Route("validate-custom-url-name")]
+        public async Task<IActionResult> ValidateCustomUrl([FromQuery] string customUrlName)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                    return Ok(await _merchantPaymentLinkService.ValidateUrlAsync(customUrlName));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+        // [AllowAnonymous]
         [HttpGet]
         [Route("get-customer-payments")]
         public async Task<IActionResult> GetCustomerPayments()
@@ -82,20 +119,23 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _merchantPaymentLinkService.GetCustomerPayments(Convert.ToInt32(clientId));                
-                    return Ok(result);
+                    
+                    return Ok(await _merchantPaymentLinkService.GetCustomerPayments(Convert.ToInt32(clientId)));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
@@ -113,20 +153,23 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _customerRepoService.AcceptOrRejectItem(model, Convert.ToInt32(clientId));
-                    return Ok(result);
+
+                    return Ok(await _customerRepoService.AcceptOrRejectItem(model, Convert.ToInt32(clientId)));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
@@ -144,20 +187,23 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _disputeRepoService.LogDisputeRequest(model, Convert.ToInt32(clientId));
-                    return Ok(result);
+
+                    return Ok(await _disputeRepoService.LogDisputeRequest(model, Convert.ToInt32(clientId)));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
@@ -175,23 +221,25 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _merchantReportService.GetAllLoggedDisputes(Convert.ToInt32(clientId), false);
-                    return Ok(result);
+
+                    return Ok(await _merchantReportService.GetAllLoggedDisputes(Convert.ToInt32(clientId), false));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
-
 
         [AllowAnonymous]
         [HttpGet]
@@ -206,17 +254,20 @@ namespace SocialPay.API.Controllers
                 {
                     return Ok(await _customerRepoService.DecryptMessage(responseMessage));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
@@ -234,17 +285,20 @@ namespace SocialPay.API.Controllers
                 {
                     return Ok(await _customerRepoService.DecryptSpectaMessage(responseMessage));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
     }

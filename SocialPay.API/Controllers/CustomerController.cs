@@ -38,20 +38,23 @@ namespace SocialPay.API.Controllers
                 if (ModelState.IsValid)
                 {
                   
-                    var result = await _customerRepoService.GetLinkDetails(model.TransactionReference);                  
-                    return Ok(result);
+                    return Ok(await _customerRepoService.GetLinkDetails(model.TransactionReference));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
+
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
@@ -71,10 +74,12 @@ namespace SocialPay.API.Controllers
                 {
                     return Ok(await _customerRepoService.InitiatePayment(model));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
@@ -82,7 +87,8 @@ namespace SocialPay.API.Controllers
             {
                 _log4net.Error("An error occured while initiating payment" + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
@@ -100,10 +106,11 @@ namespace SocialPay.API.Controllers
                 return Ok(model);             
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
@@ -117,21 +124,22 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-
-                    var result = await _customerRepoService.PaymentConfirmation(model);
-                    return Ok(result);
+                    return Ok(await _customerRepoService.PaymentConfirmation(model));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
@@ -151,21 +159,24 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    var result = await _customerRepoService
-                        .GetAllCustomerOrders(Convert.ToInt32(clientId), category);
-                    return Ok(result);
+                 
+                    return Ok(await _customerRepoService
+                        .GetAllCustomerOrders(Convert.ToInt32(clientId), category));
                 }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
+
+                return StatusCode(500, response);
             }
         }
 
