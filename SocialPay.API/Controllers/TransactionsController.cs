@@ -34,7 +34,6 @@ namespace SocialPay.API.Controllers
             _disputeRepoService = disputeRepoService;
         }
 
-        //[AllowAnonymous]
         [HttpPost]
         [Route("generate-payment-link")]
         public async Task<IActionResult> GeneratePaymentLink([FromForm] MerchantpaymentLinkRequestDto model)
@@ -71,7 +70,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("validate-custom-url-name")]
         public async Task<IActionResult> ValidateCustomUrl([FromQuery] string customUrlName)
@@ -105,7 +103,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        // [AllowAnonymous]
         [HttpGet]
         [Route("get-customer-payments")]
         public async Task<IActionResult> GetCustomerPayments()
@@ -173,7 +170,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("log-dispute")]
         public async Task<IActionResult> LogDispute([FromForm] DisputeItemRequestDto model)
@@ -206,7 +202,6 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
-
 
         [HttpGet]
         [Route("get-disputes")]
