@@ -43,7 +43,6 @@ namespace SocialPay.API.Controllers
             _payWithSpectaService = payWithSpectaService;
         }
 
-        //[AllowAnonymous]
         [HttpPost]
         [Route("onboarding-business-info")]
         public async Task<IActionResult> MerchantBusinessInfo([FromForm] MerchantOnboardingInfoRequestDto model)
@@ -76,7 +75,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        //[AllowAnonymous]
         [HttpPost]
         [Route("onboarding-bank-info")]
         public async Task<IActionResult> MerchantBankInfo([FromBody] MerchantBankInfoRequestDto model)

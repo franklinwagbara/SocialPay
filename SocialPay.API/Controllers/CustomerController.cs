@@ -58,7 +58,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("initiate-payment")]
         public async Task<IActionResult> InitiatePayment([FromForm] CustomerPaymentRequestDto model)
@@ -67,8 +66,7 @@ namespace SocialPay.API.Controllers
             _log4net.Info("Task starts to initiate payments" + " | " + model.TransactionReference + " | " + DateTime.Now);
 
             try
-            {
-              
+            {             
 
                 if (ModelState.IsValid)
                 {
@@ -92,9 +90,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
-
-
         [HttpPost]
         [Route("initiate-test")]
         public async Task<IActionResult> Test([FromBody] TestVideoDto model)
@@ -113,7 +108,6 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
-
 
         [HttpPost]
         [Route("payment-confirmation")]
@@ -141,9 +135,7 @@ namespace SocialPay.API.Controllers
 
                 return StatusCode(500, response);
             }
-        }
-
-       
+        }       
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
