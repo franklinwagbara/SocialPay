@@ -16,33 +16,33 @@ namespace API.Test
         static void Main(string[] args)
         {
 
-            var random = new Random();
+            ////var random = new Random();
 
-            string randomNumber = string.Join(string.Empty, Enumerable.Range(0, 10).Select(number => random.Next(0, 9).ToString()));
+            ////string randomNumber = string.Join(string.Empty, Enumerable.Range(0, 10).Select(number => random.Next(0, 9).ToString()));
 
-            var dateFormat = DateTime.UtcNow.ToString("MMddyyyyhhmmss");
+            ////var dateFormat = DateTime.UtcNow.ToString("MMddyyyyhhmmss");
 
-            var sessionId = $"{"sterlingbankcode here"}{dateFormat}{randomNumber}";
+            ////var sessionId = $"{"sterlingbankcode here"}{dateFormat}{randomNumber}";
 
-            var newRef = $"{"So-Pay-"}{Guid.NewGuid().ToString().Substring(0, 15)}";
+            ////var newRef = $"{"So-Pay-"}{Guid.NewGuid().ToString().Substring(0, 15)}";
 
             //string iString = "2005-05-05 22:12 PM";
             //yyyy-MM-dd
 
-            DateTime firstDate = new DateTime(2017, 03, 03);
+            ////DateTime firstDate = new DateTime(2017, 03, 03);
 
-            //Second Date
-            DateTime secondDate = new DateTime(2018, 06, 06); //DateTime.Now;
-
-
-            DateTime oDT = DateTime.ParseExact("05-Oct-2019", "dd-MMM-yyyy",
-             CultureInfo.InvariantCulture);
-
-            DateTime oDT1 = DateTime.ParseExact("05-Oct-2020", "dd-MMM-yyyy",
-                CultureInfo.InvariantCulture);
+            //////Second Date
+            ////DateTime secondDate = new DateTime(2018, 06, 06); //DateTime.Now;
 
 
-            string s1 = oDT.ToString("yyyy-MM-dd");
+            ////DateTime oDT = DateTime.ParseExact("05-Oct-2019", "dd-MMM-yyyy",
+            //// CultureInfo.InvariantCulture);
+
+            ////DateTime oDT1 = DateTime.ParseExact("05-Oct-2020", "dd-MMM-yyyy",
+            ////    CultureInfo.InvariantCulture);
+
+
+            ////string s1 = oDT.ToString("yyyy-MM-dd");
 
             //string startDate = "2019-10-01";
             //string endDate = "2020-9-01";
@@ -124,7 +124,8 @@ namespace API.Test
             //var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6o%2FsE5lumxNYOWL5DuHvKaQ%3D%3D";
             var decodeWorkingString = "QcKGLrMvsAUJ08snV7PKPNyYBnx6zErBI7T6l7BlDQa1ieYtT3NtjvKCZjjlBP7m2V1oVT7Zac1Jubh2DMld78wzibzRC1DBuRgq4XoUqqCKKM5sIxwSOWhJfhXlB6yGUw%20hu2W0nX6AHR8%2F89wCENwYIJYxi52w3rGHjWFDuxLU1FBjtsb5MayKcwPWSksx";
             //var decodeString = "eOnQBWdWVJ9cuPMmcDbEwCKVWtRxZgexLIOvor2YppSzR%20t%20flTqH2cm%208uY8bmi6jZbty28XpF1cL37r3GvycfIJBOgoBs6GM2GXb8TbsQy0LLRcX8LVjw9ake9EPjk";
-            var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6jtaoY8Rz7uHUNnHn10CclMU39USagI5FR%2FEKXma9RnT53tvjMiQw5sw1Xjjnzbtpsa%2FGCxzAm0k%3D";
+            //var decodeString = "PpfjduWjfRUoNMbQnrfIwqJ1piIJVJexGDKKJMt6evqbUkilDLUUwooxhgDnPBE6jtaoY8Rz7uHUNnHn10CclMU39USagI5FR%2FEKXma9RnT53tvjMiQw5sw1Xjjnzbtpsa%2FGCxzAm0k%3D";
+            var decodeString = "CTogNoa78kRXhIcR0kUdjqJ9I7hy3qWqFuCdUH/uqzJ7d45aEVnGFVqRcRb pWxNWDXvAcVg SdDTSiMKfdttzjPaLZBZr/iCVSuXOx7lKSxj SQBafTQvHep8jwunAvNHmlfP725u8=";
             var decodeMessage = System.Uri.UnescapeDataString(decodeString);           
             if (decodeMessage.Contains(" "))
             {
