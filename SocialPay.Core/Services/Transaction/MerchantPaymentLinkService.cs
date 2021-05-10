@@ -91,10 +91,10 @@ namespace SocialPay.Core.Services.Transaction
 
                     var newGuid = Guid.NewGuid().ToString("N");
                     var token = model.MerchantAmount + "," + model.PaymentCategory + "," + model.PaymentLinkName + "," + newGuid;
-                    var encryptedToken = token.Encrypt(_appSettings.appKey);                   
+                    var encryptedToken = token.Encrypt(_appSettings.appKey);
 
-                    ////if(await _context.MerchantPaymentSetup.AnyAsync(x=>x.CustomUrl == paymentModel.CustomUrl))
-                    ////    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name" };
+                    if (await _context.MerchantPaymentSetup.AnyAsync(x => x.CustomUrl == paymentModel.CustomUrl))
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name" };
 
                     if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))
                     {
@@ -106,13 +106,13 @@ namespace SocialPay.Core.Services.Transaction
                     }
                    
                     model.TransactionReference = newGuid;
-                    model.PaymentLinkUrl = $"{_appSettings.paymentlinkUrl}{model.TransactionReference}";  
-                   // model.PaymentLinkUrl =$"{_appSettings.paymentlinkUrl}{model.CustomUrl}";  
-                    
-                    //if(string.IsNullOrEmpty(model.CustomUrl))
-                    //{
-                    //    model.PaymentLinkUrl = $"{_appSettings.paymentlinkUrl}{model.TransactionReference}";
-                    //}
+                   // model.PaymentLinkUrl = $"{_appSettings.paymentlinkUrl}{model.TransactionReference}";  
+                    model.PaymentLinkUrl =$"{_appSettings.paymentlinkUrl}{model.CustomUrl}";
+
+                    if (string.IsNullOrEmpty(model.CustomUrl))
+                    {
+                        model.PaymentLinkUrl = $"{_appSettings.paymentlinkUrl}{model.TransactionReference}";
+                    }
 
                     var linkCatModel = new LinkCategory
                     {
