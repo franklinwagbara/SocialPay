@@ -77,13 +77,26 @@ namespace SocialPay.Core.Services.Validations
                         MiddleName = b.Element("MiddleName")?.Value,
 
                     }).FirstOrDefault();
+
                 if (bvnDetails == null)
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
+
                 if (bvnDetails.Bvn.Contains("exit"))
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
 
+                //var dob = Convert.ToDateTime(bvnDetails.DateOfBirth);
+
+                //int ageLimit = Convert.ToInt32(_appSettings.ageLimit);
+
+                //var currentAge = CalculateAge(dob);
+
+                //if(currentAge.Year >= ageLimit)
+                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange };
+
+                ////20-Oct-90
                 //if (!bvnDetails.DateOfBirth.Equals(dateOfbirth))
                 //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth };
+
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
@@ -136,10 +149,7 @@ namespace SocialPay.Core.Services.Validations
 
                     };
                 if (accountDetail.STA_CODE != "ACTIVE")
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InActiveAccountNumber, NUBAN = nuban };
-                
-                //DateTime dob = Convert.ToDateTime()
-                //var validateAge = 
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InActiveAccountNumber, NUBAN = nuban };                           
                 
                 accountDetail.ResponseCode = AppResponseCodes.Success;
                 return accountDetail;
