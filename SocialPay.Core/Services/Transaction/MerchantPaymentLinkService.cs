@@ -49,7 +49,7 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-                //clientId = 144;
+               // clientId = 144;
                 //userStatus = "00";
                 _log4net.Info("Initiating GeneratePaymentLink request" + " | " + clientId + " | " + paymentModel.PaymentLinkName + " | "+ DateTime.Now);
 
@@ -89,7 +89,7 @@ namespace SocialPay.Core.Services.Transaction
                     model.DeliveryTime = paymentModel.DeliveryTime < 1 ? 0 : paymentModel.DeliveryTime;
                     model.PaymentMethod = paymentModel.PaymentMethod == null ? string.Empty : paymentModel.PaymentMethod;
 
-                    var newGuid = Guid.NewGuid().ToString("N");
+                    var newGuid = $"{"So-Pay-"}{Guid.NewGuid().ToString("N")}";
                     var token = model.MerchantAmount + "," + model.PaymentCategory + "," + model.PaymentLinkName + "," + newGuid;
                     var encryptedToken = token.Encrypt(_appSettings.appKey);
 
@@ -98,7 +98,7 @@ namespace SocialPay.Core.Services.Transaction
 
                     if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))
                     {
-                        newGuid = Guid.NewGuid().ToString("N");
+                        newGuid = $"{"So-Pay-"}{Guid.NewGuid().ToString("N")}";
                         token = string.Empty;
                         encryptedToken = string.Empty;
                         token = $"{model.MerchantAmount}{model.PaymentCategory}{model.PaymentLinkName}{newGuid}";
@@ -112,6 +112,7 @@ namespace SocialPay.Core.Services.Transaction
                     if (string.IsNullOrEmpty(model.CustomUrl))
                     {
                         model.PaymentLinkUrl = $"{_appSettings.paymentlinkUrl}{model.TransactionReference}";
+                        model.CustomUrl = model.TransactionReference;
                     }
 
                     var linkCatModel = new LinkCategory
