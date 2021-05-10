@@ -79,5 +79,6 @@
         public string failedTransactionEmailSubject { get; set; }
         public string sharedkeyval { get; set; }
         public string sharedvectorval { get; set; }
+        public string ageLimit { get; set; }
     }
 }

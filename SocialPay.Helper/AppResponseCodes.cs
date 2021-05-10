@@ -45,7 +45,8 @@
         public const string InsufficientFunds = "41";               
         public const string IncorrectTransactionPin = "42";               
         public const string DuplicateLinkName = "43";               
-       // public const string TinIsRequired = "41";               
+        public const string AgeNotWithinRange = "44";               
+        public const string InvalidBVNDateOfBirth = "44";               
     }
 
     public class MerchantOnboardingProcess
