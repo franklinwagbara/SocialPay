@@ -490,9 +490,8 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                //clientId = 96;
+               // clientId = 96;
                 _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + clientId + " | " + DateTime.Now);
-
 
                 if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
                  x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
@@ -533,7 +532,7 @@ namespace SocialPay.Core.Services.Account
                     BankCode = model.BankCode
                 };
 
-              ///  var validateUser = await _bankServiceRepository.BvnValidation(model.BVN, getUserInfo.MerchantWallet.Select(x=>x.DoB).FirstOrDefault());
+                //var validateUser = await _bankServiceRepository.BvnValidation(model.BVN, getUserInfo.MerchantWallet.Select(x=>x.DoB).FirstOrDefault());
 
                 if (model.BankCode == _appSettings.SterlingBankCode)
                 {
