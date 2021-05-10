@@ -494,19 +494,19 @@ namespace SocialPay.Core.Services.Account
                 _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + clientId + " | " + DateTime.Now);
 
 
-                ////if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
-                //// x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
-                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
+                if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
+                 x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
-                ////var nibsRequestModel = new IBSNameEnquiryRequestDto
-                ////{
-                ////    ReferenceID = Guid.NewGuid().ToString(),
-                ////    ToAccount = model.Nuban,
-                ////    DestinationBankCode = model.BankCode,
-                ////    RequestType = _appSettings.nameEnquiryRequestType,
-                ////};
+                //var nibsRequestModel = new IBSNameEnquiryRequestDto
+                //{
+                //    ReferenceID = Guid.NewGuid().ToString(),
+                //    ToAccount = model.Nuban,
+                //    DestinationBankCode = model.BankCode,
+                //    RequestType = _appSettings.nameEnquiryRequestType,
+                //};
 
-                ////var ibsRequest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModel); ;
+                //var ibsRequest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModel); ;
 
 
                 var getUserInfo = await _context.ClientAuthentication
