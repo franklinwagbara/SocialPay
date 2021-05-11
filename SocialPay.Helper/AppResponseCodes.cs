@@ -46,7 +46,8 @@
         public const string IncorrectTransactionPin = "42";               
         public const string DuplicateLinkName = "43";               
         public const string AgeNotWithinRange = "44";               
-        public const string InvalidBVNDateOfBirth = "44";               
+        public const string InvalidBVNDateOfBirth = "45";               
+        public const string BvnValidationError = "46";               
     }
 
     public class MerchantOnboardingProcess

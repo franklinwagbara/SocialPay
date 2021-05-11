@@ -84,26 +84,26 @@ namespace SocialPay.Core.Services.Validations
                 if (bvnDetails.Bvn.Contains("exit"))
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
 
-                //var dob = Convert.ToDateTime(bvnDetails.DateOfBirth);
+                var dob = Convert.ToDateTime(bvnDetails.DateOfBirth);
 
-                //int ageLimit = Convert.ToInt32(_appSettings.ageLimit);
+                int ageLimit = Convert.ToInt32(_appSettings.ageLimit);
 
-                //var currentAge = CalculateAge(dob);
+                var currentAge = CalculateAge(dob);
 
-                //if(currentAge.Year >= ageLimit)
-                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange };
+                if (currentAge.Year >= ageLimit)
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
 
                 ////20-Oct-90
                 //if (!bvnDetails.DateOfBirth.Equals(dateOfbirth))
                 //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth };
 
-                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
+                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "BvnValidation" + " | " + bvn + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "Bvn Validation" + " | " + bvn + " | "+ ex + " | " + DateTime.Now);
 
-                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
+                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.BvnValidationError };
             }
         }
 
