@@ -52,6 +52,14 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                     {
                         _log4net.Info("Job Service" + "-" + "Non Escrow Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
+                        var getBankInfo = await context.MerchantBankInfo
+                               .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+
+                        if (getBankInfo.BankCode != _appSettings.SterlingBankCode)
+                        {
+
+                        }
+
                         var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
 
                         if (validateNuban.ResponseCode == AppResponseCodes.Success)
@@ -70,11 +78,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();
 
-                            transactionLogid = getTransInfo.TransactionLogId;
-                           
-
-                            var getBankInfo = await context.MerchantBankInfo
-                               .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+                            transactionLogid = getTransInfo.TransactionLogId;                      
                            
                             if (getBankInfo == null)
                             {
