@@ -38,7 +38,7 @@ namespace SocialPay.Helper.Dto.Request
         public string BankCode { get; set; }
         public string Nuban { get; set; }
         public string Currency { get; set; }
-        public string BVN { get; set; }
+        //public string BVN { get; set; }
         public string Country { get; set; }
         public bool DefaultAccount { get; set; }
     }

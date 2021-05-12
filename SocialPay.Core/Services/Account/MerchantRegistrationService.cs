@@ -64,10 +64,16 @@ namespace SocialPay.Core.Services.Account
             try
             {
                 if (await _context.ClientAuthentication.AnyAsync(x => x.Email == signUpRequestDto.Email
-                || x.PhoneNumber == signUpRequestDto.PhoneNumber))
+                || x.PhoneNumber == signUpRequestDto.PhoneNumber || x.Bvn == signUpRequestDto.Bvn))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
-                var token = DateTime.Now.ToString() + Guid.NewGuid().ToString() + DateTime.Now.AddMilliseconds(120) + Utilities.GeneratePin();
+
+                var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn, signUpRequestDto.DateOfBirth);
+
+                if (validateUser.ResponseCode != AppResponseCodes.Success)
+                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode };
+
+                var token = $"{DateTime.Now.ToString()}{Guid.NewGuid().ToString()}{DateTime.Now.AddMilliseconds(120)}{Utilities.GeneratePin()}";
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
                 var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
                 var encryptedPin = newPin.Encrypt(_appSettings.appKey);
@@ -96,6 +102,7 @@ namespace SocialPay.Core.Services.Account
                         {
                             ClientSecretHash = passwordHash,
                             ClientSecretSalt = passwordSalt,
+                            Bvn = signUpRequestDto.Bvn,
                             Email = signUpRequestDto.Email,
                             StatusCode = MerchantOnboardingProcess.CreateAccount,
                             FullName = signUpRequestDto.Fullname,
@@ -491,10 +498,9 @@ namespace SocialPay.Core.Services.Account
             try
             {
               //  clientId = 96;
-                _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + clientId + " | " + DateTime.Now);
+                _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " +  clientId + " | " + DateTime.Now);
 
-                if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban ||
-                 x.BVN == model.BVN && x.ClientAuthenticationId == clientId))
+                if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban && x.ClientAuthenticationId == clientId))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
                 //var nibsRequestModel = new IBSNameEnquiryRequestDto
@@ -525,23 +531,23 @@ namespace SocialPay.Core.Services.Account
                     ClientAuthenticationId = clientId,
                     Currency = model.Currency,
                     BankName = model.BankName,
-                    BVN = model.BVN,
+                    BVN = getUserInfo.Bvn,
                     Country = model.Country,
                     Nuban = model.Nuban,
                     DefaultAccount = model.DefaultAccount,
                     BankCode = model.BankCode
                 };
 
-                var validateUser = await _bankServiceRepository.BvnValidation(model.BVN, getUserInfo.MerchantWallet.Select(x=>x.DoB).FirstOrDefault());
+                ////var validateUser = await _bankServiceRepository.BvnValidation(model.BVN, getUserInfo.MerchantWallet.Select(x=>x.DoB).FirstOrDefault());
 
-                if (validateUser.ResponseCode != AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode };
+                ////if (validateUser.ResponseCode != AppResponseCodes.Success)
+                ////    return new WebApiResponse { ResponseCode = validateUser.ResponseCode };
 
                 if (model.BankCode == _appSettings.SterlingBankCode)
                 {
-                    _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
+                    _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + getUserInfo.Bvn + " | " + DateTime.Now);
 
-                    var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban, model.BVN);
+                    var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban, getUserInfo.Bvn);
 
                     if (result.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
@@ -554,15 +560,17 @@ namespace SocialPay.Core.Services.Account
                             bankInfoModel.BranchCode = result.BRA_CODE;
                             bankInfoModel.LedCode = result.T24_BRA_CODE;
                             bankInfoModel.CusNum = result.CUS_NUM;
+
                             await _context.MerchantBankInfo.AddAsync(bankInfoModel);
                             await _context.SaveChangesAsync();
+
                             getUserInfo.StatusCode = MerchantOnboardingProcess.BankInfo;
                             getUserInfo.LastDateModified = DateTime.Now;
 
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
 
-                            _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
+                            _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " +  DateTime.Now);
                            
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
                         }
@@ -576,7 +584,7 @@ namespace SocialPay.Core.Services.Account
 
                 }
 
-                _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
+                _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + DateTime.Now);
 
                 var nibsRequestModel = new IBSNameEnquiryRequestDto
                 {
@@ -591,7 +599,7 @@ namespace SocialPay.Core.Services.Account
                 if (ibsRequest.ResponseCode != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
 
-                if (ibsRequest.BVN != model.BVN)
+                if (ibsRequest.BVN != getUserInfo.Bvn)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -601,19 +609,25 @@ namespace SocialPay.Core.Services.Account
                         bankInfoModel.AccountName = ibsRequest.AccountName;
                         bankInfoModel.KycLevel = ibsRequest.KYCLevel;
                         bankInfoModel.BankCode = model.BankCode;
+
                         await _context.MerchantBankInfo.AddAsync(bankInfoModel);
                         await _context.SaveChangesAsync();
+
                         getUserInfo.StatusCode = MerchantOnboardingProcess.BankInfo;
                         getUserInfo.LastDateModified = DateTime.Now;
+
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
-                        _log4net.Info("Initiating OnboardMerchantBankInfo interbank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + model.BVN + " | " + DateTime.Now);
+
+                        _log4net.Info("Initiating OnboardMerchantBankInfo interbank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + getUserInfo.Bvn + " | " + DateTime.Now);
+                       
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + "OnboardMerchantBankInfo" + " | " + model.BVN + " | " + model.BankName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        _log4net.Error("Error occured" + " | " + "OnboardMerchantBankInfo" + " | " + model.Nuban + " | " + model.BankName + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
+                       
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
 
