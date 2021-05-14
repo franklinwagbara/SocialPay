@@ -632,15 +632,12 @@ namespace SocialPay.Core.Services.Account
                     }
 
                 }
-
-
             }
             catch (Exception ex)
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
-
 
         public async Task<WebApiResponse> TransactionSetupRequest(MerchantActivitySetupRequestDto model, long clientId)
         {
