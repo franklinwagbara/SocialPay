@@ -41,6 +41,17 @@
     <Folder Include="wwwroot\CustomerDocuments\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\EmailTemplate\socialpay-receipt.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\ReceiptTemplate\socialpay-receipt.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 
 
 </Project>

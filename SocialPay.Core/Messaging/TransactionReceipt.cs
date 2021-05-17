@@ -42,11 +42,11 @@ namespace SocialPay.Core.Messaging
                 {
                     emailModal.EmailBody = reader.ReadToEnd();
                     StringBuilder b = new StringBuilder(emailModal.EmailBody);
-                    b.Replace("%amount%", Convert.ToString(amount));
-                    b.Replace("%trandate%", Convert.ToString(tranDate));
-                    b.Replace("%tranreference%", tranreference);
-                    b.Replace("%businessname%", businessname);
-                    b.Replace("%currentyear%", Convert.ToString(DateTime.Now.Year));
+                    b.Replace("{amount}", Convert.ToString(amount));
+                    b.Replace("{transactionDate}", Convert.ToString(tranDate));
+                    b.Replace("{tranreference}", tranreference);
+                    b.Replace("{businessname}", businessname);
+                    b.Replace("{currentyear}", Convert.ToString(DateTime.Now.Year));
                     emailModal.EmailBody = b.ToString();
                 }
                
