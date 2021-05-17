@@ -15,8 +15,10 @@ namespace API.Test
     {
         static void Main(string[] args)
         {
+            var oDT1 = DateTime.Parse("10/20/1990").ToString("dd-MMM-yy");
 
-            ////var random = new Random();
+           // string s1 = oDT1.ToString("dd-MM-yyyy");
+            var random = new Random();
 
             ////string randomNumber = string.Join(string.Empty, Enumerable.Range(0, 10).Select(number => random.Next(0, 9).ToString()));
 
@@ -58,8 +60,8 @@ namespace API.Test
             //Console.ReadLine();
 
             //CultureInfo culture = new CultureInfo("en-US");
-          
-           
+
+
             //DateTime stempDate = Convert.ToDateTime(startDate, culture);
             //DateTime etempDate = Convert.ToDateTime(endDate, culture);
             //DateTime date1 = new DateTime(2020, 8, 28);
@@ -71,7 +73,7 @@ namespace API.Test
 
             //int month = etempDate.Month - stempDate.Month;
 
-         
+
 
             //////int month3 = oDT1.Month - oDT.Month;
             ////////string szDT = oDT.ToString("MM-dd-yyyy");

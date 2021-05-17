@@ -55,12 +55,13 @@ namespace SocialPay.Core.Services.Validations
             //                    Years, Months, Days, Hours, Seconds);
         }
 
-
         public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth)
         {
             try
             {
                 _log4net.Info("Initiating BvnValidation request" + " | " + bvn + " | " + dateOfbirth + " | " + DateTime.Now);
+
+                var currentDob = DateTime.Parse(dateOfbirth).ToString("dd-MMM-yy");
 
                 var banksServices = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
                 var validatebvn = await banksServices.GetBvnAsync(bvn);
@@ -84,6 +85,9 @@ namespace SocialPay.Core.Services.Validations
                 if (bvnDetails.Bvn.Contains("exit"))
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
 
+                if (!bvnDetails.DateOfBirth.Equals(currentDob))
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth };
+
                 var dob = Convert.ToDateTime(bvnDetails.DateOfBirth);
 
                 int ageLimit = Convert.ToInt32(_appSettings.ageLimit);
@@ -91,11 +95,7 @@ namespace SocialPay.Core.Services.Validations
                 var currentAge = CalculateAge(dob);
 
                 if (currentAge.Year >= ageLimit)
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
-
-                ////20-Oct-90
-                //if (!bvnDetails.DateOfBirth.Equals(dateOfbirth))
-                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth };
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };              
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange };
             }
