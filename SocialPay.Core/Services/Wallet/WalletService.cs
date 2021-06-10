@@ -38,7 +38,7 @@ namespace SocialPay.Core.Services.Wallet
 
                 _log4net.Info("Initiating CreateMerchantWallet request" + " | " + request + " | " + DateTime.Now);
 
-                var response = await _client.PostAsync(_appSettings.walletExtensionUrl + _appSettings.createwalletUrl,
+                var response = await _client.PostAsync($"{_appSettings.walletExtensionUrl}{_appSettings.createwalletUrl}",
                     new StringContent(request, Encoding.UTF8, "application/json"));
 
                 var result = await response.Content.ReadAsStringAsync();
@@ -84,9 +84,9 @@ namespace SocialPay.Core.Services.Wallet
             try
             {
 
-                var response = await _client.GetAsync(_appSettings.walletExtensionUrl
-                    + _appSettings.clearwalletUrl + phoneNumber);
+                var response = await _client.GetAsync($"{ _appSettings.walletExtensionUrl}{ _appSettings.clearwalletUrl}{ phoneNumber}");
                 var result = await response.Content.ReadAsStringAsync();
+                
                 if (response.IsSuccessStatusCode)
                 {
                     //apiResponse = JsonConvert.DeserializeObject<WalletResponseDto>(result);

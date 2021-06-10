@@ -2423,3 +2423,15 @@ INFO  2021-05-11 13:07:01,412 146014ms BankServiceRepository  ?                 
 INFO  2021-05-11 13:12:59,373 224545ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo request | string | string | 22158293976 | 96 | 5/11/2021 1:12:59 PM
 INFO  2021-05-11 13:18:05,852 91212ms antRegistrationService ?                  - Initiating OnboardMerchantBankInfo request | string | string | 22158293976 | 96 | 5/11/2021 1:18:05 PM
 INFO  2021-05-11 13:18:11,678 97038ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22158293976 | 1994-03-21 | 5/11/2021 1:18:11 PM
+INFO  2021-05-17 07:39:10,705 384224ms AccountsController     ?                  - Tasks starts to create account | string | 5/17/2021 7:39:10 AM
+INFO  2021-05-17 07:39:10,779 384298ms antRegistrationService ?                  - Initiating create merchant account | string | 5/17/2021 7:39:10 AM
+INFO  2021-05-17 07:39:22,701 396220ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 10/20/1990 | 5/17/2021 7:39:22 AM
+INFO  2021-05-17 08:14:54,274 77791ms AccountsController     ?                  - Tasks starts to create account | string | 5/17/2021 8:14:54 AM
+INFO  2021-05-17 08:14:54,413 77930ms antRegistrationService ?                  - Initiating create merchant account | string | 5/17/2021 8:14:54 AM
+INFO  2021-05-17 08:14:59,979 83496ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 10/15/1990 | 5/17/2021 8:14:59 AM
+INFO  2021-05-17 08:28:26,968 539991ms AccountsController     ?                  - Tasks starts to create account | string | 5/17/2021 8:28:26 AM
+INFO  2021-05-17 08:28:27,054 540077ms antRegistrationService ?                  - Initiating create merchant account | string | 5/17/2021 8:28:27 AM
+INFO  2021-05-17 08:28:32,964 545987ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 10/15/1990 | 5/17/2021 8:28:32 AM
+INFO  2021-05-17 08:29:23,712 596735ms AccountsController     ?                  - Tasks starts to create account | string | 5/17/2021 8:29:23 AM
+INFO  2021-05-17 08:29:23,713 596735ms antRegistrationService ?                  - Initiating create merchant account | string | 5/17/2021 8:29:23 AM
+INFO  2021-05-17 08:29:27,124 600147ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 10/20/1990 | 5/17/2021 8:29:27 AM
