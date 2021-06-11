@@ -31,7 +31,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.OrderStatus == TransactionJourneyStatusCodes.CompletedWalletFunding 
                         && x.TransactionJourney == TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul
-                        && x.PaymentChannel == PaymentChannel.Card).Take(1).ToListAsync();
+                        && x.PaymentChannel == PaymentChannel.Card).Take(4).ToListAsync();
 
                     _log4net.Info("Job Service: Total number of pending cards transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     
@@ -39,7 +39,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                         return "No record";
                     
                     await _transactions.InitiateTransactions(pendingTransactions);
-                    //return "No record";
                 }
 
                 Console.WriteLine("GenerateDailyReport : " + DateTime.Now.ToString());

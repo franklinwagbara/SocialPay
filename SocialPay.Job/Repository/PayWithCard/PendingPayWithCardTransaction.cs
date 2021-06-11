@@ -39,11 +39,13 @@ namespace SocialPay.Job.Repository.PayWithCard
         public async Task<WebApiResponse> InitiateTransactions(List<TransactionLog> pendingRequest)
         {
             long transactionLogid = 0;
+
             try
             {
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+
                     foreach (var item in pendingRequest)
                     {
                         _log4net.Info("Job Service" + "-" + "Tasks starts to initiate name enquiry request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
@@ -75,12 +77,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                             if (getWalletInfo == null)
                                 return null;
 
-                            ////var initiateRequest = await _fioranoTransferRepository
-                            ////    .InititiateDebit(Convert.ToString(getTransInfo.TotalAmount), 
-                            ////    "Card-Payment" + " - " + item.TransactionReference +
-                            ////    " - "+ item.CustomerTransactionReference, item.TransactionReference,
-                            ////    "", false, item.PaymentChannel, "Card payment", requestId);
-
 
                             var fioranoRequestBody = new FTRequest
                             {
@@ -99,6 +95,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                             };
 
                             var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
+
                             var jsonRequest = JsonConvert.SerializeObject(request);
 
                             var logRequest = new FioranoT24CardCreditRequest
@@ -154,6 +151,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                                             ResponseCode = postTransaction.FTResponse.ResponseCode,
                                             ResponseText = postTransaction.FTResponse.ResponseText
                                         };
+
                                         await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
                                         await context.SaveChangesAsync();
                                         await transaction.CommitAsync();
@@ -170,29 +168,9 @@ namespace SocialPay.Job.Repository.PayWithCard
                                 }
 
                             }
-                            //getTransInfo.IsQueuedPayWithCard = false;
-                            //getTransInfo.LastDateModified = DateTime.Now;
-                            //context.Update(getTransInfo);
-                            //await context.SaveChangesAsync();
+                           
                             return null;
 
-
-
-                            ////if (initiateRequest.ResponseCode == AppResponseCodes.Success)
-                            ////{
-                            ////    getTransInfo.IsApproved = true;
-                            ////    getTransInfo.IsCompletedPayWithCard = true;
-                            ////    getTransInfo.LastDateModified = DateTime.Now;
-                            ////    context.Update(getTransInfo);
-                            ////    await context.SaveChangesAsync();
-                            ////    return null;
-                            ////}
-
-                            ////getTransInfo.IsQueuedPayWithCard = false;
-                            ////getTransInfo.LastDateModified = DateTime.Now;
-                            ////context.Update(getTransInfo);
-                            ////await context.SaveChangesAsync();
-                            ////return null;
                         }
 
                         else
@@ -203,11 +181,13 @@ namespace SocialPay.Job.Repository.PayWithCard
                                 Message = "Name enquiry issues" + "-"+ validateNuban.UsableBal + "-"+ item.TotalAmount + "-"+ validateNuban.ResponseCode +"-"+ item.PaymentReference,
                                 TransactionReference = item.TransactionReference
                             };
+
                             await context.FailedTransactions.AddAsync(failedResponse);
                             await context.SaveChangesAsync();
                         }
 
                     }
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
 
@@ -224,23 +204,14 @@ namespace SocialPay.Job.Repository.PayWithCard
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
-                if (errorMessage.Contains("Violation") || code == 2627)
-                {
-                    //using (var scope = Services.CreateScope())
-                    //{
-                    //    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    //    var getTransInfo = await context.TransactionLog
-                    //      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
 
-                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FioranoFirstFundingCompleted;
-                    //    getTransInfo.LastDateModified = DateTime.Now;
-                    //    context.Update(getTransInfo);
-                    //    await context.SaveChangesAsync();
-                    //}
+                if (errorMessage.Contains("Violation") || code == 2627)
+                {                 
 
                     _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
