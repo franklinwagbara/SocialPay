@@ -36,7 +36,7 @@ namespace SocialPay.Core.Services.Validations
 
                 _log4net.Info("Job Service" + "-" + "LockAccountWithReasonAsync response" + " | " + model.acct + " | " + model.amt + " | " + result + " | " + DateTime.Now);
 
-                return response; ;
+                return response;
             }
             catch (Exception ex)
             {

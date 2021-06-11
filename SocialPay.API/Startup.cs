@@ -196,35 +196,35 @@ namespace SocialPay.API
 
             ///Main jobs starts
 
-            ////services.AddCronJob<CardPaymentTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.CardPaymentTask;
-            ////});
+            services.AddCronJob<CardPaymentTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CardPaymentTask;
+            });
 
-            ////services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            ////});
+            services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            });
 
-            ////services.AddCronJob<NonEscrowBankTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowBankTransactionTask;
-            ////});
+            services.AddCronJob<NonEscrowBankTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowBankTransactionTask;
+            });
 
-            ////services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
-            ////});
+            services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
+            });
 
-            ////services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowWalletTransactionTask;
-            ////});
+            services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowWalletTransactionTask;
+            });
 
             ////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
             ////{
@@ -362,6 +362,12 @@ namespace SocialPay.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("../swagger/v1/swagger.json", "Social Pay API");
+                });
             }
             else
             {
@@ -396,12 +402,7 @@ namespace SocialPay.API
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("../swagger/v1/swagger.json", "Social Pay API");
-            });
+           
         }
     }
 }

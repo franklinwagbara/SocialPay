@@ -32,7 +32,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
           
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.TransactionJourney == 
-                        TransactionJourneyStatusCodes.WalletTranferCompleted).Take(1).ToListAsync();
+                        TransactionJourneyStatusCodes.WalletTranferCompleted).Take(3).ToListAsync();
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Basic
                      || x.LinkCategory == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();

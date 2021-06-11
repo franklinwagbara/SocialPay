@@ -66,6 +66,13 @@ namespace SocialPay.Job.Repository.InterBankService
                     };
 
                     var lockAccount = await _bankServiceRepositoryJobService.LockAccountWithReasonAsync(lockAccountModel);
+
+                    if (string.IsNullOrEmpty(lockAccount))
+                    {
+                        _log4net.Info("Job Service" + "-" + "Account lock failed" + " | " + sourceAccount + " | "+ destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.AccountLockFailed };
+                    }
                     //if (lockAccount.Contains(""))
                     //    return new WebApiResponse { ResponseCode = AppResponseCodes.AccountLockFailed }; 
                     var nipEnquiry = await _iBSReposerviceJob.InitiateNameEnquiry(nameEnquiryModel);
