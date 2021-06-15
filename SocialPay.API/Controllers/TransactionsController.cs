@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Report;
+using SocialPay.Core.Services.Specta;
 using SocialPay.Core.Services.Transaction;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
@@ -23,15 +24,19 @@ namespace SocialPay.API.Controllers
         private readonly CustomerRepoService _customerRepoService;
         private readonly MerchantReportService _merchantReportService;
         private readonly DisputeRepoService _disputeRepoService;
+        private readonly PayWithSpectaService _payWithSpectaService;
 
         public TransactionsController(MerchantPaymentLinkService merchantPaymentLinkService,
             CustomerRepoService customerRepoService, MerchantReportService merchantReportService,
-            DisputeRepoService disputeRepoService)
+            DisputeRepoService disputeRepoService,
+            PayWithSpectaService payWithSpectaService
+            )
         {
             _merchantPaymentLinkService = merchantPaymentLinkService;
             _customerRepoService = customerRepoService;
             _merchantReportService = merchantReportService;
             _disputeRepoService = disputeRepoService;
+            _payWithSpectaService = payWithSpectaService;
         }
 
        // [AllowAnonymous]
@@ -275,8 +280,6 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-
-
                 if (ModelState.IsValid)
                 {
                     return Ok(await _customerRepoService.DecryptSpectaMessage(responseMessage));
@@ -297,5 +300,35 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("create-specta-account")]
+        public async Task<IActionResult> createSpectaAccount(CreateSpectaRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _payWithSpectaService.CreateSpectaAccount(model));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                       .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+          
+
+        }
+
     }
 }

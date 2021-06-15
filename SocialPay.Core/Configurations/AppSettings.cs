@@ -26,6 +26,7 @@
         public string paywithSpectaverifyPaymentUrl { get; set; }
         public string paywithSpectaCallBackUrl { get; set; }
         public string paywithSpectaPurchaseUrlExtension { get; set; }
+        public string createSpectaUrlExtension { get; set; }
         public string paywithspectaHeaderKey { get; set; }
         public string paywithspectaHeaderValue { get; set; }
         public string mid { get; set; }

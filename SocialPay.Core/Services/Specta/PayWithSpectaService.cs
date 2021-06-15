@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using RestSharp;
 using SocialPay.Core.Configurations;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,6 +70,68 @@ namespace SocialPay.Core.Services.Specta
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
 			}
+        }
+
+        public async Task<WebApiResponse> CreateSpectaAccount(CreateSpectaRequestDto model)
+        {
+            _log4net.Info("creating a specta account request" + model.CompanyName + " | " + DateTime.Now);
+
+            try
+            {
+                int ChannelId = 1;
+                var apiResponse = new WebApiResponse { };
+                var TINNumberLookUp = await _client.GetAsync(_appSettings.tinvalidationEndpointUrl +model.TinNumber);
+                var result = await TINNumberLookUp.Content.ReadAsStringAsync();
+                if (!TINNumberLookUp.IsSuccessStatusCode)
+                {
+                    apiResponse.ResponseCode = AppResponseCodes.TinValidationFailed;
+                    return apiResponse;
+                }
+                var formContent = new FormUrlEncodedContent(new[]
+                 {
+                    new KeyValuePair<string, string>("CompanyName", model.CompanyName),
+                    new KeyValuePair<string, string>("Address", model.Address),
+                    new KeyValuePair<string, string>("EmailAddress", model.EmailAddress),
+                    new KeyValuePair<string, string>("WebsiteUrl", model.WebsiteUrl),
+                    new KeyValuePair<string, string>("BusinessSegmentId",  Convert.ToString(model.BusinessSegmentId)),
+                    new KeyValuePair<string, string>("TinNumber", model.TinNumber),
+                    new KeyValuePair<string, string>("ChannelId", Convert.ToString(ChannelId)),
+                    new KeyValuePair<string, string>("RcNumber", model.RcNumber),
+                    new KeyValuePair<string, string>("YearsInBusiness",  Convert.ToString(model.YearsInBusiness)),
+                    new KeyValuePair<string, string>("State", model.State),
+                    new KeyValuePair<string, string>("SourceOfAwareness", model.SourceOfAwareness),
+                    new KeyValuePair<string, string>("StoreDescription", model.StoreDescription),
+                    new KeyValuePair<string, string>("PhoneNumbers", model.PhoneNumbers.ToString()),
+                    new KeyValuePair<string, string>("Directors", model.Directors.ToString()),
+
+                 }
+                );
+
+                var response = await _client.PostAsync(_appSettings.createSpectaUrlExtension, formContent);
+                var res = await response.Content.ReadAsStringAsync();
+                _log4net.Info("create specta account"  + result + " | "  + DateTime.Now);
+                var responseToDTOobject = JsonConvert.DeserializeObject<CreateSpectaAccountResponse>(res);
+                if (response.IsSuccessStatusCode)
+                {
+                    //  var successfulResponse = JsonConvert.DeserializeObject<CreateSpectaAccountResponse>(response.Content);
+                    // apiResponse.Data = successfulResponse.Result;
+                    apiResponse.ResponseCode = AppResponseCodes.Success;
+                    return apiResponse;
+
+                }
+                apiResponse.ResponseCode = AppResponseCodes.Failed;
+                apiResponse.Message = responseToDTOobject.error.message;
+                return apiResponse;
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "creating a specta account request" + model.CompanyName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
+
         }
 
         public async Task<WebApiResponse> PaymentVerification(string message)
