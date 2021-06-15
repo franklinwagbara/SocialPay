@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Report;
@@ -303,11 +304,11 @@ namespace SocialPay.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("create-specta-account")]
-        public async Task<IActionResult> createSpectaAccount(CreateSpectaRequestDto model)
+        public async Task<IActionResult> createSpectaAccount([FromForm]CreateSpectaRequestDto model)
         {
             var response = new WebApiResponse { };
             try
-            {
+            { 
                 if (ModelState.IsValid)
                 {
                     return Ok(await _payWithSpectaService.CreateSpectaAccount(model));

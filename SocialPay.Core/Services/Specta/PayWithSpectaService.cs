@@ -85,7 +85,7 @@ namespace SocialPay.Core.Services.Specta
                 if (!TINNumberLookUp.IsSuccessStatusCode)
                 {
                     apiResponse.ResponseCode = AppResponseCodes.TinValidationFailed;
-                    return apiResponse;
+                   // return apiResponse;
                 }
                 var formContent = new FormUrlEncodedContent(new[]
                  {
@@ -103,6 +103,9 @@ namespace SocialPay.Core.Services.Specta
                     new KeyValuePair<string, string>("StoreDescription", model.StoreDescription),
                     new KeyValuePair<string, string>("PhoneNumbers", model.PhoneNumbers.ToString()),
                     new KeyValuePair<string, string>("Directors", model.Directors.ToString()),
+                    new KeyValuePair<string, string>("InsidePicture", model.InsidePicture.ToString()),
+                    new KeyValuePair<string, string>("InsidePicture", model.OutsidePicture.ToString()),
+                    new KeyValuePair<string, string>("InsidePicture", model.OtherPicture.ToString()),
 
                  }
                 );

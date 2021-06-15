@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -32,5 +33,9 @@ namespace SocialPay.Helper.Dto.Request
 
         [Required(ErrorMessage = "Enter a minimum of one director")]
         public List<string> Directors { get; set; }
+
+        public IFormFile InsidePicture { get; set; }
+        public IFormFile OutsidePicture { get; set; }
+        public IFormFile OtherPicture { get; set; }
     }
 }
