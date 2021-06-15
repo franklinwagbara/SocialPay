@@ -1,13 +1,18 @@
 ﻿using bankService;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace API.Test
@@ -17,9 +22,49 @@ namespace API.Test
         static async Task Main(string[] args)
         {
 
-          //  var 
+            //Dictionary<string, Int16> AuthorList = new Dictionary<string, Int16>();
+            //AuthorList.Add("Mahesh Chand", 35);
+            //AuthorList.Add("Mahesh", 35);
 
+            //AuthorList.Remove("Mahesh Chand");
 
+            //var resqq = AuthorList;
+
+       
+
+            WebRequest request = WebRequest.Create("https://coderbyte.com/api/challenges/json/json-cleaning");
+            WebResponse response = request.GetResponse();
+
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+            string str = reader.ReadLine();
+
+            string data = Regex.Replace(str, @"\\N/A\\n", "");
+
+            var values = JsonConvert.DeserializeObject<Dictionary<Profile, Profile>>(str);
+
+            var jsonString = JsonConvert.DeserializeObject<Profile>(str);
+
+            while (str != null)
+            {
+                Console.WriteLine(str);
+                str = reader.ReadLine();
+            }
+
+            var anArray = new int[] { 1, 5, 7, 4, 2 };
+
+           // var query = anArray.Where(x => x != anArray.Min() && x != anArray.Max()).ToList();
+            var query = anArray.Where(x => x != anArray.Max()).ToList();
+
+            int sum = query.Sum();
+
+            var maxArray = anArray.Max();
+
+            if(sum == maxArray)
+            {
+
+            }
+
+            var (number, index) = anArray.Select((n, i) => (n, i)).Max();
 
             var oDT1 = DateTime.Parse("10/20/1990").ToString("dd-MMM-yy");
 
@@ -246,6 +291,29 @@ namespace API.Test
             return  m1 + m2;
         }
 
+
+
+        public class Name
+        {
+            public string first { get; set; }
+            public string middle { get; set; }
+            public string last { get; set; }
+        }
+
+        public class Education
+        {
+            public string highschool { get; set; }
+            public string college { get; set; }
+        }
+
+        public class Profile
+        {
+            public Name name { get; set; }
+            public int age { get; set; }
+            public string DOB { get; set; }
+            public List<string> hobbies { get; set; }
+            public Education education { get; set; }
+        }
         public class TestApps
         {
             public DateTime? eDate { get; set; }
