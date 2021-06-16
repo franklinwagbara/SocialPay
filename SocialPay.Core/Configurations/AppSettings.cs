@@ -81,5 +81,7 @@
         public string sharedkeyval { get; set; }
         public string sharedvectorval { get; set; }
         public string ageLimit { get; set; }
+        public string WalletSecretKey { get; set; }
+        public string WalletVector { get; set; }
     }
 }

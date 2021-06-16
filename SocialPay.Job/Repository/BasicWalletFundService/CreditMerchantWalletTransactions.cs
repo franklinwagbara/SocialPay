@@ -120,16 +120,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                         PaymentReference = walletRequestModel.PaymentReference,
                                         responsedata = Convert.ToString(initiateRequest.responsedata),
                                     };
-                                    //if(getTransInfo.Category == MerchantPaymentLinkCategory.Escrow ||
-                                    //    getTransInfo.Category == MerchantPaymentLinkCategory.OneOffEscrowLink)
-                                    //{
-                                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.AwaitingCustomerFeedBack;
-                                    //}
-
-                                    //if (getTransInfo.PaymentChannel == PaymentChannel.Card)
-                                    //{
-                                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.AwaitingCustomerFeedBack;
-                                    //}
+                                    
                                     getTransInfo.OrderStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
                                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul;
                                     getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.FirstWalletFundingWasSuccessul;
@@ -184,18 +175,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                 var code = se.Number;
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
-                {
-                    //using (var scope = Services.CreateScope())
-                    //{
-                    //    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    //    var getTransInfo = await context.TransactionLog
-                    //      .SingleOrDefaultAsync(x => x.TransactionLogId == transactionLogid);
-
-                    //    getTransInfo.OrderStatus = TransactionJourneyStatusCodes.CompletedWalletFunding;
-                    //    getTransInfo.LastDateModified = DateTime.Now;
-                    //    context.Update(getTransInfo);
-                    //    await context.SaveChangesAsync();
-                    //}
+                {                   
                        
                     _log4net.Error("Job Service" + "-" + "Error occured. Duplicate transaction" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };

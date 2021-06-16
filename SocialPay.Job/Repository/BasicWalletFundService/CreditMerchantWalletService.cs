@@ -32,7 +32,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                     var pendingTransactions = await context.TransactionLog
                         .Where(x => x.OrderStatus == 
                         TransactionJourneyStatusCodes.Pending 
-                        && x.PaymentChannel != PaymentChannel.PayWithSpecta).Take(1).ToListAsync();
+                        && x.PaymentChannel != PaymentChannel.PayWithSpecta).Take(3).ToListAsync();
 
                      _log4net.Info("Job Service" + "-" + "CreditMerchantWalletService pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
                     
