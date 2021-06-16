@@ -15,44 +15,46 @@ namespace SocialPay.Core.Services.Specta
 {
     public class PayWithSpectaService
     {
-		private readonly AppSettings _appSettings;
-		private readonly HttpClient _client;
+        private readonly AppSettings _appSettings;
+        private readonly HttpClient _client;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(PayWithSpectaService));
 
         public PayWithSpectaService(IOptions<AppSettings> appSettings)
-		{
-			_appSettings = appSettings.Value;
-			_client = new HttpClient
-			{
-				BaseAddress = new Uri(_appSettings.paywithSpectaBaseUrl),
-			};
-		}
-        public async Task<WebApiResponse> InitiatePayment(decimal amount, string description, string transactionReference, string merchantId, 
+        {
+            _appSettings = appSettings.Value;
+            _client = new HttpClient
+            {
+                BaseAddress = new Uri(_appSettings.paywithSpectaBaseUrl),
+            };
+        }
+        public async Task<WebApiResponse> InitiatePayment(decimal amount, string description, string transactionReference, string merchantId,
             string merchantKey)
         {
-            _log4net.Info("InitiatePayment request" + " | " + transactionReference + " | " + amount + " | " + merchantId + " | "+ merchantKey + " | "+ DateTime.Now);
+            _log4net.Info("InitiatePayment request" + " | " + transactionReference + " | " + amount + " | " + merchantId + " | " + merchantKey + " | " + DateTime.Now);
 
             var apiResponse = new WebApiResponse { };
             try
-			{
+            {
                 var model = new PaywithSpectRequestDto
                 {
-                    amount = Convert.ToString(amount), callBackUrl = _appSettings.paywithSpectaCallBackUrl,
-                    description = description, merchantId = merchantId,
+                    amount = Convert.ToString(amount),
+                    callBackUrl = _appSettings.paywithSpectaCallBackUrl,
+                    description = description,
+                    merchantId = merchantId,
                     reference = transactionReference
                 };
                 var request = JsonConvert.SerializeObject(model);
 
-                _log4net.Info("InitiatePayment pay with specta request" + " | " + transactionReference + " | " + merchantId + " | " + request + " | "+ DateTime.Now);
+                _log4net.Info("InitiatePayment pay with specta request" + " | " + transactionReference + " | " + merchantId + " | " + request + " | " + DateTime.Now);
 
                 _client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, merchantKey);
-               // _client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, _appSettings.paywithspectaHeaderValue);
+                // _client.DefaultRequestHeaders.Add(_appSettings.paywithspectaHeaderKey, _appSettings.paywithspectaHeaderValue);
 
                 var response = await _client.PostAsync(_appSettings.paywithSpectaPurchaseUrlExtension,
                     new StringContent(request, Encoding.UTF8, "application/json"));
-               
+
                 var result = await response.Content.ReadAsStringAsync();
-                _log4net.Info("InitiatePayment response" + " | " + transactionReference + " | " + amount + " | " + result + " | " + merchantId + " | "+ DateTime.Now);
+                _log4net.Info("InitiatePayment response" + " | " + transactionReference + " | " + amount + " | " + result + " | " + merchantId + " | " + DateTime.Now);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -63,13 +65,13 @@ namespace SocialPay.Core.Services.Specta
                 }
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
-			}
-			catch (Exception ex)
-			{
-                _log4net.Error("Error occured" + " | " + "InitiatePayment" + " | " + transactionReference + " | " + amount + " | "+ merchantId + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "InitiatePayment" + " | " + transactionReference + " | " + amount + " | " + merchantId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-			}
+            }
         }
 
         public async Task<WebApiResponse> CreateSpectaAccount(CreateSpectaRequestDto model)
@@ -79,7 +81,9 @@ namespace SocialPay.Core.Services.Specta
             try
             {
                 int ChannelId = 1;
+
                 var apiResponse = new WebApiResponse { };
+
                 var TINNumberLookUp = await _client.GetAsync($"{_appSettings.tinvalidationEndpointUrl}{model.TinNumber}");
 
                 var result = await TINNumberLookUp.Content.ReadAsStringAsync();
@@ -87,8 +91,9 @@ namespace SocialPay.Core.Services.Specta
                 if (!TINNumberLookUp.IsSuccessStatusCode)
                 {
                     apiResponse.ResponseCode = AppResponseCodes.TinValidationFailed;
-                   // return apiResponse;
+                    // return apiResponse;
                 }
+
                 var formContent = new FormUrlEncodedContent(new[]
                  {
                     new KeyValuePair<string, string>("CompanyName", model.CompanyName),
@@ -108,24 +113,28 @@ namespace SocialPay.Core.Services.Specta
                     new KeyValuePair<string, string>("InsidePicture", model.InsidePicture.ToString()),
                     new KeyValuePair<string, string>("InsidePicture", model.OutsidePicture.ToString()),
                     new KeyValuePair<string, string>("InsidePicture", model.OtherPicture.ToString()),
-
-                 }
-                );
+                 });
 
                 var response = await _client.PostAsync(_appSettings.createSpectaUrlExtension, formContent);
+
                 var res = await response.Content.ReadAsStringAsync();
-                _log4net.Info("create specta account"  + result + " | "  + DateTime.Now);
+
+                _log4net.Info("create specta account" + result + " | " + DateTime.Now);
+
                 var responseToDTOobject = JsonConvert.DeserializeObject<CreateSpectaAccountResponse>(res);
+
                 if (response.IsSuccessStatusCode)
                 {
                     //  var successfulResponse = JsonConvert.DeserializeObject<CreateSpectaAccountResponse>(response.Content);
                     // apiResponse.Data = successfulResponse.Result;
                     apiResponse.ResponseCode = AppResponseCodes.Success;
-                    return apiResponse;
 
+                    return apiResponse;
                 }
+
                 apiResponse.ResponseCode = AppResponseCodes.Failed;
                 apiResponse.Message = responseToDTOobject.error.message;
+
                 return apiResponse;
 
             }
@@ -141,7 +150,7 @@ namespace SocialPay.Core.Services.Specta
 
         public async Task<WebApiResponse> PaymentVerification(string message)
         {
-            _log4net.Info("PaymentVerification request" + " | " + message + " | " +  DateTime.Now);
+            _log4net.Info("PaymentVerification request" + " | " + message + " | " + DateTime.Now);
 
             var apiResponse = new WebApiResponse { };
             try
@@ -157,7 +166,7 @@ namespace SocialPay.Core.Services.Specta
                     new StringContent(request, Encoding.UTF8, "application/json"));
 
                 var result = await response.Content.ReadAsStringAsync();
-                _log4net.Info("PaymentVerification response" + " | " + message + " | " +  result + " | " + DateTime.Now);
+                _log4net.Info("PaymentVerification response" + " | " + message + " | " + result + " | " + DateTime.Now);
 
                 if (response.IsSuccessStatusCode)
                 {
