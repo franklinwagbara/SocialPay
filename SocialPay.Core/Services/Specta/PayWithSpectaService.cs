@@ -80,8 +80,10 @@ namespace SocialPay.Core.Services.Specta
             {
                 int ChannelId = 1;
                 var apiResponse = new WebApiResponse { };
-                var TINNumberLookUp = await _client.GetAsync(_appSettings.tinvalidationEndpointUrl +model.TinNumber);
+                var TINNumberLookUp = await _client.GetAsync($"{_appSettings.tinvalidationEndpointUrl}{model.TinNumber}");
+
                 var result = await TINNumberLookUp.Content.ReadAsStringAsync();
+
                 if (!TINNumberLookUp.IsSuccessStatusCode)
                 {
                     apiResponse.ResponseCode = AppResponseCodes.TinValidationFailed;
