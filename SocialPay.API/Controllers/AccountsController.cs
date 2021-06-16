@@ -10,7 +10,7 @@ using SocialPay.Helper.Dto.Response;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-
+using SocialPay.Core.Services.Specta;
 
 namespace SocialPay.API.Controllers
 {
@@ -21,14 +21,17 @@ namespace SocialPay.API.Controllers
         private readonly MerchantRegistrationService _merchantRegistrationService;      
         private readonly AuthRepoService _authRepoService;
         private readonly AccountResetService _accountResetService;
+        private readonly PayWithSpectaService _payWithSpectaService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AccountsController));
 
         public AccountsController(MerchantRegistrationService merchantRegistrationService,
-            AuthRepoService authRepoService, AccountResetService accountResetService)
+            AuthRepoService authRepoService, AccountResetService accountResetService,
+            PayWithSpectaService payWithSpectaService)
         {
             _merchantRegistrationService = merchantRegistrationService;
             _authRepoService = authRepoService;
             _accountResetService = accountResetService;
+            _payWithSpectaService = payWithSpectaService;
         }
 
         [HttpPost]
@@ -270,6 +273,36 @@ namespace SocialPay.API.Controllers
                 response.ResponseCode = AppResponseCodes.InternalError;
                 return BadRequest(response);
             }
+        }
+
+
+        [HttpPost]
+        [Route("create-specta-account")]
+        public async Task<IActionResult> createSpectaAccount([FromForm]CreateSpectaRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _payWithSpectaService.CreateSpectaAccount(model));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                       .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+
+
         }
     }
 }
