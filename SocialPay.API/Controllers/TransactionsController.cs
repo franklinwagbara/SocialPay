@@ -301,35 +301,7 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("create-specta-account")]
-        public async Task<IActionResult> createSpectaAccount([FromForm]CreateSpectaRequestDto model)
-        {
-            var response = new WebApiResponse { };
-            try
-            { 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _payWithSpectaService.CreateSpectaAccount(model));
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                       .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-
-                return StatusCode(500, response);
-            }
-          
-
-        }
+       
 
     }
 }
