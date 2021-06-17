@@ -504,6 +504,60 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
+
+
+        public async Task<WebApiResponse> ModifyFioranoRequestInfo(string reference)
+        {
+            try
+            {
+                var validateMerchant = await _context.NonEscrowFioranoT24Request
+                    .SingleOrDefaultAsync(x => x.PaymentReference == reference);
+
+                if (validateMerchant != null)
+                {
+                    _context.Remove(validateMerchant);
+                    await _context.SaveChangesAsync();
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record Not found" };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> RemoveInterbankRequestInfo(string reference)
+        {
+            try
+            {
+                var validateMerchant = await _context.InterBankTransactionRequest
+                    .SingleOrDefaultAsync(x => x.PaymentReference == reference);
+
+                if (validateMerchant != null)
+                {
+                    _context.Remove(validateMerchant);
+                    await _context.SaveChangesAsync();
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record Not found" };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
         public async Task<WebApiResponse> ValidateInfo(string reference)
         {
             try

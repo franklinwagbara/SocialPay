@@ -726,50 +726,20 @@ namespace SocialPay.API.Controllers
 
 
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-payment-details")]
-        //public async Task<IActionResult> ValidatePayment([FromQuery] string reference, string merchant)
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "3dd22")
-        //            return BadRequest();
-
-        //        if (ModelState.IsValid)
-        //        {
-        //            return Ok(await _merchantReportService.ValidateInfo(merchant));
-        //        }
-        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage));
-        //        response.ResponseCode = AppResponseCodes.Failed;
-        //        response.Data = message;
-        //        return BadRequest(response);
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
-
-
         ////[AllowAnonymous]
         ////[HttpGet]
-        ////[Route("get-user-wallet-info")]
-        ////public async Task<IActionResult> ValidateuserWallet([FromQuery] string reference, string merchant)
+        ////[Route("get-payment-details")]
+        ////public async Task<IActionResult> ValidatePayment([FromQuery] string reference, string merchant)
         ////{
         ////    var response = new WebApiResponse { };
         ////    try
         ////    {
-        ////        if (reference != "345hsa2")
+        ////        if (reference != "3dd22")
         ////            return BadRequest();
 
         ////        if (ModelState.IsValid)
         ////        {
-        ////            return Ok(await _merchantReportService.ValidateWalletInfo(merchant));
+        ////            return Ok(await _merchantReportService.ValidateInfo(merchant));
         ////        }
         ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
         ////            .Select(e => e.ErrorMessage));
@@ -784,6 +754,36 @@ namespace SocialPay.API.Controllers
         ////        return BadRequest(response);
         ////    }
         ////}
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-user-wallet-info")]
+        public async Task<IActionResult> ValidateuserWallet([FromQuery] string reference, string merchant)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "gh3219")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.ValidateWalletInfo(merchant));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
         ////[AllowAnonymous]
