@@ -178,8 +178,7 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _merchantReportService.GetMerchants();
-                    return Ok(result);
+                    return Ok(await _merchantReportService.GetMerchants());
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));

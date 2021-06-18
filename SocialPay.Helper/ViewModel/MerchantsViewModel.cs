@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SocialPay.Helper.ViewModel
 {
@@ -39,6 +40,7 @@ namespace SocialPay.Helper.ViewModel
         public string Country { get; set; }
         public string Chargebackemail { get; set; }
         public string Logo { get; set; }
+        public DateTime Date { get; set; }
         public BankInfoViewModel BankInfo { get; set; }
     }
 }
