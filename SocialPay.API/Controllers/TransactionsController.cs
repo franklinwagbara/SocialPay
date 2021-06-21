@@ -301,7 +301,6 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
-       
 
     }
 }
