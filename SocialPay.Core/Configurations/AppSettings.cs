@@ -76,6 +76,7 @@
         public string accountReason { get; set; }
         public string nameEnquiryChannelCode { get; set; }
         public string senderEmailInfo { get; set; }
+        public string senderEmailName { get; set; }
         public string successfulTransactionEmailSubject { get; set; }
         public string failedTransactionEmailSubject { get; set; }
         public string sharedkeyval { get; set; }
@@ -83,5 +84,9 @@
         public string ageLimit { get; set; }
         public string WalletSecretKey { get; set; }
         public string WalletVector { get; set; }
+        public string sendGridAPIBaseUrl { get; set; }
+        public string sendGridEmailUrlExtension { get; set; }
+        public string sendGridbearerToken { get; set; }
+        public string MerchantSignUpEmailSubject { get; set; }
     }
 }

@@ -14,6 +14,7 @@ using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Extensions.Utilities;
 using SocialPay.Core.Messaging;
+using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Repositories.UserService;
@@ -146,6 +147,7 @@ namespace SocialPay.API
             services.AddScoped<AccountResetService>();
             services.AddScoped<DisputeRepoService>();
             services.AddScoped<TinService>();
+            services.AddScoped<SendGridEmailService>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<InterBankPendingTransferService>();
             services.AddSingleton<SqlRepository>();

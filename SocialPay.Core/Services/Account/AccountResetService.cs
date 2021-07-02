@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Messaging;
+using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Core.Repositories.UserService;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
@@ -16,15 +17,17 @@ namespace SocialPay.Core.Services.Account
         private readonly UserRepoService _userRepoService;
         private readonly EmailService _emailService;
         private readonly AppSettings _appSettings;
+        private readonly SendGridEmailService _sendGridEmailService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AccountResetService));
 
 
         public AccountResetService(UserRepoService userRepoService, EmailService emailService,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings, SendGridEmailService sendGridEmailService)
         {
             _userRepoService = userRepoService;
             _emailService = emailService;
             _appSettings = appSettings.Value;
+            _sendGridEmailService = sendGridEmailService;
         }
 
         public async Task<WebApiResponse> GenerateResetToken(string email)
@@ -39,8 +42,10 @@ namespace SocialPay.Core.Services.Account
 
                 var token = Guid.NewGuid().ToString().Substring(0, 10);
                 var logRequest = await _userRepoService.LogAccountReset(getUser.ClientAuthenticationId, token);
+
                 if (logRequest.ResponseCode != AppResponseCodes.Success)
                     return logRequest;
+
                 var emailModal = new EmailRequestDto
                 {
                     Subject = "Account Reset",
@@ -58,7 +63,12 @@ namespace SocialPay.Core.Services.Account
                 // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
                 mailBuilder.AppendLine("Best Regards,");
                 emailModal.EmailBody = mailBuilder.ToString();
-                var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
+
+
+                // var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
                 _log4net.Info("GenerateResetToken sent" + " | " + email + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
@@ -109,7 +119,11 @@ namespace SocialPay.Core.Services.Account
                 // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
                 mailBuilder.AppendLine("Best Regards,");
                 emailModal.EmailBody = mailBuilder.ToString();
-                var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
+
+
+                //var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                 _log4net.Info("GenerateResetToken sent" + " | " + email + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

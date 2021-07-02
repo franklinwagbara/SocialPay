@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Messaging;
+using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -25,17 +26,19 @@ namespace SocialPay.Core.Repositories.Invoice
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AppSettings _appSettings;
         private readonly EmailService _emailService;
+        private readonly SendGridEmailService _sendGridEmailService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(InvoiceService));
 
 
         public InvoiceService(SocialPayDbContext context,
             IHostingEnvironment environment, IOptions<AppSettings> appSettings,
-            EmailService emailService)
+            EmailService emailService, SendGridEmailService sendGridEmailService)
         {
             _context = context;
             _hostingEnvironment = environment;
             _appSettings = appSettings.Value;
             _emailService = emailService;
+            _sendGridEmailService = sendGridEmailService;
         }
 
         public async Task<List<InvoicePaymentInfo>> GetInvoicePaymentInfosAsync()
@@ -58,11 +61,14 @@ namespace SocialPay.Core.Repositories.Invoice
             {
                 var getInvoice = await _context.InvoicePaymentLink
                     .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
+
                 if (getInvoice.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = invoiceView };
+
                 var config = new MapperConfiguration(cfg => cfg.CreateMap<InvoicePaymentLink, MerchantInvoiceViewModel>());
                 var mapper = config.CreateMapper();
                 invoiceView = mapper.Map<List<MerchantInvoiceViewModel>>(getInvoice);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = invoiceView };
             }
             catch (Exception ex)
@@ -89,28 +95,38 @@ namespace SocialPay.Core.Repositories.Invoice
                 };
                 var mailBuilder = new StringBuilder();
                 string folderPath = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.EmailTemplatesPath);
+
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
                 }
+
                 emailModal.EmailBody = mailBuilder.ToString();
+                
                 var path = _hostingEnvironment.WebRootFileProvider.GetFileInfo(_appSettings.EmailTemplatesPath + "/" + _appSettings.InvoiceTemplateDescription)?.PhysicalPath;
+               
                 using (StreamReader reader = new StreamReader(path))
                 {
                     emailModal.EmailBody = reader.ReadToEnd();
+
                     var builder = new StringBuilder(emailModal.EmailBody);
+
                     builder.Replace("{amount}", Convert.ToString(amount));
                     builder.Replace("{totalamount}", Convert.ToString(totalAmount));
                     builder.Replace("{trandate}", Convert.ToString(tranDate));
                     builder.Replace("{invoicename}", invoicename);
                     builder.Replace("{paymentLink}", _appSettings.invoicePaymentlinkUrl + transactionReference);
                     builder.Replace("{currentyear}", Convert.ToString(DateTime.Now.Year));
+
                     emailModal.EmailBody = builder.ToString();
                 }
 
                 try
                 {
-                    var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                    var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
+
+
+                    //var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
                 catch (Exception ex)
@@ -154,6 +170,7 @@ namespace SocialPay.Core.Repositories.Invoice
                               }).OrderByDescending(x=>x.DateEntered).ToList();
 
                 response = result;
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
             }
             catch (Exception ex)

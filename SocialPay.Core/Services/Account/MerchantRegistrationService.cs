@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
+using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Tin;
 using SocialPay.Core.Services.Validations;
@@ -36,6 +37,7 @@ namespace SocialPay.Core.Services.Account
         private readonly WalletRepoService _walletRepoService;
         private readonly TinService _tinService;
         private readonly IDistributedCache _distributedCache;
+        private readonly SendGridEmailService _sendGridEmailService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantRegistrationService));
         public MerchantRegistrationService(SocialPayDbContext context,
             IOptions<AppSettings> appSettings, EmailService emailService,
@@ -43,7 +45,7 @@ namespace SocialPay.Core.Services.Account
             BankServiceRepository bankServiceRepository,
             IBSReposervice iBSReposervice, WalletRepoService walletRepoService,
             TinService tinService,
-            IDistributedCache distributedCache) : base(context)
+            IDistributedCache distributedCache, SendGridEmailService sendGridEmailService) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -55,6 +57,7 @@ namespace SocialPay.Core.Services.Account
             _walletRepoService = walletRepoService;
             _distributedCache = distributedCache;
             _tinService = tinService;
+            _sendGridEmailService = sendGridEmailService;
         }
 
         public async Task<WebApiResponse> CreateNewMerchant(SignUpRequestDto signUpRequestDto)
@@ -170,12 +173,15 @@ namespace SocialPay.Core.Services.Account
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
 
-                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                        if (sendMail != AppResponseCodes.Success)
+                      //  var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                        if (sendMail.ResponseCode != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
 
                         await transaction.CommitAsync();
+
                         _log4net.Info("Initiating create merchant account was successful" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
@@ -247,10 +253,13 @@ namespace SocialPay.Core.Services.Account
                             userInfo.StatusCode = getuserInfo.StatusCode;
                             serializedCustomerList = JsonConvert.SerializeObject(userInfo);
                             redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+
                             var options1 = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(DateTime.Now.AddMinutes(3))
                             .SetSlidingExpiration(TimeSpan.FromMinutes(1));
+
                             await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
+
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
                             _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
@@ -268,8 +277,10 @@ namespace SocialPay.Core.Services.Account
                         .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                         .SetSlidingExpiration(TimeSpan.FromMinutes(15));
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
+
                         _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
@@ -277,6 +288,7 @@ namespace SocialPay.Core.Services.Account
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "ConfirmSignup" + " | " + model.Pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -324,7 +336,7 @@ namespace SocialPay.Core.Services.Account
                         validateToken.LastDateModified = DateTime.Now;
                         _context.PinRequest.Update(validateToken);
                         await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
+                      
                         var emailModal = new EmailRequestDto
                         {
                             Subject = "Merchant Signed Up",
@@ -340,7 +352,14 @@ namespace SocialPay.Core.Services.Account
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
 
-                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+
+                        if(sendMail.ResponseCode != AppResponseCodes.Success)
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+
+                        await transaction.CommitAsync();
+                        // var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
                         _log4net.Info("Initiating RequestNewToken was successful" + " | " + DateTime.Now);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
@@ -349,6 +368,7 @@ namespace SocialPay.Core.Services.Account
                     {
                         _log4net.Error("Error occured" + " | " + "RequestNewToken" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
                 }
@@ -440,7 +460,9 @@ namespace SocialPay.Core.Services.Account
                         var cacheKey = Convert.ToString(clientId);
                         string serializedCustomerList;
                         var userInfo = new UserInfoViewModel { };
+
                         var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+
                         if (redisCustomerList != null)
                         {
                             await _distributedCache.RemoveAsync(cacheKey);
@@ -451,17 +473,22 @@ namespace SocialPay.Core.Services.Account
                             var options1 = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                             .SetSlidingExpiration(TimeSpan.FromMinutes(15));
+
                             await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
                         }
+
                         await _distributedCache.RemoveAsync(cacheKey);
                         userInfo.Email = getUserInfo.Email;
                         userInfo.StatusCode = getUserInfo.StatusCode;
                         serializedCustomerList = JsonConvert.SerializeObject(userInfo);
                         redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+
                         var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                         .SetSlidingExpiration(TimeSpan.FromMinutes(15));
+
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+
                         if (model.Logo == null)
                         {
                             await transaction.CommitAsync();
@@ -469,8 +496,11 @@ namespace SocialPay.Core.Services.Account
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo };
                         }
+
                         model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
+
                         await transaction.CommitAsync();
+
                         _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo };
@@ -479,6 +509,7 @@ namespace SocialPay.Core.Services.Account
                     {
                         _log4net.Error("An error ocuured while saving merchant business info" + model.BusinessEmail + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
 
@@ -680,8 +711,10 @@ namespace SocialPay.Core.Services.Account
                             Gender = getUserInfo.MerchantWallet.Select(x => x.Gender).FirstOrDefault(),
                             mobile = getUserInfo.PhoneNumber,
                         };
+
                         var walletResponse = new CreateWalletResponse { };
                         getUserInfo.StatusCode = MerchantOnboardingProcess.Wallet;
+
                         _context.ClientAuthentication.Update(getUserInfo);
                         await _context.SaveChangesAsync();
                         //_context.MerchantWallet.Update(walletInfo);
@@ -692,7 +725,9 @@ namespace SocialPay.Core.Services.Account
                         var cacheKey = Convert.ToString(clientId);
                         string serializedCustomerList;
                         var userInfo = new UserInfoViewModel { };
+
                         var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+
                         if (redisCustomerList != null)
                         {
                             await _distributedCache.RemoveAsync(cacheKey);
@@ -700,22 +735,29 @@ namespace SocialPay.Core.Services.Account
                             userInfo.StatusCode = getUserInfo.StatusCode;
                             serializedCustomerList = JsonConvert.SerializeObject(userInfo);
                             redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+
                             var options1 = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                             .SetSlidingExpiration(TimeSpan.FromMinutes(15));
+
                             await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
+
                             _log4net.Info("Initiating TransactionSetupRequest request saved" + " | " + model.ReceiveEmail + " | " + clientId + " | " + model.OutSideLagos + " | " + DateTime.Now);
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.Wallet };
                         }
+
                         await _distributedCache.RemoveAsync(cacheKey);
                         userInfo.Email = getUserInfo.Email;
                         userInfo.StatusCode = getUserInfo.StatusCode;
                         serializedCustomerList = JsonConvert.SerializeObject(userInfo);
                         redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+
                         var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                         .SetSlidingExpiration(TimeSpan.FromMinutes(15));
+
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+
                         _log4net.Info("Initiating TransactionSetupRequest request saved" + " | " + model.ReceiveEmail + " | " + clientId + " | " + model.OutSideLagos + " | " + DateTime.Now);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.Wallet };
@@ -865,12 +907,18 @@ namespace SocialPay.Core.Services.Account
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
 
-                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        ///var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
-                        if (sendMail != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+                        var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+
+                        if (sendMail.ResponseCode != AppResponseCodes.Success)
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+
+                        ////if (sendMail != AppResponseCodes.Success)
+                        ////    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
 
                         await transaction.CommitAsync();
+
                         _log4net.Info("Initiating create merchant account was successful" + " | " + email + " | " + DateTime.Now);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

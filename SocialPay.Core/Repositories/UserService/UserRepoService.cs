@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
+using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -20,16 +21,18 @@ namespace SocialPay.Core.Repositories.UserService
         private readonly Utilities _utilities;
         private readonly AppSettings _appSettings;
         private readonly EmailService _emailService;
+        private readonly SendGridEmailService _sendGridEmailService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(UserRepoService));
 
 
         public UserRepoService(SocialPayDbContext context, Utilities utilities,
-            IOptions<AppSettings> appSettings, EmailService emailService)
+            IOptions<AppSettings> appSettings, EmailService emailService, SendGridEmailService sendGridEmailService)
         {
             _context = context;
             _utilities = utilities;
             _appSettings = appSettings.Value;
             _emailService = emailService;
+            _sendGridEmailService = sendGridEmailService;
         }
 
         public async Task<ClientAuthentication> GetClientAuthenticationAsync(string email)
@@ -170,7 +173,10 @@ namespace SocialPay.Core.Repositories.UserService
                 mailBuilder.AppendLine("Best Regards,");
                 emailModal.EmailBody = mailBuilder.ToString();
 
-                var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                //var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
+
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
 

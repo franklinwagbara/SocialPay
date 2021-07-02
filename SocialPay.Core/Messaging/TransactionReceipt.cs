@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
+using SocialPay.Core.Messaging.SendGrid;
+using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using System;
 using System.IO;
@@ -14,12 +16,15 @@ namespace SocialPay.Core.Messaging
         private readonly EmailService _emailService;
         private readonly AppSettings _appSettings;
         private readonly IHostingEnvironment env;
+        private readonly SendGridEmailService _sendGridEmailService;
         public TransactionReceipt(EmailService emailService,
-            IOptions<AppSettings> appSettings, IHostingEnvironment env)
+            IOptions<AppSettings> appSettings, IHostingEnvironment env,
+            SendGridEmailService sendGridEmailService)
         {
             _emailService = emailService;
             _appSettings = appSettings.Value;
             this.env = env;
+            _sendGridEmailService = sendGridEmailService;
         }
         public async Task<bool> ReceiptTemplate(string destinationEmail,
             decimal amount, DateTime tranDate, string tranreference, string businessname)
@@ -52,7 +57,12 @@ namespace SocialPay.Core.Messaging
                
                 try
                 {
-                    var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                    var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
+
+                    //if (sendMail.ResponseCode != AppResponseCodes.Success)
+                    //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+
+                    //var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                     //Email sent
                 }
                 catch (Exception ex)

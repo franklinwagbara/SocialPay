@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Messaging;
+using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Core.Services;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Domain;
@@ -26,17 +27,19 @@ namespace SocialPay.Core.Repositories.Customer
         private readonly AppSettings _appSettings;
         private readonly EmailService _emailService;
         private readonly TransactionReceipt _transactionReceipt;
+        private readonly SendGridEmailService _sendGridEmailService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ICustomerService));
 
         public ICustomerService(SocialPayDbContext context, AuthRepoService authRepoService,
             IOptions<AppSettings> appSettings, EmailService emailService,
-            TransactionReceipt transactionReceipt) : base(context)
+            TransactionReceipt transactionReceipt, SendGridEmailService sendGridEmailService) : base(context)
         {
             _context = context;
             _authRepoService = authRepoService;
             _appSettings = appSettings.Value;
             _emailService = emailService;
             _transactionReceipt = transactionReceipt;
+            _sendGridEmailService = sendGridEmailService;
         }
 
         public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
@@ -388,7 +391,9 @@ namespace SocialPay.Core.Repositories.Customer
                                 TotalAmount = v.Amount, PaymentCategory = m.PaymentCategory, ClientId = clientId,
                                 CustomerTransactionReference = c.CustomerTransactionReference, PaymentReference = v.PaymentReference,
                                 OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
+
                 request = otherLinksresponse;
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
             }
             catch (Exception ex)
@@ -410,11 +415,14 @@ namespace SocialPay.Core.Repositories.Customer
         {
             var paymentview = new List<PaymentLinkViewModel>();
             var validateReference = await GetAllPaymentLinksByClientId(clientId);
+
             if (validateReference == null)
                 return paymentview;
+
             var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
             var mapper = config.CreateMapper();
             paymentview = mapper.Map<List<PaymentLinkViewModel>>(validateReference);
+
             return paymentview;
         }
 
@@ -469,11 +477,13 @@ namespace SocialPay.Core.Repositories.Customer
                                 getpaymentInfo.Message = model.Message;
                                 getpaymentInfo.LastDateModified = DateTime.Now;
                                 logconfirmation.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.Pending;
+
                                 _context.Update(getpaymentInfo);
                                 await _context.SaveChangesAsync();
                                 await _context.TransactionLog.AddAsync(logconfirmation);
                                 await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
+
                                 await _transactionReceipt.ReceiptTemplate(getpaymentInfo.Email, invoiceInfo.TotalAmount,
                                   DateTime.Now, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
@@ -493,16 +503,20 @@ namespace SocialPay.Core.Repositories.Customer
 
                             logFailedResponse.CustomerTransactionReference = getpaymentInfo.CustomerTransactionReference;
                             logFailedResponse.TransactionReference = getpaymentInfo.TransactionReference;
-                            logFailedResponse.Message = model.Message;                            
+                            logFailedResponse.Message = model.Message;                 
+                            
                             await _context.FailedTransactions.AddAsync(logFailedResponse);
                             await _context.SaveChangesAsync();
+
                             getpaymentInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
                             getpaymentInfo.Status = false;
                             getpaymentInfo.Message = model.Message;
                             getpaymentInfo.LastDateModified = DateTime.Now;
                             _context.Update(getpaymentInfo);
+
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
+
                             if(model.Message.Contains("Incorrect PIN"))
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.IncorrectTransactionPin, Data = "Incorrect Transaction Pin" };
 
@@ -696,7 +710,7 @@ namespace SocialPay.Core.Repositories.Customer
                             logconfirmation.DeliveryFinalDate = logconfirmation.DeliveryDate.AddDays(2);
                             await _context.TransactionLog.AddAsync(logconfirmation);
                             await _context.SaveChangesAsync();
-                            await transaction.CommitAsync();
+                           
                             //Send mail
                             await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
                                 logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
@@ -720,7 +734,12 @@ namespace SocialPay.Core.Repositories.Customer
                            // mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
 
-                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                            var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+
+                            if (sendMail.ResponseCode != AppResponseCodes.Success)
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+
+                          //  await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
 
                             emailModal.DestinationEmail = getCustomerInfo.Email;
@@ -732,16 +751,24 @@ namespace SocialPay.Core.Repositories.Customer
                             mailBuilder.AppendLine("<br />");
                            // mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
-                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                           // await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                            var sendCustomerMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+
+                            if (sendCustomerMail.ResponseCode != AppResponseCodes.Success)
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
                             _log4net.Info("Emails was successfully sent" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                            await transaction.CommitAsync();
+
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Request failed" };
                         }
                         catch (Exception ex)
                         {
                             _log4net.Error("Database Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                             await transaction.RollbackAsync();
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                         }
                     }
@@ -848,9 +875,12 @@ namespace SocialPay.Core.Repositories.Customer
                                 getTransactionLogs.Status = true;
                                 getTransactionLogs.IsAccepted = true;
                                 getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
+
                                 _context.Update(getTransactionLogs);
+
                                 await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
+
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                             }
                             return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
@@ -933,7 +963,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 ////await _context.ItemDispute.AddAsync(disputeModel);
                                 ////await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
-                                emailModal.Subject = "info@sterling.ng";
+                                emailModal.Subject = "Accept/Reject Request";
                                 emailModal.DestinationEmail = getMerchant.Email;
                                 emailModal.Subject = "Order" + " " + model.TransactionReference + " " + "was Rejected";
                                 mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
@@ -944,22 +974,35 @@ namespace SocialPay.Core.Repositories.Customer
                                 mailBuilder.AppendLine("Best Regards,");
                                 emailModal.EmailBody = mailBuilder.ToString();
 
-                                await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                               // await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+
+                                var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+
+                                if (sendMail.ResponseCode != AppResponseCodes.Success)
+                                    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                             }
+
                             logRequest.OrderStatus = TransactionJourneyStatusCodes.Approved;
                             logRequest.LastDateModified = DateTime.Now;
+
                             await _context.ItemAcceptedOrRejected.AddAsync(logRequest);
                             await _context.SaveChangesAsync();
+
                             getTransactionLogs.TransactionStatus = TransactionJourneyStatusCodes.Approved;
                             getTransactionLogs.ActivityStatus = TransactionJourneyStatusCodes.Approved;
                             getTransactionLogs.Status = true;
                             getTransactionLogs.IsAccepted = true;
                             getTransactionLogs.AcceptRejectLastDateModified = DateTime.Now;
+
                             _context.Update(getTransactionLogs);
+
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
-                            emailModal.Subject = "info@sterling.ng";
+
+                            emailModal.Subject = "Accept/Reject Request";
                             emailModal.DestinationEmail = getMerchant.Email;
                             emailModal.Subject = "Order" + " " + model.TransactionReference + " " + "was Accepted";
                             mailBuilder.AppendLine("Dear" + " " + getMerchant.Email + "," + "<br />");
@@ -970,7 +1013,13 @@ namespace SocialPay.Core.Repositories.Customer
                             mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
 
-                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                           // await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                            var sendCustomerMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+
+                            if (sendCustomerMail.ResponseCode != AppResponseCodes.Success)
+                                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                         }
                         catch (Exception ex)

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
@@ -29,12 +31,14 @@ namespace SocialPay.API.Controllers
         private readonly UserRepoService _userRepoService;
         private readonly CustomerRepoService _customerRepoService;
         private readonly CreateMerchantWalletService _createMerchantWalletService;
+        private readonly SendGridEmailService _sendGridEmailService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AdminController));
 
         public AdminController(ADRepoService aDRepoService, MerchantReportService merchantReportService,
             TransactionService transactionService, AuthRepoService authRepoService,
             CreateMerchantWalletService createMerchantWalletService,
-            UserRepoService userRepoService, CustomerRepoService customerRepoService)
+            UserRepoService userRepoService, CustomerRepoService customerRepoService,
+            SendGridEmailService sendGridEmailService)
         {
             _aDRepoService = aDRepoService;
             _merchantReportService = merchantReportService;
@@ -43,6 +47,7 @@ namespace SocialPay.API.Controllers
             _createMerchantWalletService = createMerchantWalletService;
             _userRepoService = userRepoService;
             _customerRepoService = customerRepoService;
+            _sendGridEmailService = sendGridEmailService;
         }
 
         [HttpPost]
@@ -878,6 +883,47 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("send-test-email")]
+        ////public async Task<IActionResult> SendEmail([FromQuery] string email)
+        ////{
+         
+        ////    var response = new WebApiResponse { };
+
+        ////    try
+        ////    {
+        ////        if (ModelState.IsValid)
+        ////        {
+
+        ////            var mailBuilder = new StringBuilder();
+        ////            mailBuilder.AppendLine("Dear" + " " + email + "," + "<br />");
+        ////            mailBuilder.AppendLine("<br />");
+        ////            mailBuilder.AppendLine("You have successfully sign up. Please confirm your sign up by clicking the link below.<br />");
+        ////            mailBuilder.AppendLine("Kindly use this token" + "  " + "88434" + "  " + "and" + " " + "www" + "<br />");
+        ////            // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+        ////            mailBuilder.AppendLine("Best Regards,");
+
+        ////            return Ok(await _sendGridEmailService.SendMail(mailBuilder.ToString(), email));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
     }
 }
