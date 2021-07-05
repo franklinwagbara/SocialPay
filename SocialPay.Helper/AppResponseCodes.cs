@@ -48,6 +48,7 @@
         public const string AgeNotWithinRange = "44";               
         public const string InvalidBVNDateOfBirth = "45";               
         public const string BvnValidationError = "46";               
+        public const string MerchantDefaultBankInfoNotFound = "47";               
     }
 
     public class MerchantOnboardingProcess

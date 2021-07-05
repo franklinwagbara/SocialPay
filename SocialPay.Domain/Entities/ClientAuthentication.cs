@@ -54,5 +54,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<DeliveryDayWalletTransferRequestLog> DeliveryDayWalletTransferRequestLog { get; set; }
         public virtual ICollection<AcceptedEscrowInterBankTransactionRequest> AcceptedEscrowInterBankTransactionRequest { get; set; }
         public virtual ICollection<GuestAccountLog> GuestAccountLog { get; set; }
+        public virtual ICollection<OtherMerchantBankInfo> OtherMerchantBankInfo { get; set; }
     }
 }

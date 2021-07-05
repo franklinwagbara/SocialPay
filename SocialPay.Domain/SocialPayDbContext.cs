@@ -45,5 +45,6 @@ namespace SocialPay.Domain
         public DbSet<AcceptedEscrowInterBankTransactionRequest> AcceptedEscrowInterBankTransactionRequest { get; set; }
         public DbSet<DeliveryDayEscrowInterBankTransactionRequest> DeliveryDayEscrowInterBankTransactionRequest { get; set; }
         public DbSet<GuestAccountLog> GuestAccountLog { get; set; }
+        public DbSet<OtherMerchantBankInfo> OtherMerchantBankInfo { get; set; }
     }
 }

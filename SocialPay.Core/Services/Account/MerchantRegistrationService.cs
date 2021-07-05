@@ -808,6 +808,259 @@ namespace SocialPay.Core.Services.Account
         }
 
 
+        public async Task<WebApiResponse> AddNewMerchantBankInfo(MerchantBankInfoRequestDto model, long clientId)
+        {
+            try
+            {
+                _log4net.Info("Initiating AddNewMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + clientId + " | " + DateTime.Now);
+               
+                if (await _context.OtherMerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban && x.ClientAuthenticationId == clientId))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
+
+                var getUserInfo = await _context.ClientAuthentication
+                   .Include(x => x.MerchantBankInfo)
+                   .Include(x => x.MerchantWallet)
+                   .Include(x => x.MerchantBusinessInfo)
+                   .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
+                var bankInfoModel = new OtherMerchantBankInfo
+                {
+                    ClientAuthenticationId = clientId,
+                    Currency = model.Currency,
+                    BankName = model.BankName,
+                    BVN = getUserInfo.Bvn,
+                    Country = model.Country,
+                    Nuban = model.Nuban,
+                    DefaultAccount = model.DefaultAccount,
+                    BankCode = model.BankCode
+                };
+
+                if (model.BankCode == _appSettings.SterlingBankCode)
+                {
+                    _log4net.Info("Initiating OnboardOtherMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + getUserInfo.Bvn + " | " + DateTime.Now);
+
+                    var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban, getUserInfo.Bvn);
+
+                    if (result.ResponseCode != AppResponseCodes.Success)
+                        return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
+
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            bankInfoModel.AccountName = result.CUS_SHO_NAME;
+                            bankInfoModel.BranchCode = result.BRA_CODE;
+                            bankInfoModel.LedCode = result.T24_BRA_CODE;
+                            bankInfoModel.CusNum = result.CUS_NUM;
+
+                            await _context.OtherMerchantBankInfo.AddAsync(bankInfoModel);
+                            await _context.SaveChangesAsync();
+
+                            getUserInfo.LastDateModified = DateTime.Now;
+
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+
+                            _log4net.Info("Initiating OnboardOtherMerchantBankInfo intrabank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + DateTime.Now);
+
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        }
+
+                    }
+
+                }
+
+                _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request" + " | " + model.BankCode + " | " + model.BankName + " | " + DateTime.Now);
+
+
+                var nibsRequestModel = new IBSNameEnquiryRequestDto
+                {
+                    ReferenceID = Guid.NewGuid().ToString(),
+                    ToAccount = model.Nuban,
+                    DestinationBankCode = model.BankCode,
+                    RequestType = _appSettings.nameEnquiryRequestType,
+                };
+
+                var ibsRequest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModel);
+
+                if (ibsRequest.ResponseCode != AppResponseCodes.Success)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
+
+                if (ibsRequest.BVN != getUserInfo.Bvn)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN };
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        bankInfoModel.AccountName = ibsRequest.AccountName;
+                        bankInfoModel.KycLevel = ibsRequest.KYCLevel;
+                        bankInfoModel.BankCode = model.BankCode;
+
+                        await _context.OtherMerchantBankInfo.AddAsync(bankInfoModel);
+                        await _context.SaveChangesAsync();
+
+                        // getUserInfo.StatusCode = MerchantOnboardingProcess.BankInfo;
+                        getUserInfo.LastDateModified = DateTime.Now;
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+
+                        _log4net.Info("Initiating OnboardMerchantBankInfo interbank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + getUserInfo.Bvn + " | " + DateTime.Now);
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    }
+                    catch (Exception ex)
+                    {
+                        _log4net.Error("Error occured" + " | " + "OnboardMerchantBankInfo" + " | " + model.Nuban + " | " + model.BankName + " | " + ex + " | " + DateTime.Now);
+                        await transaction.RollbackAsync();
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> UpdateMerchantBankInfo(long clientId, long MerchantOtherBankInfoId)
+        {
+            try
+            {
+
+                if (!await _context.OtherMerchantBankInfo.AnyAsync(x => x.MerchantOtherBankInfoId == MerchantOtherBankInfoId && x.ClientAuthenticationId == clientId))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                if (!await _context.MerchantBankInfo.AnyAsync(x => x.ClientAuthenticationId == clientId))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantDefaultBankInfoNotFound };
+
+                var getMerchantDefaultBankInfo = await _context.MerchantBankInfo
+                .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
+                var getMerchantOtherBank = await _context.OtherMerchantBankInfo
+              .SingleOrDefaultAsync(x => x.MerchantOtherBankInfoId == MerchantOtherBankInfoId);
+
+                getMerchantDefaultBankInfo.BankName = getMerchantOtherBank.BankName;
+                getMerchantDefaultBankInfo.BankCode = getMerchantOtherBank.BankCode;
+                getMerchantDefaultBankInfo.BranchCode = getMerchantOtherBank.BranchCode;
+                getMerchantDefaultBankInfo.LedCode = getMerchantOtherBank.LedCode;
+                getMerchantDefaultBankInfo.Nuban = getMerchantOtherBank.Nuban;
+                getMerchantDefaultBankInfo.AccountName = getMerchantOtherBank.AccountName;
+                getMerchantDefaultBankInfo.Currency = getMerchantOtherBank.Currency;
+                getMerchantDefaultBankInfo.BVN = getMerchantOtherBank.BVN;
+                getMerchantDefaultBankInfo.Country = getMerchantOtherBank.Country;
+                getMerchantDefaultBankInfo.CusNum = getMerchantOtherBank.CusNum;
+                getMerchantDefaultBankInfo.KycLevel = getMerchantOtherBank.KycLevel;
+                getMerchantDefaultBankInfo.DefaultAccount = getMerchantOtherBank.DefaultAccount;
+                getMerchantDefaultBankInfo.DateEntered = DateTime.Now;
+                await _context.SaveChangesAsync();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> UpdateMerchantPersonalInfo(long clientId, UpdateMerchantPersonalInfoRequestDto model)
+        {
+            _log4net.Info("Initiating UpdateMerchantPersonalInfo request" + clientId + " | " + DateTime.Now);
+            try
+            {
+
+                if (!await _context.ClientAuthentication.AnyAsync(x => x.ClientAuthenticationId == clientId))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var MerchantPersonalInfo = await _context.ClientAuthentication
+                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
+                if (!string.IsNullOrEmpty(model.PhoneNumber))
+                {
+                    MerchantPersonalInfo.PhoneNumber = model.PhoneNumber;
+                }
+                if (!string.IsNullOrEmpty(model.Bvn))
+                {
+                    MerchantPersonalInfo.Bvn = model.Bvn;
+                }
+                if (!string.IsNullOrEmpty(model.FullName))
+                {
+                    MerchantPersonalInfo.FullName = model.FullName;
+                }
+
+
+                MerchantPersonalInfo.LastDateModified = DateTime.Now;
+                await _context.SaveChangesAsync();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> UpdateMerchantBusinessInfo(long clientId, MerchantUpdateInfoRequestDto model)
+        {
+            try
+            {
+                _log4net.Info("Initiating UpdateMerchantBusinessInfo request" + clientId + " | " + DateTime.Now);
+
+                if (!await _context.MerchantBusinessInfo.AnyAsync(x => x.ClientAuthenticationId == clientId))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var MerchantBankInfo = await _context.MerchantBusinessInfo
+                  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
+                MerchantBankInfo.BusinessName = model.BusinessName == string.Empty ? MerchantBankInfo.BusinessName : MerchantBankInfo.BusinessName;
+
+                //if (!string.IsNullOrEmpty(model.BusinessName))
+                //{
+                //    MerchantBankInfo.BusinessName = model.BusinessName;
+                //}
+                if (!string.IsNullOrEmpty(model.BusinessPhoneNumber))
+                {
+                    MerchantBankInfo.BusinessPhoneNumber = model.BusinessPhoneNumber;
+                }
+                if (!string.IsNullOrEmpty(model.BusinessEmail))
+                {
+                    MerchantBankInfo.BusinessEmail = model.BusinessEmail;
+                }
+                if (!string.IsNullOrEmpty(model.Tin))
+                {
+                    MerchantBankInfo.Tin = model.Tin;
+                }
+                if (!string.IsNullOrEmpty(model.Country))
+                {
+                    MerchantBankInfo.Country = model.Country;
+                }
+                if (!string.IsNullOrEmpty(model.Chargebackemail))
+                {
+                    MerchantBankInfo.Chargebackemail = model.Chargebackemail;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> InitiateEnquiry()
         {
             try

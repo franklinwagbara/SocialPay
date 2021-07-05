@@ -405,11 +405,11 @@ namespace SocialPay.API
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            //app.UseSwagger();
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("../swagger/v1/swagger.json", "Social Pay API");
-            //});
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("../swagger/v1/swagger.json", "Social Pay API");
+            });
 
         }
     }
