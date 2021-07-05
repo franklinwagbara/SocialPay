@@ -260,6 +260,95 @@ namespace SocialPay.API.Controllers
         }
 
 
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet]
+        [Route("admin-get-customers-transaction-count")]
+        public async Task<IActionResult> AdminGetCustomersTransactionCount()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    return Ok(await _merchantReportService.AdminGetCustomersTransactionCount());
+
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                  .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+        //  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet]
+        [Route("admin-get-customers-transaction-value")]
+        public async Task<IActionResult> AdminGetCustomersTransactionValue()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    return Ok(await _merchantReportService.AdminGetCustomersTransactionValue());
+
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                  .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("top-used-payment-channel")]
+        public async Task<IActionResult> TopUsedPaymentChannel()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    return Ok(await _merchantReportService.AdminMostUsedPaymentChannel());
+
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                  .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+
+
         [AllowAnonymous]
         [HttpPost]
         [Route("clear-user-account")]

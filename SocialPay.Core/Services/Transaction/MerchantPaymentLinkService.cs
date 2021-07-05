@@ -495,5 +495,53 @@ namespace SocialPay.Core.Services.Transaction
             }
         }
 
+        public async Task<WebApiResponse> DeletePaymentLink(long clientId, string paymentLinkName)
+        {
+            _log4net.Info("Initiating Delete payment link" + " | " + clientId + " | " + DateTime.Now);
+            try
+            {
+                if (!await _context.MerchantPaymentSetup.AnyAsync(x => x.ClientAuthenticationId == clientId && x.IsDeleted == false && x.PaymentLinkName == paymentLinkName))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var getMerchantPaymentDetails = await _context.MerchantPaymentSetup
+                  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId && x.IsDeleted == false && x.PaymentLinkName == paymentLinkName);
+                getMerchantPaymentDetails.IsDeleted = true;
+               
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllPaymentLinksByMerchant" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<WebApiResponse> UpdatePaymentLink(long clientId, UpdatePaymentDTO model, string paymentLinkName)
+        {
+            _log4net.Info("Initiating update payment link" + " | " + clientId + " | " + DateTime.Now);
+            try
+            {
+                if (!await _context.MerchantPaymentSetup.AnyAsync(x => x.ClientAuthenticationId == clientId && x.IsDeleted == false && x.PaymentLinkName == paymentLinkName))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var getMerchantPaymentDetails = await _context.MerchantPaymentSetup
+                  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId && x.PaymentLinkName == paymentLinkName);
+               
+                getMerchantPaymentDetails.PaymentLinkName = model.PaymentLinkName;
+                
+                await _context.SaveChangesAsync();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllPaymentLinksByMerchant" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
     }
 }

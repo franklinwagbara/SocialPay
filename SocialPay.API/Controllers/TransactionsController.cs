@@ -77,6 +77,82 @@ namespace SocialPay.API.Controllers
             }
         }
 
+
+        [HttpPut]
+        [Route("update-payment-link")]
+        public async Task<IActionResult> UpdatePaymentLink(string paymentLinkName, [FromBody] UpdatePaymentDTO model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var userStatus = identity.Claims.FirstOrDefault(c => c.Type == "UserStatus")?.Value;
+
+                    return Ok(await _merchantPaymentLinkService.UpdatePaymentLink(Convert.ToInt32(clientId), model, paymentLinkName));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                   .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete-payment-link")]
+        public async Task<IActionResult> DeletePaymentLink(string paymentLinkName)
+        {
+            var response = new WebApiResponse { };
+
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    var userStatus = identity.Claims.FirstOrDefault(c => c.Type == "UserStatus")?.Value;
+                    return Ok(await _merchantPaymentLinkService.DeletePaymentLink(Convert.ToInt32(clientId), paymentLinkName));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                   .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+
+        }
+
+
         [HttpGet]
         [Route("validate-custom-url-name")]
         public async Task<IActionResult> ValidateCustomUrl([FromQuery] string customUrlName)
