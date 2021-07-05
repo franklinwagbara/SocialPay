@@ -80,10 +80,11 @@ namespace SocialPay.Core.Repositories.Invoice
         }
 
         public async Task<WebApiResponse> SendInvoiceAsync(string destinationEmail, decimal amount, decimal totalAmount,
-            DateTime tranDate, string invoicename, string transactionReference)
+           DateTime tranDate, string invoicename, string transactionReference, decimal discount = 0, decimal VAT = 0)
         {
             try
             {
+                
                 _log4net.Info("SendInvoiceAsync request" + " | " + transactionReference + " | " + destinationEmail + " | "+ DateTime.Now);
 
                 var emailModal = new EmailRequestDto
@@ -107,19 +108,21 @@ namespace SocialPay.Core.Repositories.Invoice
                
                 using (StreamReader reader = new StreamReader(path))
                 {
-                    emailModal.EmailBody = reader.ReadToEnd();
+                        emailModal.EmailBody = reader.ReadToEnd();
 
-                    var builder = new StringBuilder(emailModal.EmailBody);
+                        var builder = new StringBuilder(emailModal.EmailBody);
 
-                    builder.Replace("{amount}", Convert.ToString(amount));
-                    builder.Replace("{totalamount}", Convert.ToString(totalAmount));
-                    builder.Replace("{trandate}", Convert.ToString(tranDate));
-                    builder.Replace("{invoicename}", invoicename);
-                    builder.Replace("{paymentLink}", _appSettings.invoicePaymentlinkUrl + transactionReference);
-                    builder.Replace("{currentyear}", Convert.ToString(DateTime.Now.Year));
+                        builder.Replace("{VAT}", Convert.ToString(VAT));
+                        builder.Replace("{Discount}", Convert.ToString(discount));
+                        builder.Replace("{amount}", Convert.ToString(amount));
+                        builder.Replace("{totalamount}", Convert.ToString(totalAmount));
+                        builder.Replace("{trandate}", Convert.ToString(tranDate));
+                        builder.Replace("{invoicename}", invoicename);
+                        builder.Replace("{paymentLink}", _appSettings.invoicePaymentlinkUrl + transactionReference);
+                        builder.Replace("{currentyear}", Convert.ToString(DateTime.Now.Year));
 
-                    emailModal.EmailBody = builder.ToString();
-                }
+                        emailModal.EmailBody = builder.ToString();
+                    }
 
                 try
                 {

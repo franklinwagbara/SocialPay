@@ -89,5 +89,6 @@
         public string sendGridbearerToken { get; set; }
         public string sendGridEmailSender { get; set; }
         public string MerchantSignUpEmailSubject { get; set; }
+        public decimal vat { get; set; }
     }
 }

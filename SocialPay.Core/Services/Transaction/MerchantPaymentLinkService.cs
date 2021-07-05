@@ -258,27 +258,105 @@ namespace SocialPay.Core.Services.Transaction
             }
         }
 
+        ////public async Task<WebApiResponse> GenerateInvoice(InvoiceRequestDto invoiceRequestDto, long clientId,
+        ////    string businessName)
+        ////{
+        ////    try
+        ////    {
+
+        ////        // clientId = 30043;
+        ////        _log4net.Info("Initiating GenerateInvoice request" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | "+ DateTime.Now);
+
+        ////        if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
+        ////            return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
+        ////        var transactionReference = Guid.NewGuid().ToString();
+        ////        var model = new InvoicePaymentLink
+        ////        {
+        ////            TransactionStatus = false, ClientAuthenticationId = clientId, CustomerEmail = invoiceRequestDto.CustomerEmail,
+        ////            DueDate = Convert.ToDateTime(invoiceRequestDto.DueDate), InvoiceName = invoiceRequestDto.InvoiceName,
+        ////            Qty = invoiceRequestDto.Qty, UnitPrice = invoiceRequestDto.UnitPrice, TransactionReference = transactionReference,
+        ////            TotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice + invoiceRequestDto.ShippingFee,
+        ////            ShippingFee = invoiceRequestDto.ShippingFee, Description = invoiceRequestDto.Description
+        ////        };
+        ////        using(var transaction = await _context.Database.BeginTransactionAsync())
+        ////        {
+        ////            try
+        ////            {
+        ////                await _context.InvoicePaymentLink.AddAsync(model);
+        ////                await _context.SaveChangesAsync();
+
+        ////                var linkCatModel = new LinkCategory
+        ////                {
+        ////                    ClientAuthenticationId = clientId,
+        ////                    Channel = MerchantPaymentLinkCategory.InvoiceLink,
+        ////                    TransactionReference = transactionReference
+        ////                };
+
+        ////                await _context.LinkCategory.AddAsync(linkCatModel);
+        ////                await _context.SaveChangesAsync();
+        ////                await transaction.CommitAsync();
+
+        ////                await _invoiceService.SendInvoiceAsync(invoiceRequestDto.CustomerEmail,
+        ////                    invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName,
+        ////                    model.TransactionReference
+        ////                    );
+        ////                //send mail
+        ////                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data ="Success" };
+        ////            }
+        ////            catch (Exception ex)
+        ////            {
+        ////                _log4net.Error("Error occured" + " | " + "GenerateInvoice" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+        ////                await transaction.RollbackAsync();
+
+        ////                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+        ////            }
+        ////        }
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _log4net.Error("Error occured" + " | " + "GenerateInvoice" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+        ////    }
+        ////}
+
+
         public async Task<WebApiResponse> GenerateInvoice(InvoiceRequestDto invoiceRequestDto, long clientId,
-            string businessName)
+          string businessName)
         {
             try
             {
 
                 // clientId = 30043;
-                _log4net.Info("Initiating GenerateInvoice request" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | "+ DateTime.Now);
+                _log4net.Info("Initiating GenerateInvoice request" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | " + DateTime.Now);
 
                 if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
                 var transactionReference = Guid.NewGuid().ToString();
+
+
+                var calculatedDiscount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice * (invoiceRequestDto.discount / 100);
+                var calculatedVAT = _appSettings.vat * (invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice);
+                var calculatedTotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice + invoiceRequestDto.ShippingFee + calculatedVAT - calculatedDiscount;
+                
                 var model = new InvoicePaymentLink
                 {
-                    TransactionStatus = false, ClientAuthenticationId = clientId, CustomerEmail = invoiceRequestDto.CustomerEmail,
-                    DueDate = Convert.ToDateTime(invoiceRequestDto.DueDate), InvoiceName = invoiceRequestDto.InvoiceName,
-                    Qty = invoiceRequestDto.Qty, UnitPrice = invoiceRequestDto.UnitPrice, TransactionReference = transactionReference,
-                    TotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice + invoiceRequestDto.ShippingFee,
-                    ShippingFee = invoiceRequestDto.ShippingFee, Description = invoiceRequestDto.Description
+                    TransactionStatus = false,
+                    ClientAuthenticationId = clientId,
+                    CustomerEmail = invoiceRequestDto.CustomerEmail,
+                    DueDate = Convert.ToDateTime(invoiceRequestDto.DueDate),
+                    InvoiceName = invoiceRequestDto.InvoiceName,
+                    Qty = invoiceRequestDto.Qty,
+                    UnitPrice = invoiceRequestDto.UnitPrice,
+                    TransactionReference = transactionReference,
+                    TotalAmount = calculatedTotalAmount,
+                    ShippingFee = invoiceRequestDto.ShippingFee,
+                    Description = invoiceRequestDto.Description,
+                    VAT = calculatedVAT,
+                    Discount = calculatedDiscount
                 };
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
@@ -297,21 +375,21 @@ namespace SocialPay.Core.Services.Transaction
                         await transaction.CommitAsync();
 
                         await _invoiceService.SendInvoiceAsync(invoiceRequestDto.CustomerEmail,
-                            invoiceRequestDto.UnitPrice, model.TotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName,
-                            model.TransactionReference
+                            invoiceRequestDto.UnitPrice, calculatedTotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName,
+                            model.TransactionReference, calculatedDiscount, calculatedVAT
                             );
                         //send mail
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data ="Success" };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Success" };
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + "GenerateInvoice" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                        _log4net.Error("Error occured" + " | " + "GenerateInvoice" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
-                        
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -320,5 +398,102 @@ namespace SocialPay.Core.Services.Transaction
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+        public async Task<WebApiResponse> GenerateInvoiceMultipleEmail(InvoiceRequestMultipleEmailsDto invoiceRequestDto, long clientId,
+         string businessName)
+        {
+            _log4net.Info("Initiating GenerateInvoiceMultipleEmail request" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | " + DateTime.Now);
+            try
+            {
+
+                if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
+
+                if (invoiceRequestDto.CustomerEmail.Count! > 0)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+                var transactionReference = Guid.NewGuid().ToString();
+                var calculatedDiscount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice * (invoiceRequestDto.discount / 100);
+                var calculatedVAT = _appSettings.vat * (invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice);
+                var calculatedTotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice + invoiceRequestDto.ShippingFee + calculatedVAT - calculatedDiscount;
+               
+                var model = new InvoicePaymentLink
+                {
+                    TransactionStatus = false,
+                    ClientAuthenticationId = clientId,
+                    CustomerEmail = invoiceRequestDto.CustomerEmail[0],
+                    DueDate = Convert.ToDateTime(invoiceRequestDto.DueDate),
+                    InvoiceName = invoiceRequestDto.InvoiceName,
+                    Qty = invoiceRequestDto.Qty,
+                    UnitPrice = invoiceRequestDto.UnitPrice,
+                    TransactionReference = transactionReference,
+                    TotalAmount = calculatedTotalAmount,
+                    ShippingFee = invoiceRequestDto.ShippingFee,
+                    Description = invoiceRequestDto.Description,
+                    VAT = calculatedVAT,
+                    Discount = calculatedDiscount
+                };
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        await _context.InvoicePaymentLink.AddAsync(model);
+                        await _context.SaveChangesAsync();
+
+                        var linkCatModel = new LinkCategory
+                        {
+                            ClientAuthenticationId = clientId,
+                            Channel = MerchantPaymentLinkCategory.InvoiceLink,
+                            TransactionReference = transactionReference
+                        };
+
+                        await _context.LinkCategory.AddAsync(linkCatModel);
+                        await _context.SaveChangesAsync();
+
+                        foreach (string email in invoiceRequestDto.CustomerEmail)
+                        {
+                            var sendInvoiveResponse = await _invoiceService.SendInvoiceAsync(email,
+                                invoiceRequestDto.UnitPrice, calculatedTotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName,
+                                model.TransactionReference, calculatedDiscount, calculatedVAT
+                                );
+
+                            var logEMail = new InvoicePaymentLinkToMulitpleEmails
+                            {
+                                InvoicePaymentLinkId = model.InvoicePaymentLinkId,
+                                email = email,
+                                status = sendInvoiveResponse.ResponseCode
+
+                            };
+
+                            await _context.InvoicePaymentLinkToMulitpleEmails.AddAsync(logEMail);
+                            await _context.SaveChangesAsync();
+                        }
+
+                        await transaction.CommitAsync();
+                        //send mail
+
+                    }
+                    catch (Exception ex)
+                    {
+                        _log4net.Error("Error occured" + " | " + "GenerateInvoice" + " | " + clientId + " | " + invoiceRequestDto.InvoiceName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        await transaction.RollbackAsync();
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
+
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Success" };
+
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "Initiating GenerateInvoiceMultipleEmail request" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
     }
 }

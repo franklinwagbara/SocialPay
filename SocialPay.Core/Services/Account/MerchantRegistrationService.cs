@@ -18,6 +18,7 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -1060,6 +1061,41 @@ namespace SocialPay.Core.Services.Account
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+
+        public async Task<WebApiResponse> GetOtherMerchantsBankInfo(long clientId)
+        {
+            try
+            {
+                var result = await _context.OtherMerchantBankInfo
+                  .Where(x => x.ClientAuthenticationId == clientId && x.Deleted == false)
+                  .ToListAsync();
+
+                var OtherMerchantsBanksDTO = new List<MerchantResponseDTO>();
+
+                foreach (var bankDetails in result)
+                {
+                    OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
+                    {
+                        MerchantOtherBankInfoId = bankDetails.MerchantOtherBankInfoId,
+                        BankName = bankDetails.BankName,
+                        BankCode = bankDetails.BankCode,
+                        AccountName = bankDetails.AccountName,
+                        Nuban = bankDetails.Nuban
+                    });
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = OtherMerchantsBanksDTO };
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("An error ocuured while getting merchant other business info" + clientId + " | " + ex + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
 
         public async Task<WebApiResponse> InitiateEnquiry()
         {

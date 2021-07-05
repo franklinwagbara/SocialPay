@@ -243,6 +243,38 @@ namespace SocialPay.API.Controllers
         }
 
 
+        [HttpGet]
+        [Route("list-of-other-merchants-banks-info")]
+        public async Task<IActionResult> GetOtherMerchantsBankInfo()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    return Ok(await _merchantRegistrationService.GetOtherMerchantsBankInfo(Convert.ToInt32(clientId)));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+
         [AllowAnonymous]
         [HttpGet]
         [Route("list-of-banks")]
@@ -487,6 +519,41 @@ namespace SocialPay.API.Controllers
                 
                     return Ok(await _merchantPaymentLinkService
                         .GenerateInvoice(model, Convert.ToInt32(clientId), businessName));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("send-Invoice-multiple-email")]
+        public async Task<IActionResult> SendInvoiceMultipleEmail([FromBody] InvoiceRequestMultipleEmailsDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var businessName = identity.Claims.FirstOrDefault(c => c.Type == "businessName")?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                    return Ok(await _merchantPaymentLinkService
+                        .GenerateInvoiceMultipleEmail(model, Convert.ToInt32(clientId), businessName));
                 }
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)

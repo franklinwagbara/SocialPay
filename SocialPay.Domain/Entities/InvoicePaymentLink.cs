@@ -27,7 +27,11 @@ namespace SocialPay.Domain.Entities
         public string Description { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
+        public decimal Discount { get; set; }
+        public decimal VAT { get; set; }
         public virtual ClientAuthentication ClientAuthentication { get; set; }
         public virtual ICollection<InvoicePaymentInfo> InvoicePaymentInfo { get; set; }
+        public virtual ICollection<InvoicePaymentLinkToMulitpleEmails> InvoicePaymentLinkToMulitpleEmails { get; set; }
+
     }
 }
