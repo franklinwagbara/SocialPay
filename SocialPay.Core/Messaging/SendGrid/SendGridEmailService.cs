@@ -57,7 +57,7 @@ namespace SocialPay.Core.Messaging.SendGrid
                 {
                     from = new From
                     {
-                        email = "e-statement@sterling.ng",
+                        email = _appSettings.sendGridEmailSender,
                         name = _appSettings.senderEmailName,
                     },
                     personalizations = new List<Personalization>()

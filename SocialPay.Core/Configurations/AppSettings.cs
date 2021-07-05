@@ -87,6 +87,7 @@
         public string sendGridAPIBaseUrl { get; set; }
         public string sendGridEmailUrlExtension { get; set; }
         public string sendGridbearerToken { get; set; }
+        public string sendGridEmailSender { get; set; }
         public string MerchantSignUpEmailSubject { get; set; }
     }
 }
