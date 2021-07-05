@@ -638,6 +638,147 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
+        public async Task<WebApiResponse> GetCustomersTransactionCount(long clientId)
+        {
+            try
+            {
+                _log4net.Info("GetCustomersTransactionCount" + " | " + clientId + " | " + DateTime.Now);
+
+                var result = await _context.TransactionLog
+                    .Where(x => x.ClientAuthenticationId == clientId)
+                    .ToListAsync();
+
+                var transactionCount = result.Count();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = transactionCount };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetCustomersTransactionCount" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> GetCustomersTransactionValue(long clientId)
+        {
+            try
+            {
+                _log4net.Info("GetCustomersTransactionValue" + " | " + clientId + " | " + DateTime.Now);
+
+                var result = await _context.TransactionLog
+                    .Where(x => x.ClientAuthenticationId == clientId)
+                    .ToListAsync();
+                var transactionValue = result.Sum(x => x.TotalAmount);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = transactionValue };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetCustomersTransactionValue" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> MostUsedPaymentChannel(long clientId)
+        {
+            try
+            {
+                _log4net.Info("GetCustomersTransactionValue" + " | " + clientId + " | " + DateTime.Now);
+
+                var result = await _context.TransactionLog
+                    .Where(x => x.ClientAuthenticationId == clientId)
+                    .ToListAsync();
+                var transactionValue = result.GroupBy(x => x.PaymentChannel, (key, value) =>
+                new UsedPaymentChannel
+                {
+                    paymentChannel = key,
+                    Amount = value.Sum(x => x.TotalAmount)
+
+
+                }).OrderByDescending(o => o.Amount).Take(5).ToList();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = transactionValue };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetCustomersTransactionValue" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> AdminGetCustomersTransactionCount()
+        {
+            try
+            {
+                _log4net.Info("AdminGetCustomersTransactionCount" + " | " + DateTime.Now);
+
+                var result = await _context.TransactionLog.ToListAsync();
+                var transactionCount = result.Count();
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = transactionCount };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "AdminGetCustomersTransactionCount" + " | " + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> AdminGetCustomersTransactionValue()
+        {
+            try
+            {
+                _log4net.Info("AdminGetCustomersTransactionValue" + " | " + DateTime.Now);
+
+                var result = await _context.TransactionLog
+                    // .Where(x => x.ClientAuthenticationId == clientId)
+                    .ToListAsync();
+                var transactionValue = result.Sum(x => x.TotalAmount);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = transactionValue };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "AdminGetCustomersTransactionValue" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> AdminMostUsedPaymentChannel()
+        {
+            try
+            {
+                _log4net.Info("AdminMostUsedPaymentChannel" + " | " + DateTime.Now);
+
+                var result = await _context.TransactionLog
+                    .ToListAsync();
+                var transactionValue = result.GroupBy(x => x.PaymentChannel, (key, value) =>
+                new UsedPaymentChannel
+                {
+                    paymentChannel = key,
+                    Amount = value.Sum(x => x.TotalAmount)
+
+
+                }).OrderByDescending(o => o.Amount).Take(5).ToList();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = transactionValue };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "AdminMostUsedPaymentChannel" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
 
         public async Task<UserInfoViewModel> RedisCacheTest()
         {
