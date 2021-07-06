@@ -131,6 +131,8 @@ namespace SocialPay.Helper.ViewModel
         public string PhoneNumber { get; set; }
         public string FullName { get; set; }
         public string Status { get; set; }
+        public DateTime DateEntered { get; set; }
+        public DateTime LastDateModified { get; set; }
 
     }
 }

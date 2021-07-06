@@ -102,7 +102,6 @@ namespace SocialPay.Core.Services.Report
 
         }
 
-
         public async Task<WebApiResponse> GetOnboardingJourney()
         {
             var request = new List<UserJourneyViewModel>();
@@ -117,9 +116,13 @@ namespace SocialPay.Core.Services.Report
                                     Email = c.Email,
                                     Status = c.StatusCode,
                                     PhoneNumber = c.PhoneNumber,
-                                    FullName = c.FullName
+                                    FullName = c.FullName,
+                                    DateEntered = c.DateEntered,
+                                    LastDateModified = c.LastDateModified
                                 }).ToList();
+
                 request = response;
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
             }
             catch (Exception ex)
