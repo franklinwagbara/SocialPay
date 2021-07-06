@@ -1,12 +1,13 @@
-﻿using System;
+﻿using SocialPay.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace SocialPay.Domain.Entities
+namespace SocialPay.Helper.Dto.Request
 {
-    public class MerchantStoreLog
+    public class MerchantStoreDto
     {
         [Key]
         public int Id { get; set; }
@@ -24,17 +25,15 @@ namespace SocialPay.Domain.Entities
 
         [Required(ErrorMessage = "Price is required")]
         public decimal Price { get; set; }
+        public DateTime DateAdded { get; set; }
 
         [ForeignKey("CategoryId")]
         public int CategoryId { get; set; }
         [ForeignKey("OptionId")]
         public int? OptionId { get; set; }
-        public DateTime DateAdded { get; set; } = DateTime.Now;
+
         public virtual StoreCategory StoreCategory { get; set; }
         public virtual ProductOption ProductOption { get; set; }
-
-
-
     }
 
 }

@@ -47,5 +47,8 @@ namespace SocialPay.Domain
         public DbSet<GuestAccountLog> GuestAccountLog { get; set; }
         public DbSet<OtherMerchantBankInfo> OtherMerchantBankInfo { get; set; }
         public DbSet<InvoicePaymentLinkToMulitpleEmails> InvoicePaymentLinkToMulitpleEmails { get; set; }
+        public DbSet<MerchantStoreLog> MerchantStoreRequest { get; set; }
+        public DbSet<StoreCategory> StoreCategoryRequest { get; set; }
+        public DbSet<ProductOption> ProductOptionRequest { get; set; }
     }
 }

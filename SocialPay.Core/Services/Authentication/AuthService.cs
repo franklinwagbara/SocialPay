@@ -243,7 +243,7 @@ namespace SocialPay.Core.Services.Authentication
                     new Claim(ClaimTypes.Email, validateuserInfo.Email),
                     new Claim("UserStatus",  validateuserInfo.StatusCode),
                     new Claim("businessName", validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault()),
-                    new Claim("RefCode", validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode),
+                   // new Claim("RefCode", validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode.ToString()),
                     new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
                    }),
