@@ -117,7 +117,7 @@ namespace SocialPay.API.Controllers
 
         [HttpDelete]
         [Route("delete-payment-link")]
-        public async Task<IActionResult> DeletePaymentLink(string paymentLinkName)
+        public async Task<IActionResult> DeletePaymentLink([FromQuery] string paymentLinkName)
         {
             var response = new WebApiResponse { };
 
