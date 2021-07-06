@@ -93,7 +93,7 @@ namespace SocialPay.Core.Services.Transaction
                     var token = model.MerchantAmount + "," + model.PaymentCategory + "," + model.PaymentLinkName + "," + newGuid;
                     var encryptedToken = token.Encrypt(_appSettings.appKey);
 
-                    if (await _context.MerchantPaymentSetup.AnyAsync(x => x.CustomUrl == paymentModel.CustomUrl))
+                    if (await _context.MerchantPaymentSetup.AnyAsync(x => x.CustomUrl == paymentModel.CustomUrl || x.PaymentLinkName == paymentModel.PaymentLinkName))
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name" };
 
                     if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))
