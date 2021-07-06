@@ -31,16 +31,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SocialPay.ApplicationCore\SocialPay.ApplicationCore.csproj" />
     <ProjectReference Include="..\SocialPay.Domain\SocialPay.Domain.csproj" />
     <ProjectReference Include="..\SocialPay.Helper\SocialPay.Helper.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Merchant\" />
   </ItemGroup>
 
 </Project>

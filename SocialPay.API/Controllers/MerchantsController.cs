@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Services.Account;
+using SocialPay.Core.Services.Merchant;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
 using SocialPay.Core.Services.Transaction;
@@ -29,10 +30,12 @@ namespace SocialPay.API.Controllers
         private readonly CreateMerchantWalletService _createMerchantWalletService;
         private readonly DisputeRepoService _disputeRepoService;
         private readonly PayWithSpectaService _payWithSpectaService;
+        private readonly MerchantBusinessInfoBaseService _merchantBusinessInfoBaseService;
         public MerchantsController(MerchantRegistrationService merchantRegistrationService,
             MerchantPaymentLinkService merchantPaymentLinkService, MerchantReportService merchantReportService,
             InvoiceService invoiceService, CreateMerchantWalletService createMerchantWalletService,
-            DisputeRepoService disputeRepoService, PayWithSpectaService payWithSpectaService)
+            DisputeRepoService disputeRepoService, PayWithSpectaService payWithSpectaService,
+            MerchantBusinessInfoBaseService merchantBusinessInfoBaseService)
         {
             _merchantRegistrationService = merchantRegistrationService;
             _merchantPaymentLinkService = merchantPaymentLinkService;
@@ -41,6 +44,7 @@ namespace SocialPay.API.Controllers
             _createMerchantWalletService = createMerchantWalletService;
             _disputeRepoService = disputeRepoService;
             _payWithSpectaService = payWithSpectaService;
+            _merchantBusinessInfoBaseService = merchantBusinessInfoBaseService ?? throw new ArgumentNullException(nameof(merchantBusinessInfoBaseService));
         }
 
         [HttpPost]
@@ -784,6 +788,39 @@ namespace SocialPay.API.Controllers
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
                     return Ok(await _invoiceService.GetInvoiceTransactionDetails(Convert.ToInt32(clientId)));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+        //[AllowAnonymous]
+        [HttpGet]
+        [Route("get-merchant-businessInfo")]
+        public async Task<IActionResult> GetMerchantBusinessInfoDetails()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                    return Ok(await _merchantBusinessInfoBaseService.GetMerchantBusinessInfoAsync(Convert.ToInt32(clientId)));
                 }
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)

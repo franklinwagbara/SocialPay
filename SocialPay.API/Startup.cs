@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SocialPay.ApplicationCore.Interfaces.Repositories;
+using SocialPay.ApplicationCore.Interfaces.Service;
+using SocialPay.ApplicationCore.Services;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Extensions.Utilities;
@@ -23,6 +26,7 @@ using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.IBS;
+using SocialPay.Core.Services.Merchant;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
 using SocialPay.Core.Services.Tin;
@@ -46,6 +50,7 @@ using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.Services;
 using SocialPay.Job.TaskSchedules;
+using SocialPay.Persistance.Repositories;
 
 namespace SocialPay.API
 {
@@ -122,7 +127,9 @@ namespace SocialPay.API
                      ValidateAudience = false
                  };
              });
+
             var con = Configuration.GetConnectionString("SocialPayDbContextString");
+
             services.AddDbContext<SocialPayDbContext>(p => p.UseSqlServer(con), ServiceLifetime.Scoped);
             services.AddScoped<MerchantRegistrationService>();
             services.AddScoped<AuthRepoService>();
@@ -148,6 +155,8 @@ namespace SocialPay.API
             services.AddScoped<DisputeRepoService>();
             services.AddScoped<TinService>();
             services.AddScoped<SendGridEmailService>();
+            services.AddScoped<IMerchantBusinessInfoService, MerchantBusinessInfoService>();
+            services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<InterBankPendingTransferService>();
             services.AddSingleton<SqlRepository>();
@@ -155,6 +164,9 @@ namespace SocialPay.API
             services.AddSingleton<IBSReposerviceJob>();
             services.AddSingleton<EncryptDecryptJob>();
             services.AddSingleton<EncryptDecrypt>();
+
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IAsyncRepository<>), typeof(Repository<>));
             //services.AddScoped<ICreditMerchantWalletService, CreditMerchantWalletService>();
             //services.AddSingleton<CreditMerchantWalletTransactions>();
             //services.AddScoped<INonEscrowCardWalletTransaction, NonEscrowCardWalletTransaction>();

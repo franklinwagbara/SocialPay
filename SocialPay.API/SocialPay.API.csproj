@@ -34,6 +34,7 @@
     <ProjectReference Include="..\SocialPay.Core\SocialPay.Core.csproj" />
     <ProjectReference Include="..\SocialPay.Domain\SocialPay.Domain.csproj" />
     <ProjectReference Include="..\SocialPay.Job\SocialPay.Job.csproj" />
+    <ProjectReference Include="..\SocialPay.Persistance\SocialPay.Persistance.csproj" />
   </ItemGroup>
 
   <ItemGroup>
