@@ -16,4 +16,15 @@ namespace SocialPay.Helper.ViewModel
         public bool IsDeleted { get; set; }
         public DateTime DateEntered { get; set; } 
     }
+
+    public class NibbsSubMerchantViewModel
+    {
+        public long ClientAuthenticationId { get; set; }
+        public string mchNo { get; set; }
+        public string merchantName { get; set; }
+        public string merchantEmail { get; set; }
+        public string merchantPhoneNumber { get; set; }
+        public string subFixed { get; set; }
+        public string subAmount { get; set; }
+    }
 }

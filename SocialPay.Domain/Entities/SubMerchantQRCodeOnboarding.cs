@@ -4,14 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialPay.Domain.Entities
 {
-    public class MerchantQRCodeOnboarding : BaseEntity
+    public class SubMerchantQRCodeOnboarding : BaseEntity
     {
-        public MerchantQRCodeOnboarding()
+        public SubMerchantQRCodeOnboarding()
         {
-            MerchantQRCodeOnboardingResponse = new HashSet<MerchantQRCodeOnboardingResponse>();
-            BindMerchant = new HashSet<BindMerchant>();           
+            MerchantQRCodeOnboardingResponse = new HashSet<MerchantQRCodeOnboardingResponse>();           
         }
-        public long MerchantQRCodeOnboardingId { get; set; }
+        public long SubMerchantQRCodeOnboardingId { get; set; }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(150)")]
         public string Name { get; set; }
@@ -31,7 +30,6 @@ namespace SocialPay.Domain.Entities
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public ClientAuthentication ClientAuthentication { get; set; }
         public virtual ICollection<MerchantQRCodeOnboardingResponse> MerchantQRCodeOnboardingResponse { get; set; }
-        public virtual ICollection<BindMerchant> BindMerchant { get; set; }
 
     }
 }

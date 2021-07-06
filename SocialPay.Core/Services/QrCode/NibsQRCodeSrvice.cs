@@ -21,7 +21,7 @@ namespace SocialPay.Core.Services.QrCode
         public NibsQRCodeSrvice(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
-           
+
             _client = new HttpClient
             {
                 BaseAddress = new Uri(_appSettings.nibsQRCodeBaseUrl)
@@ -37,22 +37,23 @@ namespace SocialPay.Core.Services.QrCode
 
                 _log4net.Info("Initiating CreateMerchantWallet request" + " | " + jsonRequest + " | " + DateTime.Now);
 
-               //// var res = $"{IdNumber}{firstname}{username}";
-               //// var signature = res.GenerateHmac(secretKey);
+                var res = $"{jsonRequest}";
 
-               //// if (string.IsNullOrEmpty(signature)
-               ////|| !string.Equals(signature, requestSignature, StringComparison.InvariantCultureIgnoreCase))
-               //// {
+                var signature = res.GenerateHmac(_appSettings.nibsQRCodeClientSecret);
 
-               ////     _log4net.Error("Signature error occured" + " | " + IdNumber + " | " + clientId + " | " + DateTime.Now);
+                //// if (string.IsNullOrEmpty(signature)
+                ////|| !string.Equals(signature, requestSignature, StringComparison.InvariantCultureIgnoreCase))
+                //// {
 
-               ////     return new WebAPIResponse
-               ////     {
-               ////         ResponseCode = AppConstant.SignatureError
-               ////     };
-               //// }
+                ////     _log4net.Error("Signature error occured" + " | " + IdNumber + " | " + clientId + " | " + DateTime.Now);
 
-                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodePostHeaderClient, _appSettings.nibsQRCodePostHeaderClientValue);
+                ////     return new WebAPIResponse
+                ////     {
+                ////         ResponseCode = AppConstant.SignatureError
+                ////     };
+                //// }
+
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeClientId, _appSettings.nibsQRCodePostHeaderClientValue);
                 _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodePostHeaderCheckSum, _appSettings.nibsQRCodePostHeaderCheckSumValue);
 
                 var request = await _client.PostAsync($"{_appSettings.nibsQRCodeCreateMerchantUrl}",
@@ -60,7 +61,7 @@ namespace SocialPay.Core.Services.QrCode
 
                 var result = await request.Content.ReadAsStringAsync();
 
-                if(request.IsSuccessStatusCode)
+                if (request.IsSuccessStatusCode)
                 {
                     var response = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(result);
 

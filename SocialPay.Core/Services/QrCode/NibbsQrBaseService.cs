@@ -44,5 +44,47 @@ namespace SocialPay.Core.Services.QrCode
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while creating merchant" };
             }
         }
+
+        public async Task<WebApiResponse> CreateSubMerchantAsync(CreateNibbsSubMerchantDto requestDto, long clientId)
+        {
+            try
+            {
+                var model = new NibbsSubMerchantViewModel
+                {
+                    ClientAuthenticationId = clientId,                    
+                };
+
+               // await _nibbsQrMerchantService.AddAsync(model);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while creating merchant" };
+            }
+        }
+
+
+        public async Task<WebApiResponse> BindMerchantAsync(BindMerchantRequestDto requestDto, long clientId)
+        {
+            try
+            {
+                var model = new NibbsSubMerchantViewModel
+                {
+                    ClientAuthenticationId = clientId,
+                };
+
+                // await _nibbsQrMerchantService.AddAsync(model);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while creating merchant" };
+            }
+        }
+
     }
 }

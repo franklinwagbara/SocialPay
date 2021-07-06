@@ -17,7 +17,6 @@ namespace SocialPay.Core.Services.Merchant
             _personalInfoService = personalInfoService ?? throw new ArgumentNullException(nameof(personalInfoService));
         }
 
-
         public async Task<WebApiResponse> GetOrCreateReferalCode(long clientId)
         {
             //clientId = 90;

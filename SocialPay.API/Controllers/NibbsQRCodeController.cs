@@ -47,5 +47,55 @@ namespace SocialPay.API.Controllers
 
             return BadRequest(response);
         }
+
+
+        [HttpPost]
+        [Route("confirm-QrCode-merchant")]
+        public async Task<IActionResult> ConfirmMerchantOnboarding([FromBody] CreateNibbsSubMerchantDto model)
+        {
+            // _log4net.Info("Tasks starts to create account" + " | " + model.Email + " | " + DateTime.Now);
+            var response = new WebApiResponse { };
+
+            if (ModelState.IsValid)
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                return Ok(await _nibbsQrBaseService.CreateSubMerchantAsync(model, Convert.ToInt32(clientId)));
+            }
+
+            var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+
+            response.ResponseCode = AppResponseCodes.Failed;
+            response.Data = message;
+
+            return BadRequest(response);
+        }
+
+
+        [HttpPost]
+        [Route("bind-merchant")]
+        public async Task<IActionResult> BindMerchant([FromBody] BindMerchantRequestDto model)
+        {
+            // _log4net.Info("Tasks starts to create account" + " | " + model.Email + " | " + DateTime.Now);
+            var response = new WebApiResponse { };
+
+            if (ModelState.IsValid)
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                return Ok(await _nibbsQrBaseService.BindMerchantAsync(model, Convert.ToInt32(clientId)));
+            }
+
+            var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+
+            response.ResponseCode = AppResponseCodes.Failed;
+            response.Data = message;
+
+            return BadRequest(response);
+        }
     }
 }
