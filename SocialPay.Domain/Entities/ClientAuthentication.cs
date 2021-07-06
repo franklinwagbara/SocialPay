@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialPay.Domain.Entities
 {
-    public class ClientAuthentication
+    public class ClientAuthentication : BaseEntity
     {
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]

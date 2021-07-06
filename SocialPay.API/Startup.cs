@@ -156,7 +156,9 @@ namespace SocialPay.API
             services.AddScoped<TinService>();
             services.AddScoped<SendGridEmailService>();
             services.AddScoped<IMerchantBusinessInfoService, MerchantBusinessInfoService>();
+            services.AddScoped<IPersonalInfoService, PersonalInfoService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
+            services.AddScoped<MerchantPersonalInfoBaseService>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<InterBankPendingTransferService>();
             services.AddSingleton<SqlRepository>();

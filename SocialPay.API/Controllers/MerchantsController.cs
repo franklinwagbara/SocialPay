@@ -31,11 +31,13 @@ namespace SocialPay.API.Controllers
         private readonly DisputeRepoService _disputeRepoService;
         private readonly PayWithSpectaService _payWithSpectaService;
         private readonly MerchantBusinessInfoBaseService _merchantBusinessInfoBaseService;
+        private readonly MerchantPersonalInfoBaseService _merchantPersonalInfoBaseService;
         public MerchantsController(MerchantRegistrationService merchantRegistrationService,
             MerchantPaymentLinkService merchantPaymentLinkService, MerchantReportService merchantReportService,
             InvoiceService invoiceService, CreateMerchantWalletService createMerchantWalletService,
             DisputeRepoService disputeRepoService, PayWithSpectaService payWithSpectaService,
-            MerchantBusinessInfoBaseService merchantBusinessInfoBaseService)
+            MerchantBusinessInfoBaseService merchantBusinessInfoBaseService,
+            MerchantPersonalInfoBaseService merchantPersonalInfoBaseService)
         {
             _merchantRegistrationService = merchantRegistrationService;
             _merchantPaymentLinkService = merchantPaymentLinkService;
@@ -45,6 +47,7 @@ namespace SocialPay.API.Controllers
             _disputeRepoService = disputeRepoService;
             _payWithSpectaService = payWithSpectaService;
             _merchantBusinessInfoBaseService = merchantBusinessInfoBaseService ?? throw new ArgumentNullException(nameof(merchantBusinessInfoBaseService));
+            _merchantPersonalInfoBaseService = merchantPersonalInfoBaseService ?? throw new ArgumentNullException(nameof(merchantPersonalInfoBaseService));
         }
 
         [HttpPost]
@@ -838,6 +841,38 @@ namespace SocialPay.API.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("get-merchant-personalInfo")]
+        public async Task<IActionResult> GetMerchantPersonalInfoDetails()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                    return Ok(await _merchantPersonalInfoBaseService.GetMerchantPersonalInfoAsync(Convert.ToInt32(clientId)));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
 
         //FromXmlBody
 
