@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/socialpay/store")]
     [ApiController]
     public class StoreController : ControllerBase
     {
@@ -19,21 +19,28 @@ namespace SocialPay.API.Controllers
             _service = service;
         }
 
-        //public async Task<ActionResult> AddStore(MerchantStoreDto merchant)
-        //{
-        //    var result = await _service.CreateStore(merchant);
-        //    if (result.StatusCode.Equals("00"))
-        //        return Ok(result);
-        //    return NotFound(result);
-        //}
+        [HttpPost]
+        [Route("add-to-store")]
+        public async Task<ActionResult> AddStore([FromBody] MerchantStoreDto merchant)
+        {
+            var result = await _service.CreateStore(merchant);
 
-        //[HttpPost]
-        //public async Task<ActionResult> AddCategory(StoreCategoryDto storeCategory)
-        //{
-        //    var result = await _service.CreateCategory(storeCategory);
-        //    if (result.StatusCode.Equals("00"))
-        //        return Ok(result);
-        //    return NotFound(result);
-        //}
+            if (result.StatusCode.Equals("00"))
+                return Ok(result);
+
+            return NotFound(result);
+        }
+
+        [HttpPost]
+        [Route("add-store-category")]
+        public async Task<ActionResult> AddCategory([FromBody] StoreCategoryDto storeCategory)
+        {
+            var result = await _service.CreateCategory(storeCategory);
+
+            if (result.StatusCode.Equals("00"))
+                return Ok(result);
+
+            return NotFound(result);
+        }
     }
 }
