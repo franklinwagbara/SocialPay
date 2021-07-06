@@ -408,7 +408,7 @@ namespace SocialPay.Core.Repositories.Customer
         public async Task<List<MerchantPaymentSetup>> GetAllPaymentLinksByClientId(long clientId)
         {
             return await _context.MerchantPaymentSetup.Where(x => x.IsDeleted
-            == false && x.ClientAuthenticationId == clientId).ToListAsync();
+            == false && x.ClientAuthenticationId == clientId && x.IsDeleted == false).ToListAsync();
         }
 
         public async Task <List<PaymentLinkViewModel>> GetPaymentLinks(long clientId)

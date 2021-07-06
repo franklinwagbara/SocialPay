@@ -289,6 +289,12 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("NVARCHAR(20)");
 
+                    b.Property<string>("ReferCode")
+                        .HasColumnType("NVARCHAR(20)");
+
+                    b.Property<string>("ReferralCode")
+                        .HasColumnType("NVARCHAR(50)");
+
                     b.Property<string>("RoleName")
                         .HasColumnType("NVARCHAR(25)");
 

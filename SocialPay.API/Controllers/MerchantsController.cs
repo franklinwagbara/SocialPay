@@ -185,7 +185,7 @@ namespace SocialPay.API.Controllers
 
         }
 
-
+        //[AllowAnonymous]
         [HttpPut]
         [Route("update-personal-info")]
         public async Task<IActionResult> UpdateMerchantPersonalInfo([FromBody] UpdateMerchantPersonalInfoRequestDto model)
@@ -199,7 +199,9 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    return Ok(await _merchantRegistrationService.UpdateMerchantPersonalInfo(Convert.ToInt32(clientId), model));
+
+                    return Ok(await _merchantPersonalInfoBaseService.UpdateMerchantPersonalInfo(Convert.ToInt32(clientId), model));
+                   // return Ok(await _merchantRegistrationService.UpdateMerchantPersonalInfo(Convert.ToInt32(clientId), model));
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                                     .Select(e => e.ErrorMessage));

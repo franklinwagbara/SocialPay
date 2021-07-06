@@ -39,10 +39,50 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<ClientAuthentication, PersonalInfoViewModel>(personalInfo);
         }
 
-        //public async Task<bool> ExistsAsync(long departmentId)
-        //{
-        //    return await _department.ExistsAsync(x => x.DepartmentId == departmentId);
-        //}
+        public async Task<PersonalInfoViewModel> GetMerchantPersonalEmailInfo(string email)
+        {
+            var personalInfo = await _clientAuthentication.GetSingleAsync(x => x.Email == email);
+
+            return _mapper.Map<ClientAuthentication, PersonalInfoViewModel>(personalInfo);
+        }
+
+        public async Task<PersonalInfoViewModel> GetMerchantPersonalPhoneNumberInfo(string phoneNumber)
+        {
+            var personalInfo = await _clientAuthentication.GetSingleAsync(x => x.PhoneNumber == phoneNumber);
+
+            return _mapper.Map<ClientAuthentication, PersonalInfoViewModel>(personalInfo);
+        }
+
+        public async Task<PersonalInfoViewModel> GetMerchantPersonalBvnInfo(string bvn)
+        {
+            var personalInfo = await _clientAuthentication.GetSingleAsync(x => x.Bvn == bvn);
+
+            return _mapper.Map<ClientAuthentication, PersonalInfoViewModel>(personalInfo);
+        }
+
+        public async Task<bool> ExistsAsync(long clientId)
+        {
+            return await _clientAuthentication.ExistsAsync(x => x.ClientAuthenticationId == clientId);
+        }
+
+        public async Task UpdateAsync(PersonalInfoViewModel model)
+        {
+            var entity = await _clientAuthentication.GetSingleAsync(x => x.ClientAuthenticationId == model.ClientAuthenticationId);
+
+            entity.Email = model.Email;
+            entity.PhoneNumber = model.PhoneNumber;
+            entity.UserName = model.UserName;
+
+            await _clientAuthentication.UpdateAsync(entity);
+        }
+
+       
+
+        public async Task<int> CountTotalFundAsync()
+        {
+            return 1;
+           // return await _clientAuthentication.CountAsync(x => x.AvailableFlag == true);
+        }
 
 
         //GetTenantByStatusAsync

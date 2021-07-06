@@ -61,6 +61,25 @@ namespace SocialPay.Core.Services.Account
             _sendGridEmailService = sendGridEmailService;
         }
 
+        private async Task<string> GetReferCode()
+        {
+            try
+            {
+                var generator = new Random(); 
+
+                string refercode = generator.Next(100000, 1000000).ToString();
+
+                if (!await _context.ClientAuthentication.AnyAsync(x => x.ReferCode == refercode))
+                    return refercode;
+
+                return await GetReferCode();
+            }
+            catch (Exception ex)
+            {
+                return "0";
+            }
+        }
+
         public async Task<WebApiResponse> CreateNewMerchant(SignUpRequestDto signUpRequestDto)
         {
             _log4net.Info("Initiating create merchant account" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
@@ -100,6 +119,7 @@ namespace SocialPay.Core.Services.Account
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
+                    string referCode = await GetReferCode();
                     try
                     {
                         var model = new ClientAuthentication
@@ -115,7 +135,9 @@ namespace SocialPay.Core.Services.Account
                             RoleName = RoleDetails.Merchant,
                             LastDateModified = DateTime.Now,
                             UserName = signUpRequestDto.Email,
-                            IsLocked = false
+                            IsLocked = false,
+                            ReferralCode = signUpRequestDto.ReferralCode,
+                            ReferCode = $"{"SP-"}{referCode}"
                         };
                         await _context.ClientAuthentication.AddAsync(model);
                         await _context.SaveChangesAsync();

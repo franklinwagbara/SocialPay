@@ -64,28 +64,28 @@ namespace SocialPay.Core.Services.Authentication
 
         public async Task<LoginAPIResponse> Authenticate(LoginRequestDto loginRequestDto)
         {
-            _log4net.Info("Authenticate" + " | " + loginRequestDto.Email + " | " +  DateTime.Now);
+            _log4net.Info("Authenticate" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
             try
             {
                 var cacheKey = string.Empty;
-                var userInfo = new UserInfoViewModel{};
+                var userInfo = new UserInfoViewModel { };
                 if (string.IsNullOrEmpty(loginRequestDto.Email) || string.IsNullOrEmpty(loginRequestDto.Password))
-                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.Failed};
+                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.Failed };
 
 
                 var validateuserInfo = await _context.ClientAuthentication
-                    .Include(x=>x.MerchantBusinessInfo)
-                    .Include(x=>x.MerchantWallet)
-                    .Include(x=>x.MerchantBankInfo)
-                    .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email 
+                    .Include(x => x.MerchantBusinessInfo)
+                    .Include(x => x.MerchantWallet)
+                    .Include(x => x.MerchantBankInfo)
+                    .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email
                     && x.IsDeleted == false);
 
                 // check if username exists
                 if (validateuserInfo == null)
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
 
-                if(validateuserInfo.IsLocked == true)
+                if (validateuserInfo.IsLocked == true)
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked };
 
                 var userLoginAttempts = await _userRepoService.GetLoginAttemptAsync(validateuserInfo.ClientAuthenticationId);
@@ -100,17 +100,19 @@ namespace SocialPay.Core.Services.Authentication
                     _log4net.Info("Authenticate for super admin" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
                     var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
-                    if(validateUserAD.ResponseCode != AppResponseCodes.Success)
-                    return validateUserAD;
+
+                    if (validateUserAD.ResponseCode != AppResponseCodes.Success)
+                        return validateUserAD;
 
                     tokenDescriptor = new SecurityTokenDescriptor
                     {
-                     Subject = new ClaimsIdentity(new Claim[]
+                        Subject = new ClaimsIdentity(new Claim[]
                     {
                     new Claim(ClaimTypes.Name, validateuserInfo.Email),
                     new Claim(ClaimTypes.Role, validateuserInfo.RoleName),
                     new Claim(ClaimTypes.Email, validateuserInfo.Email),
                     new Claim("UserStatus",  validateuserInfo.StatusCode),
+                    new Claim("RefCode", validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode),
                     new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
                     }),
@@ -125,17 +127,17 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.Role = validateuserInfo.RoleName;
                     tokenResult.UserStatus = validateuserInfo.StatusCode;
                     tokenResult.ResponseCode = AppResponseCodes.Success;
-                   
+
                     return tokenResult;
                 }
                 // check if password is correct
                 if (!VerifyPasswordHash(loginRequestDto.Password.Encrypt(_appSettings.appKey), validateuserInfo.ClientSecretHash, validateuserInfo.ClientSecretSalt))
                 {
-                    using(var transaction = await _context.Database.BeginTransactionAsync())
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
                         {
-                            userLoginAttempts.LoginAttempt ++;
+                            userLoginAttempts.LoginAttempt++;
                             userLoginAttempts.IsSuccessful = false;
                             _context.ClientLoginStatus.Update(userLoginAttempts);
                             await _context.SaveChangesAsync();
@@ -146,7 +148,7 @@ namespace SocialPay.Core.Services.Authentication
                             await _context.LoginAttemptHistory.AddAsync(loginDetails);
                             await _context.SaveChangesAsync();
 
-                            if(userLoginAttempts.LoginAttempt == Convert.ToInt32(_appSettings.clientloginAttempts))
+                            if (userLoginAttempts.LoginAttempt == Convert.ToInt32(_appSettings.clientloginAttempts))
                             {
                                 validateuserInfo.IsLocked = true;
                                 validateuserInfo.LastDateModified = DateTime.Now;
@@ -183,7 +185,7 @@ namespace SocialPay.Core.Services.Authentication
                 {
                     tokenDescriptor = new SecurityTokenDescriptor
                     {
-                       Subject = new ClaimsIdentity(new Claim[]
+                        Subject = new ClaimsIdentity(new Claim[]
                        {
                         new Claim(ClaimTypes.Name, validateuserInfo.Email),
                         new Claim(ClaimTypes.Role, validateuserInfo.RoleName),
@@ -217,7 +219,7 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.ClientId = validateuserInfo.Email;
                     tokenResult.Role = validateuserInfo.RoleName;
                     tokenResult.UserStatus = validateuserInfo.StatusCode;
-                    tokenResult.ResponseCode = AppResponseCodes.Success;                    
+                    tokenResult.ResponseCode = AppResponseCodes.Success;
                     tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
                     _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
@@ -227,7 +229,7 @@ namespace SocialPay.Core.Services.Authentication
                 double availableWalletBalance = 0;
                 var getwalletInfo = await _walletRepoService.GetWalletDetailsAsync(validateuserInfo.PhoneNumber);
 
-                if(getwalletInfo != null)
+                if (getwalletInfo != null)
                 {
                     availableWalletBalance = getwalletInfo.Data == null ? 0 : getwalletInfo.Data.Availablebalance;
                 }
@@ -241,6 +243,7 @@ namespace SocialPay.Core.Services.Authentication
                     new Claim(ClaimTypes.Email, validateuserInfo.Email),
                     new Claim("UserStatus",  validateuserInfo.StatusCode),
                     new Claim("businessName", validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault()),
+                    new Claim("RefCode", validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode),
                     new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
                    }),
@@ -255,7 +258,7 @@ namespace SocialPay.Core.Services.Authentication
 
                 var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
 
-                if(redisCustomerList == null)
+                if (redisCustomerList == null)
                 {
                     await _distributedCache.RemoveAsync(cacheKey);
                     serializedCustomerList = JsonConvert.SerializeObject(userInfo);
@@ -266,9 +269,10 @@ namespace SocialPay.Core.Services.Authentication
 
                     await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
                 }
-                
+
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var tokenString = tokenHandler.WriteToken(token);
+
                 tokenResult.AccessToken = tokenString;
                 tokenResult.ClientId = validateuserInfo.Email;
                 tokenResult.Role = validateuserInfo.RoleName;
@@ -281,8 +285,10 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.BankName = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.BankName).FirstOrDefault();
                 tokenResult.Nuban = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.Nuban).FirstOrDefault();
                 tokenResult.AccountName = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.AccountName).FirstOrDefault();
+                tokenResult.Refcode = validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode;
                 tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
                 tokenResult.MerchantWalletBalance = availableWalletBalance;
+
                 _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
                 return tokenResult;
@@ -316,19 +322,19 @@ namespace SocialPay.Core.Services.Authentication
 
         public async Task<WebApiResponse> CreateAccount(string email, string password, string fullname, string phoneNumber)
         {
-            _log4net.Info("CreateAccount" + " | " + email + " | " + phoneNumber + " | " +  DateTime.Now);
+            _log4net.Info("CreateAccount" + " | " + email + " | " + phoneNumber + " | " + DateTime.Now);
 
             try
             {
                 byte[] passwordHash, passwordSalt;
-                if(string.IsNullOrEmpty(password))
+                if (string.IsNullOrEmpty(password))
                 {
                     var newPassword = Guid.NewGuid().ToString("N").Substring(0, 9) + DateTime.Now.Ticks;
                     password = newPassword;
                 }
                 _utilities.CreatePasswordHash(password.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
-                                
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
@@ -368,12 +374,12 @@ namespace SocialPay.Core.Services.Authentication
 
                     }
                 }
-                
-               
+
+
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "CreateAccount" + " | " + email + " | " + phoneNumber + " | "+  ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "CreateAccount" + " | " + email + " | " + phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -381,14 +387,14 @@ namespace SocialPay.Core.Services.Authentication
 
         public async Task<WebApiResponse> ModifyUserAccount(UpdateUserRequestDto updateUserRequestDto)
         {
-            _log4net.Info("ModifyUserAccount request" + " | " + updateUserRequestDto.Email + " | " +  DateTime.Now);
+            _log4net.Info("ModifyUserAccount request" + " | " + updateUserRequestDto.Email + " | " + DateTime.Now);
 
             try
             {
                 var validateUser = await _context.ClientAuthentication
                     .SingleOrDefaultAsync(x => x.Email == updateUserRequestDto.Email);
 
-                if(validateUser == null)
+                if (validateUser == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
 
                 validateUser.IsDeleted = updateUserRequestDto.Status;

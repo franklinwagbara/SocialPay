@@ -33,6 +33,7 @@ namespace SocialPay.Helper.Dto.Response
         public string BankName { get; set; }
         public string Nuban { get; set; }
         public string AccountName { get; set; }
+        public string Refcode { get; set; }
         public double MerchantWalletBalance { get; set; }
     }
 }

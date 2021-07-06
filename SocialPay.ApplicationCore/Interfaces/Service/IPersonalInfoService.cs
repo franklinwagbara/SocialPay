@@ -11,10 +11,13 @@ namespace SocialPay.ApplicationCore.Interfaces.Service
        // Task<List<PaymentLinkViewModel>> GetAllAsync();
        // Task<List<PaymentLinkViewModel>> GetFundWalletByTenantAsync(long tenantId);
         Task<PersonalInfoViewModel> GetMerchantPersonalInfo(long clientId);
-        //Task<int> CountTotalFundAsync();
-        //Task<bool> ExistsAsync(long clientId);
+        Task<PersonalInfoViewModel> GetMerchantPersonalEmailInfo(string email);
+        Task<PersonalInfoViewModel> GetMerchantPersonalPhoneNumberInfo(string phoneNumber);
+        Task<PersonalInfoViewModel> GetMerchantPersonalBvnInfo(string phoneNumber);
+        Task<int> CountTotalFundAsync();
+        Task<bool> ExistsAsync(long clientId);
         //Task<long> AddAsync(PaymentLinkViewModel model);
-        //Task UpdateAsync(PaymentLinkViewModel model);
+        Task UpdateAsync(PersonalInfoViewModel model);
         //Task DeleteAsync(int id);
     }
 }

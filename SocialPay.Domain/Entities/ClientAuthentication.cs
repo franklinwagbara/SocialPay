@@ -26,6 +26,10 @@ namespace SocialPay.Domain.Entities
         public bool IsLocked { get; set; }
         [Column(TypeName = "NVARCHAR(25)")]
         public string RoleName { get; set; }
+        [Column(TypeName = "NVARCHAR(30)")]
+        public string ReferralCode { get; set; }
+        [Column(TypeName = "NVARCHAR(20)")]
+        public string ReferCode { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
         public virtual ICollection<PinRequest> PinRequest { get; set; }
