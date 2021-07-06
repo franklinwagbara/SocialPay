@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Messaging.SendGrid;
-using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using System;
 using System.IO;

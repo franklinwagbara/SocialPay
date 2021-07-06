@@ -3,14 +3,11 @@ using SocialPay.ApplicationCore.Interfaces.Repositories;
 using SocialPay.ApplicationCore.Interfaces.Service;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.ApplicationCore.Services
 {
-    
+
     public class MerchantBusinessInfoService : IMerchantBusinessInfoService
     {
         private readonly IMapper _mapper;

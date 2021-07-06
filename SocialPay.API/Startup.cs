@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,6 +27,7 @@ using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Merchant;
+using SocialPay.Core.Services.QrCode;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
 using SocialPay.Core.Services.Tin;
@@ -37,12 +37,7 @@ using SocialPay.Core.Services.Wallet;
 using SocialPay.Core.Store;
 using SocialPay.Domain;
 using SocialPay.Helper.Cryptography;
-using SocialPay.Job.Repository.AcceptedEscrowOrdersBankTransaction;
-using SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction;
 using SocialPay.Job.Repository.BasicWalletFundService;
-using SocialPay.Job.Repository.DeclinedEscrowWalletTransaction;
-using SocialPay.Job.Repository.DeliveryDayBankTransaction;
-using SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
 using SocialPay.Job.Repository.NonEscrowBankTransactions;
@@ -50,8 +45,6 @@ using SocialPay.Job.Repository.NonEscrowCardWalletTransaction;
 using SocialPay.Job.Repository.NonEscrowOtherWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
-using SocialPay.Job.Services;
-using SocialPay.Job.TaskSchedules;
 using SocialPay.Persistance.Repositories;
 
 namespace SocialPay.API
@@ -158,10 +151,12 @@ namespace SocialPay.API
             services.AddScoped<TinService>();
             services.AddScoped<SendGridEmailService>();
             services.AddScoped<IStore, StoreRepository>();
+            services.AddScoped<INibbsQrMerchantService, NibbsQrMerchantService>();
             services.AddScoped<IMerchantBusinessInfoService, MerchantBusinessInfoService>();
             services.AddScoped<IPersonalInfoService, PersonalInfoService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();
+            services.AddScoped<NibbsQrBaseService>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<InterBankPendingTransferService>();
             services.AddSingleton<SqlRepository>();

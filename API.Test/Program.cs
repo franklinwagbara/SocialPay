@@ -1,17 +1,13 @@
 ﻿using bankService;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 

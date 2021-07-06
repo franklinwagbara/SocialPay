@@ -90,5 +90,11 @@
         public string sendGridEmailSender { get; set; }
         public string MerchantSignUpEmailSubject { get; set; }
         public decimal vat { get; set; }
+        public string nibsQRCodeBaseUrl { get; set; }
+        public string nibsQRCodeCreateMerchantUrl { get; set; }
+        public string nibsQRCodePostHeaderClient { get; set; }
+        public string nibsQRCodePostHeaderClientValue { get; set; }
+        public string nibsQRCodePostHeaderCheckSum { get; set; }
+        public string nibsQRCodePostHeaderCheckSumValue { get; set; }
     }
 }

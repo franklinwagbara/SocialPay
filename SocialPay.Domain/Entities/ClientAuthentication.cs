@@ -7,6 +7,20 @@ namespace SocialPay.Domain.Entities
 {
     public class ClientAuthentication : BaseEntity
     {
+        public ClientAuthentication()
+        {
+            PinRequest = new HashSet<PinRequest>();
+            MerchantBusinessInfo = new HashSet<MerchantBusinessInfo>();
+            MerchantBankInfo = new HashSet<MerchantBankInfo>();
+            MerchantActivitySetup = new HashSet<MerchantActivitySetup>();
+            MerchantWallet = new HashSet<MerchantWallet>();
+            CreateWalletResponse = new HashSet<CreateWalletResponse>();
+            MerchantPaymentSetup = new HashSet<MerchantPaymentSetup>();
+            ItemAcceptedOrRejected = new HashSet<ItemAcceptedOrRejected>();
+            InvoicePaymentLink = new HashSet<InvoicePaymentLink>();
+            LinkCategory = new HashSet<LinkCategory>();
+            TransactionLog = new HashSet<TransactionLog>();
+        }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]
         public string Bvn { get; set; }

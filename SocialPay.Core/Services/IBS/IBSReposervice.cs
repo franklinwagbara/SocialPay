@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Protocols;
 using NewIbsService;
 using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
