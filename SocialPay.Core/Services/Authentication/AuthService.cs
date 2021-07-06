@@ -112,7 +112,7 @@ namespace SocialPay.Core.Services.Authentication
                     new Claim(ClaimTypes.Role, validateuserInfo.RoleName),
                     new Claim(ClaimTypes.Email, validateuserInfo.Email),
                     new Claim("UserStatus",  validateuserInfo.StatusCode),
-                    new Claim("RefCode", validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode),
+                   // new Claim("RefCode", validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode),
                     new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
                     }),
@@ -127,6 +127,7 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.Role = validateuserInfo.RoleName;
                     tokenResult.UserStatus = validateuserInfo.StatusCode;
                     tokenResult.ResponseCode = AppResponseCodes.Success;
+                    tokenResult.Refcode = validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode;
 
                     return tokenResult;
                 }
@@ -202,7 +203,9 @@ namespace SocialPay.Core.Services.Authentication
                     userInfo.Email = validateuserInfo.Email;
                     userInfo.StatusCode = validateuserInfo.StatusCode;
                     string serializedCustomerListGuest = string.Empty;
+
                     var redisCustomerListGuest = await _distributedCache.GetAsync(cacheKey);
+
                     if (redisCustomerListGuest == null)
                     {
                         await _distributedCache.RemoveAsync(cacheKey);
@@ -221,6 +224,8 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.UserStatus = validateuserInfo.StatusCode;
                     tokenResult.ResponseCode = AppResponseCodes.Success;
                     tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
+                    tokenResult.Refcode = validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode;
+
                     _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
                     return tokenResult;
