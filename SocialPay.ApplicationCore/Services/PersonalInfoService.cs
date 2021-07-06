@@ -62,6 +62,11 @@ namespace SocialPay.ApplicationCore.Services
             return await _clientAuthentication.ExistsAsync(x => x.ClientAuthenticationId == clientId);
         }
 
+        public async Task<bool> ExistsAsync(string refCode)
+        {
+            return await _clientAuthentication.ExistsAsync(x => x.ReferralCode == refCode);
+        }
+
         public async Task UpdateAsync(PersonalInfoViewModel model)
         {
             var entity = await _clientAuthentication.GetSingleAsync(x => x.ClientAuthenticationId == model.ClientAuthenticationId);
@@ -69,6 +74,7 @@ namespace SocialPay.ApplicationCore.Services
             entity.Email = model.Email;
             entity.PhoneNumber = model.PhoneNumber;
             entity.UserName = model.UserName;
+            entity.ReferralCode = model.ReferralCode;
 
             await _clientAuthentication.UpdateAsync(entity);
         }

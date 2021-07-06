@@ -283,6 +283,38 @@ namespace SocialPay.API.Controllers
             }
         }
 
+       // [AllowAnonymous]
+        [HttpGet]
+        [Route("get-my-referalCode")]
+        public async Task<IActionResult> GetMerchantReferalCode()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                    return Ok(await _merchantPersonalInfoBaseService.GetOrCreateReferalCode(Convert.ToInt32(clientId)));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
 
         [AllowAnonymous]
         [HttpGet]

@@ -17,9 +17,53 @@ namespace SocialPay.Core.Services.Merchant
             _personalInfoService = personalInfoService ?? throw new ArgumentNullException(nameof(personalInfoService));
         }
 
+
+        public async Task<WebApiResponse> GetOrCreateReferalCode(long clientId)
+        {
+            //clientId = 90;
+            try
+            {
+                var request = await _personalInfoService.GetMerchantPersonalInfo(clientId);
+
+                if (request == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record not found" };
+
+                if(!string.IsNullOrEmpty(request.ReferralCode))
+                {
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
+                }
+
+                var model = new PersonalInfoViewModel();
+
+                var generator = new Random();
+
+                var refercode = string.Empty;
+
+                refercode = $"{"SP-"}{generator.Next(100000, 1000000).ToString()}";
+
+                if (await _personalInfoService.ExistsAsync(refercode))
+                    refercode = $"{"SP-"}{generator.Next(100000, 1000000).ToString()}";
+
+                model.ReferralCode = refercode;
+                model.PhoneNumber = request.PhoneNumber;
+                model.Email = request.Email;
+                model.UserName = request.UserName;
+                model.ClientAuthenticationId = clientId;
+
+                await _personalInfoService.UpdateAsync(model);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured" };
+            }
+        }
+
         public async Task<WebApiResponse> GetMerchantPersonalInfoAsync(long clientId)
         {
-           // clientId = 90;
+            // clientId = 90;
             try
             {
                 var request = await _personalInfoService.GetMerchantPersonalInfo(clientId);
@@ -36,18 +80,18 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> UpdateMerchantPersonalInfo(long clientId, UpdateMerchantPersonalInfoRequestDto personalInfo)
         {
-            clientId = 90;
+            // clientId = 90;
             try
             {
                 var getClient = await _personalInfoService.GetMerchantPersonalInfo(clientId);
 
-                if(getClient == null)
+                if (getClient == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record not found" };
 
-                var model = new PersonalInfoViewModel 
+                var model = new PersonalInfoViewModel
                 {
                     Bvn = getClient.Bvn,
-                    Email = getClient.Email,                
+                    Email = getClient.Email,
                     PhoneNumber = getClient.PhoneNumber
                 };
 
@@ -67,7 +111,7 @@ namespace SocialPay.Core.Services.Merchant
 
                     if (validatePhoneNumber != null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
-                    
+
                     model.PhoneNumber = personalInfo.PhoneNumber;
                 }
 

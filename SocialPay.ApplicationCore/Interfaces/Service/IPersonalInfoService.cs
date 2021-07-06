@@ -13,6 +13,8 @@ namespace SocialPay.ApplicationCore.Interfaces.Service
         Task<PersonalInfoViewModel> GetMerchantPersonalBvnInfo(string phoneNumber);
         Task<int> CountTotalFundAsync();
         Task<bool> ExistsAsync(long clientId);
+
+        Task<bool> ExistsAsync(string refCode);
         //Task<long> AddAsync(PaymentLinkViewModel model);
         Task UpdateAsync(PersonalInfoViewModel model);
         //Task DeleteAsync(int id);

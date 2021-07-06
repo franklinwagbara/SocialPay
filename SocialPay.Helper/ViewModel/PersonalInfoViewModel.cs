@@ -14,6 +14,8 @@ namespace SocialPay.Helper.ViewModel
         public bool IsDeleted { get; set; }
         public bool IsLocked { get; set; }
         public string RoleName { get; set; }
+        public string ReferralCode { get; set; }
+        public string ReferCode { get; set; }
         public DateTime DateEntered { get; set; } 
     }
 }
