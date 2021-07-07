@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/socialpay/qRcode")]
     [ApiController]
     public class NibbsQRCodeController : ControllerBase
@@ -25,8 +25,8 @@ namespace SocialPay.API.Controllers
         }
 
         [HttpPost]
-        [Route("create-QrCode-merchant")]
-        public async Task<IActionResult> CreateUser([FromBody] CreateNibsMerchantRequestDto model)
+        [Route("create-merchant")]
+        public async Task<IActionResult> CreateUser([FromBody] DefaultMerchantRequestDto model)
         {
             // _log4net.Info("Tasks starts to create account" + " | " + model.Email + " | " + DateTime.Now);
             var response = new WebApiResponse { };
@@ -50,8 +50,8 @@ namespace SocialPay.API.Controllers
 
 
         [HttpPost]
-        [Route("confirm-QrCode-merchant")]
-        public async Task<IActionResult> ConfirmMerchantOnboarding([FromBody] CreateNibbsSubMerchantDto model)
+        [Route("create-sub-merchant")]
+        public async Task<IActionResult> CreateSubMerchantOnboarding([FromBody] DefaultSubMerchantRequestDto model)
         {
             // _log4net.Info("Tasks starts to create account" + " | " + model.Email + " | " + DateTime.Now);
             var response = new WebApiResponse { };

@@ -39,6 +39,7 @@ namespace SocialPay.Helper.ViewModel
         public string Chargebackemail { get; set; }
         public string Logo { get; set; }
         public string FileLocation { get; set; }
+        public string ResponseCode { get; set; }
     }
 
     public class MerchantBusinessInfoViewModel

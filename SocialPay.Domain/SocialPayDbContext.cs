@@ -52,5 +52,8 @@ namespace SocialPay.Domain
         public DbSet<ProductOption> ProductOptionRequest { get; set; }
         public DbSet<MerchantQRCodeOnboardingResponse> MerchantQRCodeOnboardingResponse { get; set; }
         public DbSet<MerchantQRCodeOnboarding> MerchantQRCodeOnboarding { get; set; }
+        public DbSet<SubMerchantQRCodeOnboarding> SubMerchantQRCodeOnboarding { get; set; }
+        public DbSet<SubMerchantQRCodeOnboardingResponse> SubMerchantQRCodeOnboardingResponse { get; set; }
+        public DbSet<BindMerchant> BindMerchant { get; set; }
     }
 }

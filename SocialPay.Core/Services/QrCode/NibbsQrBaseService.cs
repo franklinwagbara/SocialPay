@@ -1,4 +1,5 @@
 ﻿using SocialPay.ApplicationCore.Interfaces.Service;
+using SocialPay.Core.Services.Merchant;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
@@ -11,53 +12,51 @@ namespace SocialPay.Core.Services.QrCode
     public class NibbsQrBaseService
     {
         private readonly INibbsQrMerchantService _nibbsQrMerchantService;
-        private readonly NibbsQRCodeAPIService _nibbsQRCodeAPIService;
-        public NibbsQrBaseService(INibbsQrMerchantService nibbsQrMerchantService, NibbsQRCodeAPIService nibbsQRCodeAPIService)
+        // private readonly NibbsQRCodeAPIService _nibbsQRCodeAPIService;
+        private readonly MerchantPersonalInfoRepository _merchantPersonalInfoRepository;
+        private readonly NibbsQrRepository _nibbsQrRepository;
+        public NibbsQrBaseService(INibbsQrMerchantService nibbsQrMerchantService, NibbsQrRepository nibbsQrRepository,
+            MerchantPersonalInfoRepository merchantPersonalInfoRepository)
         {
             _nibbsQrMerchantService = nibbsQrMerchantService ?? throw new ArgumentNullException(nameof(nibbsQrMerchantService));
-            _nibbsQRCodeAPIService = nibbsQRCodeAPIService ?? throw new ArgumentNullException(nameof(nibbsQRCodeAPIService));
+            _nibbsQrRepository = nibbsQrRepository ?? throw new ArgumentNullException(nameof(nibbsQrRepository));
+            _merchantPersonalInfoRepository = merchantPersonalInfoRepository ?? throw new ArgumentNullException(nameof(merchantPersonalInfoRepository));
         }
 
-        public async Task<WebApiResponse> CreateMerchantAsync(CreateNibsMerchantRequestDto requestDto, long clientId)
+        public async Task<WebApiResponse> CreateMerchantAsync(DefaultMerchantRequestDto requestDto, long clientId)
         {
-            try
+            var merchant = await _merchantPersonalInfoRepository.GetCompleteMerchantPersonalDetailsAsync(clientId);
+
+            if (merchant.ResponseCode != AppResponseCodes.Success)
+                return new WebApiResponse { ResponseCode = merchant.ResponseCode };
+
+            var model = new NibbsQrMerchantViewModel
             {
-                var model = new NibbsQrMerchantViewModel
-                {
-                    ClientAuthenticationId = clientId,
-                    IsDeleted = false,
-                    Address = requestDto.Address,
-                    Contact = requestDto.Contact,
-                    Email = requestDto.Email,
-                    Fee = requestDto.Fee,
-                    Name = requestDto.Name,
-                    Phone = requestDto.Phone,
-                    Tin = requestDto.Tin
-                };
+                ClientAuthenticationId = clientId,
+                IsDeleted = false,
+                Address = requestDto.Address,
+                Contact = requestDto.Contact,
+                Email = merchant.BusinessEmail,
+                Fee = 00,
+                Name = merchant.BusinessName,
+                Phone = merchant.BusinessPhoneNumber,
+                Tin = merchant.Tin
+            };
 
-                //await _nibbsQrMerchantService.AddAsync(model);
-
-                var post = await _nibbsQRCodeAPIService.CreateMerchant(requestDto);
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
-            }
-            catch (Exception ex)
-            {
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while creating merchant" };
-            }
+            return await _nibbsQrRepository.CreateMerchantAsync(model, clientId);
         }
 
-        public async Task<WebApiResponse> CreateSubMerchantAsync(CreateNibbsSubMerchantDto requestDto, long clientId)
+        public async Task<WebApiResponse> CreateSubMerchantAsync(DefaultSubMerchantRequestDto requestDto, long clientId)
         {
             try
             {
                 var model = new NibbsSubMerchantViewModel
                 {
-                    ClientAuthenticationId = clientId,                    
+                  //  MerchantQRCodeOnboardingId = clientId,
+                    //mchNo
                 };
 
-               // await _nibbsQrMerchantService.AddAsync(model);
+                return await _nibbsQrRepository.CreateSubMerchantAsync(model, clientId);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
             }
@@ -75,7 +74,7 @@ namespace SocialPay.Core.Services.QrCode
             {
                 var model = new NibbsSubMerchantViewModel
                 {
-                    ClientAuthenticationId = clientId,
+                   // ClientAuthenticationId = clientId,
                 };
 
 

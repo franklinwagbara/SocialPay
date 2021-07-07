@@ -24,17 +24,18 @@ namespace SocialPay.Core.Services.QrCode
 
             _client = new HttpClient
             {
-               // BaseAddress = new Uri("https://pass.sterling.ng/")
                 BaseAddress = new Uri(_appSettings.nibsQRCodeBaseUrl)
             };
 
         }
 
-        public async Task<WebApiResponse> CreateMerchant(CreateNibsMerchantRequestDto requestModel)
+        public async Task<CreateNibsMerchantQrCodeResponse> CreateMerchant(CreateNibsMerchantRequestDto requestModel)
         {
             try
             {
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
+
+                var response = new CreateNibsMerchantQrCodeResponse();
 
                 _log4net.Info("Initiating CreateMerchantWallet request" + " | " + jsonRequest + " | " + DateTime.Now);
 
@@ -50,19 +51,67 @@ namespace SocialPay.Core.Services.QrCode
 
                 if (request.IsSuccessStatusCode)
                 {
-                    var response = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(result);
+                    response = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(result);
 
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Success" };
+                    response.ResponseCode = AppResponseCodes.Success;
+
+                    return response;
                 }
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Creation of merchant failed" };
+                response.jsonResponse = result;
+                response.ResponseCode = AppResponseCodes.Failed;
+
+                return response;
 
             }
             catch (Exception ex)
             {
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "error occured" };
+                return new CreateNibsMerchantQrCodeResponse { ResponseCode = AppResponseCodes.InternalError};
             }
         }
+
+        public async Task<CreateNibsMerchantQrCodeResponse> CreateSubMerchant(CreateNibbsSubMerchantDto requestModel)
+        {
+            try
+            {
+                var jsonRequest = JsonConvert.SerializeObject(requestModel);
+
+                var response = new CreateNibsMerchantQrCodeResponse();
+
+                _log4net.Info("Initiating Create sub Merchant request" + " | " + jsonRequest + " | " + DateTime.Now);
+
+                var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
+
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
+
+                var request = await _client.PostAsync($"{_appSettings.nibsQRCodeCreateSubMerchantUrl}",
+                    new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
+
+                var result = await request.Content.ReadAsStringAsync();
+
+                if (request.IsSuccessStatusCode)
+                {
+                    response = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(result);
+
+                    response.ResponseCode = AppResponseCodes.Success;
+
+                    return response;
+                }
+
+                response.jsonResponse = result;
+                response.ResponseCode = AppResponseCodes.Failed;
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+
+                return new CreateNibsMerchantQrCodeResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
     }
 }
