@@ -75,6 +75,7 @@ namespace SocialPay.ApplicationCore.Services
             entity.PhoneNumber = model.PhoneNumber;
             entity.UserName = model.UserName;
             entity.ReferralCode = model.ReferralCode;
+            entity.FullName = model.FullName;
 
             await _clientAuthentication.UpdateAsync(entity);
         }

@@ -115,6 +115,7 @@ namespace SocialPay.Core.Services.Authentication
                     model.Email = request.Email;
                     model.UserName = request.UserName;
                     model.ClientAuthenticationId = validateuserInfo.ClientAuthenticationId;
+                    model.FullName = validateuserInfo.FullName;
 
                     await _personalInfoService.UpdateAsync(model);
 

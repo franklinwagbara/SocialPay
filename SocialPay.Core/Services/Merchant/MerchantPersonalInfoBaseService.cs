@@ -48,6 +48,7 @@ namespace SocialPay.Core.Services.Merchant
                 model.Email = request.Email;
                 model.UserName = request.UserName;
                 model.ClientAuthenticationId = clientId;
+                model.FullName = request.FullName;
 
                 await _personalInfoService.UpdateAsync(model);
 
@@ -79,7 +80,7 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> UpdateMerchantPersonalInfo(long clientId, UpdateMerchantPersonalInfoRequestDto personalInfo)
         {
-             clientId = 90;
+            // clientId = 90;
             try
             {
                 var getClient = await _personalInfoService.GetMerchantPersonalInfo(clientId);
@@ -91,10 +92,14 @@ namespace SocialPay.Core.Services.Merchant
                 {
                     Bvn = getClient.Bvn,
                     Email = getClient.Email,
-                    PhoneNumber = getClient.PhoneNumber
+                    PhoneNumber = getClient.PhoneNumber,
+                    FullName = getClient.FullName,
+                    ClientAuthenticationId = clientId,
+                    UserName = getClient.UserName,
+                    ReferralCode = getClient.ReferralCode
                 };
 
-                if (personalInfo.Email != getClient.Email)
+                if (!personalInfo.Email.Equals(getClient.Email))
                 {
                     var validateEmail = await _personalInfoService.GetMerchantPersonalEmailInfo(personalInfo.Email);
 
@@ -102,9 +107,11 @@ namespace SocialPay.Core.Services.Merchant
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email" };
 
                     model.Email = personalInfo.Email;
+
+                    model.UserName = personalInfo.Email;
                 }
 
-                if (personalInfo.PhoneNumber != getClient.PhoneNumber)
+                if (!personalInfo.PhoneNumber.Equals(getClient.PhoneNumber))
                 {
                     var validatePhoneNumber = await _personalInfoService.GetMerchantPersonalPhoneNumberInfo(personalInfo.PhoneNumber);
 
@@ -114,7 +121,7 @@ namespace SocialPay.Core.Services.Merchant
                     model.PhoneNumber = personalInfo.PhoneNumber;
                 }
 
-                if (personalInfo.Bvn != getClient.Bvn)
+                if (!personalInfo.Bvn.Equals(getClient.Bvn))
                 {
                     var validateBvn = await _personalInfoService.GetMerchantPersonalBvnInfo(personalInfo.Bvn);
 
@@ -122,6 +129,16 @@ namespace SocialPay.Core.Services.Merchant
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
 
                     model.Bvn = personalInfo.Bvn;
+                }
+
+                if (!personalInfo.FullName.Equals(getClient.FullName))
+                {
+                    var validateBvn = await _personalInfoService.GetMerchantPersonalBvnInfo(personalInfo.Bvn);
+
+                    if (validateBvn != null)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
+
+                    model.FullName = personalInfo.FullName;
                 }
                 //customer.Features1 = request.customerJourney.Features1 == string.Empty ? string.Empty : request.customerJourney.Features1;
 
