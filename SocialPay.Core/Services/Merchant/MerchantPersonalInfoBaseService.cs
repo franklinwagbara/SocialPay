@@ -80,7 +80,7 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> UpdateMerchantPersonalInfo(long clientId, UpdateMerchantPersonalInfoRequestDto personalInfo)
         {
-            // clientId = 90;
+           // clientId = 90;
             try
             {
                 var getClient = await _personalInfoService.GetMerchantPersonalInfo(clientId);
@@ -133,9 +133,9 @@ namespace SocialPay.Core.Services.Merchant
 
                 if (!personalInfo.FullName.Equals(getClient.FullName))
                 {
-                    var validateBvn = await _personalInfoService.GetMerchantPersonalBvnInfo(personalInfo.Bvn);
+                    var validateFullname = await _personalInfoService.GetMerchantPersonalFullname(personalInfo.FullName);
 
-                    if (validateBvn != null)
+                    if (validateFullname != null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details (Fullname)" };
 
                     model.FullName = personalInfo.FullName;

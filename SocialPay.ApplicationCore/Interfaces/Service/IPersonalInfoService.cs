@@ -11,6 +11,7 @@ namespace SocialPay.ApplicationCore.Interfaces.Service
         Task<PersonalInfoViewModel> GetMerchantPersonalEmailInfo(string email);
         Task<PersonalInfoViewModel> GetMerchantPersonalPhoneNumberInfo(string phoneNumber);
         Task<PersonalInfoViewModel> GetMerchantPersonalBvnInfo(string phoneNumber);
+        Task<PersonalInfoViewModel> GetMerchantPersonalFullname(string fullName);
         Task<int> CountTotalFundAsync();
         Task<bool> ExistsAsync(long clientId);
 

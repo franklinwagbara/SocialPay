@@ -57,6 +57,13 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<ClientAuthentication, PersonalInfoViewModel>(personalInfo);
         }
 
+        public async Task<PersonalInfoViewModel> GetMerchantPersonalFullname(string fullname)
+        {
+            var personalInfo = await _clientAuthentication.GetSingleAsync(x => x.FullName == fullname);
+
+            return _mapper.Map<ClientAuthentication, PersonalInfoViewModel>(personalInfo);
+        }
+
         public async Task<bool> ExistsAsync(long clientId)
         {
             return await _clientAuthentication.ExistsAsync(x => x.ClientAuthenticationId == clientId);
