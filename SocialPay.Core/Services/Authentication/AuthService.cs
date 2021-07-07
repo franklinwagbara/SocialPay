@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using SocialPay.ApplicationCore.Interfaces.Service;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Repositories.UserService;
@@ -32,11 +33,13 @@ namespace SocialPay.Core.Services.Authentication
         private readonly WalletRepoService _walletRepoService;
         private readonly UserRepoService _userRepoService;
         private readonly IDistributedCache _distributedCache;
+        private readonly IPersonalInfoService _personalInfoService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AuthRepoService));
 
         public AuthRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             Utilities utilities, ADRepoService aDRepoService, IDistributedCache distributedCache,
-            WalletRepoService walletRepoService, UserRepoService userRepoService) : base(context)
+            WalletRepoService walletRepoService, UserRepoService userRepoService,
+            IPersonalInfoService personalInfoService) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -45,6 +48,8 @@ namespace SocialPay.Core.Services.Authentication
             _distributedCache = distributedCache;
             _walletRepoService = walletRepoService;
             _userRepoService = userRepoService;
+            _personalInfoService = personalInfoService ?? throw new ArgumentNullException(nameof(personalInfoService));
+
         }
 
         public async Task<ClientAuthentication> GetClientDetails(string email)
@@ -88,8 +93,33 @@ namespace SocialPay.Core.Services.Authentication
                 if (validateuserInfo.IsLocked == true)
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked };
 
+                var refCode = validateuserInfo.ReferralCode;
 
+                var request = await _personalInfoService.GetMerchantPersonalInfo(validateuserInfo.ClientAuthenticationId);
+              
+                if (string.IsNullOrEmpty(request.ReferralCode))
+                {
+                    var model = new PersonalInfoViewModel();
 
+                    var generator = new Random();
+
+                    var refercode = string.Empty;
+
+                    refercode = $"{"SP-"}{generator.Next(100000, 1000000).ToString()}";
+
+                    if (await _personalInfoService.ExistsAsync(refercode))
+                        refercode = $"{"SP-"}{generator.Next(100000, 1000000).ToString()}";
+
+                    model.ReferralCode = refercode;
+                    model.PhoneNumber = request.PhoneNumber;
+                    model.Email = request.Email;
+                    model.UserName = request.UserName;
+                    model.ClientAuthenticationId = validateuserInfo.ClientAuthenticationId;
+
+                    await _personalInfoService.UpdateAsync(model);
+
+                    refCode = refercode;
+                }             
 
 
                 var userLoginAttempts = await _userRepoService.GetLoginAttemptAsync(validateuserInfo.ClientAuthenticationId);
@@ -196,6 +226,7 @@ namespace SocialPay.Core.Services.Authentication
                         new Claim(ClaimTypes.Role, validateuserInfo.RoleName),
                         new Claim(ClaimTypes.Email, validateuserInfo.Email),
                         new Claim("UserStatus",  validateuserInfo.StatusCode),
+                        new Claim("ReferalCode",  refCode),
                        // new Claim("businessName",  validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault()),
                         new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
@@ -228,7 +259,7 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.UserStatus = validateuserInfo.StatusCode;
                     tokenResult.ResponseCode = AppResponseCodes.Success;
                     tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
-                    tokenResult.Refcode = validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode;
+                    tokenResult.Refcode = refCode;
 
                     _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
@@ -252,7 +283,7 @@ namespace SocialPay.Core.Services.Authentication
                     new Claim(ClaimTypes.Email, validateuserInfo.Email),
                     new Claim("UserStatus",  validateuserInfo.StatusCode),
                     new Claim("businessName", validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault()),
-                   // new Claim("RefCode", validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode.ToString()),
+                    new Claim("ReferalCode",  refCode),
                     new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(validateuserInfo.ClientAuthenticationId)),
 
                    }),
@@ -294,7 +325,7 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.BankName = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.BankName).FirstOrDefault();
                 tokenResult.Nuban = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.Nuban).FirstOrDefault();
                 tokenResult.AccountName = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.AccountName).FirstOrDefault();
-                tokenResult.Refcode = validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode;
+                tokenResult.Refcode = refCode;
                 tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
                 tokenResult.MerchantWalletBalance = availableWalletBalance;
 
