@@ -68,8 +68,8 @@ namespace SocialPay.Core.Services.Transaction
                     userStatus = result.StatusCode;
                 }
 
-                if (userStatus != AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
+                ////if (userStatus != AppResponseCodes.Success)
+                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
 
                 if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic                    
                     || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)
@@ -94,7 +94,7 @@ namespace SocialPay.Core.Services.Transaction
                     var token = model.MerchantAmount + "," + model.PaymentCategory + "," + model.PaymentLinkName + "," + newGuid;
                     var encryptedToken = token.Encrypt(_appSettings.appKey);
 
-                    if (await _context.MerchantPaymentSetup.AnyAsync(x => x.CustomUrl == paymentModel.CustomUrl || x.PaymentLinkName == paymentModel.PaymentLinkName && x.IsDeleted == false))
+                    if (await _context.MerchantPaymentSetup.AnyAsync(x => x.CustomUrl == paymentModel.CustomUrl || x.PaymentLinkName == paymentModel.PaymentLinkName))
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name" };
 
                     if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))
@@ -509,10 +509,12 @@ namespace SocialPay.Core.Services.Transaction
                 var getMerchantPaymentDetails = await _context.MerchantPaymentSetup
                   .SingleOrDefaultAsync(x => x.MerchantPaymentSetupId == paymentLinkId);
 
-                getMerchantPaymentDetails.IsDeleted = true;
-                getMerchantPaymentDetails.LastDateModified = DateTime.Now;         
+                ////getMerchantPaymentDetails.IsDeleted = true;
+                ////getMerchantPaymentDetails.LastDateModified = DateTime.Now;         
 
-                _context.Update(getMerchantPaymentDetails);
+                ////_context.Update(getMerchantPaymentDetails);
+
+                _context.Remove(getMerchantPaymentDetails);
                 await _context.SaveChangesAsync();
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Success" };

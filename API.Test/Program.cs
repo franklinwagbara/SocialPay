@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -25,8 +26,15 @@ namespace API.Test
             //AuthorList.Remove("Mahesh Chand");
 
             //var resqq = AuthorList;
+            byte[] unicodeKey = Convert.FromBase64String("Rc6B91I2zTJOPrRh5QHSu7aHigbdEuODDE0/AaOYIag=");
 
-       
+            using (var hmacSha256 = new HMACSHA256(unicodeKey))
+            {
+                Byte[] dataToHmac = System.Text.Encoding.UTF8.GetBytes("7a19b7eec9c6bc526eb426c01a19a891bdd527a5ba8d093ca648296e91f9b4ac");
+                
+                string signature = Convert.ToBase64String(hmacSha256.ComputeHash(dataToHmac));
+            }
+
 
             WebRequest request = WebRequest.Create("https://coderbyte.com/api/challenges/json/json-cleaning");
             WebResponse response = request.GetResponse();
