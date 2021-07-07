@@ -49,7 +49,7 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-               // clientId = 144;
+                //clientId = 179;
                 //userStatus = "00";
                 _log4net.Info("Initiating GeneratePaymentLink request" + " | " + clientId + " | " + paymentModel.PaymentLinkName + " | "+ DateTime.Now);
 
@@ -64,6 +64,7 @@ namespace SocialPay.Core.Services.Transaction
                 {
                     serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
                     var result = JsonConvert.DeserializeObject<UserInfoViewModel>(serializedCustomerList);
+
                     userStatus = result.StatusCode;
                 }
 
@@ -93,7 +94,7 @@ namespace SocialPay.Core.Services.Transaction
                     var token = model.MerchantAmount + "," + model.PaymentCategory + "," + model.PaymentLinkName + "," + newGuid;
                     var encryptedToken = token.Encrypt(_appSettings.appKey);
 
-                    if (await _context.MerchantPaymentSetup.AnyAsync(x => x.CustomUrl == paymentModel.CustomUrl || x.PaymentLinkName == paymentModel.PaymentLinkName))
+                    if (await _context.MerchantPaymentSetup.AnyAsync(x => x.CustomUrl == paymentModel.CustomUrl || x.PaymentLinkName == paymentModel.PaymentLinkName && x.IsDeleted == false))
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name" };
 
                     if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))

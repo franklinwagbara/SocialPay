@@ -59,8 +59,8 @@ namespace SocialPay.Core.Services.QrCode
 
                // _client.BaseAddress = new Uri("https://pass.sterling.ng/");
                 _client.DefaultRequestHeaders.Add("X-ClientKey", "c89e968926144c228a4ee3644e727390");
-                _client.DefaultRequestHeaders.Add("X-Checksum", "7a19b7eec9c6bc526eb426c01a19a891bdd527a5ba8d093ca648296e91f9b4ac");
-                //_client.DefaultRequestHeaders.Add("X-Checksum", signature);
+                //_client.DefaultRequestHeaders.Add("X-Checksum", "7a19b7eec9c6bc526eb426c01a19a891bdd527a5ba8d093ca648296e91f9b4ac");
+                _client.DefaultRequestHeaders.Add("X-Checksum", signature);
 
                // var request = await _client.PostAsync($"{_appSettings.nibsQRCodeCreateMerchantUrl}",
                 var request = await _client.PostAsync("nibbsqrcode/api/v1/Nibbs/Gateway/CreateMerchant",
