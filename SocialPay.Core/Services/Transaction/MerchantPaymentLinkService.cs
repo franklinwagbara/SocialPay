@@ -497,22 +497,24 @@ namespace SocialPay.Core.Services.Transaction
 
         public async Task<WebApiResponse> DeletePaymentLink(long clientId, long paymentLinkId)
         {
-            //clientId = 179;
+           // clientId = 179;
 
             _log4net.Info("Initiating Delete payment link" + " | " + clientId + " | " + DateTime.Now);
             try
             {
                 if (!await _context.MerchantPaymentSetup.AnyAsync(x => x.ClientAuthenticationId == clientId && x.IsDeleted == false && x.MerchantPaymentSetupId == paymentLinkId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound , Data = "Record not found"};
 
                 var getMerchantPaymentDetails = await _context.MerchantPaymentSetup
                   .SingleOrDefaultAsync(x => x.MerchantPaymentSetupId == paymentLinkId);
 
                 getMerchantPaymentDetails.IsDeleted = true;
-               
+                getMerchantPaymentDetails.LastDateModified = DateTime.Now;         
+
+                _context.Update(getMerchantPaymentDetails);
                 await _context.SaveChangesAsync();
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Success" };
 
             }
             catch (Exception ex)

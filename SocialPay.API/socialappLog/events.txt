@@ -2468,3 +2468,10 @@ INFO  2021-07-07 11:27:38,894 76965ms hantPaymentLinkService ?                  
 INFO  2021-07-07 11:34:44,981 74060ms hantPaymentLinkService ?                  - Initiating Delete payment link | 179 | 7/7/2021 11:34:44 AM
 INFO  2021-07-07 11:52:03,012 72825ms hantPaymentLinkService ?                  - Initiating GetAllPaymentLinksByMerchant request | 179 | 7/7/2021 11:52:03 AM
 INFO  2021-07-07 12:08:27,646 825678ms hantPaymentLinkService ?                  - Initiating GetAllPaymentLinksByMerchant request | 179 | 7/7/2021 12:08:27 PM
+INFO  2021-07-07 12:20:32,317 72795ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"string","Tin":"string","Contact":"string","Phone":"string","Email":"string","Address":"string","Fee":0.0} | 7/7/2021 12:20:32 PM
+INFO  2021-07-07 12:25:24,308 54438ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"string","Tin":"string","Contact":"string","Phone":"string","Email":"string","Address":"string","Fee":0.0} | 7/7/2021 12:25:24 PM
+INFO  2021-07-07 12:29:41,470 123423ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"string","Tin":"string","Contact":"string","Phone":"string","Email":"string","Address":"string","Fee":0.0} | 7/7/2021 12:29:41 PM
+INFO  2021-07-07 12:57:48,412 183536ms hantPaymentLinkService ?                  - Initiating Delete payment link | 179 | 7/7/2021 12:57:48 PM
+INFO  2021-07-07 13:04:38,620 49397ms hantPaymentLinkService ?                  - Initiating Delete payment link | 179 | 7/7/2021 1:04:38 PM
+INFO  2021-07-07 13:05:05,001 75778ms hantPaymentLinkService ?                  - Initiating Delete payment link | 179 | 7/7/2021 1:05:04 PM
+INFO  2021-07-07 13:06:38,469 169246ms hantPaymentLinkService ?                  - Initiating Delete payment link | 179 | 7/7/2021 1:06:38 PM

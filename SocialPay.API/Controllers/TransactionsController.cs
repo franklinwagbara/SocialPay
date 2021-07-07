@@ -113,7 +113,8 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
-       // [AllowAnonymous]
+       
+        // [AllowAnonymous]
         [HttpDelete]
         [Route("delete-payment-link")]
         public async Task<IActionResult> DeletePaymentLink([FromQuery] long paymentLinkId)
