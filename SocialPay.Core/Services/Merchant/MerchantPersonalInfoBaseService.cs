@@ -11,10 +11,13 @@ namespace SocialPay.Core.Services.Merchant
     public class MerchantPersonalInfoBaseService
     {
         private readonly IPersonalInfoService _personalInfoService;
+        private readonly IMerchantBusinessInfoService _merchantBusinessInfoService;
 
-        public MerchantPersonalInfoBaseService(IPersonalInfoService personalInfoService)
+        public MerchantPersonalInfoBaseService(IPersonalInfoService personalInfoService,
+            IMerchantBusinessInfoService merchantBusinessInfoService)
         {
             _personalInfoService = personalInfoService ?? throw new ArgumentNullException(nameof(personalInfoService));
+            _merchantBusinessInfoService = merchantBusinessInfoService ?? throw new ArgumentNullException(nameof(merchantBusinessInfoService));
         }
 
         public async Task<WebApiResponse> GetOrCreateReferalCode(long clientId)
@@ -158,65 +161,55 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> UpdateMerchantBusinessInfo(long clientId, MerchantUpdateInfoRequestDto businessInfo)
         {
-             clientId = 90;
+             //clientId = 90;
             try
             {
-                var getClient = await _personalInfoService.GetMerchantPersonalInfo(clientId);
+                var getClient = await _merchantBusinessInfoService.GetMerchantBusinessInfo(clientId);
 
                 if (getClient == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record not found" };
 
-                ////var model = new BusinessInfoViewModel
-                ////{
-                ////  BusinessEmail = 
-                ////};
+                var model = new BusinessInfoViewModel
+                {
+                    BusinessEmail = getClient.BusinessEmail,
+                    BusinessName = getClient.BusinessName,
+                    BusinessPhoneNumber = getClient.BusinessPhoneNumber,
+                    MerchantBusinessInfoId = getClient.MerchantBusinessInfoId
+                   // Country = getClient.Country,                    
+                };
 
-                ////if (!personalInfo.Email.Equals(getClient.Email))
-                ////{
-                ////    var validateEmail = await _personalInfoService.GetMerchantPersonalEmailInfo(personalInfo.Email);
+                if (!businessInfo.BusinessEmail.Equals(getClient.BusinessEmail))
+                {
+                    var validateEmail = await _merchantBusinessInfoService.GetMerchantBusinessEmailInfo(businessInfo.BusinessEmail);
 
-                ////    if (validateEmail != null)
-                ////        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email" };
+                    if (validateEmail != null)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email" };
 
-                ////    model.Email = personalInfo.Email;
+                    model.BusinessEmail = businessInfo.BusinessEmail;
+                }
 
-                ////    model.UserName = personalInfo.Email;
-                ////}
+                if (!businessInfo.BusinessPhoneNumber.Equals(getClient.BusinessPhoneNumber))
+                {
+                    var validatePhoneNumber = await _merchantBusinessInfoService.GetMerchantBusinessPhoneNumberInfo(businessInfo.BusinessPhoneNumber);
 
-                ////if (!personalInfo.PhoneNumber.Equals(getClient.PhoneNumber))
-                ////{
-                ////    var validatePhoneNumber = await _personalInfoService.GetMerchantPersonalPhoneNumberInfo(personalInfo.PhoneNumber);
+                    if (validatePhoneNumber != null)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
 
-                ////    if (validatePhoneNumber != null)
-                ////        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
+                    model.BusinessPhoneNumber = businessInfo.BusinessPhoneNumber;
+                }
 
-                ////    model.PhoneNumber = personalInfo.PhoneNumber;
-                ////}
+                if (!businessInfo.BusinessName.Equals(getClient.BusinessName))
+                {
+                    var validateName = await _merchantBusinessInfoService.GetMerchantBusinessNameInfo(businessInfo.BusinessName);
 
-                ////if (!personalInfo.Bvn.Equals(getClient.Bvn))
-                ////{
-                ////    var validateBvn = await _personalInfoService.GetMerchantPersonalBvnInfo(personalInfo.Bvn);
+                    if (validateName != null)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
 
-                ////    if (validateBvn != null)
-                ////        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
+                    model.BusinessName = businessInfo.BusinessName;
+                }
 
-                ////    model.Bvn = personalInfo.Bvn;
-                ////}
 
-                ////if (!personalInfo.FullName.Equals(getClient.FullName))
-                ////{
-                ////    var validateBvn = await _personalInfoService.GetMerchantPersonalBvnInfo(personalInfo.Bvn);
-
-                ////    if (validateBvn != null)
-                ////        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
-
-                ////    model.FullName = personalInfo.FullName;
-                ////}
-                //////customer.Features1 = request.customerJourney.Features1 == string.Empty ? string.Empty : request.customerJourney.Features1;
-
-                //////getClient.Bvn = model.Bvn == string.Empty ? getClient.Bvn : 
-
-                ////await _personalInfoService.UpdateAsync(model);
+                await _merchantBusinessInfoService.UpdateAsync(model);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Update was successful" };
             }

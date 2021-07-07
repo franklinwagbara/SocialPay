@@ -219,7 +219,7 @@ namespace SocialPay.API.Controllers
 
         }
 
-        [AllowAnonymous]
+       // [AllowAnonymous]
         [HttpPost]
         [Route("update-business-info")]
         public async Task<IActionResult> UpdateMerchantBusinessInfo([FromForm] MerchantUpdateInfoRequestDto model)

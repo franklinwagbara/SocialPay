@@ -37,6 +37,27 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<MerchantBusinessInfo, BusinessInfoViewModel>(merchantInfo);
         }
 
+        public async Task<BusinessInfoViewModel> GetMerchantBusinessEmailInfo(string email)
+        {
+            var merchantInfo = await _merchantBusinessInfo.GetSingleAsync(x => x.BusinessEmail == email);
+
+            return _mapper.Map<MerchantBusinessInfo, BusinessInfoViewModel>(merchantInfo);
+        }
+
+        public async Task<BusinessInfoViewModel> GetMerchantBusinessPhoneNumberInfo(string phoneNumber)
+        {
+            var merchantInfo = await _merchantBusinessInfo.GetSingleAsync(x => x.BusinessPhoneNumber == phoneNumber);
+
+            return _mapper.Map<MerchantBusinessInfo, BusinessInfoViewModel>(merchantInfo);
+        }
+
+        public async Task<BusinessInfoViewModel> GetMerchantBusinessNameInfo(string businessName)
+        {
+            var merchantInfo = await _merchantBusinessInfo.GetSingleAsync(x => x.BusinessName == businessName);
+
+            return _mapper.Map<MerchantBusinessInfo, BusinessInfoViewModel>(merchantInfo);
+        }
+        //GetMerchantBusinessNameInfo
         public async Task<bool> ExistsAsync(long Id)
         {
             return await _merchantBusinessInfo.ExistsAsync(x => x.MerchantBusinessInfoId == Id);
@@ -49,8 +70,8 @@ namespace SocialPay.ApplicationCore.Services
             entity.BusinessEmail = model.BusinessEmail;
             entity.BusinessPhoneNumber = model.BusinessPhoneNumber;
             entity.BusinessName = model.BusinessName;
-           // entity.Country = model.ReferralCode;
-           // entity.FullName = model.FullName;
+            //entity.Country = model.Country;
+          //  entity.FullName = model.FullName;
 
             await _merchantBusinessInfo.UpdateAsync(entity);
         }
