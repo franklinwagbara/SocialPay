@@ -92,10 +92,9 @@
         public decimal vat { get; set; }
         public string nibsQRCodeBaseUrl { get; set; }
         public string nibsQRCodeCreateMerchantUrl { get; set; }
-        public string nibsQRCodeClientId { get; set; }
-        public string nibsQRCodePostHeaderClientValue { get; set; }
-        public string nibsQRCodePostHeaderCheckSum { get; set; }
-        public string nibsQRCodePostHeaderCheckSumValue { get; set; }
+        public string nibsQRCodeXClientHeaderName { get; set; }
+        public string nibsQRCodeXClientHeaderValue { get; set; }
+        public string nibsQRCodeCheckSumHeaderName { get; set; }
         public string nibsQRCodeClientKey { get; set; }
         public string nibsQRCodeClientSecret { get; set; }
     }

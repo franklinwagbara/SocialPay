@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/socialpay/qRcode")]
     [ApiController]
     public class NibbsQRCodeController : ControllerBase

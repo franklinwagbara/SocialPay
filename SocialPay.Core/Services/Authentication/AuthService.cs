@@ -88,6 +88,10 @@ namespace SocialPay.Core.Services.Authentication
                 if (validateuserInfo.IsLocked == true)
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked };
 
+
+
+
+
                 var userLoginAttempts = await _userRepoService.GetLoginAttemptAsync(validateuserInfo.ClientAuthenticationId);
 
                 var tokenResult = new LoginAPIResponse();

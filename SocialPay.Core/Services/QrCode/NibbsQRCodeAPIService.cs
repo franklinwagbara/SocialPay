@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.QrCode
 {
-    public class NibsQRCodeSrvice
+    public class NibbsQRCodeAPIService
     {
         private readonly HttpClient _client;
         private readonly AppSettings _appSettings;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NibsQRCodeSrvice));
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NibbsQRCodeAPIService));
 
-        public NibsQRCodeSrvice(IOptions<AppSettings> appSettings)
+        public NibbsQRCodeAPIService(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
 
@@ -53,8 +53,13 @@ namespace SocialPay.Core.Services.QrCode
                 ////     };
                 //// }
 
-                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeClientId, _appSettings.nibsQRCodePostHeaderClientValue);
-                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodePostHeaderCheckSum, _appSettings.nibsQRCodePostHeaderCheckSumValue);
+                //_client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeXClientHeaderValue);
+                //_client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
+
+
+                _client.DefaultRequestHeaders.Add("X-ClientKey", "c89e968926144c228a4ee3644e727390");
+                _client.DefaultRequestHeaders.Add("X-Checksum", "7a19b7eec9c6bc526eb426c01a19a891bdd527a5ba8d093ca648296e91f9b4ac");
+                //_client.DefaultRequestHeaders.Add("X-Checksum", signature);
 
                 var request = await _client.PostAsync($"{_appSettings.nibsQRCodeCreateMerchantUrl}",
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));

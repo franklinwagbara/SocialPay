@@ -11,10 +11,11 @@ namespace SocialPay.Core.Services.QrCode
     public class NibbsQrBaseService
     {
         private readonly INibbsQrMerchantService _nibbsQrMerchantService;
-
-        public NibbsQrBaseService(INibbsQrMerchantService nibbsQrMerchantService)
+        private readonly NibbsQRCodeAPIService _nibbsQRCodeAPIService;
+        public NibbsQrBaseService(INibbsQrMerchantService nibbsQrMerchantService, NibbsQRCodeAPIService nibbsQRCodeAPIService)
         {
             _nibbsQrMerchantService = nibbsQrMerchantService ?? throw new ArgumentNullException(nameof(nibbsQrMerchantService));
+            _nibbsQRCodeAPIService = nibbsQRCodeAPIService ?? throw new ArgumentNullException(nameof(nibbsQRCodeAPIService));
         }
 
         public async Task<WebApiResponse> CreateMerchantAsync(CreateNibsMerchantRequestDto requestDto, long clientId)
@@ -34,7 +35,9 @@ namespace SocialPay.Core.Services.QrCode
                     Tin = requestDto.Tin
                 };
 
-                await _nibbsQrMerchantService.AddAsync(model);
+                //await _nibbsQrMerchantService.AddAsync(model);
+
+                var post = await _nibbsQRCodeAPIService.CreateMerchant(requestDto);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
             }
@@ -74,6 +77,9 @@ namespace SocialPay.Core.Services.QrCode
                 {
                     ClientAuthenticationId = clientId,
                 };
+
+
+
 
                 // await _nibbsQrMerchantService.AddAsync(model);
 

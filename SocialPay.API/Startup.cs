@@ -157,6 +157,7 @@ namespace SocialPay.API
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();
             services.AddScoped<NibbsQrBaseService>();
+            services.AddScoped<NibbsQRCodeAPIService>();
             services.AddSingleton<WalletRepoJobService>();
             services.AddSingleton<InterBankPendingTransferService>();
             services.AddSingleton<SqlRepository>();
