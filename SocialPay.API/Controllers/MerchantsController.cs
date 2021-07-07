@@ -692,6 +692,7 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
                     return Ok(await _merchantReportService.MostUsedPaymentChannel(Convert.ToInt32(clientId)));
 
                 }

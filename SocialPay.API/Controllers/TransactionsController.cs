@@ -113,10 +113,10 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
-
+       // [AllowAnonymous]
         [HttpDelete]
         [Route("delete-payment-link")]
-        public async Task<IActionResult> DeletePaymentLink([FromQuery] string paymentLinkName)
+        public async Task<IActionResult> DeletePaymentLink([FromQuery] long paymentLinkId)
         {
             var response = new WebApiResponse { };
 
@@ -131,7 +131,8 @@ namespace SocialPay.API.Controllers
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     var userStatus = identity.Claims.FirstOrDefault(c => c.Type == "UserStatus")?.Value;
-                    return Ok(await _merchantPaymentLinkService.DeletePaymentLink(Convert.ToInt32(clientId), paymentLinkName));
+
+                    return Ok(await _merchantPaymentLinkService.DeletePaymentLink(Convert.ToInt32(clientId), paymentLinkId));
                 }
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)

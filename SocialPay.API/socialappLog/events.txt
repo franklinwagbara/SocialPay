@@ -2461,3 +2461,10 @@ INFO  2021-07-07 10:02:27,274 111861ms AuthRepoService        ?                 
 INFO  2021-07-07 10:03:40,192 184779ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08185254717 | 7/7/2021 10:03:40 AM
 INFO  2021-07-07 10:03:45,288 189874ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 7/7/2021 10:03:45 AM
 INFO  2021-07-07 10:04:10,673 215259ms AuthRepoService        ?                  - Authenticate for login was successful | pelumisunday@gmail.com | 7/7/2021 10:04:10 AM
+INFO  2021-07-07 10:55:28,936 159218ms AuthRepoService        ?                  - Authenticate | pelumisunday@gmail.com | 7/7/2021 10:55:28 AM
+ERROR 2021-07-07 10:56:39,579 229862ms AuthRepoService        ?                  - Error occured | Authenticate | pelumisunday@gmail.com | A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server) | 7/7/2021 10:56:39 AM
+INFO  2021-07-07 10:56:48,240 238522ms AuthRepoService        ?                  - Authenticate | pelumisunday@gmail.com | 7/7/2021 10:56:47 AM
+INFO  2021-07-07 11:27:38,894 76965ms hantPaymentLinkService ?                  - Initiating Delete payment link | 0 | 7/7/2021 11:27:38 AM
+INFO  2021-07-07 11:34:44,981 74060ms hantPaymentLinkService ?                  - Initiating Delete payment link | 179 | 7/7/2021 11:34:44 AM
+INFO  2021-07-07 11:52:03,012 72825ms hantPaymentLinkService ?                  - Initiating GetAllPaymentLinksByMerchant request | 179 | 7/7/2021 11:52:03 AM
+INFO  2021-07-07 12:08:27,646 825678ms hantPaymentLinkService ?                  - Initiating GetAllPaymentLinksByMerchant request | 179 | 7/7/2021 12:08:27 PM

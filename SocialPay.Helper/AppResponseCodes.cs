@@ -73,6 +73,7 @@
         public const string OneBank = "01";
         public const string Card = "02";
         public const string PayWithSpecta = "03";
+        public const string NibbsQR = "04";
     }
 
     public class MerchantPaymentLinkCategory

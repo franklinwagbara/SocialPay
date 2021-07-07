@@ -191,7 +191,7 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-                // clientId = 10014;
+                 //clientId = 179;
                 _log4net.Info("Initiating GetAllPaymentLinksByMerchant request" + " | " + clientId + " | " +  DateTime.Now);
 
                 var getlinks = await _customerService.GetPaymentLinks(clientId);
@@ -495,19 +495,23 @@ namespace SocialPay.Core.Services.Transaction
             }
         }
 
-        public async Task<WebApiResponse> DeletePaymentLink(long clientId, string paymentLinkName)
+        public async Task<WebApiResponse> DeletePaymentLink(long clientId, long paymentLinkId)
         {
+            //clientId = 179;
+
             _log4net.Info("Initiating Delete payment link" + " | " + clientId + " | " + DateTime.Now);
             try
             {
-                if (!await _context.MerchantPaymentSetup.AnyAsync(x => x.ClientAuthenticationId == clientId && x.IsDeleted == false && x.PaymentLinkName == paymentLinkName))
+                if (!await _context.MerchantPaymentSetup.AnyAsync(x => x.ClientAuthenticationId == clientId && x.IsDeleted == false && x.MerchantPaymentSetupId == paymentLinkId))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 var getMerchantPaymentDetails = await _context.MerchantPaymentSetup
-                  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId && x.IsDeleted == false && x.PaymentLinkName == paymentLinkName);
+                  .SingleOrDefaultAsync(x => x.MerchantPaymentSetupId == paymentLinkId);
+
                 getMerchantPaymentDetails.IsDeleted = true;
                
                 await _context.SaveChangesAsync();
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
 
             }

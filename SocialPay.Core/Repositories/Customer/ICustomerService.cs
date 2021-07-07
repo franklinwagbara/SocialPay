@@ -422,7 +422,8 @@ namespace SocialPay.Core.Repositories.Customer
             var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
             var mapper = config.CreateMapper();
             paymentview = mapper.Map<List<PaymentLinkViewModel>>(validateReference);
-
+            //getCreatedCart.ForEach(s => s.Status = true);
+            //paymentview.ForEach(x => x.MerchantPaymentLinkId = validateReference.Select(x => x.MerchantPaymentSetupId).FirstOrDefault());
             return paymentview;
         }
 
