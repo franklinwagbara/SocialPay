@@ -153,9 +153,8 @@ namespace SocialPay.API.Controllers
         }
 
 
-
         [HttpPut]
-        [Route("make-default-bank-account-number")]
+        [Route("set-default-bank-account-number")]
         public async Task<IActionResult> UpdateMerchantBankInfo(int MerchantOtherBankInfoId)
         {
             var response = new WebApiResponse { };
@@ -167,6 +166,7 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
                     return Ok(await _merchantRegistrationService.UpdateMerchantBankInfo(Convert.ToInt32(clientId), MerchantOtherBankInfoId));
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
@@ -219,7 +219,7 @@ namespace SocialPay.API.Controllers
 
         }
 
-
+        [AllowAnonymous]
         [HttpPost]
         [Route("update-business-info")]
         public async Task<IActionResult> UpdateMerchantBusinessInfo([FromForm] MerchantUpdateInfoRequestDto model)
@@ -233,7 +233,8 @@ namespace SocialPay.API.Controllers
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    return Ok(await _merchantRegistrationService.UpdateMerchantBusinessInfo(Convert.ToInt32(clientId), model));
+
+                    return Ok(await _merchantPersonalInfoBaseService.UpdateMerchantBusinessInfo(Convert.ToInt32(clientId), model));
                 }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                                     .Select(e => e.ErrorMessage));

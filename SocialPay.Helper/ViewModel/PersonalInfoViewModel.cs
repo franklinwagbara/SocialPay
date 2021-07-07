@@ -18,4 +18,5 @@ namespace SocialPay.Helper.ViewModel
         public string ReferCode { get; set; }
         public DateTime DateEntered { get; set; } 
     }
+
 }

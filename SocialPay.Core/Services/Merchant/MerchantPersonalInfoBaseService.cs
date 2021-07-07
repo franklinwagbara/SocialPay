@@ -104,7 +104,7 @@ namespace SocialPay.Core.Services.Merchant
                     var validateEmail = await _personalInfoService.GetMerchantPersonalEmailInfo(personalInfo.Email);
 
                     if (validateEmail != null)
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email" };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email (Email)" };
 
                     model.Email = personalInfo.Email;
 
@@ -116,7 +116,7 @@ namespace SocialPay.Core.Services.Merchant
                     var validatePhoneNumber = await _personalInfoService.GetMerchantPersonalPhoneNumberInfo(personalInfo.PhoneNumber);
 
                     if (validatePhoneNumber != null)
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details (Phone number)" };
 
                     model.PhoneNumber = personalInfo.PhoneNumber;
                 }
@@ -126,7 +126,7 @@ namespace SocialPay.Core.Services.Merchant
                     var validateBvn = await _personalInfoService.GetMerchantPersonalBvnInfo(personalInfo.Bvn);
 
                     if (validateBvn != null)
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details (BVN)" };
 
                     model.Bvn = personalInfo.Bvn;
                 }
@@ -136,7 +136,7 @@ namespace SocialPay.Core.Services.Merchant
                     var validateBvn = await _personalInfoService.GetMerchantPersonalBvnInfo(personalInfo.Bvn);
 
                     if (validateBvn != null)
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details (Fullname)" };
 
                     model.FullName = personalInfo.FullName;
                 }
@@ -154,5 +154,78 @@ namespace SocialPay.Core.Services.Merchant
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured" };
             }
         }
+
+
+        public async Task<WebApiResponse> UpdateMerchantBusinessInfo(long clientId, MerchantUpdateInfoRequestDto businessInfo)
+        {
+             clientId = 90;
+            try
+            {
+                var getClient = await _personalInfoService.GetMerchantPersonalInfo(clientId);
+
+                if (getClient == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record not found" };
+
+                ////var model = new BusinessInfoViewModel
+                ////{
+                ////  BusinessEmail = 
+                ////};
+
+                ////if (!personalInfo.Email.Equals(getClient.Email))
+                ////{
+                ////    var validateEmail = await _personalInfoService.GetMerchantPersonalEmailInfo(personalInfo.Email);
+
+                ////    if (validateEmail != null)
+                ////        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email" };
+
+                ////    model.Email = personalInfo.Email;
+
+                ////    model.UserName = personalInfo.Email;
+                ////}
+
+                ////if (!personalInfo.PhoneNumber.Equals(getClient.PhoneNumber))
+                ////{
+                ////    var validatePhoneNumber = await _personalInfoService.GetMerchantPersonalPhoneNumberInfo(personalInfo.PhoneNumber);
+
+                ////    if (validatePhoneNumber != null)
+                ////        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
+
+                ////    model.PhoneNumber = personalInfo.PhoneNumber;
+                ////}
+
+                ////if (!personalInfo.Bvn.Equals(getClient.Bvn))
+                ////{
+                ////    var validateBvn = await _personalInfoService.GetMerchantPersonalBvnInfo(personalInfo.Bvn);
+
+                ////    if (validateBvn != null)
+                ////        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
+
+                ////    model.Bvn = personalInfo.Bvn;
+                ////}
+
+                ////if (!personalInfo.FullName.Equals(getClient.FullName))
+                ////{
+                ////    var validateBvn = await _personalInfoService.GetMerchantPersonalBvnInfo(personalInfo.Bvn);
+
+                ////    if (validateBvn != null)
+                ////        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant Details" };
+
+                ////    model.FullName = personalInfo.FullName;
+                ////}
+                //////customer.Features1 = request.customerJourney.Features1 == string.Empty ? string.Empty : request.customerJourney.Features1;
+
+                //////getClient.Bvn = model.Bvn == string.Empty ? getClient.Bvn : 
+
+                ////await _personalInfoService.UpdateAsync(model);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Update was successful" };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured" };
+            }
+        }
+
     }
 }

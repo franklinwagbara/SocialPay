@@ -65,7 +65,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                var generator = new Random(); 
+                var generator = new Random();
 
                 string refercode = generator.Next(100000, 1000000).ToString();
 
@@ -198,7 +198,7 @@ namespace SocialPay.Core.Services.Account
 
                         var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                      //  var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        //  var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
                         if (sendMail.ResponseCode != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
@@ -311,7 +311,7 @@ namespace SocialPay.Core.Services.Account
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "ConfirmSignup" + " | " + model.Pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                        
+
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -359,7 +359,7 @@ namespace SocialPay.Core.Services.Account
                         validateToken.LastDateModified = DateTime.Now;
                         _context.PinRequest.Update(validateToken);
                         await _context.SaveChangesAsync();
-                      
+
                         var emailModal = new EmailRequestDto
                         {
                             Subject = "Merchant Signed Up",
@@ -377,7 +377,7 @@ namespace SocialPay.Core.Services.Account
 
                         var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                        if(sendMail.ResponseCode != AppResponseCodes.Success)
+                        if (sendMail.ResponseCode != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
                         await transaction.CommitAsync();
@@ -551,8 +551,8 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-              //  clientId = 96;
-                _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " +  clientId + " | " + DateTime.Now);
+                //  clientId = 96;
+                _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + clientId + " | " + DateTime.Now);
 
                 if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban && x.ClientAuthenticationId == clientId))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
@@ -570,7 +570,7 @@ namespace SocialPay.Core.Services.Account
 
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBankInfo)
-                    .Include(x=>x.MerchantWallet)
+                    .Include(x => x.MerchantWallet)
                     .Include(x => x.MerchantBusinessInfo)
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
@@ -624,8 +624,8 @@ namespace SocialPay.Core.Services.Account
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
 
-                            _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " +  DateTime.Now);
-                           
+                            _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + DateTime.Now);
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
                         }
                         catch (Exception ex)
@@ -674,14 +674,14 @@ namespace SocialPay.Core.Services.Account
                         await transaction.CommitAsync();
 
                         _log4net.Info("Initiating OnboardMerchantBankInfo interbank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + getUserInfo.Bvn + " | " + DateTime.Now);
-                       
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "OnboardMerchantBankInfo" + " | " + model.Nuban + " | " + model.BankName + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
-                       
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
 
@@ -836,7 +836,7 @@ namespace SocialPay.Core.Services.Account
             try
             {
                 _log4net.Info("Initiating AddNewMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + clientId + " | " + DateTime.Now);
-               
+
                 if (await _context.OtherMerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban && x.ClientAuthenticationId == clientId))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
@@ -954,7 +954,6 @@ namespace SocialPay.Core.Services.Account
             }
         }
 
-
         public async Task<WebApiResponse> UpdateMerchantBankInfo(long clientId, long MerchantOtherBankInfoId)
         {
             try
@@ -985,6 +984,7 @@ namespace SocialPay.Core.Services.Account
                 getMerchantDefaultBankInfo.KycLevel = getMerchantOtherBank.KycLevel;
                 getMerchantDefaultBankInfo.DefaultAccount = getMerchantOtherBank.DefaultAccount;
                 getMerchantDefaultBankInfo.DateEntered = DateTime.Now;
+
                 await _context.SaveChangesAsync();
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
@@ -996,57 +996,59 @@ namespace SocialPay.Core.Services.Account
         }
 
 
-        public async Task<WebApiResponse> UpdateMerchantPersonalInfo(long clientId, UpdateMerchantPersonalInfoRequestDto model)
-        {
-            _log4net.Info("Initiating UpdateMerchantPersonalInfo request" + clientId + " | " + DateTime.Now);
-            try
-            {
+        //public async Task<WebApiResponse> UpdateMerchantPersonalInfo(long clientId, UpdateMerchantPersonalInfoRequestDto model)
+        //{
+        //    _log4net.Info("Initiating UpdateMerchantPersonalInfo request" + clientId + " | " + DateTime.Now);
+        //    try
+        //    {
 
-                if (!await _context.ClientAuthentication.AnyAsync(x => x.ClientAuthenticationId == clientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+        //        if (!await _context.ClientAuthentication.AnyAsync(x => x.ClientAuthenticationId == clientId))
+        //            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                var MerchantPersonalInfo = await _context.ClientAuthentication
-                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+        //        var MerchantPersonalInfo = await _context.ClientAuthentication
+        //            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-                if (!string.IsNullOrEmpty(model.PhoneNumber))
-                {
-                    MerchantPersonalInfo.PhoneNumber = model.PhoneNumber;
-                }
-                if (!string.IsNullOrEmpty(model.Bvn))
-                {
-                    MerchantPersonalInfo.Bvn = model.Bvn;
-                }
-                if (!string.IsNullOrEmpty(model.FullName))
-                {
-                    MerchantPersonalInfo.FullName = model.FullName;
-                }
+        //        if (!string.IsNullOrEmpty(model.PhoneNumber))
+        //        {
+        //            MerchantPersonalInfo.PhoneNumber = model.PhoneNumber;
+        //        }
+        //        if (!string.IsNullOrEmpty(model.Bvn))
+        //        {
+        //            MerchantPersonalInfo.Bvn = model.Bvn;
+        //        }
+        //        if (!string.IsNullOrEmpty(model.FullName))
+        //        {
+        //            MerchantPersonalInfo.FullName = model.FullName;
+        //        }
 
 
-                MerchantPersonalInfo.LastDateModified = DateTime.Now;
-                await _context.SaveChangesAsync();
+        //        MerchantPersonalInfo.LastDateModified = DateTime.Now;
+        //        await _context.SaveChangesAsync();
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
-            }
-            catch (Exception ex)
-            {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-            }
-        }
+        //        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+        //    }
+        //}
 
 
         public async Task<WebApiResponse> UpdateMerchantBusinessInfo(long clientId, MerchantUpdateInfoRequestDto model)
         {
+            clientId = 90;
+
             try
             {
                 _log4net.Info("Initiating UpdateMerchantBusinessInfo request" + clientId + " | " + DateTime.Now);
 
-                if (!await _context.MerchantBusinessInfo.AnyAsync(x => x.ClientAuthenticationId == clientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
-
-                var MerchantBankInfo = await _context.MerchantBusinessInfo
+                var getMerchant = await _context.MerchantBusinessInfo
                   .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-                MerchantBankInfo.BusinessName = model.BusinessName == string.Empty ? MerchantBankInfo.BusinessName : MerchantBankInfo.BusinessName;
+                if(getMerchant == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record not found" };
+
+                model.BusinessName = model.BusinessName == string.Empty ? getMerchant.BusinessName : getMerchant.BusinessName;
 
                 //if (!string.IsNullOrEmpty(model.BusinessName))
                 //{
@@ -1054,23 +1056,23 @@ namespace SocialPay.Core.Services.Account
                 //}
                 if (!string.IsNullOrEmpty(model.BusinessPhoneNumber))
                 {
-                    MerchantBankInfo.BusinessPhoneNumber = model.BusinessPhoneNumber;
+                    getMerchant.BusinessPhoneNumber = model.BusinessPhoneNumber;
                 }
                 if (!string.IsNullOrEmpty(model.BusinessEmail))
                 {
-                    MerchantBankInfo.BusinessEmail = model.BusinessEmail;
+                    getMerchant.BusinessEmail = model.BusinessEmail;
                 }
                 if (!string.IsNullOrEmpty(model.Tin))
                 {
-                    MerchantBankInfo.Tin = model.Tin;
+                    getMerchant.Tin = model.Tin;
                 }
                 if (!string.IsNullOrEmpty(model.Country))
                 {
-                    MerchantBankInfo.Country = model.Country;
+                    getMerchant.Country = model.Country;
                 }
                 if (!string.IsNullOrEmpty(model.Chargebackemail))
                 {
-                    MerchantBankInfo.Chargebackemail = model.Chargebackemail;
+                    getMerchant.Chargebackemail = model.Chargebackemail;
                 }
 
                 await _context.SaveChangesAsync();

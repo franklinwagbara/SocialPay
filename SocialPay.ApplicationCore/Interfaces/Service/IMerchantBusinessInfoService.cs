@@ -1,17 +1,18 @@
 ﻿using SocialPay.Helper.ViewModel;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SocialPay.ApplicationCore.Interfaces.Service
 {
     public interface IMerchantBusinessInfoService
     {
-       // Task<List<PaymentLinkViewModel>> GetAllAsync();
-       // Task<List<PaymentLinkViewModel>> GetFundWalletByTenantAsync(long tenantId);
+        Task<List<BusinessInfoViewModel>> GetAllAsync();
         Task<BusinessInfoViewModel> GetMerchantBusinessInfo(long clientId);
-        //Task<int> CountTotalFundAsync();
+        //Task<BusinessInfoViewModel> GetMerchantBusinessEmailInfo(string email);
+        //Task<BusinessInfoViewModel> GetMerchantBusinessPhoneNumberInfo(string phoneNumber);
+        //Task<int> CountTotalMerchantsAsync();
         //Task<bool> ExistsAsync(long clientId);
-        //Task<long> AddAsync(PaymentLinkViewModel model);
-        //Task UpdateAsync(PaymentLinkViewModel model);
-        //Task DeleteAsync(int id);
+        //Task<bool> ExistsAsync(string refCode);
+        //Task UpdateAsync(BusinessInfoViewModel model);
     }
 }
