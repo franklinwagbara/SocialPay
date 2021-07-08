@@ -68,6 +68,13 @@
         public const string Processed = "02";       
     }
 
+    public class NibbsMerchantOnboarding
+    {
+        public const string CreateAccount = "01";
+        public const string SubAccount = "02";
+        public const string BindMerchant = "00";
+    }
+
     public class PaymentChannel
     {
         public const string OneBank = "01";

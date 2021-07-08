@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/socialpay/qRcode")]
     [ApiController]
     public class NibbsQRCodeController : ControllerBase
@@ -26,7 +26,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("create-merchant")]
-        public async Task<IActionResult> CreateUser([FromBody] DefaultMerchantRequestDto model)
+        public async Task<IActionResult> CreateQrMerchant([FromBody] DefaultMerchantRequestDto model)
         {
             // _log4net.Info("Tasks starts to create account" + " | " + model.Email + " | " + DateTime.Now);
             var response = new WebApiResponse { };
@@ -76,7 +76,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("bind-merchant")]
-        public async Task<IActionResult> BindMerchant([FromBody] BindMerchantRequestDto model)
+        public async Task<IActionResult> BindMerchant()
         {
             // _log4net.Info("Tasks starts to create account" + " | " + model.Email + " | " + DateTime.Now);
             var response = new WebApiResponse { };
@@ -86,7 +86,7 @@ namespace SocialPay.API.Controllers
                 var identity = User.Identity as ClaimsIdentity;
                 var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-                return Ok(await _nibbsQrBaseService.BindMerchantAsync(model, Convert.ToInt32(clientId)));
+                return Ok(await _nibbsQrBaseService.BindMerchantAsync(Convert.ToInt32(clientId)));
             }
 
             var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)

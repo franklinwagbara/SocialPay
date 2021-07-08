@@ -40,7 +40,9 @@ namespace SocialPay.Core.Services.Merchant
                             Fee = model.Fee,
                             Name = model.Name,
                             Phone = model.Phone,
-                            Tin = model.Tin                            
+                            Tin = model.Tin,
+                            IsCompleted = false,
+                            Status = NibbsMerchantOnboarding.CreateAccount
                         };
 
                         await _context.MerchantQRCodeOnboarding.AddAsync(merchant);
@@ -105,7 +107,6 @@ namespace SocialPay.Core.Services.Merchant
             }
         }
 
-
         public async Task<WebApiResponse> CreateSubMerchantAsync(NibbsSubMerchantViewModel model, long clientId)
         {
             try
@@ -131,24 +132,29 @@ namespace SocialPay.Core.Services.Merchant
 
                         var defaultRequest = new CreateNibbsSubMerchantDto
                         {
-                          
+                          mchNo = model.mchNo,
+                          merchantEmail = model.merchantEmail,
+                          merchantName = model.merchantName,
+                          merchantPhoneNumber = model.merchantPhoneNumber,
+                          subAmount = model.subAmount,
+                          subFixed = model.subFixed
                         };
 
-                        var createNibbsMerchant = await _nibbsQRCodeAPIService.CreateSubMerchant(defaultRequest);
+                        var createNibbsSubMerchant = await _nibbsQRCodeAPIService.CreateSubMerchant(defaultRequest);
 
                         var merchantResponseLog = new SubMerchantQRCodeOnboardingResponse();
 
                         merchantResponseLog.SubMerchantQRCodeOnboardingId = merchant.SubMerchantQRCodeOnboardingId;
 
-                        if (createNibbsMerchant.ResponseCode == AppResponseCodes.Success)
+                        if (createNibbsSubMerchant.ResponseCode == AppResponseCodes.Success)
                         {
-                            merchantResponseLog.MchNo = createNibbsMerchant.mchNo;
-                            //merchantResponseLog.MerchantAddress = createNibbsMerchant.merchantAddress;
-                            //merchantResponseLog.MerchantContactName = createNibbsMerchant.merchantContactName;
-                            //merchantResponseLog.MerchantEmail = createNibbsMerchant.merchantEmail;
-                            //merchantResponseLog.MerchantPhoneNumber = createNibbsMerchant.merchantPhoneNumber;
-                            //merchantResponseLog.ReturnCode = createNibbsMerchant.returnCode;
-                            //merchantResponseLog.ReturnMsg = createNibbsMerchant.returnMsg;
+                            merchantResponseLog.MchNo = createNibbsSubMerchant.mchNo;
+                            merchantResponseLog.MerchantName = createNibbsSubMerchant.merchantName;
+                            merchantResponseLog.QrCode = createNibbsSubMerchant.qrCode;
+                            merchantResponseLog.ReturnCode = createNibbsSubMerchant.returnCode;
+                            merchantResponseLog.ReturnMsg = createNibbsSubMerchant.returnMsg;
+                            merchantResponseLog.SubMchNo = createNibbsSubMerchant.subMchNo;                            
+                            merchantResponseLog.IsDeleted = false;                         
 
                             await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
                             await _context.SaveChangesAsync();
@@ -158,7 +164,7 @@ namespace SocialPay.Core.Services.Merchant
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
                         }
 
-                        merchantResponseLog.JsonResponse = createNibbsMerchant.jsonResponse;
+                        merchantResponseLog.JsonResponse = createNibbsSubMerchant.jsonResponse;
 
                         await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
                         await _context.SaveChangesAsync();

@@ -27,7 +27,9 @@ namespace SocialPay.Domain.Entities
         public string Address { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal Fee { get; set; }
+        public bool IsCompleted { get; set; }
         public bool IsDeleted { get; set; }
+        public string Status { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public ClientAuthentication ClientAuthentication { get; set; }
         public virtual ICollection<MerchantQRCodeOnboardingResponse> MerchantQRCodeOnboardingResponse { get; set; }

@@ -35,11 +35,23 @@ namespace SocialPay.ApplicationCore.Services
             var merchant = await _merchantQRCodeOnboarding.GetSingleAsync(x => x.ClientAuthenticationId == clientId);
 
             return _mapper.Map<MerchantQRCodeOnboarding, NibbsQrMerchantViewModel>(merchant);
-        }              
+        }
+
+        public async Task<NibbsQrMerchantViewModel> GetMerchantStatusInfo(long clientId, string status)
+        {
+            var merchant = await _merchantQRCodeOnboarding.GetSingleAsync(x => x.ClientAuthenticationId == clientId && x.Status == status);
+
+            return _mapper.Map<MerchantQRCodeOnboarding, NibbsQrMerchantViewModel>(merchant);
+        }
 
         public async Task<bool> ExistsAsync(long clientId)
         {
-            return await _merchantQRCodeOnboarding.ExistsAsync(x => x.ClientAuthenticationId == clientId);
+            return await _merchantQRCodeOnboarding.ExistsAsync(x => x.ClientAuthenticationId == clientId && x.IsCompleted == true);
+        }
+
+        public async Task<bool> ExistsAsync(long clientId, string status)
+        {
+            return await _merchantQRCodeOnboarding.ExistsAsync(x => x.ClientAuthenticationId == clientId && x.Status == status);
         }
 
         public async Task AddAsync(NibbsQrMerchantViewModel model)

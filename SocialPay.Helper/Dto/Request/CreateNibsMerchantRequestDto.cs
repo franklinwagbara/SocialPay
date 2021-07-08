@@ -32,5 +32,8 @@
     public class BindMerchantRequestDto
     {
         public string mchNo { get; set; }
+        public string bankNo { get; set; }
+        public string accountName { get; set; }
+        public string accountNumber { get; set; }
     }
 }

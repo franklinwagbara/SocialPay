@@ -152,7 +152,9 @@ namespace SocialPay.API
             services.AddScoped<SendGridEmailService>();
             services.AddScoped<IStore, StoreRepository>();
             services.AddScoped<INibbsQrMerchantService, NibbsQrMerchantService>();
+            services.AddScoped<INibbsQrSubMerchantService, NibbsQrSubMerchantService>();
             services.AddScoped<IMerchantBusinessInfoService, MerchantBusinessInfoService>();
+            services.AddScoped<INibbsQrMerchantResponseService, NibbsQrMerchantResponseService>();
             services.AddScoped<IPersonalInfoService, PersonalInfoService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();

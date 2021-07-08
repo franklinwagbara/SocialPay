@@ -4,18 +4,16 @@ using System.Threading.Tasks;
 
 namespace SocialPay.ApplicationCore.Interfaces.Service
 {
-    public interface INibbsQrMerchantService
+    public interface INibbsQrSubMerchantService
     {
-        Task<List<NibbsQrMerchantViewModel>> GetAllAsync();
+        Task<List<NibbsSubMerchantViewModel>> GetAllAsync();
        // Task<List<PaymentLinkViewModel>> GetFundWalletByTenantAsync(long tenantId);
-        Task<NibbsQrMerchantViewModel> GetMerchantInfo(long clientId);
-        Task<NibbsQrMerchantViewModel> GetMerchantStatusInfo(long clientId, string status);
+        Task<NibbsSubMerchantViewModel> GetMerchantInfo(long Id);
         //Task<NibbsQrMerchantViewModel> GetMerchantPersonalEmailInfo(string email);
         Task<int> CountTotalMerchantsAsync();
         Task<bool> ExistsAsync(long clientId);
-        Task<bool> ExistsAsync(long clientId, string status);
-        Task AddAsync(NibbsQrMerchantViewModel model);
-        Task UpdateAsync(NibbsQrMerchantViewModel model);
+        Task AddAsync(NibbsSubMerchantViewModel model);
+        Task UpdateAsync(NibbsSubMerchantViewModel model);
         Task DeleteAsync(int id);
     }
 }

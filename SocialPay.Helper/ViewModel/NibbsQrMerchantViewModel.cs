@@ -20,6 +20,7 @@ namespace SocialPay.Helper.ViewModel
     public class NibbsSubMerchantViewModel
     {
         public long MerchantQRCodeOnboardingId { get; set; }
+        public long SubMerchantQRCodeOnboardingId { get; set; }
         public string mchNo { get; set; }
         public string merchantName { get; set; }
         public string merchantEmail { get; set; }

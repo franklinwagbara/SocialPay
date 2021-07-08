@@ -53,6 +53,13 @@ namespace SocialPay.Core.Services.QrCode
                 {
                     response = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(result);
 
+                    if(response.returnCode != "Success")
+                    {
+                        response.ResponseCode = AppResponseCodes.Failed;
+
+                        return response;
+                    }
+
                     response.ResponseCode = AppResponseCodes.Success;
 
                     return response;
@@ -71,13 +78,13 @@ namespace SocialPay.Core.Services.QrCode
             }
         }
 
-        public async Task<CreateNibsMerchantQrCodeResponse> CreateSubMerchant(CreateNibbsSubMerchantDto requestModel)
+        public async Task<CreateNibsSubMerchantQrCodeResponse> CreateSubMerchant(CreateNibbsSubMerchantDto requestModel)
         {
             try
             {
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
 
-                var response = new CreateNibsMerchantQrCodeResponse();
+                var response = new CreateNibsSubMerchantQrCodeResponse();
 
                 _log4net.Info("Initiating Create sub Merchant request" + " | " + jsonRequest + " | " + DateTime.Now);
 
@@ -93,7 +100,7 @@ namespace SocialPay.Core.Services.QrCode
 
                 if (request.IsSuccessStatusCode)
                 {
-                    response = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(result);
+                    response = JsonConvert.DeserializeObject<CreateNibsSubMerchantQrCodeResponse>(result);
 
                     response.ResponseCode = AppResponseCodes.Success;
 
@@ -109,7 +116,49 @@ namespace SocialPay.Core.Services.QrCode
             catch (Exception ex)
             {
 
-                return new CreateNibsMerchantQrCodeResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new CreateNibsSubMerchantQrCodeResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<BindMechantResponseDto> BindMerchant(BindMerchantRequestDto requestModel)
+        {
+            try
+            {
+                var jsonRequest = JsonConvert.SerializeObject(requestModel);
+
+                var response = new BindMechantResponseDto();
+
+                _log4net.Info("Initiating Create sub Merchant request" + " | " + jsonRequest + " | " + DateTime.Now);
+
+                var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
+
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
+
+                var request = await _client.PostAsync($"{_appSettings.nibsQRCodeBindMerchantAccountUrl}",
+                    new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
+
+                var result = await request.Content.ReadAsStringAsync();
+
+                if (request.IsSuccessStatusCode)
+                {
+                    response = JsonConvert.DeserializeObject<BindMechantResponseDto>(result);
+
+                    response.ResponseCode = AppResponseCodes.Success;
+
+                    return response;
+                }
+
+                response.jsonResponse = result;
+                response.ResponseCode = AppResponseCodes.Failed;
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+
+                return new BindMechantResponseDto { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
