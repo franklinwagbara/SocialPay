@@ -117,5 +117,29 @@ namespace SocialPay.Core.Services.QrCode
             }
         }
 
+        public async Task<WebApiResponse> DynamicPaymentAsync(DynamicPaymentRequestDto request, long clientId)
+        {
+            try
+            {
+               
+
+                var model = new NibbsSubMerchantViewModel
+                {
+                    // ClientAuthenticationId = clientId,
+                };
+
+
+                // await _nibbsQrMerchantService.AddAsync(model);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while creating merchant" };
+            }
+        }
+
+
     }
 }

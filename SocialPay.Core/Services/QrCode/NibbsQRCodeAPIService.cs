@@ -162,5 +162,47 @@ namespace SocialPay.Core.Services.QrCode
             }
         }
 
+        public async Task<DynamicPaymentResponseDto> DynamicPay(DynamicPaymentDefaultRequestDto requestModel)
+        {
+            try
+            {
+                var jsonRequest = JsonConvert.SerializeObject(requestModel);
+
+                var response = new DynamicPaymentResponseDto();
+
+                _log4net.Info("Initiating Create sub Merchant request" + " | " + jsonRequest + " | " + DateTime.Now);
+
+                var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
+
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
+
+                var request = await _client.PostAsync($"{_appSettings.nibsQRCodeBindMerchantAccountUrl}",
+                    new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
+
+                var result = await request.Content.ReadAsStringAsync();
+
+                if (request.IsSuccessStatusCode)
+                {
+                    response = JsonConvert.DeserializeObject<DynamicPaymentResponseDto>(result);
+
+                    response.ResponseCode = AppResponseCodes.Success;
+
+                    return response;
+                }
+
+                response.jsonResponse = result;
+                response.ResponseCode = AppResponseCodes.Failed;
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+
+                return new DynamicPaymentResponseDto { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
     }
 }

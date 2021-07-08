@@ -97,5 +97,29 @@ namespace SocialPay.API.Controllers
 
             return BadRequest(response);
         }
+
+        [HttpPost]
+        [Route("pay-with-QR")]
+        public async Task<IActionResult> PayWithQrCode([FromBody] DynamicPaymentRequestDto model)
+        {
+            // _log4net.Info("Tasks starts to create account" + " | " + model.Email + " | " + DateTime.Now);
+            var response = new WebApiResponse { };
+
+            if (ModelState.IsValid)
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                return Ok(await _nibbsQrBaseService.DynamicPaymentAsync(model, Convert.ToInt32(clientId)));
+            }
+
+            var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+
+            response.ResponseCode = AppResponseCodes.Failed;
+            response.Data = message;
+
+            return BadRequest(response);
+        }
     }
 }
