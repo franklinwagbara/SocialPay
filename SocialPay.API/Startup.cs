@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,6 +46,8 @@ using SocialPay.Job.Repository.NonEscrowCardWalletTransaction;
 using SocialPay.Job.Repository.NonEscrowOtherWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
+using SocialPay.Job.Services;
+using SocialPay.Job.TaskSchedules;
 using SocialPay.Persistance.Repositories;
 
 namespace SocialPay.API
@@ -150,12 +153,15 @@ namespace SocialPay.API
             services.AddScoped<DisputeRepoService>();
             services.AddScoped<TinService>();
             services.AddScoped<SendGridEmailService>();
-            services.AddScoped<IStore, StoreRepository>();
+            services.AddScoped<IStore, StoreRepositoryOld>();
             services.AddScoped<INibbsQrMerchantService, NibbsQrMerchantService>();
             services.AddScoped<INibbsQrSubMerchantService, NibbsQrSubMerchantService>();
             services.AddScoped<IMerchantBusinessInfoService, MerchantBusinessInfoService>();
             services.AddScoped<INibbsQrMerchantResponseService, NibbsQrMerchantResponseService>();
             services.AddScoped<IPersonalInfoService, PersonalInfoService>();
+            services.AddScoped<IStoreService, StoreService>();
+            services.AddScoped<IProductCategoryService, ProductCategoryService>();
+            services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();
             services.AddScoped<NibbsQrBaseService>();

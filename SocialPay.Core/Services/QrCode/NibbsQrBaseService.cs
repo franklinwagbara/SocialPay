@@ -93,22 +93,20 @@ namespace SocialPay.Core.Services.QrCode
 
         public async Task<WebApiResponse> BindMerchantAsync(long clientId)
         {
+            clientId = 90;
+
             try
             {
+                var merchant = await _nibbsQrMerchantService.GetMerchantInfo(clientId);
+
+                //var getMerchantDetails = await _nibbsQrSubMerchantService.GetMerchantInfo(merchant.MerchantQRCodeOnboardingId);
+
                 var request = new BindMerchantRequestDto
                 {
-
+                   
                 };
 
-                var model = new NibbsSubMerchantViewModel
-                {
-                   // ClientAuthenticationId = clientId,
-                };
-
-
-                // await _nibbsQrMerchantService.AddAsync(model);
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
+                return await _nibbsQrRepository.BindMerchantAync(request, clientId, merchant.MerchantQRCodeOnboardingId);
             }
             catch (Exception ex)
             {

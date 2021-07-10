@@ -20,6 +20,8 @@ namespace SocialPay.Domain.Entities
             InvoicePaymentLink = new HashSet<InvoicePaymentLink>();
             LinkCategory = new HashSet<LinkCategory>();
             TransactionLog = new HashSet<TransactionLog>();
+            Store = new HashSet<Store>();
+            ProductCategory = new HashSet<ProductCategory>();
         }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]
@@ -73,5 +75,8 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<AcceptedEscrowInterBankTransactionRequest> AcceptedEscrowInterBankTransactionRequest { get; set; }
         public virtual ICollection<GuestAccountLog> GuestAccountLog { get; set; }
         public virtual ICollection<OtherMerchantBankInfo> OtherMerchantBankInfo { get; set; }
+        public virtual ICollection<Store> Store { get; set; }
+        public virtual ICollection<ProductCategory> ProductCategory { get; set; }
+        public virtual ICollection<Product> Product { get; set; }
     }
 }

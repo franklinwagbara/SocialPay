@@ -1,4 +1,5 @@
-﻿using SocialPay.Core.Services.QrCode;
+﻿using Microsoft.EntityFrameworkCore;
+using SocialPay.Core.Services.QrCode;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -7,6 +8,7 @@ using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -74,6 +76,8 @@ namespace SocialPay.Core.Services.Merchant
                             merchantResponseLog.MerchantPhoneNumber = createNibbsMerchant.merchantPhoneNumber;
                             merchantResponseLog.ReturnCode = createNibbsMerchant.returnCode;
                             merchantResponseLog.ReturnMsg = createNibbsMerchant.returnMsg;
+                            merchantResponseLog.MerchantName = createNibbsMerchant.merchantName;
+                            merchantResponseLog.MerchantTIN = createNibbsMerchant.merchantTIN;
 
                             await _context.MerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
                             await _context.SaveChangesAsync();
@@ -187,6 +191,81 @@ namespace SocialPay.Core.Services.Merchant
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+        public async Task<WebApiResponse> BindMerchantAync(BindMerchantRequestDto model, long clientId, long merchantId)
+        {
+            try
+            {
+
+                var nibbsMerchantInfo = await _context.MerchantQRCodeOnboardingResponse
+                    .SingleOrDefaultAsync(x => x.MerchantQRCodeOnboardingId == merchantId);
+
+                var getMerchantBankInfo = await _context.MerchantBankInfo.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
+                model.accountName = getMerchantBankInfo.AccountName;
+                model.accountNumber = getMerchantBankInfo.Nuban;
+                model.bankNo = getMerchantBankInfo.BankCode;
+                model.mchNo = nibbsMerchantInfo.MchNo;
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var bindMerchant = new BindMerchant
+                        {
+                            AccountName = model.accountName,
+                            BankNo = model.bankNo,
+                            AccountNumber = model.accountNumber,
+                            MchNo = model.mchNo,
+                            MerchantQRCodeOnboardingId = merchantId,
+                        };
+
+                        await _context.BindMerchant.AddAsync(bindMerchant);
+                        await _context.SaveChangesAsync();
+
+                        var bindNibbsMerchant = await _nibbsQRCodeAPIService.BindMerchant(model);
+
+                        var merchantResponseLog = new BindMerchantResponse();
+
+                        merchantResponseLog.BindMerchantId = bindMerchant.BindMerchantId;
+
+                        if (bindNibbsMerchant.ResponseCode == AppResponseCodes.Success)
+                        {
+                            merchantResponseLog.Mch_no = bindNibbsMerchant.Mch_no;
+                            merchantResponseLog.ReturnCode = bindNibbsMerchant.ReturnCode;
+
+                            await _context.BindMerchantResponse.AddAsync(merchantResponseLog);
+                            await _context.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
+
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Bind merchant was successfully created" };
+                        }
+
+                        merchantResponseLog.JsonResponse = bindNibbsMerchant.jsonResponse;
+
+                        await _context.BindMerchantResponse.AddAsync(merchantResponseLog);
+                        await _context.SaveChangesAsync();
+
+                        await transaction.CommitAsync();
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Failed creating merchant" };
+
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
 
     }
 }

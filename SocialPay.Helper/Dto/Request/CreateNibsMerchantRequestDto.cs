@@ -4,7 +4,7 @@
     {      
         public string Contact { get; set; }    
         public string Address { get; set; }
-        public decimal Fee { get; set; }
+        public double Fee { get; set; }
     }
 
     public class CreateNibsMerchantRequestDto : DefaultMerchantRequestDto

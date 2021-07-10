@@ -303,6 +303,21 @@ namespace SocialPay.Core.Services.Report
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+        public async Task<WebApiResponse> GetAllDefaultWalletTransferRequestLogsAsync()
+        {
+            try
+            {
+                return new WebApiResponse { ResponseCode = "00", Data = await _context.DefaultWalletTransferRequestLog.OrderByDescending(x => x.DateEntered).ToListAsync() };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> GetAllEscrowTransactions(long clientId, string status)
         {
             var result = new List<EscrowViewModel>();
@@ -480,6 +495,22 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
+
+        public async Task<WebApiResponse> GetWalletInfo()
+        {
+            try
+            {
+                return new WebApiResponse { ResponseCode = "00", Data = await _context.MerchantWallet.OrderByDescending(x => x.DateEntered).ToListAsync() };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
         public async Task<WebApiResponse> ValidateMerchantInfo(string reference)
         {
             try
@@ -559,6 +590,31 @@ namespace SocialPay.Core.Services.Report
         }
 
 
+        public async Task<WebApiResponse> ClearDefaultLogs(string reference)
+        {
+            try
+            {
+                var validateMerchant = await _context.DefaultWalletTransferRequestLog
+                    .SingleOrDefaultAsync(x => x.PaymentReference == reference);
+
+                if (validateMerchant != null)
+                {
+                    _context.Remove(validateMerchant);
+                    await _context.SaveChangesAsync();
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record Not found" };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> ValidateInfo(string reference)
         {
             try
@@ -596,6 +652,33 @@ namespace SocialPay.Core.Services.Report
                 if (validateMerchant != null)
                 {
                     validateMerchant.TransactionJourney = TransactionJourneyStatusCodes.WalletTranferCompleted;
+                    _context.Update(validateMerchant);
+                    await _context.SaveChangesAsync();
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record Not found" };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> UpdateWalletInfo(string reference)
+        {
+            try
+            {
+                var validateMerchant = await _context.TransactionLog
+                    .SingleOrDefaultAsync(x => x.PaymentReference == reference);
+
+                if (validateMerchant != null)
+                {
+                    validateMerchant.OrderStatus = TransactionJourneyStatusCodes.Pending;
                     _context.Update(validateMerchant);
                     await _context.SaveChangesAsync();
 

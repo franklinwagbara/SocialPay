@@ -33,6 +33,9 @@ namespace SocialPay.Core.Services.QrCode
         {
             try
             {
+                requestModel.Tin = "012348484";
+                requestModel.Fee = 0.5;
+
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
 
                 var response = new CreateNibsMerchantQrCodeResponse();
@@ -124,6 +127,10 @@ namespace SocialPay.Core.Services.QrCode
         {
             try
             {
+                requestModel.mchNo = "M0000000105";
+                requestModel.bankNo = "999232";
+                requestModel.accountNumber = "8038541905";
+                requestModel.accountName = "Olamide Akinnagbe";
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
 
                 var response = new BindMechantResponseDto();
@@ -151,7 +158,6 @@ namespace SocialPay.Core.Services.QrCode
 
                 response.jsonResponse = result;
                 response.ResponseCode = AppResponseCodes.Failed;
-
                 return response;
 
             }

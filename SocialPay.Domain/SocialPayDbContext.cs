@@ -48,12 +48,14 @@ namespace SocialPay.Domain
         public DbSet<OtherMerchantBankInfo> OtherMerchantBankInfo { get; set; }
         public DbSet<InvoicePaymentLinkToMulitpleEmails> InvoicePaymentLinkToMulitpleEmails { get; set; }
         public DbSet<MerchantStoreLog> MerchantStoreRequest { get; set; }
-        public DbSet<StoreCategory> StoreCategoryRequest { get; set; }
-        public DbSet<ProductOption> ProductOptionRequest { get; set; }
         public DbSet<MerchantQRCodeOnboardingResponse> MerchantQRCodeOnboardingResponse { get; set; }
         public DbSet<MerchantQRCodeOnboarding> MerchantQRCodeOnboarding { get; set; }
         public DbSet<SubMerchantQRCodeOnboarding> SubMerchantQRCodeOnboarding { get; set; }
         public DbSet<SubMerchantQRCodeOnboardingResponse> SubMerchantQRCodeOnboardingResponse { get; set; }
         public DbSet<BindMerchant> BindMerchant { get; set; }
+        public DbSet<BindMerchantResponse> BindMerchantResponse { get; set; }
+        public DbSet<Store> Store { get; set; }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<ProductCategory> productCategories { get; set; }
     }
 }

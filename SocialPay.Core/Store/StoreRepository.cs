@@ -1,115 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SocialPay.Core.Interface;
-using SocialPay.Domain;
-using SocialPay.Domain.Entities;
+﻿using SocialPay.ApplicationCore.Interfaces.Service;
+using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Store
 {
-    public class StoreRepository : IStore
+    public class StoreRepository
     {
-        private APIResponse<MerchantStoreDto> merchantresponse;
-        private APIResponse<StoreCategoryDto> categoryresponse;
-        private APIResponse<List<ProductOptionDto>> productoptionresponse;
-        private readonly SocialPayDbContext _context;
-        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IStoreService _storeService;
 
-        public StoreRepository(SocialPayDbContext context)
+        public StoreRepository(IStoreService storeService)
         {
-            _context = context;
-            merchantresponse = new APIResponse<MerchantStoreDto>();
-            categoryresponse = new APIResponse<StoreCategoryDto>();
-
+            _storeService = storeService ?? throw new ArgumentNullException(nameof(storeService));
         }
-        public async Task<APIResponse<MerchantStoreDto>> CreateStore([FromBody] MerchantStoreDto storeDto)
+
+        public async Task<WebApiResponse> CreateNewStoreAsync(StoreRequestDto request, long clentId)
         {
             try
             {
-
-                var merchantlog = new MerchantStoreLog { };
-                merchantlog.Name = storeDto.Name;
-                merchantlog.Description = storeDto.Description;
-                merchantlog.Url = storeDto.Url;
-                merchantlog.Image = storeDto.Image;
-                merchantlog.Price = storeDto.Price;
-                merchantlog.CategoryId = storeDto.CategoryId;
-                merchantlog.OptionId = storeDto.OptionId;
-
-                await _context.MerchantStoreRequest.AddAsync(merchantlog);
-                await _context.SaveChangesAsync();
-
-                merchantresponse.Data = storeDto;
-                merchantresponse.Message = "Created successfully";
-                merchantresponse.StatusCode = "00";
-            }
-            catch (Exception ex)
-            {
-
-                merchantresponse.Message = ex.Message;
-                merchantresponse.StatusCode = "99";
-            }
-
-            return merchantresponse;
-        }
-
-        public async Task<APIResponse<StoreCategoryDto>> CreateCategory([FromBody] StoreCategoryDto categoryDto)
-        {
-            try
-            {
-                var storecategory = new StoreCategory { };
-
-                storecategory.Name = categoryDto.Name;
-
-                await _context.StoreCategoryRequest.AddAsync(storecategory);
-                await _context.SaveChangesAsync();
-
-                categoryresponse.Data = categoryDto;
-                categoryresponse.Message = "Created successfully";
-                categoryresponse.StatusCode = "00";
-            }
-            catch (Exception ex)
-            {
-                categoryresponse.Message = ex.Message;
-                categoryresponse.StatusCode = "99";
-            }
-            return categoryresponse;
-        }
-
-
-        public async Task<APIResponse<List<ProductOptionDto>>> CreateProductOption(List<ProductOptionDto> productOption)
-        {
-            try
-            {
-                var prodoption = new ProductOption { };
-
-                if (productOption != null)
+                var model = new StoreViewModel
                 {
-                    foreach (var item in productOption)
-                    {
-                        prodoption.Name = item.Name;
+                    Description = request.Description,
+                    ClientAuthenticationId = clentId,
+                    StoreName = request.StoreName,
+                    FileLocation = "",
+                };
 
-                        await _context.ProductOptionRequest.AddAsync(prodoption);
-                    }
+                await _storeService.AddAsync(model);
 
-                    await _context.SaveChangesAsync();
-                    productoptionresponse.Data = productOption;
-                    productoptionresponse.Message = "Created successfully";
-                    productoptionresponse.StatusCode = "00";
-                }
-
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store was successfully created" };
             }
             catch (Exception ex)
             {
-
-                productoptionresponse.Message = ex.Message;
-                productoptionresponse.StatusCode = "99";
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
-            return productoptionresponse;
         }
     }
-
 }
