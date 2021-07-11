@@ -55,7 +55,7 @@ namespace SocialPay.Domain
         public DbSet<BindMerchant> BindMerchant { get; set; }
         public DbSet<BindMerchantResponse> BindMerchantResponse { get; set; }
         public DbSet<Store> Store { get; set; }
-        public DbSet<Product> Product { get; set; }
-        public DbSet<ProductCategory> productCategories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductCategory> ProductCategories { get; set; }
     }
 }

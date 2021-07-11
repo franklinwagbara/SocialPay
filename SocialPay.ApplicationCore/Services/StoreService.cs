@@ -45,6 +45,19 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<Store, StoreViewModel>(store);
         }
 
+        public async Task<StoreViewModel> GetStoreName(string storeName)
+        {
+            var store = await _store.GetSingleAsync(x => x.StoreName == storeName);
+
+            return _mapper.Map<Store, StoreViewModel>(store);
+        }
+        public async Task<StoreViewModel> GetStoreById(long storeId, long clientId)
+        {
+            var store = await _store.GetSingleAsync(x => x.StoreId == storeId && x.ClientAuthenticationId == clientId);
+
+            return _mapper.Map<Store, StoreViewModel>(store);
+        }
+
         public async Task<bool> ExistsAsync(long clientId)
         {
             return await _store.ExistsAsync(x => x.ClientAuthenticationId == clientId);
@@ -72,6 +85,7 @@ namespace SocialPay.ApplicationCore.Services
             var entity = await _store.GetSingleAsync(x => x.StoreId == model.StoreId);
 
             entity.Description = model.Description;
+            entity.StoreName = model.StoreName;
             entity.LastDateModified = DateTime.Now;
 
             await _store.UpdateAsync(entity);

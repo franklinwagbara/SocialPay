@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SocialPay.Domain.Entities
+namespace SocialPay.Helper.Dto.Request
 {
-    public class Product: BaseEntity
+    public class ProductRequestDto
     {
-        public long ProductId { get; set; }
         public long ProductCategoryId { get; set; }
         public long StoreId { get; set; }
         public string ProductName { get; set; }
@@ -14,12 +13,12 @@ namespace SocialPay.Domain.Entities
         public string Description { get; set; }
         public decimal Price { get; set; }
         public bool Options { get; set; }
-        public bool IsDeleted { get; set; }
         public string Size { get; set; }
         public string Color { get; set; }
-        public DateTime DateCreated { get; set; } = DateTime.Now;
-        public DateTime LastDateModified { get; set; }
-        public ProductCategory ProductCategory { get; set; }
-        //public Store Store { get; set; }
+    }
+
+    public class ProductcategoryDto
+    {
+        public string CategoryName { get; set; }
     }
 }

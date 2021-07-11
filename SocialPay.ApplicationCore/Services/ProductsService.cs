@@ -38,6 +38,16 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<List<Product>, List<ProductsViewModel>>(products);
         }
 
+        public async Task<ProductsViewModel> GetProductByNameCatIdAndClientId(string productName, long categoryId, long storeId)
+        {
+            var product = await _products
+                .GetSingleAsync(x => x.ProductName == productName
+                && x.ProductCategoryId == categoryId
+                && x.StoreId == storeId);
+
+            return _mapper.Map<Product, ProductsViewModel>(product);
+        }
+
         public async Task<ProductsViewModel> GetProductById(long productId)
         {
             var product = await _products.GetSingleAsync(x => x.ProductId == productId);
@@ -61,7 +71,9 @@ namespace SocialPay.ApplicationCore.Services
               Price = model.Price,
               ProductCategoryId = model.ProductCategoryId,
               ProductName = model.ProductName,
-              Size = model.Size
+              Size = model.Size,
+              ProductReference = model.ProductReference,
+              IsDeleted = false              
             };
 
             await _products.AddAsync(product);

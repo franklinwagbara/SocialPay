@@ -2512,3 +2512,8 @@ INFO  2021-07-08 16:23:22,686 42680ms NibbsQRCodeAPIService  ?                  
 INFO  2021-07-08 17:03:21,848 76913ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000058156","bankNo":"999232","accountName":"Olamide Akinnagbe","accountNumber":"8038541905"} | 7/8/2021 5:03:21 PM
 INFO  2021-07-08 17:05:40,174 54113ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000058156","bankNo":"999232","accountName":"Olamide Akinnagbe","accountNumber":"8038541905"} | 7/8/2021 5:05:40 PM
 INFO  2021-07-08 17:08:25,777 47128ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999232","accountName":"Olamide Akinnagbe","accountNumber":"8038541905"} | 7/8/2021 5:08:25 PM
+INFO  2021-07-11 14:13:46,577 60420ms AuthRepoService        ?                  - Authenticate | string | 7/11/2021 2:13:46 PM
+INFO  2021-07-11 14:16:31,322 225165ms AuthRepoService        ?                  - Authenticate | pelumisunday@gmail.com | 7/11/2021 2:16:31 PM
+INFO  2021-07-11 14:17:10,578 264422ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08185254717 | 7/11/2021 2:17:10 PM
+INFO  2021-07-11 14:17:25,172 279016ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 7/11/2021 2:17:25 PM
+INFO  2021-07-11 14:17:36,436 290280ms AuthRepoService        ?                  - Authenticate for login was successful | pelumisunday@gmail.com | 7/11/2021 2:17:36 PM

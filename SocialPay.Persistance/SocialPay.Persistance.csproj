@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SocialPay.ApplicationCore\SocialPay.ApplicationCore.csproj" />
     <ProjectReference Include="..\SocialPay.Domain\SocialPay.Domain.csproj" />
   </ItemGroup>

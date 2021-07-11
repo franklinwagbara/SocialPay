@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Merchant;
@@ -59,6 +60,8 @@ namespace SocialPay.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                   // var getUserDetails = GetSessionDetails();
+
                     var identity = User.Identity as ClaimsIdentity;
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;

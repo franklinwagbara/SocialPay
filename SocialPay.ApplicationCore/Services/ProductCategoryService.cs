@@ -31,13 +31,37 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<List<ProductCategory>, List<ProductCategoryViewModel>>(categories);
         }
 
+        public async Task<List<ProductCategoryViewModel>> GetAllByClientId(long clientId)
+        {
+            var categories = await _category.GetAsync(x => x.ClientAuthenticationId == clientId);
+
+            return _mapper.Map<List<ProductCategory>, List<ProductCategoryViewModel>>(categories);
+        }
+
+        public async Task<ProductCategoryViewModel> GetCategoryByIdAndCatId(long categoryId, long clientId)
+        {
+            var categories = await _category
+                .GetSingleAsync(x => x.ProductCategoryId == categoryId && x.ClientAuthenticationId == clientId);
+
+            return _mapper.Map<ProductCategory, ProductCategoryViewModel>(categories);
+        }
+        //GetCategoryByIdAndCatId
         public async Task<ProductCategoryViewModel> GetCategoryById(long categoryId)
         {
             var category = await _category.GetSingleAsync(x => x.ProductCategoryId == categoryId);
 
             return _mapper.Map<ProductCategory, ProductCategoryViewModel>(category);
         }
+        public async Task<ProductCategoryViewModel> GetCategoryByNameAndClientId(string catName, long clientId)
+        {
+            var category = await _category
+                .GetSingleAsync(x => x.CategoryName == catName && x.ClientAuthenticationId == clientId);
 
+            return _mapper.Map<ProductCategory, ProductCategoryViewModel>(category);
+        }
+
+
+        //GetCategoryByNameAndClientId
         public async Task<bool> ExistsAsync(long categoryId)
         {
             return await _category.ExistsAsync(x => x.ProductCategoryId == categoryId);
@@ -49,7 +73,8 @@ namespace SocialPay.ApplicationCore.Services
             {
                CategoryName = model.CategoryName,
                LastDateModified = DateTime.Now,
-               ClientAuthenticationId = model.ClientAuthenticationId               
+               ClientAuthenticationId = model.ClientAuthenticationId,  
+               IsDeleted = false               
             };
 
             await _category.AddAsync(category);

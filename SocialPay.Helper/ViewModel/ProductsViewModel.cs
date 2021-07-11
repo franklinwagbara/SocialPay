@@ -8,6 +8,7 @@ namespace SocialPay.Helper.ViewModel
     {
         public long ProductId { get; set; }
         public long ProductCategoryId { get; set; }
+        public long StoreId { get; set; }
         public string ProductName { get; set; }
         public string ProductReference { get; set; }
         public string Description { get; set; }
