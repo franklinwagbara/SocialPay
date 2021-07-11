@@ -8,7 +8,7 @@ namespace SocialPay.Domain.Entities
     {
         public long ProductId { get; set; }
         public long ProductCategoryId { get; set; }
-        public long StoreId { get; set; }
+        public long MerchantStoreId { get; set; }
         public string ProductName { get; set; }
         public string ProductReference { get; set; }
         public string Description { get; set; }
@@ -17,6 +17,8 @@ namespace SocialPay.Domain.Entities
         public bool IsDeleted { get; set; }
         public string Size { get; set; }
         public string Color { get; set; }
+        public string Image { get; set; }
+        public string FileLocation { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
         public ProductCategory ProductCategory { get; set; }

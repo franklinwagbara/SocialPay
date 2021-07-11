@@ -455,7 +455,6 @@ namespace SocialPay.Core.Services.Account
                     try
                     {
 
-
                         var businessInfoModel = new MerchantBusinessInfo
                         {
                             BusinessEmail = model.BusinessEmail,

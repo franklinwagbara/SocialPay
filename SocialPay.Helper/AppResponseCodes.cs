@@ -85,7 +85,11 @@
         public const string PayWithSpecta = "03";
         public const string NibbsQR = "04";
     }
-
+    public class MerchantLinkCategory
+    {
+        public const string Single = "01";
+        public const string Store = "02";
+    }
     public class MerchantPaymentLinkCategory
     {
         public const string Basic = "01";

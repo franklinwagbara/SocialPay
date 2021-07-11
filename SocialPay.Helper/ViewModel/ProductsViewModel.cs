@@ -16,6 +16,8 @@ namespace SocialPay.Helper.ViewModel
         public bool Options { get; set; }
         public string Size { get; set; }
         public string Color { get; set; }
+        public string Image { get; set; }
+        public string FileLocation { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime LastDateModified { get; set; }
     }

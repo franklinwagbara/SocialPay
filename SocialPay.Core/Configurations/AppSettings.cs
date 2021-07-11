@@ -33,6 +33,8 @@
         public string paymentCombination { get; set; }
         public string deliverySLA { get; set; }
         public string MerchantLinkPaymentDocument { get; set; }
+        public string StoreImage { get; set; }
+        public string ProductsImage { get; set; }
         public string DisputeDocument { get; set; }
         public string PaymentLinkPercentage { get; set; }
         public string EmailTemplatesPath { get; set; }

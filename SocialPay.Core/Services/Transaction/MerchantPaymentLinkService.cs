@@ -89,6 +89,7 @@ namespace SocialPay.Core.Services.Transaction
                     model.TotalAmount = model.MerchantAmount + model.ShippingFee;
                     model.DeliveryTime = paymentModel.DeliveryTime < 1 ? 0 : paymentModel.DeliveryTime;
                     model.PaymentMethod = paymentModel.PaymentMethod == null ? string.Empty : paymentModel.PaymentMethod;
+                    model.LinkCategory = MerchantLinkCategory.Single;
 
                     var newGuid = $"{"So-Pay-"}{Guid.NewGuid().ToString("N")}";
                     var token = model.MerchantAmount + "," + model.PaymentCategory + "," + model.PaymentLinkName + "," + newGuid;
@@ -118,7 +119,8 @@ namespace SocialPay.Core.Services.Transaction
 
                     var linkCatModel = new LinkCategory
                     {
-                        ClientAuthenticationId = clientId, Channel = paymentModel.PaymentCategory,
+                        ClientAuthenticationId = clientId, 
+                        Channel = paymentModel.PaymentCategory,
                         TransactionReference = newGuid
                     };
 

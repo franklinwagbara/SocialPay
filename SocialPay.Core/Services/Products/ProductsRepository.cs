@@ -27,7 +27,7 @@ namespace SocialPay.Core.Services.Products
 
                 var query = (from c in productCategory
                              join p in _context.Products on c.ProductCategoryId equals p.ProductCategoryId
-                             join s in _context.Store on p.StoreId equals s.StoreId
+                             join s in _context.MerchantStore on p.MerchantStoreId equals s.MerchantStoreId
 
                              select new StoreProductsViewModel
                              {

@@ -24,7 +24,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("create-store")]
-        public async Task<IActionResult> CreateStore([FromBody] StoreRequestDto request) => Response(await _storeRepository.CreateNewStoreAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
+        public async Task<IActionResult> CreateStore([FromForm] StoreRequestDto request) => Response(await _storeRepository.CreateNewStoreAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
 
         [HttpGet]
         [Route("get-store")]
@@ -41,7 +41,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("create-product")]
-        public async Task<IActionResult> CreateProducts([FromBody] ProductRequestDto request) => Response(await _storeRepository.CreateNewProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
+        public async Task<IActionResult> CreateProducts([FromForm] ProductRequestDto request) => Response(await _storeRepository.CreateNewProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
 
     }
 }

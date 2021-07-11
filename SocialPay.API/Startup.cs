@@ -32,6 +32,7 @@ using SocialPay.Core.Services.Products;
 using SocialPay.Core.Services.QrCode;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
+using SocialPay.Core.Services.Store;
 using SocialPay.Core.Services.Tin;
 using SocialPay.Core.Services.Transaction;
 using SocialPay.Core.Services.Validations;
@@ -169,6 +170,7 @@ namespace SocialPay.API
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();
             services.AddScoped<StoreRepository>();
+            services.AddScoped<StoreBaseRepository>();
             services.AddScoped<NibbsQrBaseService>();
             services.AddScoped<NibbsQrRepository>();
             services.AddScoped<NibbsQRCodeAPIService>();

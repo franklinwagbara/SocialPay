@@ -5,13 +5,13 @@ using System.Text;
 
 namespace SocialPay.Domain.Entities
 {
-    public class Store : BaseEntity
+    public class MerchantStore : BaseEntity
     {
         //public Store()
         //{
         //    Product = new HashSet<Product>();
         //}
-        public long StoreId { get; set; }
+        public long MerchantStoreId { get; set; }
         public long ClientAuthenticationId { get; set; }
         public string StoreName { get; set; }
         public string Description { get; set; }

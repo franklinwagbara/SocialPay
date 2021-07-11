@@ -8,6 +8,7 @@ namespace SocialPay.Domain.Entities
     public class MerchantPaymentSetup
     {
         public long MerchantPaymentSetupId { get; set; }
+        public long MerchantStoreId { get; set; }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(30)")]
         public string PaymentLinkName { get; set; }
@@ -44,6 +45,8 @@ namespace SocialPay.Domain.Entities
         public string PaymentLinkUrl { get; set; }
         [Column(TypeName = "NVARCHAR(120)")]
         public string Document { get; set; }
+        [Column(TypeName = "NVARCHAR(20)")]
+        public string LinkCategory { get; set; }
         [Column(TypeName = "NVARCHAR(150)")]
         public string FileLocation { get; set; }
         public bool IsDeleted { get; set; }

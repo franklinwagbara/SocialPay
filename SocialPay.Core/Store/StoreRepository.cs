@@ -10,6 +10,11 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using SocialPay.Core.Extensions.Common;
+using SocialPay.Core.Services.Store;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using SocialPay.Core.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace SocialPay.Core.Store
 {
@@ -18,39 +23,24 @@ namespace SocialPay.Core.Store
         private readonly IStoreService _storeService;
         private readonly IProductCategoryService _productCategoryService;
         private readonly IProductsService _productsService;
+        private readonly StoreBaseRepository _storeBaseRepository;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly AppSettings _appSettings;
+
         public StoreRepository(IStoreService storeService, IProductCategoryService productCategoryService,
-            IProductsService productsService)
+            IProductsService productsService, StoreBaseRepository storeBaseRepository,
+            IHostingEnvironment environment, IOptions<AppSettings> appSettings)
         {
             _storeService = storeService ?? throw new ArgumentNullException(nameof(storeService));
             _productCategoryService = productCategoryService ?? throw new ArgumentNullException(nameof(productCategoryService));
             _productsService = productsService ?? throw new ArgumentNullException(nameof(productsService));
+            _storeBaseRepository = storeBaseRepository ?? throw new ArgumentNullException(nameof(storeBaseRepository));
+            _hostingEnvironment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _appSettings = appSettings.Value;
         }
         public async Task<WebApiResponse> CreateNewStoreAsync(StoreRequestDto request, UserDetailsViewModel userModel)
         {
-            try
-            {
-
-                var validateStore = await _storeService.GetStoreName(request.StoreName);
-
-                if (validateStore != null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateStoreName, Message = "Duplicate Store Name" };
-
-                var model = new StoreViewModel
-                {
-                    Description = request.Description,
-                    ClientAuthenticationId = userModel.ClientId,
-                    StoreName = request.StoreName,
-                    FileLocation = "",
-                };
-
-                await _storeService.AddAsync(model);
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store was successfully created" };
-            }
-            catch (Exception ex)
-            {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-            }
+            return await _storeBaseRepository.CreateNewStore(request, userModel);
         }
 
         public async Task<WebApiResponse> GetStoreInfoAsync(UserDetailsViewModel userModel)
@@ -61,6 +51,9 @@ namespace SocialPay.Core.Store
 
                 if (store == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+
+                foreach (var item in store)
+                    item.Image = item.Image == null ? string.Empty : _appSettings.BaseApiUrl + item.FileLocation + "/" + item.Image;
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = store };
             }
@@ -74,8 +67,7 @@ namespace SocialPay.Core.Store
         {
             try
             {
-
-                var store = await _storeService.GetStoreById(request.StoreId, clentId);
+                var store = await _storeService.GetStoreById(request.MerchantStoreId, clentId);
 
                 if (store == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
@@ -151,7 +143,7 @@ namespace SocialPay.Core.Store
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
 
                 var validateStore = await _storeService.GetStoreById(request.StoreId, userModel.ClientId);
-               
+
                 if (validateStore == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
 
@@ -161,6 +153,26 @@ namespace SocialPay.Core.Store
                 if (validatProductDetails != null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateProductName, Message = "Duplicate Product Name" };
 
+                string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.ProductsImage);
+
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                string fileName = string.Empty;
+                var newFileName = string.Empty;
+
+                fileName = (request.Image.FileName);
+
+                var reference = $"{"So-"}{Guid.NewGuid().ToString("N")}";
+
+                var FileExtension = Path.GetExtension(fileName);
+
+                fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.ProductsImage) + $@"\{newFileName}";
+
+                newFileName = $"{reference}{FileExtension}";
+
+                var filePath = Path.Combine(fileName, newFileName);
+
                 var model = new ProductsViewModel
                 {
                     Description = request.Description,
@@ -168,19 +180,26 @@ namespace SocialPay.Core.Store
                     Price = request.Price,
                     ProductCategoryId = request.ProductCategoryId,
                     ProductName = request.ProductName,
-                    ProductReference = $"{"So-"}{Guid.NewGuid().ToString("N")}",
+                    ProductReference = reference,
                     Size = request.Size,
                     Options = request.Options,
-                    StoreId = request.StoreId
+                    StoreId = request.StoreId,
+                    Image = newFileName,
+                    FileLocation = _appSettings.ProductsImage
                 };
+
+                request.Image.CopyTo(new FileStream(filePath, FileMode.Create));
 
                 await _productsService.AddAsync(model);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store was successfully created" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Product was successfully saved" };
             }
             catch (Exception ex)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse
+                {
+                    ResponseCode = AppResponseCodes.InternalError
+                };
             }
         }
 

@@ -13,13 +13,13 @@ namespace SocialPay.ApplicationCore.Services
     public class StoreService : IStoreService
     {
         private readonly IMapper _mapper;
-        private readonly IAsyncRepository<Store> _store;
+        private readonly IAsyncRepository<MerchantStore> _store;
 
-        public StoreService(IAsyncRepository<Store> store)
+        public StoreService(IAsyncRepository<MerchantStore> store)
         {
             _store = store;
 
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Store, StoreViewModel>());
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantStore, StoreViewModel>());
 
             _mapper = config.CreateMapper();
         }
@@ -28,34 +28,34 @@ namespace SocialPay.ApplicationCore.Services
         {
             var stores = await _store.GetAllAsync();
 
-            return _mapper.Map<List<Store>, List<StoreViewModel>>(stores);
+            return _mapper.Map<List<MerchantStore>, List<StoreViewModel>>(stores);
         }
 
         public async Task<List<StoreViewModel>> GetStoresByClientId(long clientId)
         {
             var stores = await _store.GetAsync(x => x.ClientAuthenticationId == clientId);
 
-            return _mapper.Map<List<Store>, List<StoreViewModel>>(stores);
+            return _mapper.Map<List<MerchantStore>, List<StoreViewModel>>(stores);
         }
 
         public async Task<StoreViewModel> GetStoreById(long storeId)
         {
-            var store = await _store.GetSingleAsync(x => x.StoreId == storeId);
+            var store = await _store.GetSingleAsync(x => x.MerchantStoreId == storeId);
 
-            return _mapper.Map<Store, StoreViewModel>(store);
+            return _mapper.Map<MerchantStore, StoreViewModel>(store);
         }
 
         public async Task<StoreViewModel> GetStoreName(string storeName)
         {
             var store = await _store.GetSingleAsync(x => x.StoreName == storeName);
 
-            return _mapper.Map<Store, StoreViewModel>(store);
+            return _mapper.Map<MerchantStore, StoreViewModel>(store);
         }
         public async Task<StoreViewModel> GetStoreById(long storeId, long clientId)
         {
-            var store = await _store.GetSingleAsync(x => x.StoreId == storeId && x.ClientAuthenticationId == clientId);
+            var store = await _store.GetSingleAsync(x => x.MerchantStoreId == storeId && x.ClientAuthenticationId == clientId);
 
-            return _mapper.Map<Store, StoreViewModel>(store);
+            return _mapper.Map<MerchantStore, StoreViewModel>(store);
         }
 
         public async Task<bool> ExistsAsync(long clientId)
@@ -65,7 +65,7 @@ namespace SocialPay.ApplicationCore.Services
 
         public async Task<StoreViewModel> AddAsync(StoreViewModel model)
         {
-            var store = new Store
+            var store = new MerchantStore
             {
                 StoreName = model.StoreName,
                 ClientAuthenticationId = model.ClientAuthenticationId,
@@ -77,12 +77,12 @@ namespace SocialPay.ApplicationCore.Services
 
             await _store.AddAsync(store);
 
-            return _mapper.Map<Store, StoreViewModel>(store);
+            return _mapper.Map<MerchantStore, StoreViewModel>(store);
         }
 
         public async Task UpdateAsync(StoreViewModel model)
         {
-            var entity = await _store.GetSingleAsync(x => x.StoreId == model.StoreId);
+            var entity = await _store.GetSingleAsync(x => x.MerchantStoreId == model.MerchantStoreId);
 
             entity.Description = model.Description;
             entity.StoreName = model.StoreName;

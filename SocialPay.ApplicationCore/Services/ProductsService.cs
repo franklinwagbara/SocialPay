@@ -43,7 +43,7 @@ namespace SocialPay.ApplicationCore.Services
             var product = await _products
                 .GetSingleAsync(x => x.ProductName == productName
                 && x.ProductCategoryId == categoryId
-                && x.StoreId == storeId);
+                && x.MerchantStoreId == storeId);
 
             return _mapper.Map<Product, ProductsViewModel>(product);
         }

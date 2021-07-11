@@ -6,7 +6,7 @@ namespace SocialPay.Helper.ViewModel
 {
     public class StoreViewModel
     {
-        public long StoreId { get; set; }
+        public long MerchantStoreId { get; set; }
         public long ClientAuthenticationId { get; set; }
         public string StoreName { get; set; }
         public string Description { get; set; }
