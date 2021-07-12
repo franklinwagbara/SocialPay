@@ -22,6 +22,7 @@ namespace SocialPay.Domain.Entities
             TransactionLog = new HashSet<TransactionLog>();
             MerchantStore = new HashSet<MerchantStore>();
             ProductCategory = new HashSet<ProductCategory>();
+            MerchantQRCodeOnboarding = new HashSet<MerchantQRCodeOnboarding>();
         }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]
@@ -78,5 +79,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<MerchantStore> MerchantStore { get; set; }
         public virtual ICollection<ProductCategory> ProductCategory { get; set; }
         public virtual ICollection<Product> Product { get; set; }
+        public virtual ICollection<MerchantQRCodeOnboarding>  MerchantQRCodeOnboarding { get; set; }
     }
 }

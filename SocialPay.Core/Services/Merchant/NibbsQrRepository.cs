@@ -192,20 +192,32 @@ namespace SocialPay.Core.Services.Merchant
             }
         }
 
-        public async Task<WebApiResponse> BindMerchantAync(BindMerchantRequestDto model, long clientId, long merchantId)
+        public async Task<WebApiResponse> BindMerchantAync(long clientId)
         {
             try
             {
 
-                var nibbsMerchantInfo = await _context.MerchantQRCodeOnboardingResponse
-                    .SingleOrDefaultAsync(x => x.MerchantQRCodeOnboardingId == merchantId);
+                var model = new BindMerchantRequestDto();
+
+                var nibbsMerchantInfo = await _context.MerchantQRCodeOnboarding
+                    .Include(x=>x.MerchantQRCodeOnboardingResponse)
+                   .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
+                //var nibbsMerchantInfo = await _context.MerchantQRCodeOnboardingResponse
+                //    .SingleOrDefaultAsync(x => x.MerchantQRCodeOnboardingId == merchantId);
 
                 var getMerchantBankInfo = await _context.MerchantBankInfo.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-                model.accountName = getMerchantBankInfo.AccountName;
-                model.accountNumber = getMerchantBankInfo.Nuban;
-                model.bankNo = getMerchantBankInfo.BankCode;
-                model.mchNo = nibbsMerchantInfo.MchNo;
+                //model.accountName = getMerchantBankInfo.AccountName;
+                //model.accountNumber = getMerchantBankInfo.Nuban;
+                //model.bankNo = getMerchantBankInfo.BankCode;
+                //model.mchNo = nibbsMerchantInfo.MerchantQRCodeOnboardingResponse.Select(x=>x.MchNo).FirstOrDefault();
+
+
+                model.accountName = "OGUNLANA TUNJI";
+                model.accountNumber = "0122047425";
+                model.bankNo = "999058";
+                model.mchNo = "M0000000105";
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -217,8 +229,13 @@ namespace SocialPay.Core.Services.Merchant
                             BankNo = model.bankNo,
                             AccountNumber = model.accountNumber,
                             MchNo = model.mchNo,
-                            MerchantQRCodeOnboardingId = merchantId,
+                            MerchantQRCodeOnboardingId = nibbsMerchantInfo.MerchantQRCodeOnboardingId,
                         };
+
+                        //requestModel.mchNo = "M0000000105";
+                        //requestModel.bankNo = "999058";
+                        //requestModel.accountNumber = "0122047425";
+                        //requestModel.accountName = "OGUNLANA TUNJI";
 
                         await _context.BindMerchant.AddAsync(bindMerchant);
                         await _context.SaveChangesAsync();
@@ -235,6 +252,12 @@ namespace SocialPay.Core.Services.Merchant
                             merchantResponseLog.ReturnCode = bindNibbsMerchant.ReturnCode;
 
                             await _context.BindMerchantResponse.AddAsync(merchantResponseLog);
+                            await _context.SaveChangesAsync();
+
+                            nibbsMerchantInfo.IsCompleted = true;
+                            nibbsMerchantInfo.Status = NibbsMerchantOnboarding.BindMerchant;
+
+                            _context.Update(nibbsMerchantInfo);
                             await _context.SaveChangesAsync();
 
                             await transaction.CommitAsync();

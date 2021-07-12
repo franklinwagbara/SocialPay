@@ -31,6 +31,7 @@ namespace SocialPay.Domain.Entities
         public bool IsDeleted { get; set; }
         public string Status { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
+        public DateTime LastDateModified { get; set; }
         public ClientAuthentication ClientAuthentication { get; set; }
         public virtual ICollection<MerchantQRCodeOnboardingResponse> MerchantQRCodeOnboardingResponse { get; set; }
         public virtual ICollection<BindMerchant> BindMerchant { get; set; }

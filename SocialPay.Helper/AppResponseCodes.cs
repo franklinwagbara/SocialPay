@@ -76,6 +76,7 @@
         public const string CreateAccount = "01";
         public const string SubAccount = "02";
         public const string BindMerchant = "00";
+        public const string NotProfiled = "03";
     }
 
     public class PaymentChannel

@@ -75,14 +75,15 @@ namespace SocialPay.Core.Services.Authentication
             {
                 var cacheKey = string.Empty;
                 var userInfo = new UserInfoViewModel { };
+
                 if (string.IsNullOrEmpty(loginRequestDto.Email) || string.IsNullOrEmpty(loginRequestDto.Password))
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.Failed };
-
 
                 var validateuserInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBusinessInfo)
                     .Include(x => x.MerchantWallet)
                     .Include(x => x.MerchantBankInfo)
+                    .Include(x=> x.MerchantQRCodeOnboarding)
                     .SingleOrDefaultAsync(x => x.Email == loginRequestDto.Email
                     && x.IsDeleted == false);
 
@@ -162,6 +163,7 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.Role = validateuserInfo.RoleName;
                     tokenResult.UserStatus = validateuserInfo.StatusCode;
                     tokenResult.ResponseCode = AppResponseCodes.Success;
+                    tokenResult.QRStatus = validateuserInfo.MerchantQRCodeOnboarding.Count == 0 ? NibbsMerchantOnboarding.NotProfiled : validateuserInfo.MerchantQRCodeOnboarding.Select(x => x.Status).FirstOrDefault();
                     tokenResult.Refcode = validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode;
 
                     return tokenResult;
@@ -211,9 +213,12 @@ namespace SocialPay.Core.Services.Authentication
 
                 userLoginAttempts.LoginAttempt = 0;
                 userLoginAttempts.IsSuccessful = true;
+
                 _context.ClientLoginStatus.Update(userLoginAttempts);
                 await _context.SaveChangesAsync();
+
                 validateuserInfo.IsLocked = false;
+
                 _context.ClientAuthentication.Update(validateuserInfo);
                 await _context.SaveChangesAsync();
 
@@ -252,6 +257,7 @@ namespace SocialPay.Core.Services.Authentication
                         .SetSlidingExpiration(TimeSpan.FromMinutes(10));
                         await _distributedCache.SetAsync(cacheKey, redisCustomerListGuest, options);
                     }
+
                     var guestToken = tokenHandler.CreateToken(tokenDescriptor);
                     var guestTokenString = tokenHandler.WriteToken(guestToken);
                     tokenResult.AccessToken = guestTokenString;
@@ -261,6 +267,7 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.ResponseCode = AppResponseCodes.Success;
                     tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
                     tokenResult.Refcode = refCode;
+                    tokenResult.QRStatus = validateuserInfo.MerchantQRCodeOnboarding.Count == 0 ? NibbsMerchantOnboarding.NotProfiled : validateuserInfo.MerchantQRCodeOnboarding.Select(x => x.Status).FirstOrDefault();
 
                     _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
@@ -329,6 +336,7 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.Refcode = refCode;
                 tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;
                 tokenResult.MerchantWalletBalance = availableWalletBalance;
+                tokenResult.QRStatus = validateuserInfo.MerchantQRCodeOnboarding.Count == 0 ? NibbsMerchantOnboarding.NotProfiled : validateuserInfo.MerchantQRCodeOnboarding.Select(x => x.Status).FirstOrDefault();
 
                 _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 

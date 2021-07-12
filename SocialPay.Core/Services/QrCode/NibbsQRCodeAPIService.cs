@@ -105,6 +105,13 @@ namespace SocialPay.Core.Services.QrCode
                 {
                     response = JsonConvert.DeserializeObject<CreateNibsSubMerchantQrCodeResponse>(result);
 
+                    if (response.returnCode != "Success")
+                    {
+                        response.ResponseCode = AppResponseCodes.Failed;
+
+                        return response;
+                    }
+
                     response.ResponseCode = AppResponseCodes.Success;
 
                     return response;
@@ -127,10 +134,10 @@ namespace SocialPay.Core.Services.QrCode
         {
             try
             {
-                requestModel.mchNo = "M0000000105";
-                requestModel.bankNo = "999232";
-                requestModel.accountNumber = "8038541905";
-                requestModel.accountName = "Olamide Akinnagbe";
+                //requestModel.mchNo = "M0000000105";
+                //requestModel.bankNo = "999058";
+                //requestModel.accountNumber = "0122047425";
+                //requestModel.accountName = "OGUNLANA TUNJI";
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
 
                 var response = new BindMechantResponseDto();
@@ -151,6 +158,12 @@ namespace SocialPay.Core.Services.QrCode
                 {
                     response = JsonConvert.DeserializeObject<BindMechantResponseDto>(result);
 
+                    if (response.ReturnCode != "Success")
+                    {
+                        response.ResponseCode = AppResponseCodes.Failed;
+
+                        return response;
+                    }
                     response.ResponseCode = AppResponseCodes.Success;
 
                     return response;

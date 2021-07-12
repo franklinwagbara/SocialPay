@@ -3,6 +3,7 @@ using SocialPay.ApplicationCore.Interfaces.Repositories;
 using SocialPay.ApplicationCore.Interfaces.Service;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -66,7 +67,8 @@ namespace SocialPay.ApplicationCore.Services
                ClientAuthenticationId = model.ClientAuthenticationId,
                Name = model.Name,
                Phone = model.Phone,
-               Tin = model.Tin
+               Tin = model.Tin,
+               LastDateModified = DateTime.Now
             };
 
             await _merchantQRCodeOnboarding.AddAsync(entity);

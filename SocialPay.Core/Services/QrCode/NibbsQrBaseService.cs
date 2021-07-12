@@ -31,7 +31,7 @@ namespace SocialPay.Core.Services.QrCode
         public async Task<WebApiResponse> CreateMerchantAsync(DefaultMerchantRequestDto requestDto, long clientId)
         {
 
-            clientId = 90;
+            //clientId = 90;
 
             if (await _nibbsQrMerchantService.ExistsAsync(clientId))
                 return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant" };
@@ -59,7 +59,7 @@ namespace SocialPay.Core.Services.QrCode
 
         public async Task<WebApiResponse> CreateSubMerchantAsync(DefaultSubMerchantRequestDto requestDto, long clientId)
         {
-            clientId = 90;
+            //clientId = 90;
             try
             {
                 var merchant = await _nibbsQrMerchantService.GetMerchantStatusInfo(clientId, NibbsMerchantOnboarding.CreateAccount);
@@ -93,20 +93,20 @@ namespace SocialPay.Core.Services.QrCode
 
         public async Task<WebApiResponse> BindMerchantAsync(long clientId)
         {
-            clientId = 90;
+           // clientId = 90;
 
             try
             {
-                var merchant = await _nibbsQrMerchantService.GetMerchantInfo(clientId);
+                //var merchant = await _nibbsQrMerchantService.GetMerchantInfo(clientId);
 
-                //var getMerchantDetails = await _nibbsQrSubMerchantService.GetMerchantInfo(merchant.MerchantQRCodeOnboardingId);
+                ////var getMerchantDetails = await _nibbsQrSubMerchantService.GetMerchantInfo(merchant.MerchantQRCodeOnboardingId);
 
-                var request = new BindMerchantRequestDto
-                {
+                //var request = new BindMerchantRequestDto
+                //{
                    
-                };
+                //};
 
-                return await _nibbsQrRepository.BindMerchantAync(request, clientId, merchant.MerchantQRCodeOnboardingId);
+                return await _nibbsQrRepository.BindMerchantAync(clientId);
             }
             catch (Exception ex)
             {
