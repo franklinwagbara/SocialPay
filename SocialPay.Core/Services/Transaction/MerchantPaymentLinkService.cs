@@ -409,7 +409,7 @@ namespace SocialPay.Core.Services.Transaction
             try
             {
 
-                if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
+                if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName && x.ClientAuthenticationId == clientId))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
 
                 if (invoiceRequestDto.CustomerEmail.Count == 0)

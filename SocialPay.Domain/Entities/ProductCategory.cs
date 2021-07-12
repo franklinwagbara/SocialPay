@@ -13,6 +13,7 @@ namespace SocialPay.Domain.Entities
         public long ProductCategoryId { get; set; }
         public long ClientAuthenticationId { get; set; }
         public string CategoryName { get; set; }
+        public string Description { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }

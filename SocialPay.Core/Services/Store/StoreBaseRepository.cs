@@ -38,7 +38,10 @@ namespace SocialPay.Core.Services.Store
                 if(await _context.MerchantStore.AnyAsync(x=>x.StoreName == request.StoreName && x.ClientAuthenticationId == userModel.ClientId))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateStoreName, Message = "Duplicate Store Name" };
 
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+                if (await _context.MerchantStore.AnyAsync(x => x.StoreLink == request.StoreLink && x.ClientAuthenticationId == userModel.ClientId))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Message = "Duplicate Link Name" };
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
@@ -48,6 +51,7 @@ namespace SocialPay.Core.Services.Store
                             Description = request.Description,
                             ClientAuthenticationId = userModel.ClientId,
                             StoreName = request.StoreName,
+                            StoreLink = request.StoreLink
                         };
 
                         string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.StoreImage);
@@ -78,7 +82,7 @@ namespace SocialPay.Core.Services.Store
 
                         var model = new MerchantPaymentSetup { };
 
-                        model.PaymentLinkName = request.StoreName == null ? string.Empty : request.StoreName;
+                        model.PaymentLinkName = request.StoreLink == null ? string.Empty : request.StoreLink;
                         model.MerchantDescription = request.Description == null ? string.Empty : request.Description;
                         model.CustomUrl = request.StoreName == null ? string.Empty : request.StoreName;
                        // model.RedirectAfterPayment = paymentModel.RedirectAfterPayment == false ? false : paymentModel.RedirectAfterPayment;

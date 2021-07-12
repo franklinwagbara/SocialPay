@@ -14,6 +14,7 @@ namespace SocialPay.Domain.Entities
         public long MerchantStoreId { get; set; }
         public long ClientAuthenticationId { get; set; }
         public string StoreName { get; set; }
+        public string StoreLink { get; set; }
         public string Description { get; set; }
         [Column(TypeName = "NVARCHAR(90)")]
         public string Image { get; set; }

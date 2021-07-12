@@ -10,7 +10,6 @@ namespace SocialPay.ApplicationCore.Interfaces.Service
         Task<List<StoreViewModel>> GetStoresByClientId(long clientId);
         Task<StoreViewModel> GetStoreById(long storeId);
         Task<StoreViewModel> GetStoreById(long storeId, long clientId);
-
         Task<StoreViewModel> GetStoreName(string storeName);
         Task<int> CountTotalStoressAsync();
         Task<bool> ExistsAsync(long clientId);

@@ -12,13 +12,12 @@ namespace SocialPay.Helper.Dto.Request
         public long ProductCategoryId { get; set; }
         public long StoreId { get; set; }
         public string ProductName { get; set; }
-        public string ProductReference { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
         public bool Options { get; set; }
-        public string Size { get; set; }
-        public string Color { get; set; }
-        [Required(ErrorMessage = "Please select image.")]
+        public List<int> Size { get; set; }
+        public List<string> Color { get; set; }
+        //[Required(ErrorMessage = "Please select image.")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]
         [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".pdf", ".svg" })]
@@ -28,5 +27,6 @@ namespace SocialPay.Helper.Dto.Request
     public class ProductcategoryDto
     {
         public string CategoryName { get; set; }
+        public string Description { get; set; }
     }
 }

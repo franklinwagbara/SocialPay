@@ -102,7 +102,8 @@ namespace SocialPay.Core.Store
                 var model = new ProductCategoryViewModel
                 {
                     CategoryName = request.CategoryName,
-                    ClientAuthenticationId = userModel.ClientId
+                    ClientAuthenticationId = userModel.ClientId,
+                    Description = request.Description
                 };
 
                 await _productCategoryService.AddAsync(model);
@@ -137,6 +138,7 @@ namespace SocialPay.Core.Store
         {
             try
             {
+
                 var validateCategory = await _productCategoryService.GetCategoryByIdAndCatId(request.ProductCategoryId, userModel.ClientId);
 
                 if (validateCategory == null)
@@ -173,15 +175,22 @@ namespace SocialPay.Core.Store
 
                 var filePath = Path.Combine(fileName, newFileName);
 
+                var color = string.Empty;
+                var size = string.Empty;
+
+                color = request.Color.Aggregate((a, b) => a + ", " + b);
+
+                size = string.Join(",", request.Size.ToArray());
+
                 var model = new ProductsViewModel
                 {
                     Description = request.Description,
-                    Color = request.Color,
+                    Color = color,
                     Price = request.Price,
                     ProductCategoryId = request.ProductCategoryId,
                     ProductName = request.ProductName,
                     ProductReference = reference,
-                    Size = request.Size,
+                    Size = size,
                     Options = request.Options,
                     StoreId = request.StoreId,
                     Image = newFileName,

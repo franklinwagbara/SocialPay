@@ -72,7 +72,8 @@ namespace SocialPay.ApplicationCore.Services
                 Description = model.Description,
                 LastDateModified = DateTime.Now,
                 FileLocation = model.FileLocation,
-                Image = model.Image,                
+                Image = model.Image,
+                StoreLink = model.StoreLink
             };
 
             await _store.AddAsync(store);
