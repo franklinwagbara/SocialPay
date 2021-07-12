@@ -412,10 +412,11 @@ namespace SocialPay.Core.Services.Transaction
                 if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
 
-                if (invoiceRequestDto.CustomerEmail.Count! > 0)
+                if (invoiceRequestDto.CustomerEmail.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 var transactionReference = Guid.NewGuid().ToString();
+
                 var calculatedDiscount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice * (invoiceRequestDto.discount / 100);
                 var calculatedVAT = _appSettings.vat * (invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice);
                 var calculatedTotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice + invoiceRequestDto.ShippingFee + calculatedVAT - calculatedDiscount;

@@ -2517,3 +2517,10 @@ INFO  2021-07-11 14:16:31,322 225165ms AuthRepoService        ?                 
 INFO  2021-07-11 14:17:10,578 264422ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08185254717 | 7/11/2021 2:17:10 PM
 INFO  2021-07-11 14:17:25,172 279016ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 7/11/2021 2:17:25 PM
 INFO  2021-07-11 14:17:36,436 290280ms AuthRepoService        ?                  - Authenticate for login was successful | pelumisunday@gmail.com | 7/11/2021 2:17:36 PM
+INFO  2021-07-12 11:50:01,064 452530ms hantPaymentLinkService ?                  - Initiating GenerateInvoiceMultipleEmail request | 179 | TestInvoice | 7/12/2021 11:50:00 AM
+INFO  2021-07-12 11:53:26,357 52530ms hantPaymentLinkService ?                  - Initiating GenerateInvoiceMultipleEmail request | 179 | TestInvoice | 7/12/2021 11:53:26 AM
+ERROR 2021-07-12 11:53:57,111 83284ms hantPaymentLinkService ?                  - Error occured | Initiating GenerateInvoiceMultipleEmail request | 179 | The string 'string' was not recognized as a valid DateTime. There is an unknown word starting at index '0'. | 7/12/2021 11:53:57 AM
+INFO  2021-07-12 11:54:29,587 115760ms hantPaymentLinkService ?                  - Initiating GenerateInvoiceMultipleEmail request | 179 | TestInvoice | 7/12/2021 11:54:29 AM
+INFO  2021-07-12 11:54:33,845 120017ms InvoiceService         ?                  - SendInvoiceAsync request | 3d368e9c-d786-4469-8f63-a182b643ee4e | festypat9@gmail.com | 7/12/2021 11:54:33 AM
+INFO  2021-07-12 11:56:53,657 259829ms hantPaymentLinkService ?                  - Initiating GenerateInvoiceMultipleEmail request | 179 | Test Invoice | 7/12/2021 11:56:53 AM
+INFO  2021-07-12 11:57:05,074 271247ms InvoiceService         ?                  - SendInvoiceAsync request | 29bbbb0d-d8fa-417d-b863-04db4538e2b8 | festypat9@gmail.com | 7/12/2021 11:57:05 AM
