@@ -16,6 +16,9 @@ using System.IO;
 using SocialPay.Core.Configurations;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Services.AzureBlob;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.Extensions.Configuration;
 
 namespace SocialPay.Core.Store
 {
@@ -29,10 +32,12 @@ namespace SocialPay.Core.Store
         private readonly AppSettings _appSettings;
         private readonly BlobService _blobService;
 
+        public IConfiguration Configuration { get; }
+      
         public StoreRepository(IStoreService storeService, IProductCategoryService productCategoryService,
             IProductsService productsService, StoreBaseRepository storeBaseRepository,
             IHostingEnvironment environment, IOptions<AppSettings> appSettings,
-            BlobService blobService)
+            BlobService blobService, IConfiguration configuration)
         {
             _storeService = storeService ?? throw new ArgumentNullException(nameof(storeService));
             _productCategoryService = productCategoryService ?? throw new ArgumentNullException(nameof(productCategoryService));
@@ -41,6 +46,7 @@ namespace SocialPay.Core.Store
             _hostingEnvironment = environment ?? throw new ArgumentNullException(nameof(environment));
             _appSettings = appSettings.Value;
             _blobService = blobService ?? throw new ArgumentNullException(nameof(blobService));
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
         public async Task<WebApiResponse> CreateNewStoreAsync(StoreRequestDto request, UserDetailsViewModel userModel)
         {
@@ -51,13 +57,32 @@ namespace SocialPay.Core.Store
         {
             try
             {
+                //userModel.ClientId = 90;
+
+                var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
+
                 var store = await _storeService.GetStoresByClientId(userModel.ClientId);
 
                 if (store == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
 
                 foreach (var item in store)
-                    item.Image = item.Image == null ? string.Empty : _appSettings.BaseApiUrl + item.FileLocation + "/" + item.Image;
+                {
+                    //item.Image = item.Image == null ? string.Empty : _appSettings.BaseApiUrl + item.FileLocation + "/" + item.Image;
+
+                    var fileDescription = "Store/90/Pat/90-ST--85fb-6cef773338fd.jpg";
+                    ///https://monthlystatement.blob.core.windows.net/socialpay/Store/90/Pat/90-ST--85fb-6cef773338fd.jpg
+                    var storageAccount = CloudStorageAccount.Parse(options.blobConnectionstring);
+                    var blobClient = storageAccount.CreateCloudBlobClient();
+
+                    CloudBlobContainer container = blobClient.GetContainerReference(options.containerName);
+                    CloudBlockBlob blob = container.GetBlockBlobReference(item.FileLocation);
+                  
+
+                    var blobUrl = blob.Uri.AbsoluteUri;
+
+                    item.Image = blobUrl;
+                }
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = store };
             }
