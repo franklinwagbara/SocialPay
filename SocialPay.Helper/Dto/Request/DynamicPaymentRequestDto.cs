@@ -11,14 +11,8 @@ namespace SocialPay.Helper.Dto.Request
 
     public class DynamicPaymentDefaultRequestDto : DynamicPaymentRequestDto
     {
-        public string customerIdentifier { get; set; }
-        public string orderSn { get; set; }
-        public string userBankNo { get; set; }
-        public string userAccountName { get; set; }
-        public string userAccountNumber { get; set; }
-        public string userBankVerificationNumber { get; set; }
-        public string userKycLevel { get; set; }
-        public string userGps { get; set; }
+        public string orderNo { get; set; }
+        public string orderType { get; set; }     
         public string mchNo { get; set; }
         public string subMchNo { get; set; }
     }

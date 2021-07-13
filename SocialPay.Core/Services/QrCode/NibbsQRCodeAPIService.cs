@@ -134,10 +134,6 @@ namespace SocialPay.Core.Services.QrCode
         {
             try
             {
-                //requestModel.mchNo = "M0000000105";
-                //requestModel.bankNo = "999058";
-                //requestModel.accountNumber = "0122047425";
-                //requestModel.accountName = "OGUNLANA TUNJI";
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
 
                 var response = new BindMechantResponseDto();
@@ -196,7 +192,7 @@ namespace SocialPay.Core.Services.QrCode
                 _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
                 _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
 
-                var request = await _client.PostAsync($"{_appSettings.nibsQRCodeBindMerchantAccountUrl}",
+                var request = await _client.PostAsync($"{_appSettings.nibsQRCodeDynamicPayUrl}",
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
 
                 var result = await request.Content.ReadAsStringAsync();

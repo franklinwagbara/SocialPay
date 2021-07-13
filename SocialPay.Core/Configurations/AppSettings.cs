@@ -96,6 +96,7 @@
         public string nibsQRCodeCreateMerchantUrl { get; set; }
         public string nibsQRCodeCreateSubMerchantUrl { get; set; }
         public string nibsQRCodeBindMerchantAccountUrl { get; set; }
+        public string nibsQRCodeDynamicPayUrl { get; set; }
         public string nibsQRCodeXClientHeaderName { get; set; }
         public string nibsQRCodeXClientHeaderValue { get; set; }
         public string nibsQRCodeCheckSumHeaderName { get; set; }

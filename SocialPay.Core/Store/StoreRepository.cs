@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using SocialPay.Core.Configurations;
 using Microsoft.Extensions.Options;
+using SocialPay.Core.Services.AzureBlob;
 
 namespace SocialPay.Core.Store
 {
@@ -26,10 +27,12 @@ namespace SocialPay.Core.Store
         private readonly StoreBaseRepository _storeBaseRepository;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AppSettings _appSettings;
+        private readonly BlobService _blobService;
 
         public StoreRepository(IStoreService storeService, IProductCategoryService productCategoryService,
             IProductsService productsService, StoreBaseRepository storeBaseRepository,
-            IHostingEnvironment environment, IOptions<AppSettings> appSettings)
+            IHostingEnvironment environment, IOptions<AppSettings> appSettings,
+            BlobService blobService)
         {
             _storeService = storeService ?? throw new ArgumentNullException(nameof(storeService));
             _productCategoryService = productCategoryService ?? throw new ArgumentNullException(nameof(productCategoryService));
@@ -37,6 +40,7 @@ namespace SocialPay.Core.Store
             _storeBaseRepository = storeBaseRepository ?? throw new ArgumentNullException(nameof(storeBaseRepository));
             _hostingEnvironment = environment ?? throw new ArgumentNullException(nameof(environment));
             _appSettings = appSettings.Value;
+            _blobService = blobService ?? throw new ArgumentNullException(nameof(blobService));
         }
         public async Task<WebApiResponse> CreateNewStoreAsync(StoreRequestDto request, UserDetailsViewModel userModel)
         {
@@ -138,6 +142,21 @@ namespace SocialPay.Core.Store
         {
             try
             {
+                var blobRequest = new BlobProductsRequest();
+
+                var productImages = new List<DefaultDocumentRequest>();
+
+                foreach (var item in request.Image)
+                {
+                    productImages.Add(new DefaultDocumentRequest { Image = request.Image.Select(x => x.Image).FirstOrDefault(), ImageGuidId = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}" });
+                }
+
+                blobRequest.ClientId = 90;
+                blobRequest.RequestType = "Product";
+                blobRequest.ImageDetail = productImages;
+                blobRequest.ProductName = request.ProductName;
+
+                await _blobService.UploadProducts(blobRequest);
 
                 var validateCategory = await _productCategoryService.GetCategoryByIdAndCatId(request.ProductCategoryId, userModel.ClientId);
 
@@ -163,7 +182,7 @@ namespace SocialPay.Core.Store
                 string fileName = string.Empty;
                 var newFileName = string.Empty;
 
-                fileName = (request.Image.FileName);
+               // fileName = (request.Image.FileName);
 
                 var reference = $"{"So-"}{Guid.NewGuid().ToString("N")}";
 
@@ -197,7 +216,7 @@ namespace SocialPay.Core.Store
                     FileLocation = _appSettings.ProductsImage
                 };
 
-                request.Image.CopyTo(new FileStream(filePath, FileMode.Create));
+                //request.Image.CopyTo(new FileStream(filePath, FileMode.Create));
 
                 await _productsService.AddAsync(model);
 

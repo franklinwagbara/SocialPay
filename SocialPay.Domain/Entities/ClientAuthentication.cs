@@ -23,6 +23,7 @@ namespace SocialPay.Domain.Entities
             MerchantStore = new HashSet<MerchantStore>();
             ProductCategory = new HashSet<ProductCategory>();
             MerchantQRCodeOnboarding = new HashSet<MerchantQRCodeOnboarding>();
+            QrPaymentRequest = new HashSet<QrPaymentRequest>();
         }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]
@@ -80,5 +81,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<ProductCategory> ProductCategory { get; set; }
         public virtual ICollection<Product> Product { get; set; }
         public virtual ICollection<MerchantQRCodeOnboarding>  MerchantQRCodeOnboarding { get; set; }
+        public virtual ICollection<QrPaymentRequest> QrPaymentRequest { get; set; }
     }
 }

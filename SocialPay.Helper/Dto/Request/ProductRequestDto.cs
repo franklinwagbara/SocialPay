@@ -21,9 +21,12 @@ namespace SocialPay.Helper.Dto.Request
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]
         [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".pdf", ".svg" })]
+        public List<ProductImageDto> Image { get; set; }
+    }
+    public class ProductImageDto
+    {
         public IFormFile Image { get; set; }
     }
-
     public class ProductcategoryDto
     {
         public string CategoryName { get; set; }

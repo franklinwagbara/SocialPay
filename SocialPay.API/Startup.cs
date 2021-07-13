@@ -24,6 +24,7 @@ using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
+using SocialPay.Core.Services.AzureBlob;
 using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.IBS;
@@ -145,6 +146,7 @@ namespace SocialPay.API
             services.AddScoped<CustomerRepoService>();
             services.AddScoped<ICustomerService>();
             services.AddScoped<EncryptDecryptAlgorithm>();
+            services.AddScoped<BlobService>();
            // services.AddScoped<EncryptDecrypt>();
             services.AddScoped<TransactionReceipt>();
             services.AddScoped<InvoiceService>();

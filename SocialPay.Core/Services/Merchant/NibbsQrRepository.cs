@@ -290,5 +290,75 @@ namespace SocialPay.Core.Services.Merchant
         }
 
 
+        public async Task<WebApiResponse> QrDynamicPayAsync(DynamicPaymentDefaultRequestDto model, long clientId)
+        {
+            try
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var merchant = new QrPaymentRequest
+                        {
+                           
+                        };
+
+                        await _context.QrPaymentRequest.AddAsync(merchant);
+                        await _context.SaveChangesAsync();
+
+                        var defaultRequest = new DynamicPaymentDefaultRequestDto
+                        {
+                           
+                        };
+
+                        var createNibbsSubMerchant = await _nibbsQRCodeAPIService.DynamicPay(defaultRequest);
+
+                        var merchantResponseLog = new SubMerchantQRCodeOnboardingResponse();
+
+                       // merchantResponseLog.SubMerchantQRCodeOnboardingId = merchant.SubMerchantQRCodeOnboardingId;
+
+                        if (createNibbsSubMerchant.ResponseCode == AppResponseCodes.Success)
+                        {
+                            //merchantResponseLog.MchNo = createNibbsSubMerchant.mchNo;
+                            //merchantResponseLog.MerchantName = createNibbsSubMerchant.merchantName;
+                            //merchantResponseLog.QrCode = createNibbsSubMerchant.qrCode;
+                            //merchantResponseLog.ReturnCode = createNibbsSubMerchant.returnCode;
+                            //merchantResponseLog.ReturnMsg = createNibbsSubMerchant.returnMsg;
+                            //merchantResponseLog.SubMchNo = createNibbsSubMerchant.subMchNo;
+                            //merchantResponseLog.IsDeleted = false;
+
+                            await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
+                            await _context.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
+
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
+                        }
+
+                        merchantResponseLog.JsonResponse = createNibbsSubMerchant.jsonResponse;
+
+                        await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
+                        await _context.SaveChangesAsync();
+
+                        await transaction.CommitAsync();
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Failed creating merchant" };
+
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
     }
 }

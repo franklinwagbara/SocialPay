@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
+using SocialPay.Core.Services.AzureBlob;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -23,18 +24,22 @@ namespace SocialPay.Core.Services.Store
         private readonly SocialPayDbContext _context;
         private readonly AppSettings _appSettings;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly BlobService _blobService;
         public StoreBaseRepository(SocialPayDbContext context, IOptions<AppSettings> appSettings,
-            IHostingEnvironment environment)
+            IHostingEnvironment environment, BlobService blobService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _appSettings = appSettings.Value;
             _hostingEnvironment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _blobService = blobService ?? throw new ArgumentNullException(nameof(blobService));
         }
 
         public async Task<WebApiResponse> CreateNewStore(StoreRequestDto request, UserDetailsViewModel userModel)
         {
             try
             {
+                //userModel.ClientId = 90;
+
                 if(await _context.MerchantStore.AnyAsync(x=>x.StoreName == request.StoreName && x.ClientAuthenticationId == userModel.ClientId))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateStoreName, Message = "Duplicate Store Name" };
 
@@ -54,28 +59,21 @@ namespace SocialPay.Core.Services.Store
                             StoreLink = request.StoreLink
                         };
 
-                        string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.StoreImage);
+                        var reference = $"{userModel.ClientId}{"-"}{"ST-"}{Guid.NewGuid().ToString().Substring(18)}";
 
-                        if (!Directory.Exists(path))
-                            Directory.CreateDirectory(path);
+                        var blobRequest = new BlobStoreRequest
+                        {
+                            RequestType = "Store",
+                            ClientId = userModel.ClientId,
+                            Image = request.Image,
+                            ImageGuidId = reference,
+                            StoreName = request.StoreName,
+                        };
 
-                        string fileName = string.Empty;
-                        var newFileName = string.Empty;
+                        blobRequest.FileLocation = $"{blobRequest.RequestType}/{Convert.ToString(blobRequest.ClientId)}/{request.StoreName}/{blobRequest.ImageGuidId}.jpg";
 
-                        fileName = (request.Image.FileName);
-
-                        var reference = $"{"So-"}{Guid.NewGuid().ToString("N")}";
-
-                        var FileExtension = Path.GetExtension(fileName);
-
-                        fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.StoreImage) + $@"\{newFileName}";
-
-                        newFileName = $"{reference}{FileExtension}";
-
-                        var filePath = Path.Combine(fileName, newFileName);
-
-                        storeModel.Image = newFileName;
-                        storeModel.FileLocation = _appSettings.StoreImage;
+                        //storeModel.Image = newFileName;
+                        storeModel.FileLocation = blobRequest.FileLocation;
 
                         await _context.MerchantStore.AddAsync(storeModel);
                         await _context.SaveChangesAsync();
@@ -136,7 +134,8 @@ namespace SocialPay.Core.Services.Store
                         await _context.LinkCategory.AddAsync(linkCatModel);
                         await _context.SaveChangesAsync();
 
-                        request.Image.CopyTo(new FileStream(filePath, FileMode.Create));
+                        await _blobService.UploadStore(blobRequest);
+                        //request.Image.CopyTo(new FileStream(filePath, FileMode.Create));
 
                         await transaction.CommitAsync();
 
