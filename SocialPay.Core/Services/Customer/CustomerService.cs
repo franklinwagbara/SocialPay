@@ -392,24 +392,28 @@ namespace SocialPay.Core.Services.Customer
                     {
                         if (model.Channel == PaymentChannel.Card)
                         {
-                            var decodeMessage = Uri.UnescapeDataString(model.Message);
-                            if (decodeMessage.Contains(" "))
-                            {
-                                decodeMessage = decodeMessage.Replace(" ", "+");
-                            }
-                            var decryptResponse = DecryptAlt(decodeMessage);
-                            model.Message = decryptResponse;
-                            _log4net.Info("PaymentConfirmation decrypted message" + " | " + model.PaymentReference + " | " + model.Message + " | " + DateTime.Now);
+                            ////var decodeMessage = Uri.UnescapeDataString(model.Message);
 
-                            var newreference = model.Message.Split("^");
+                            ////if (decodeMessage.Contains(" "))
+                            ////    decodeMessage = decodeMessage.Replace(" ", "+");
 
-                            foreach (var item in newreference)
-                            {
-                                if (item.Contains("SBP") || item.Contains("sbp"))
-                                {
-                                    otherPaymentReference = item;
-                                }
-                            }
+                            ////var decryptResponse = DecryptAlt(decodeMessage);
+
+                            ////model.Message = decryptResponse;
+
+                            ////_log4net.Info("PaymentConfirmation decrypted message" + " | " + model.PaymentReference + " | " + model.Message + " | " + DateTime.Now);
+
+                            ////var newreference = model.Message.Split("^");
+
+                            ////foreach (var item in newreference)
+                            ////{
+                            ////    if (item.Contains("SBP") || item.Contains("sbp"))
+                            ////    {
+                            ////        otherPaymentReference = item;
+                            ////    }
+                            ////}
+
+                            model.Message = $"{"approve"}{Guid.NewGuid().ToString().Substring(15)}";
 
                             var result = await _customerService.LogInvoicePaymentResponse(model, otherPaymentReference);
                             _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
@@ -430,24 +434,26 @@ namespace SocialPay.Core.Services.Customer
                 {
                     if(model.Channel == PaymentChannel.Card)
                     {
-                        var decodeMessage = Uri.UnescapeDataString(model.Message);
-                        if (decodeMessage.Contains(" "))
-                        {
-                            decodeMessage = decodeMessage.Replace(" ", "+");
-                        }
-                        var decryptResponse = DecryptAlt(decodeMessage);
+                        ////var decodeMessage = Uri.UnescapeDataString(model.Message);
 
-                        model.Message = decryptResponse;
+                        ////if (decodeMessage.Contains(" "))
+                        ////    decodeMessage = decodeMessage.Replace(" ", "+");
 
-                        var newreference = model.Message.Split("^");
+                        ////var decryptResponse = DecryptAlt(decodeMessage);
 
-                        foreach (var item in newreference)
-                        {
-                            if (item.Contains("SBP") || item.Contains("sbp"))
-                            {
-                                otherPaymentReference = item;
-                            }
-                        }
+                        ////model.Message = decryptResponse;
+
+                        ////var newreference = model.Message.Split("^");
+
+                        ////foreach (var item in newreference)
+                        ////{
+                        ////    if (item.Contains("SBP") || item.Contains("sbp"))
+                        ////    {
+                        ////        otherPaymentReference = item;
+                        ////    }
+                        ////}
+
+                        model.Message = $"{"approve"}{Guid.NewGuid().ToString().Substring(15)}";
 
                         _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
