@@ -57,7 +57,7 @@ namespace SocialPay.Core.Store
         {
             try
             {
-                //userModel.ClientId = 90;
+                //userModel.ClientId = 167;
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
@@ -70,18 +70,15 @@ namespace SocialPay.Core.Store
                 {
                     //item.Image = item.Image == null ? string.Empty : _appSettings.BaseApiUrl + item.FileLocation + "/" + item.Image;
 
-                    var fileDescription = "Store/90/Pat/90-ST--85fb-6cef773338fd.jpg";
+                   // var fileDescription = "Store/90/Pat/90-ST--85fb-6cef773338fd.jpg";
                     ///https://monthlystatement.blob.core.windows.net/socialpay/Store/90/Pat/90-ST--85fb-6cef773338fd.jpg
                     var storageAccount = CloudStorageAccount.Parse(options.blobConnectionstring);
                     var blobClient = storageAccount.CreateCloudBlobClient();
 
                     CloudBlobContainer container = blobClient.GetContainerReference(options.containerName);
                     CloudBlockBlob blob = container.GetBlockBlobReference(item.FileLocation);
-                  
 
-                    var blobUrl = blob.Uri.AbsoluteUri;
-
-                    item.Image = blobUrl;
+                    item.Image = blob.Uri.AbsoluteUri;
                 }
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = store };
