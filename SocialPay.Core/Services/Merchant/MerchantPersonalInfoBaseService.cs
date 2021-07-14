@@ -164,7 +164,7 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> UpdateMerchantBusinessInfo(long clientId, MerchantUpdateInfoRequestDto businessInfo)
         {
-             //clientId = 90;
+            // clientId = 179;
             try
             {
                 var getClient = await _merchantBusinessInfoService.GetMerchantBusinessInfo(clientId);

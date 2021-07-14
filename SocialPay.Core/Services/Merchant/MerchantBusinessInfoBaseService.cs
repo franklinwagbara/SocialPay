@@ -22,7 +22,7 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> GetMerchantBusinessInfoAsync(long clientId)
         {
-            //clientId = 90;
+            clientId = 179;
             try
             {
                 var request = await _merchantBusinessInfoService.GetMerchantBusinessInfo(clientId);

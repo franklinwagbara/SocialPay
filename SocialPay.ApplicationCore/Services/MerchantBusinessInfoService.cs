@@ -77,7 +77,7 @@ namespace SocialPay.ApplicationCore.Services
             entity.BusinessEmail = model.BusinessEmail;
             entity.BusinessPhoneNumber = model.BusinessPhoneNumber;
             entity.BusinessName = model.BusinessName;
-            //entity.Country = model.Country;
+            entity.Tin = model.Tin;
           //  entity.FullName = model.FullName;
 
             await _merchantBusinessInfo.UpdateAsync(entity);
