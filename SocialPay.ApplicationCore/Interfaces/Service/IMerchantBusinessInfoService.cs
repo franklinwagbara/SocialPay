@@ -9,6 +9,7 @@ namespace SocialPay.ApplicationCore.Interfaces.Service
         Task<List<BusinessInfoViewModel>> GetAllAsync();
         Task<BusinessInfoViewModel> GetMerchantBusinessInfo(long clientId);
         Task<BusinessInfoViewModel> GetMerchantBusinessEmailInfo(string email);
+        Task<BusinessInfoViewModel> GetMerchantBusinessTinInfo(string email);
         Task<BusinessInfoViewModel> GetMerchantBusinessPhoneNumberInfo(string phoneNumber);
         Task<BusinessInfoViewModel> GetMerchantBusinessNameInfo(string businessName);
         Task<int> CountTotalMerchantsAsync();

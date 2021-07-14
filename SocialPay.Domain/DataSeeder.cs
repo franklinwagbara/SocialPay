@@ -21,6 +21,19 @@ namespace SocialPay.Domain
             //    _context.SaveChanges();
             //}
 
+            if (!_context.ClientAuthentication.Any(x => x.Email == "oluwasegun.olaleye@sterling.ng"))
+            {
+                var createuser = new ClientAuthentication[]
+                {
+                       new ClientAuthentication { FullName = "oluwasegun olaleye", Email= "oluwasegun.olaleye@sterling.ng",
+                      IsDeleted = false, PhoneNumber = "07059999663", LastDateModified = DateTime.Now, UserName = "olaleyeo",
+                      RoleName ="Super Administrator", StatusCode = "00"
+                      },
+                };
+                _context.ClientAuthentication.AddRange(createuser);
+                _context.SaveChanges();
+            }
+
 
             if (!_context.ClientAuthentication.Any(x => x.Email == "abayomi.sawyerr@sterling.ng"))
             {

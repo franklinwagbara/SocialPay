@@ -52,6 +52,7 @@
         public const string DuplicateStoreName = "48";
         public const string DuplicateCategoryName = "49";
         public const string DuplicateProductName = "50";
+        public const string DuplicateTin = "51";
     }
 
     public class MerchantOnboardingProcess

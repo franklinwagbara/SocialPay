@@ -1,4 +1,5 @@
 ﻿using SocialPay.ApplicationCore.Interfaces.Service;
+using SocialPay.Core.Services.Tin;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
@@ -12,12 +13,14 @@ namespace SocialPay.Core.Services.Merchant
     {
         private readonly IPersonalInfoService _personalInfoService;
         private readonly IMerchantBusinessInfoService _merchantBusinessInfoService;
-
+        private readonly TinService _tinService;
         public MerchantPersonalInfoBaseService(IPersonalInfoService personalInfoService,
-            IMerchantBusinessInfoService merchantBusinessInfoService)
+            IMerchantBusinessInfoService merchantBusinessInfoService,
+            TinService tinService)
         {
             _personalInfoService = personalInfoService ?? throw new ArgumentNullException(nameof(personalInfoService));
             _merchantBusinessInfoService = merchantBusinessInfoService ?? throw new ArgumentNullException(nameof(merchantBusinessInfoService));
+            _tinService = tinService ?? throw new ArgumentNullException(nameof(tinService));
         }
 
         public async Task<WebApiResponse> GetOrCreateReferalCode(long clientId)
@@ -174,9 +177,29 @@ namespace SocialPay.Core.Services.Merchant
                     BusinessEmail = getClient.BusinessEmail,
                     BusinessName = getClient.BusinessName,
                     BusinessPhoneNumber = getClient.BusinessPhoneNumber,
-                    MerchantBusinessInfoId = getClient.MerchantBusinessInfoId
+                    MerchantBusinessInfoId = getClient.MerchantBusinessInfoId,
+                    Tin = getClient.Tin
                    // Country = getClient.Country,                    
                 };
+
+                if (!businessInfo.Tin.Equals(getClient.Tin))
+                {
+                    var validatetin = await _merchantBusinessInfoService.GetMerchantBusinessTinInfo(businessInfo.Tin);
+
+                    if (validatetin != null)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email" };
+
+                    if (!string.IsNullOrEmpty(model.Tin))
+                    {
+                        var validateTin = await _tinService.ValidateTin(model.Tin);
+
+                        if (validateTin.ResponseCode != AppResponseCodes.Success)
+                            return validateTin;
+                    }
+
+                    model.Tin = businessInfo.Tin;
+                }
+
 
                 if (!businessInfo.BusinessEmail.Equals(getClient.BusinessEmail))
                 {

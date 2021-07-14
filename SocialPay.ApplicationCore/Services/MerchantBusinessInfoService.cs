@@ -51,13 +51,20 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<MerchantBusinessInfo, BusinessInfoViewModel>(merchantInfo);
         }
 
+        public async Task<BusinessInfoViewModel> GetMerchantBusinessTinInfo(string tin)
+        {
+            var merchantInfo = await _merchantBusinessInfo.GetSingleAsync(x => x.Tin == tin);
+
+            return _mapper.Map<MerchantBusinessInfo, BusinessInfoViewModel>(merchantInfo);
+        }
+
         public async Task<BusinessInfoViewModel> GetMerchantBusinessNameInfo(string businessName)
         {
             var merchantInfo = await _merchantBusinessInfo.GetSingleAsync(x => x.BusinessName == businessName);
 
             return _mapper.Map<MerchantBusinessInfo, BusinessInfoViewModel>(merchantInfo);
         }
-        //GetMerchantBusinessNameInfo
+        //GetMerchantBusinessTinInfo
         public async Task<bool> ExistsAsync(long Id)
         {
             return await _merchantBusinessInfo.ExistsAsync(x => x.MerchantBusinessInfoId == Id);
