@@ -72,10 +72,12 @@ namespace SocialPay.Core.Store
 
                    // var fileDescription = "Store/90/Pat/90-ST--85fb-6cef773338fd.jpg";
                     ///https://monthlystatement.blob.core.windows.net/socialpay/Store/90/Pat/90-ST--85fb-6cef773338fd.jpg
-                    var storageAccount = CloudStorageAccount.Parse(options.blobConnectionstring);
+                   // var storageAccount = CloudStorageAccount.Parse(options.blobConnectionstring);
+                    var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=monthlystatement;AccountKey=TiB4RbTOMBFU85N3icORuByCenohH4zhVW644VYYW4O+fCJh8jBxzIE6l9hhlCwCb9lJq0jFDHdQtGe+xl0iAg==;EndpointSuffix=core.windows.net");
                     var blobClient = storageAccount.CreateCloudBlobClient();
 
-                    CloudBlobContainer container = blobClient.GetContainerReference(options.containerName);
+                    //CloudBlobContainer container = blobClient.GetContainerReference(options.containerName);
+                    CloudBlobContainer container = blobClient.GetContainerReference("socialpay");
                     CloudBlockBlob blob = container.GetBlockBlobReference(item.FileLocation);
 
                     item.Image = blob.Uri.AbsoluteUri;

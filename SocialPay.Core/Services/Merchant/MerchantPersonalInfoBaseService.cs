@@ -187,7 +187,7 @@ namespace SocialPay.Core.Services.Merchant
                     var validatetin = await _merchantBusinessInfoService.GetMerchantBusinessTinInfo(businessInfo.Tin);
 
                     if (validatetin != null)
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email" };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTin, Data = "Duplicate TIN" };
 
                     if (!string.IsNullOrEmpty(model.Tin))
                     {
