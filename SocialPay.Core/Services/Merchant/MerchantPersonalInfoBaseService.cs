@@ -205,7 +205,7 @@ namespace SocialPay.Core.Services.Merchant
                 if (businessInfo.BusinessEmail != null && !businessInfo.BusinessEmail.Equals(getClient.BusinessEmail))
                 {
                     var validateEmail = await _merchantBusinessInfoService.GetMerchantBusinessEmailInfo(businessInfo.BusinessEmail);
-
+                    
                     if (validateEmail != null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email" };
 
