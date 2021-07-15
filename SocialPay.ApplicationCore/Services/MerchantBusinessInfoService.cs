@@ -39,7 +39,8 @@ namespace SocialPay.ApplicationCore.Services
 
         public async Task<BusinessInfoViewModel> GetMerchantBusinessEmailInfo(string email)
         {
-            var merchantInfo = await _merchantBusinessInfo.GetSingleAsync(x => x.BusinessEmail == email);
+            var merchantInfo = await _merchantBusinessInfo.
+                GetSingleAsync(x => x.BusinessEmail == email || x.Chargebackemail == email);
 
             return _mapper.Map<MerchantBusinessInfo, BusinessInfoViewModel>(merchantInfo);
         }

@@ -178,7 +178,8 @@ namespace SocialPay.Core.Services.Merchant
                     BusinessName = getClient.BusinessName,
                     BusinessPhoneNumber = getClient.BusinessPhoneNumber,
                     MerchantBusinessInfoId = getClient.MerchantBusinessInfoId,
-                    Tin = getClient.Tin
+                    Tin = getClient.Tin,
+                    Chargebackemail = getClient.Chargebackemail
                    // Country = getClient.Country,                    
                 };
 
@@ -209,6 +210,16 @@ namespace SocialPay.Core.Services.Merchant
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Email" };
 
                     model.BusinessEmail = businessInfo.BusinessEmail;
+                }
+
+                if (businessInfo.Chargebackemail != null && !businessInfo.Chargebackemail.Equals(getClient.Chargebackemail))
+                {
+                    var validateEmail = await _merchantBusinessInfoService.GetMerchantBusinessEmailInfo(businessInfo.BusinessEmail);
+
+                    if (validateEmail != null)
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Data = "Duplicate Charge back Email" };
+
+                    model.Chargebackemail = businessInfo.Chargebackemail;
                 }
 
                 if (businessInfo.BusinessPhoneNumber != null && !businessInfo.BusinessPhoneNumber.Equals(getClient.BusinessPhoneNumber))

@@ -847,7 +847,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-       // [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpGet]
         [Route("get-merchant-businessInfo")]
         public async Task<IActionResult> GetMerchantBusinessInfoDetails()
