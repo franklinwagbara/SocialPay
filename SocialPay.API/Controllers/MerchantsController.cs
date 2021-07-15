@@ -231,7 +231,7 @@ namespace SocialPay.API.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {
+                {  
                     var identity = User.Identity as ClaimsIdentity;
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
