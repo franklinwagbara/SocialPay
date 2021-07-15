@@ -164,7 +164,7 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> UpdateMerchantBusinessInfo(long clientId, MerchantUpdateInfoRequestDto businessInfo)
         {
-            // clientId = 179;
+           //  clientId = 184;
             try
             {
                 var getClient = await _merchantBusinessInfoService.GetMerchantBusinessInfo(clientId);
@@ -182,7 +182,7 @@ namespace SocialPay.Core.Services.Merchant
                    // Country = getClient.Country,                    
                 };
 
-                if (!businessInfo.Tin.Equals(getClient.Tin))
+                if (businessInfo.Tin != null && !businessInfo.Tin.Equals(getClient.Tin))
                 {
                     var validatetin = await _merchantBusinessInfoService.GetMerchantBusinessTinInfo(businessInfo.Tin);
 
@@ -201,7 +201,7 @@ namespace SocialPay.Core.Services.Merchant
                 }
 
 
-                if (!businessInfo.BusinessEmail.Equals(getClient.BusinessEmail))
+                if (businessInfo.BusinessEmail != null && !businessInfo.BusinessEmail.Equals(getClient.BusinessEmail))
                 {
                     var validateEmail = await _merchantBusinessInfoService.GetMerchantBusinessEmailInfo(businessInfo.BusinessEmail);
 
@@ -211,7 +211,7 @@ namespace SocialPay.Core.Services.Merchant
                     model.BusinessEmail = businessInfo.BusinessEmail;
                 }
 
-                if (!businessInfo.BusinessPhoneNumber.Equals(getClient.BusinessPhoneNumber))
+                if (businessInfo.BusinessPhoneNumber != null && !businessInfo.BusinessPhoneNumber.Equals(getClient.BusinessPhoneNumber))
                 {
                     var validatePhoneNumber = await _merchantBusinessInfoService.GetMerchantBusinessPhoneNumberInfo(businessInfo.BusinessPhoneNumber);
 
@@ -221,7 +221,7 @@ namespace SocialPay.Core.Services.Merchant
                     model.BusinessPhoneNumber = businessInfo.BusinessPhoneNumber;
                 }
 
-                if (!businessInfo.BusinessName.Equals(getClient.BusinessName))
+                if (businessInfo.BusinessName != null &&  !businessInfo.BusinessName.Equals(getClient.BusinessName))
                 {
                     var validateName = await _merchantBusinessInfoService.GetMerchantBusinessNameInfo(businessInfo.BusinessName);
 
@@ -230,7 +230,6 @@ namespace SocialPay.Core.Services.Merchant
 
                     model.BusinessName = businessInfo.BusinessName;
                 }
-
 
                 await _merchantBusinessInfoService.UpdateAsync(model);
 
