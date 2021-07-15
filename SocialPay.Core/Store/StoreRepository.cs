@@ -31,6 +31,7 @@ namespace SocialPay.Core.Store
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AppSettings _appSettings;
         private readonly BlobService _blobService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(StoreRepository));
 
         public IConfiguration Configuration { get; }
       
@@ -55,6 +56,8 @@ namespace SocialPay.Core.Store
 
         public async Task<WebApiResponse> GetStoreInfoAsync(UserDetailsViewModel userModel)
         {
+            _log4net.Info("Task starts to get stores" + " | " + userModel.UserID + " | " + DateTime.Now);
+
             try
             {
                 //userModel.ClientId = 167;
@@ -87,6 +90,8 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | "+ DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
