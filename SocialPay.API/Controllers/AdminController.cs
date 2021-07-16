@@ -348,73 +348,73 @@ namespace SocialPay.API.Controllers
 
 
 
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("clear-user-account")]
-        public async Task<IActionResult> ClearUserDetails(string email, string reference)
-        {
-            _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
+        //////[AllowAnonymous]
+        //////[HttpPost]
+        //////[Route("clear-user-account")]
+        //////public async Task<IActionResult> ClearUserDetails(string email, string reference)
+        //////{
+        //////    _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
 
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "3efa178h")
-                    return BadRequest();
+        //////    var response = new WebApiResponse { };
+        //////    try
+        //////    {
+        //////        if (reference != "3efa178h")
+        //////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    var result = await _transactionService.ClearUserAccount(email);
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        //////        if (ModelState.IsValid)
+        //////        {
+        //////            var result = await _transactionService.ClearUserAccount(email);
+        //////            return Ok(result);
+        //////        }
+        //////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //////            .Select(e => e.ErrorMessage));
+        //////        response.ResponseCode = AppResponseCodes.Failed;
+        //////        response.Data = message;
+        //////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        //////    }
+        //////    catch (Exception ex)
+        //////    {
+        //////        _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        //////        response.ResponseCode = AppResponseCodes.InternalError;
+        //////        return BadRequest(response);
+        //////    }
+        //////}
 
 
 
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("clear-user-wallet")]
-        public async Task<IActionResult> ClearMerchantWallet(string phoneNumber, string reference)
-        {
-            _log4net.Info("Tasks starts to clear user account" + " | " + phoneNumber + " | " + DateTime.Now);
+        ////[AllowAnonymous]
+        ////[HttpPost]
+        ////[Route("clear-user-wallet")]
+        ////public async Task<IActionResult> ClearMerchantWallet(string phoneNumber, string reference)
+        ////{
+        ////    _log4net.Info("Tasks starts to clear user account" + " | " + phoneNumber + " | " + DateTime.Now);
 
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "12345gh2")
-                    return BadRequest();
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "12345gh2")
+        ////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    var result = await _createMerchantWalletService.ClearMerchantWalletInfo(phoneNumber);
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            var result = await _createMerchantWalletService.ClearMerchantWalletInfo(phoneNumber);
+        ////            return Ok(result);
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _log4net.Error("Error occured" + " | " + phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
         [HttpGet]
@@ -603,64 +603,64 @@ namespace SocialPay.API.Controllers
         }
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-all-default-merchant-wallet-transfer-request -logs")]
-        public async Task<IActionResult> GetDefaultWalletTransferLogs([FromQuery] string reference)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "43rt")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-all-default-merchant-wallet-transfer-request -logs")]
+        //////public async Task<IActionResult> GetDefaultWalletTransferLogs([FromQuery] string reference)
+        //////{
+        //////    var response = new WebApiResponse { };
+        //////    try
+        //////    {
+        //////        if (reference != "43rt")
+        //////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.GetAllDefaultWalletTransferRequestLogsAsync());
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        //////        if (ModelState.IsValid)
+        //////        {
+        //////            return Ok(await _merchantReportService.GetAllDefaultWalletTransferRequestLogsAsync());
+        //////        }
+        //////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //////            .Select(e => e.ErrorMessage));
+        //////        response.ResponseCode = AppResponseCodes.Failed;
+        //////        response.Data = message;
+        //////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        //////    }
+        //////    catch (Exception ex)
+        //////    {
+        //////        response.ResponseCode = AppResponseCodes.InternalError;
+        //////        return BadRequest(response);
+        //////    }
+        //////}
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("clear-default-log")]
-        public async Task<IActionResult> ClearDefaultLogs ([FromQuery] string reference, string paymentRefernce)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "t645")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("clear-default-log")]
+        ////public async Task<IActionResult> ClearDefaultLogs ([FromQuery] string reference, string paymentRefernce)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "t645")
+        ////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.ClearDefaultLogs(paymentRefernce));
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.ClearDefaultLogs(paymentRefernce));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
 
@@ -884,191 +884,191 @@ namespace SocialPay.API.Controllers
 
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-Wallet-Info")]
-        public async Task<IActionResult> GetWalletInfo([FromQuery] string reference)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "57h34")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-Wallet-Info")]
+        //////public async Task<IActionResult> GetWalletInfo([FromQuery] string reference)
+        //////{
+        //////    var response = new WebApiResponse { };
+        //////    try
+        //////    {
+        //////        if (reference != "57h34")
+        //////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.GetWalletInfo());
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
+        //////        if (ModelState.IsValid)
+        //////        {
+        //////            return Ok(await _merchantReportService.GetWalletInfo());
+        //////        }
+        //////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //////            .Select(e => e.ErrorMessage));
 
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
+        //////        response.ResponseCode = AppResponseCodes.Failed;
+        //////        response.Data = message;
 
-                return BadRequest(response);
+        //////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
-
-
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-latest-OtherPayment")]
-        public async Task<IActionResult> GetMerchantDetails([FromQuery] string reference, string merchant)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "34dft1")
-                    return BadRequest();
-
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.ValidateMerchantInfo(merchant));
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        //////    }
+        //////    catch (Exception ex)
+        //////    {
+        //////        response.ResponseCode = AppResponseCodes.InternalError;
+        //////        return BadRequest(response);
+        //////    }
+        //////}
 
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-payment-details")]
-        public async Task<IActionResult> ValidatePayment([FromQuery] string reference, string merchant)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "3dd22")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-latest-OtherPayment")]
+        ////public async Task<IActionResult> GetMerchantDetails([FromQuery] string reference, string merchant)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "34dft1")
+        ////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.ValidateInfo(merchant));
-                }
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.ValidateMerchantInfo(merchant));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
-
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-user-wallet-info")]
-        public async Task<IActionResult> ValidateuserWallet([FromQuery] string reference, string merchant)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "gh3219")
-                    return BadRequest();
-
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.ValidateWalletInfo(merchant));
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("validate-user-wallet-info")]
-        public async Task<IActionResult> UpdateInfo([FromQuery] string reference, string merchant)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "4re56")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-payment-details")]
+        //////public async Task<IActionResult> ValidatePayment([FromQuery] string reference, string merchant)
+        //////{
+        //////    var response = new WebApiResponse { };
+        //////    try
+        //////    {
+        //////        if (reference != "3dd22")
+        //////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.UpdateWalletInfo(merchant));
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        //////        if (ModelState.IsValid)
+        //////        {
+        //////            return Ok(await _merchantReportService.ValidateInfo(merchant));
+        //////        }
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        //////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //////            .Select(e => e.ErrorMessage));
+        //////        response.ResponseCode = AppResponseCodes.Failed;
+        //////        response.Data = message;
+
+        //////        return BadRequest(response);
+
+        //////    }
+        //////    catch (Exception ex)
+        //////    {
+        //////        response.ResponseCode = AppResponseCodes.InternalError;
+        //////        return BadRequest(response);
+        //////    }
+        //////}
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-request-details")]
-        public async Task<IActionResult> ValidateRequests([FromQuery] string reference, string merchant)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "34df12")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-user-wallet-info")]
+        //////public async Task<IActionResult> ValidateuserWallet([FromQuery] string reference, string merchant)
+        //////{
+        //////    var response = new WebApiResponse { };
+        //////    try
+        //////    {
+        //////        if (reference != "gh3219")
+        //////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.InterRequestAsync(merchant));
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        //////        if (ModelState.IsValid)
+        //////        {
+        //////            return Ok(await _merchantReportService.ValidateWalletInfo(merchant));
+        //////        }
+        //////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //////            .Select(e => e.ErrorMessage));
+        //////        response.ResponseCode = AppResponseCodes.Failed;
+        //////        response.Data = message;
+        //////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        //////    }
+        //////    catch (Exception ex)
+        //////    {
+        //////        response.ResponseCode = AppResponseCodes.InternalError;
+        //////        return BadRequest(response);
+        //////    }
+        //////}
+
+
+
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("validate-user-wallet-info")]
+        ////public async Task<IActionResult> UpdateInfo([FromQuery] string reference, string merchant)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "4re56")
+        ////            return BadRequest();
+
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.UpdateWalletInfo(merchant));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
+
+
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-request-details")]
+        ////public async Task<IActionResult> ValidateRequests([FromQuery] string reference, string merchant)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "34df12")
+        ////            return BadRequest();
+
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.InterRequestAsync(merchant));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
         [AllowAnonymous]
         [HttpGet]
