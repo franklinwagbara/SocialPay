@@ -74,7 +74,8 @@ namespace SocialPay.ApplicationCore.Services
                CategoryName = model.CategoryName,
                LastDateModified = DateTime.Now,
                ClientAuthenticationId = model.ClientAuthenticationId,  
-               IsDeleted = false               
+               IsDeleted = false,
+               Description = model.Description
             };
 
             await _category.AddAsync(category);

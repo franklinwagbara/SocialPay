@@ -126,7 +126,7 @@ namespace SocialPay.Core.Store
         {
             try
             {
-
+               // userModel.ClientId = 167;
                 var category = await _productCategoryService.GetCategoryByNameAndClientId(request.CategoryName, userModel.ClientId);
 
                 if (category != null)
