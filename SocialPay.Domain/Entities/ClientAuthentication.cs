@@ -80,7 +80,7 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<MerchantStore> MerchantStore { get; set; }
         public virtual ICollection<ProductCategory> ProductCategory { get; set; }
         public virtual ICollection<Product> Product { get; set; }
-        public virtual ICollection<MerchantQRCodeOnboarding>  MerchantQRCodeOnboarding { get; set; }
+        public virtual ICollection<MerchantQRCodeOnboarding> MerchantQRCodeOnboarding { get; set; }
         public virtual ICollection<QrPaymentRequest> QrPaymentRequest { get; set; }
     }
 }

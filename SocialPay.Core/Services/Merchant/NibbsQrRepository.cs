@@ -28,7 +28,7 @@ namespace SocialPay.Core.Services.Merchant
         {
             try
             {
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
@@ -119,6 +119,11 @@ namespace SocialPay.Core.Services.Merchant
                 {
                     try
                     {
+
+                        var nibbsMerchantInfo = await _context.MerchantQRCodeOnboarding
+                         .Include(x => x.MerchantQRCodeOnboardingResponse)
+                         .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
                         var merchant = new SubMerchantQRCodeOnboarding
                         {
                             IsDeleted = false,
@@ -136,12 +141,12 @@ namespace SocialPay.Core.Services.Merchant
 
                         var defaultRequest = new CreateNibbsSubMerchantDto
                         {
-                          mchNo = model.mchNo,
-                          merchantEmail = model.merchantEmail,
-                          merchantName = model.merchantName,
-                          merchantPhoneNumber = model.merchantPhoneNumber,
-                          subAmount = model.subAmount,
-                          subFixed = model.subFixed
+                            mchNo = model.mchNo,
+                            merchantEmail = model.merchantEmail,
+                            merchantName = model.merchantName,
+                            merchantPhoneNumber = model.merchantPhoneNumber,
+                            subAmount = model.subAmount,
+                            subFixed = model.subFixed
                         };
 
                         var createNibbsSubMerchant = await _nibbsQRCodeAPIService.CreateSubMerchant(defaultRequest);
@@ -157,10 +162,15 @@ namespace SocialPay.Core.Services.Merchant
                             merchantResponseLog.QrCode = createNibbsSubMerchant.qrCode;
                             merchantResponseLog.ReturnCode = createNibbsSubMerchant.returnCode;
                             merchantResponseLog.ReturnMsg = createNibbsSubMerchant.returnMsg;
-                            merchantResponseLog.SubMchNo = createNibbsSubMerchant.subMchNo;                            
-                            merchantResponseLog.IsDeleted = false;                         
+                            merchantResponseLog.SubMchNo = createNibbsSubMerchant.subMchNo;
+                            merchantResponseLog.IsDeleted = false;
 
                             await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
+                            await _context.SaveChangesAsync();
+
+                            nibbsMerchantInfo.Status = NibbsMerchantOnboarding.SubAccount;
+
+                            _context.Update(nibbsMerchantInfo);
                             await _context.SaveChangesAsync();
 
                             await transaction.CommitAsync();
@@ -200,7 +210,7 @@ namespace SocialPay.Core.Services.Merchant
                 var model = new BindMerchantRequestDto();
 
                 var nibbsMerchantInfo = await _context.MerchantQRCodeOnboarding
-                    .Include(x=>x.MerchantQRCodeOnboardingResponse)
+                    .Include(x => x.MerchantQRCodeOnboardingResponse)
                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
                 //var nibbsMerchantInfo = await _context.MerchantQRCodeOnboardingResponse
@@ -300,7 +310,7 @@ namespace SocialPay.Core.Services.Merchant
                     {
                         var merchant = new QrPaymentRequest
                         {
-                           
+
                         };
 
                         await _context.QrPaymentRequest.AddAsync(merchant);
@@ -308,14 +318,14 @@ namespace SocialPay.Core.Services.Merchant
 
                         var defaultRequest = new DynamicPaymentDefaultRequestDto
                         {
-                           
+
                         };
 
                         var createNibbsSubMerchant = await _nibbsQRCodeAPIService.DynamicPay(defaultRequest);
 
                         var merchantResponseLog = new SubMerchantQRCodeOnboardingResponse();
 
-                       // merchantResponseLog.SubMerchantQRCodeOnboardingId = merchant.SubMerchantQRCodeOnboardingId;
+                        // merchantResponseLog.SubMerchantQRCodeOnboardingId = merchant.SubMerchantQRCodeOnboardingId;
 
                         if (createNibbsSubMerchant.ResponseCode == AppResponseCodes.Success)
                         {
