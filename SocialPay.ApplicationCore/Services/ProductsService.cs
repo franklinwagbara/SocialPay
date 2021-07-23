@@ -31,13 +31,21 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<List<Product>, List<ProductsViewModel>>(products);
         }
 
-        public async Task<List<ProductsViewModel>> GetProductsByClientId(long clientId)
+        public async Task<List<ProductsViewModel>> GetProductsByCategory(long productCategoryId)
         {
-            var products = await _products.GetAsync(x => x.ProductCategoryId == clientId);
+            var products = await _products.GetAsync(x => x.ProductCategoryId == productCategoryId);
 
             return _mapper.Map<List<Product>, List<ProductsViewModel>>(products);
         }
 
+        public async Task<List<ProductsViewModel>> GetProductByStoreId(long storeId)
+        {
+            var products = await _products.GetAsync(x => x.MerchantStoreId == storeId);
+
+            return _mapper.Map<List<Product>, List<ProductsViewModel>>(products);
+        }
+
+        //GetProductByStoreIdClientId
         public async Task<ProductsViewModel> GetProductByNameCatIdAndClientId(string productName, long categoryId, long storeId)
         {
             var product = await _products

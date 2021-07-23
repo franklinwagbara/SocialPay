@@ -19,6 +19,7 @@ using SocialPay.Core.Services.AzureBlob;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.Extensions.Configuration;
+using SocialPay.Core.Services.Products;
 
 namespace SocialPay.Core.Store
 {
@@ -28,6 +29,7 @@ namespace SocialPay.Core.Store
         private readonly IProductCategoryService _productCategoryService;
         private readonly IProductsService _productsService;
         private readonly StoreBaseRepository _storeBaseRepository;
+        private readonly ProductsRepository _productsRepository;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AppSettings _appSettings;
         private readonly BlobService _blobService;
@@ -38,7 +40,8 @@ namespace SocialPay.Core.Store
         public StoreRepository(IStoreService storeService, IProductCategoryService productCategoryService,
             IProductsService productsService, StoreBaseRepository storeBaseRepository,
             IHostingEnvironment environment, IOptions<AppSettings> appSettings,
-            BlobService blobService, IConfiguration configuration)
+            BlobService blobService, IConfiguration configuration,
+            ProductsRepository productsRepository)
         {
             _storeService = storeService ?? throw new ArgumentNullException(nameof(storeService));
             _productCategoryService = productCategoryService ?? throw new ArgumentNullException(nameof(productCategoryService));
@@ -48,6 +51,7 @@ namespace SocialPay.Core.Store
             _appSettings = appSettings.Value;
             _blobService = blobService ?? throw new ArgumentNullException(nameof(blobService));
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _productsRepository = productsRepository ?? throw new ArgumentNullException(nameof(productsRepository));
         }
         public async Task<WebApiResponse> CreateNewStoreAsync(StoreRequestDto request, UserDetailsViewModel userModel)
         {
@@ -127,6 +131,8 @@ namespace SocialPay.Core.Store
             try
             {
                // userModel.ClientId = 167;
+
+
                 var category = await _productCategoryService.GetCategoryByNameAndClientId(request.CategoryName, userModel.ClientId);
 
                 if (category != null)
@@ -169,23 +175,19 @@ namespace SocialPay.Core.Store
 
         public async Task<WebApiResponse> CreateNewProductAsync(ProductRequestDto request, UserDetailsViewModel userModel)
         {
+            //userModel.ClientId = 167;
+
+            await _productsRepository.CreateNewProduct(request, userModel);
+
             try
             {
                 var blobRequest = new BlobProductsRequest();
 
                 var productImages = new List<DefaultDocumentRequest>();
 
-                foreach (var item in request.Image)
-                {
-                    productImages.Add(new DefaultDocumentRequest { Image = request.Image.Select(x => x.Image).FirstOrDefault(), ImageGuidId = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}" });
-                }
-
-                blobRequest.ClientId = 90;
+                blobRequest.ClientId = userModel.ClientId;
                 blobRequest.RequestType = "Product";
-                blobRequest.ImageDetail = productImages;
                 blobRequest.ProductName = request.ProductName;
-
-                await _blobService.UploadProducts(blobRequest);
 
                 var validateCategory = await _productCategoryService.GetCategoryByIdAndCatId(request.ProductCategoryId, userModel.ClientId);
 
@@ -203,6 +205,20 @@ namespace SocialPay.Core.Store
                 if (validatProductDetails != null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateProductName, Message = "Duplicate Product Name" };
 
+
+                foreach (var item in request.Image)
+                {
+                    var imageGuidId = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
+
+                    productImages.Add(new DefaultDocumentRequest { Image = item, ImageGuidId = imageGuidId,
+                        FileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{imageGuidId}"
+                    });
+                }
+
+                blobRequest.ImageDetail = productImages;
+
+                await _blobService.UploadProducts(blobRequest);
+              
                 string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.ProductsImage);
 
                 if (!Directory.Exists(path))
@@ -223,22 +239,22 @@ namespace SocialPay.Core.Store
 
                 var filePath = Path.Combine(fileName, newFileName);
 
-                var color = string.Empty;
-                var size = string.Empty;
+                //var color = string.Empty;
+                //var size = string.Empty;
 
-                color = request.Color.Aggregate((a, b) => a + ", " + b);
+                //color = request.Color.Aggregate((a, b) => a + ", " + b);
 
-                size = string.Join(",", request.Size.ToArray());
+                //size = string.Join(",", request.Size.ToArray());
 
                 var model = new ProductsViewModel
                 {
                     Description = request.Description,
-                    Color = color,
+                   // Color = color,
                     Price = request.Price,
                     ProductCategoryId = request.ProductCategoryId,
                     ProductName = request.ProductName,
                     ProductReference = reference,
-                    Size = size,
+                   // Size = size,
                     Options = request.Options,
                     StoreId = request.StoreId,
                     Image = newFileName,
@@ -258,6 +274,47 @@ namespace SocialPay.Core.Store
                     ResponseCode = AppResponseCodes.InternalError
                 };
             }
+        }
+
+        public async Task<WebApiResponse> GetProductsAsync(UserDetailsViewModel userModel, long storeId)
+        {
+            try
+            {
+               // userModel.ClientId = 167;
+
+                var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
+
+                return  await _productsRepository.GetProductsByClientIdStoreId(userModel.ClientId, storeId);
+
+                //if (store == null)
+                //    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+
+                //foreach (var item in store)
+                //{
+                //    //item.Image = item.Image == null ? string.Empty : _appSettings.BaseApiUrl + item.FileLocation + "/" + item.Image;
+
+                //    // var fileDescription = "Store/90/Pat/90-ST--85fb-6cef773338fd.jpg";
+                //    ///https://monthlystatement.blob.core.windows.net/socialpay/Store/90/Pat/90-ST--85fb-6cef773338fd.jpg
+                //    // var storageAccount = CloudStorageAccount.Parse(options.blobConnectionstring);
+                //    var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=monthlystatement;AccountKey=TiB4RbTOMBFU85N3icORuByCenohH4zhVW644VYYW4O+fCJh8jBxzIE6l9hhlCwCb9lJq0jFDHdQtGe+xl0iAg==;EndpointSuffix=core.windows.net");
+                //    var blobClient = storageAccount.CreateCloudBlobClient();
+
+                //    //CloudBlobContainer container = blobClient.GetContainerReference(options.containerName);
+                //    CloudBlobContainer container = blobClient.GetContainerReference("socialpay");
+                //    CloudBlockBlob blob = container.GetBlockBlobReference(item.FileLocation);
+
+                //    item.Image = blob.Uri.AbsoluteUri;
+                //}
+
+                //return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = store };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
         }
 
     }

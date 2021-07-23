@@ -15,13 +15,14 @@ namespace SocialPay.Helper.Dto.Request
         public string Description { get; set; }
         public decimal Price { get; set; }
         public bool Options { get; set; }
-        public List<int> Size { get; set; }
-        public List<string> Color { get; set; }
+        //public List<int> Size { get; set; }
+        //public List<string> Color { get; set; }
         //[Required(ErrorMessage = "Please select image.")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]
         [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".pdf", ".svg" })]
-        public List<ProductImageDto> Image { get; set; }
+        public List<IFormFile> Image { get; set; }
+        //public List<ProductImageDto> Image { get; set; }
     }
     public class ProductImageDto
     {

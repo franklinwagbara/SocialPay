@@ -7,7 +7,8 @@ namespace SocialPay.ApplicationCore.Interfaces.Service
     public interface IProductsService
     {
         Task<List<ProductsViewModel>> GetAllAsync();
-        Task<List<ProductsViewModel>> GetProductsByClientId(long clientId);
+        Task<List<ProductsViewModel>> GetProductsByCategory(long clientId);
+        Task<List<ProductsViewModel>> GetProductByStoreId(long storeId);
         Task<ProductsViewModel> GetProductById(long productId);
        // Task<ProductsViewModel> GetProductByProductNameAndStoreId(long productId);
         Task<ProductsViewModel> GetProductByNameCatIdAndClientId(string productName, long categoryId, long storeId);

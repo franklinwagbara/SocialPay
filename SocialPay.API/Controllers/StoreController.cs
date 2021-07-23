@@ -38,10 +38,13 @@ namespace SocialPay.API.Controllers
         [Route("get-product-categories")]
         public async Task<IActionResult> GetProductCategories() => Response(await _storeRepository.GetProductCategoryAsync(User.GetSessionDetails()).ConfigureAwait(false));
 
-       // [AllowAnonymous]
         [HttpPost]
         [Route("create-product")]
         public async Task<IActionResult> CreateProducts([FromForm] ProductRequestDto request) => Response(await _storeRepository.CreateNewProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
 
+
+        [HttpGet]
+        [Route("get-products")]
+        public async Task<IActionResult> GetProducts([FromQuery] long storeId) => Response(await _storeRepository.GetProductsAsync(User.GetSessionDetails(), storeId).ConfigureAwait(false));
     }
 }

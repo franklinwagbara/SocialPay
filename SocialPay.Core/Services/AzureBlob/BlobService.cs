@@ -42,7 +42,7 @@ namespace SocialPay.Core.Services.AzureBlob
 
                     await containerBlob.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
-                    BlockBlobClient blockBlob = containerBlob.GetBlockBlobClient($"{RequestType}/{merchant}/{request.ProductName}/{item.ImageGuidId}.jpg");
+                    BlockBlobClient blockBlob = containerBlob.GetBlockBlobClient(item.FileLocation);
 
                     await blockBlob.UploadAsync(ms);
 

@@ -344,7 +344,7 @@ namespace SocialPay.Core.Services.Authentication
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Authenticate" + " | " + loginRequestDto.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "Authenticate" + " | " + loginRequestDto.Email + " | " + ex + " | " + DateTime.Now);
 
                 return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError };
             }
