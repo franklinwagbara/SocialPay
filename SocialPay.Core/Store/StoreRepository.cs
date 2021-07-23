@@ -177,8 +177,6 @@ namespace SocialPay.Core.Store
         {
             //userModel.ClientId = 167;
 
-            await _productsRepository.CreateNewProduct(request, userModel);
-
             try
             {
                 var blobRequest = new BlobProductsRequest();
@@ -205,67 +203,69 @@ namespace SocialPay.Core.Store
                 if (validatProductDetails != null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateProductName, Message = "Duplicate Product Name" };
 
+                return await _productsRepository.CreateNewProduct(request, userModel);
 
-                foreach (var item in request.Image)
-                {
-                    var imageGuidId = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
 
-                    productImages.Add(new DefaultDocumentRequest { Image = item, ImageGuidId = imageGuidId,
-                        FileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{imageGuidId}"
-                    });
-                }
+               // foreach (var item in request.Image)
+               // {
+               //     var imageGuidId = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
 
-                blobRequest.ImageDetail = productImages;
+               //     productImages.Add(new DefaultDocumentRequest { Image = item, ImageGuidId = imageGuidId,
+               //         FileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{imageGuidId}"
+               //     });
+               // }
 
-                await _blobService.UploadProducts(blobRequest);
+               // blobRequest.ImageDetail = productImages;
+
+               // await _blobService.UploadProducts(blobRequest);
               
-                //string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.ProductsImage);
+               // //string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.ProductsImage);
 
-                //if (!Directory.Exists(path))
-                //    Directory.CreateDirectory(path);
+               // //if (!Directory.Exists(path))
+               // //    Directory.CreateDirectory(path);
 
-                //string fileName = string.Empty;
-                //var newFileName = string.Empty;
+               // //string fileName = string.Empty;
+               // //var newFileName = string.Empty;
 
-               // fileName = (request.Image.FileName);
+               //// fileName = (request.Image.FileName);
 
-                var reference = $"{"So-"}{Guid.NewGuid().ToString("N")}";
+               // var reference = $"{"So-"}{Guid.NewGuid().ToString("N")}";
 
-                //var FileExtension = Path.GetExtension(fileName);
+               // //var FileExtension = Path.GetExtension(fileName);
 
-                //fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.ProductsImage) + $@"\{newFileName}";
+               // //fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.ProductsImage) + $@"\{newFileName}";
 
-                //newFileName = $"{reference}{FileExtension}";
+               // //newFileName = $"{reference}{FileExtension}";
 
-                //var filePath = Path.Combine(fileName, newFileName);
+               // //var filePath = Path.Combine(fileName, newFileName);
 
-                var color = string.Empty;
-                var size = string.Empty;
+               // var color = string.Empty;
+               // var size = string.Empty;
 
-                color = request.Color.Aggregate((a, b) => a + ", " + b);
+               // color = request.Color.Aggregate((a, b) => a + ", " + b);
 
-                size = string.Join(",", request.Size.ToArray());
+               // size = string.Join(",", request.Size.ToArray());
 
-                var model = new ProductsViewModel
-                {
-                    Description = request.Description,
-                    Color = color,
-                    Size = size,
-                    Price = request.Price,
-                    ProductCategoryId = request.ProductCategoryId,
-                    ProductName = request.ProductName,
-                    ProductReference = reference,
-                   // Options = request.Options,
-                    StoreId = request.StoreId,
-                    //Image = newFileName,
-                    FileLocation = _appSettings.ProductsImage
-                };
+               // var model = new ProductsViewModel
+               // {
+               //     Description = request.Description,
+               //     Color = color,
+               //     Size = size,
+               //     Price = request.Price,
+               //     ProductCategoryId = request.ProductCategoryId,
+               //     ProductName = request.ProductName,
+               //     ProductReference = reference,
+               //    // Options = request.Options,
+               //     StoreId = request.StoreId,
+               //     //Image = newFileName,
+               //     FileLocation = _appSettings.ProductsImage
+               // };
 
-                //request.Image.CopyTo(new FileStream(filePath, FileMode.Create));
+               // //request.Image.CopyTo(new FileStream(filePath, FileMode.Create));
 
-                await _productsService.AddAsync(model);
+               // await _productsService.AddAsync(model);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Product was successfully saved" };
+               // return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Product was successfully saved" };
             }
             catch (Exception ex)
             {

@@ -30,18 +30,15 @@ namespace SocialPay.Core.Services.Products
         {
             try
             {
-                userModel.ClientId = 167;
+               // userModel.ClientId = 167;
                 var reference = $"{"So-"}{Guid.NewGuid().ToString("N")}";
-                //if (await _context.MerchantStore.AnyAsync(x => x.StoreName == request.StoreName && x.ClientAuthenticationId == userModel.ClientId))
-                //    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateStoreName, Message = "Duplicate Store Name" };
+              
+                var color = string.Empty;
+                var size = string.Empty;
 
-                //if (await _context.MerchantStore.AnyAsync(x => x.StoreLink == request.StoreLink && x.ClientAuthenticationId == userModel.ClientId))
-                //    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Message = "Duplicate Link Name" };
+                color = request.Color.Aggregate((a, b) => a + ", " + b);
 
-               
-              //  blobRequest.ImageDetail = productImages;
-
-               // await _blobService.UploadProducts(blobRequest);
+                size = string.Join(",", request.Size.ToArray());
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -59,13 +56,12 @@ namespace SocialPay.Core.Services.Products
                         var model = new Product
                         {
                             Description = request.Description,
-                            // Color = color,
+                            Color = color,
+                            Size = size,
                             Price = request.Price,
                             ProductCategoryId = request.ProductCategoryId,
                             ProductName = request.ProductName,
                             ProductReference = reference,
-                            // Size = size,
-                            //Options = request.Options,
                             MerchantStoreId = request.StoreId,
                             FileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}"
                         };
@@ -90,13 +86,13 @@ namespace SocialPay.Core.Services.Products
 
                             proDetails.Add(new ProductItems { FileLocation = filePath, ProductId = model.ProductId });
 
-                           // await _context.ProductItems.AddAsync(proDetails);
+                            // await _context.ProductItems.AddAsync(proDetails);
                             //await _context.SaveChangesAsync();
 
                             await _blobService.UploadProducts(blobRequest);
 
                             productImages.Clear();
-                            blobRequest.ImageDetail.Clear(); 
+                            blobRequest.ImageDetail.Clear();
                         }
 
                         await _context.ProductItems.AddRangeAsync(proDetails);
@@ -112,7 +108,7 @@ namespace SocialPay.Core.Services.Products
                     }
                 }
 
-                
+
             }
             catch (Exception ex)
             {
@@ -169,7 +165,7 @@ namespace SocialPay.Core.Services.Products
                 var query = (from s in stores
                              join pc in _context.ProductCategories on s.ClientAuthenticationId equals pc.ClientAuthenticationId
                              join pr in _context.Products on pc.ProductCategoryId equals pr.ProductCategoryId
-                            // join pi in _context.ProductItems on pr.ProductId equals pi.ProductId                          
+                             // join pi in _context.ProductItems on pr.ProductId equals pi.ProductId                          
 
                              //var employeeRecord = from e in stores
                              //                     join d in _context.ProductCategories on e.ClientAuthenticationId equals d.ClientAuthenticationId into table1
@@ -235,7 +231,7 @@ namespace SocialPay.Core.Services.Products
                         item.ProductItemsViewModel = getProductsItem;
                     }
 
-                   
+
                 }
 
                 if (query.Count > 0)
