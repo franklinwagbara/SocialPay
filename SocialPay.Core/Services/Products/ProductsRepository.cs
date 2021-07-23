@@ -86,9 +86,6 @@ namespace SocialPay.Core.Services.Products
 
                             proDetails.Add(new ProductItems { FileLocation = filePath, ProductId = model.ProductId });
 
-                            // await _context.ProductItems.AddAsync(proDetails);
-                            //await _context.SaveChangesAsync();
-
                             await _blobService.UploadProducts(blobRequest);
 
                             productImages.Clear();
@@ -99,7 +96,7 @@ namespace SocialPay.Core.Services.Products
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success" };
                     }
                     catch (Exception ex)
                     {
