@@ -219,45 +219,45 @@ namespace SocialPay.Core.Store
 
                 await _blobService.UploadProducts(blobRequest);
               
-                string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.ProductsImage);
+                //string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.ProductsImage);
 
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
+                //if (!Directory.Exists(path))
+                //    Directory.CreateDirectory(path);
 
-                string fileName = string.Empty;
-                var newFileName = string.Empty;
+                //string fileName = string.Empty;
+                //var newFileName = string.Empty;
 
                // fileName = (request.Image.FileName);
 
                 var reference = $"{"So-"}{Guid.NewGuid().ToString("N")}";
 
-                var FileExtension = Path.GetExtension(fileName);
+                //var FileExtension = Path.GetExtension(fileName);
 
-                fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.ProductsImage) + $@"\{newFileName}";
+                //fileName = Path.Combine(_hostingEnvironment.WebRootPath, _appSettings.ProductsImage) + $@"\{newFileName}";
 
-                newFileName = $"{reference}{FileExtension}";
+                //newFileName = $"{reference}{FileExtension}";
 
-                var filePath = Path.Combine(fileName, newFileName);
+                //var filePath = Path.Combine(fileName, newFileName);
 
-                //var color = string.Empty;
-                //var size = string.Empty;
+                var color = string.Empty;
+                var size = string.Empty;
 
-                //color = request.Color.Aggregate((a, b) => a + ", " + b);
+                color = request.Color.Aggregate((a, b) => a + ", " + b);
 
-                //size = string.Join(",", request.Size.ToArray());
+                size = string.Join(",", request.Size.ToArray());
 
                 var model = new ProductsViewModel
                 {
                     Description = request.Description,
-                   // Color = color,
+                    Color = color,
+                    Size = size,
                     Price = request.Price,
                     ProductCategoryId = request.ProductCategoryId,
                     ProductName = request.ProductName,
                     ProductReference = reference,
-                   // Size = size,
-                    Options = request.Options,
+                   // Options = request.Options,
                     StoreId = request.StoreId,
-                    Image = newFileName,
+                    //Image = newFileName,
                     FileLocation = _appSettings.ProductsImage
                 };
 

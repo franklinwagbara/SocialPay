@@ -14,9 +14,9 @@ namespace SocialPay.Helper.Dto.Request
         public string ProductName { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public bool Options { get; set; }
-        //public List<int> Size { get; set; }
-        //public List<string> Color { get; set; }
+      //  public bool Options { get; set; }
+        public List<int> Size { get; set; }
+        public List<string> Color { get; set; }
         //[Required(ErrorMessage = "Please select image.")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]

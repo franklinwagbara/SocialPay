@@ -65,7 +65,7 @@ namespace SocialPay.Core.Services.Products
                             ProductName = request.ProductName,
                             ProductReference = reference,
                             // Size = size,
-                            Options = request.Options,
+                            //Options = request.Options,
                             MerchantStoreId = request.StoreId,
                             FileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}"
                         };
