@@ -175,7 +175,7 @@ namespace SocialPay.Core.Store
 
         public async Task<WebApiResponse> CreateNewProductAsync(ProductRequestDto request, UserDetailsViewModel userModel)
         {
-            //userModel.ClientId = 167;
+           // userModel.ClientId = 167;
 
             try
             {
@@ -280,7 +280,7 @@ namespace SocialPay.Core.Store
         {
             try
             {
-                //userModel.ClientId = 167;
+               // userModel.ClientId = 167;
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 

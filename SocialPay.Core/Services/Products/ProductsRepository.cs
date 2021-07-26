@@ -75,16 +75,18 @@ namespace SocialPay.Core.Services.Products
                         {
                             var filePath = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
 
+                            var fileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{filePath}";
+
                             productImages.Add(new DefaultDocumentRequest
                             {
                                 Image = item,
                                 ImageGuidId = filePath,
-                                FileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{filePath}"
+                                FileLocation = fileLocation
                             });
 
                             blobRequest.ImageDetail = productImages;
 
-                            proDetails.Add(new ProductItems { FileLocation = filePath, ProductId = model.ProductId });
+                            proDetails.Add(new ProductItems { FileLocation = fileLocation, ProductId = model.ProductId });
 
                             await _blobService.UploadProducts(blobRequest);
 
