@@ -162,6 +162,7 @@ namespace SocialPay.Core.Services.Products
                 var query = (from s in stores
                              join pc in _context.ProductCategories on s.ClientAuthenticationId equals pc.ClientAuthenticationId
                              join pr in _context.Products on pc.ProductCategoryId equals pr.ProductCategoryId
+                             where pr.MerchantStoreId == storeId
                              // join pi in _context.ProductItems on pr.ProductId equals pi.ProductId                          
 
                              //var employeeRecord = from e in stores
