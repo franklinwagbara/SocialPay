@@ -143,7 +143,7 @@ namespace SocialPay.Core.Services.Products
                 if (query.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Record not found" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
             }
             catch (Exception ex)
             {
@@ -237,7 +237,7 @@ namespace SocialPay.Core.Services.Products
                 if (query.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Record not found" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
             }
             catch (Exception ex)
             {
