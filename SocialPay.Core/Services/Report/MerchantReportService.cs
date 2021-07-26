@@ -481,6 +481,23 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
+        public async Task<WebApiResponse> UpdateLink()
+        {
+            try
+            {
+               // var validateMerchant = await _context.MerchantPaymentSetup
+                  
+
+                return new WebApiResponse { ResponseCode = "00", Data = await _context.MerchantPaymentSetup.OrderByDescending(x => x.DateEntered).ToListAsync() };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> GetCustomerOtherTransactionInfo()
         {
             try

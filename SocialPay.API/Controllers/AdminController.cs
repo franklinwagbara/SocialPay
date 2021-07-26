@@ -799,26 +799,26 @@ namespace SocialPay.API.Controllers
 
 
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-payment-links")]
-        //public async Task<IActionResult> PaymentLinks([FromQuery] string reference)
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "232gaw9")
-        //            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-payment-links")]
+        public async Task<IActionResult> PaymentLinks([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "43455")
+                    return BadRequest();
 
-        //        return Ok(await _merchantReportService.GetPaymentLinks());
+                return Ok(await _merchantReportService.GetPaymentLinks());
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
 
