@@ -115,7 +115,6 @@ namespace SocialPay.Core.Services.Products
             }
         }
 
-
         public async Task<WebApiResponse> GetProductsByClientId(long clientId)
         {
             try
@@ -232,6 +231,69 @@ namespace SocialPay.Core.Services.Products
                     }
 
 
+                }
+
+                if (query.Count > 0)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
+            }
+        }
+
+        public async Task<WebApiResponse> GetProductsByStoreId(long storeId)
+        {
+            try
+            {
+                var productItems = new List<ProductItemViewModel>();
+
+                var stores = await _context.MerchantStore
+                    .Where(x => x.MerchantStoreId == storeId).ToListAsync();
+
+                var query = (from s in stores
+                             join pc in _context.ProductCategories on s.ClientAuthenticationId equals pc.ClientAuthenticationId
+                             join pr in _context.Products on pc.ProductCategoryId equals pr.ProductCategoryId
+                             where pr.MerchantStoreId == storeId
+                             
+                             select new StoreProductsViewModel
+                             {
+                                 StoreName = s.StoreName,
+                                 ProductName = pr.ProductName,
+                                 Price = pr.Price,
+                                 Size = pr.Size,
+                                 Category = pc.CategoryName,
+                                 Color = pr.Color,
+                                 Options = pr.Options,
+                                 StoreDescription = s.Description,
+                                 ProductDescription = pr.Description,
+                                 ProductId = pr.ProductId
+                                
+                             }).ToList();
+
+                foreach (var item in query)
+                {
+                    var getProductsItem = await (from p in _context.ProductItems
+                                           .Where(x => x.ProductId == item.ProductId)
+                                                 select new ProductItemViewModel
+                                                 {
+                                                     FileLocation = p.FileLocation
+                                                 }).ToListAsync();
+
+                    foreach (var image in getProductsItem)
+                    {
+                        var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=monthlystatement;AccountKey=TiB4RbTOMBFU85N3icORuByCenohH4zhVW644VYYW4O+fCJh8jBxzIE6l9hhlCwCb9lJq0jFDHdQtGe+xl0iAg==;EndpointSuffix=core.windows.net");
+                        var blobClient = storageAccount.CreateCloudBlobClient();
+
+                        CloudBlobContainer container = blobClient.GetContainerReference("socialpay");
+                        CloudBlockBlob blob = container.GetBlockBlobReference(image.FileLocation);
+
+                        image.Url = blob.Uri.AbsoluteUri;
+
+                        item.ProductItemsViewModel = getProductsItem;
+                    }
                 }
 
                 if (query.Count > 0)

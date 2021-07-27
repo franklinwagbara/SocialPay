@@ -100,6 +100,28 @@ namespace SocialPay.Core.Store
             }
         }
 
+
+        public async Task<WebApiResponse> GetStoreInfobyStoreIdAsync(long storeId)
+        {
+            _log4net.Info("Task starts to get stores" + " | " + storeId + " | " + DateTime.Now);
+
+            try
+            {
+
+                var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
+
+                var products = await GetProductsByIdAsync(storeId);             
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store", Data = products };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + storeId + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> UpdateStoreStoreAsync(StoreViewModel request, long clentId)
         {
             try
@@ -130,8 +152,6 @@ namespace SocialPay.Core.Store
         {
             try
             {
-               // userModel.ClientId = 167;
-
 
                 var category = await _productCategoryService.GetCategoryByNameAndClientId(request.CategoryName, userModel.ClientId);
 
@@ -175,7 +195,6 @@ namespace SocialPay.Core.Store
 
         public async Task<WebApiResponse> CreateNewProductAsync(ProductRequestDto request, UserDetailsViewModel userModel)
         {
-           // userModel.ClientId = 167;
 
             try
             {
@@ -311,6 +330,25 @@ namespace SocialPay.Core.Store
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
+        }
+
+        public async Task<WebApiResponse> GetProductsByIdAsync(long storeId)
+        {
+            try
+            {
+                // userModel.ClientId = 167;
+
+                var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
+
+                return await _productsRepository.GetProductsByStoreId(storeId);              
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + storeId + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

@@ -17,7 +17,7 @@ namespace SocialPay.ApplicationCore.Services
 
         public StoreService(IAsyncRepository<MerchantStore> store)
         {
-            _store = store;
+            _store = store ?? throw new ArgumentNullException(nameof(store));
 
             var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantStore, StoreViewModel>());
 

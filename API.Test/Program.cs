@@ -8,7 +8,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -16,8 +19,38 @@ namespace API.Test
 {
     class Program
     {
+        public class PayU
+        {
+            public string merchantReference { get; set; } = Guid.NewGuid().ToString();
+            public string transactionType { get; set; } = "ACCOUNT_LOOKUP";
+            public string vasId { get; set; } = "MCA_ACCOUNT_SQ_NG";
+            public string countryCode { get; set; } = "NG";
+            public string customerId { get; set; } = "10172232596";
+        }
         static async Task Main(string[] args)
         {
+
+
+            HttpClientHandler handler = new HttpClientHandler();
+            HttpClient client = new HttpClient(handler);
+            client.BaseAddress = new Uri("https://pass.sterling.ng/PayUVas.API/");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization",
+                        Convert.ToBase64String(Encoding.Default.GetBytes("test1:test-1093$18KnX826)Z#fg")));
+
+            var model = new PayU();
+
+            var json = JsonConvert.SerializeObject(model);
+
+            var apiresponse = await client.PostAsync("stl/payu/accounts-lookup/dstv-gotv",
+                    new StringContent(json, Encoding.UTF8, "application/json"));
+
+            var JsonContent = await apiresponse.Content.ReadAsStringAsync();
+
+
+            if (apiresponse.IsSuccessStatusCode)
+            {
+            }
 
             //Dictionary<string, Int16> AuthorList = new Dictionary<string, Int16>();
             //AuthorList.Add("Mahesh Chand", 35);

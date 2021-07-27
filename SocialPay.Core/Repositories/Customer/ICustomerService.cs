@@ -6,6 +6,7 @@ using SocialPay.Core.Messaging;
 using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Core.Services;
 using SocialPay.Core.Services.Authentication;
+using SocialPay.Core.Store;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -28,11 +29,13 @@ namespace SocialPay.Core.Repositories.Customer
         private readonly EmailService _emailService;
         private readonly TransactionReceipt _transactionReceipt;
         private readonly SendGridEmailService _sendGridEmailService;
+        private readonly StoreRepository _storeRepository;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ICustomerService));
 
         public ICustomerService(SocialPayDbContext context, AuthRepoService authRepoService,
             IOptions<AppSettings> appSettings, EmailService emailService,
-            TransactionReceipt transactionReceipt, SendGridEmailService sendGridEmailService) : base(context)
+            TransactionReceipt transactionReceipt, SendGridEmailService sendGridEmailService,
+            StoreRepository storeRepository) : base(context)
         {
             _context = context;
             _authRepoService = authRepoService;
@@ -40,6 +43,7 @@ namespace SocialPay.Core.Repositories.Customer
             _emailService = emailService;
             _transactionReceipt = transactionReceipt;
             _sendGridEmailService = sendGridEmailService;
+            _storeRepository = storeRepository ?? throw new ArgumentNullException(nameof(storeRepository));
         }
 
         public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
@@ -289,11 +293,18 @@ namespace SocialPay.Core.Repositories.Customer
                 if (validateLink.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                     return await GetInvoiceTransactionDetails(validateReference.TransactionReference);               
 
+                if(validateReference.MerchantStoreId > 0)
+                {
+                    return await _storeRepository.GetStoreInfobyStoreIdAsync(validateReference.MerchantStoreId);
+                }
+
                 var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
                 var mapper = config.CreateMapper();
 
                 paymentview = mapper.Map<PaymentLinkViewModel>(validateReference);
+
                 paymentview.MerchantDocument = validateReference == null ? string.Empty : _appSettings.BaseApiUrl + validateReference.FileLocation + "/" + validateReference.Document;
+                
                 paymentview.MerchantInfo = new MerchantInfoViewModel
                 {
                     BusinessEmail = getMerchantInfo.BusinessEmail,
