@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialPay.Domain.Entities
 {
-    public class MerchantPaymentSetup
+    public class MerchantPaymentSetup : BaseEntity
     {
         public long MerchantPaymentSetupId { get; set; }
         public long MerchantStoreId { get; set; }

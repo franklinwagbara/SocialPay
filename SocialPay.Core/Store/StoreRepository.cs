@@ -28,6 +28,7 @@ namespace SocialPay.Core.Store
         private readonly IStoreService _storeService;
         private readonly IProductCategoryService _productCategoryService;
         private readonly IProductsService _productsService;
+        private readonly IMerchantPaymentSetupService _merchantPaymentSetupService;
         private readonly StoreBaseRepository _storeBaseRepository;
         private readonly ProductsRepository _productsRepository;
         private readonly IHostingEnvironment _hostingEnvironment;
@@ -41,7 +42,7 @@ namespace SocialPay.Core.Store
             IProductsService productsService, StoreBaseRepository storeBaseRepository,
             IHostingEnvironment environment, IOptions<AppSettings> appSettings,
             BlobService blobService, IConfiguration configuration,
-            ProductsRepository productsRepository)
+            ProductsRepository productsRepository, IMerchantPaymentSetupService merchantPaymentSetupService)
         {
             _storeService = storeService ?? throw new ArgumentNullException(nameof(storeService));
             _productCategoryService = productCategoryService ?? throw new ArgumentNullException(nameof(productCategoryService));
@@ -52,6 +53,7 @@ namespace SocialPay.Core.Store
             _blobService = blobService ?? throw new ArgumentNullException(nameof(blobService));
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _productsRepository = productsRepository ?? throw new ArgumentNullException(nameof(productsRepository));
+            _merchantPaymentSetupService = merchantPaymentSetupService ?? throw new ArgumentNullException(nameof(merchantPaymentSetupService));
         }
         public async Task<WebApiResponse> CreateNewStoreAsync(StoreRequestDto request, UserDetailsViewModel userModel)
         {
@@ -64,7 +66,7 @@ namespace SocialPay.Core.Store
 
             try
             {
-                //userModel.ClientId = 167;
+              //  userModel.ClientId = 167;
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
@@ -75,6 +77,8 @@ namespace SocialPay.Core.Store
 
                 foreach (var item in store)
                 {
+
+                    var linkName = await _merchantPaymentSetupService.GetPaymentLinksId(item.MerchantStoreId);
                     //item.Image = item.Image == null ? string.Empty : _appSettings.BaseApiUrl + item.FileLocation + "/" + item.Image;
 
                    // var fileDescription = "Store/90/Pat/90-ST--85fb-6cef773338fd.jpg";
@@ -88,6 +92,7 @@ namespace SocialPay.Core.Store
                     CloudBlockBlob blob = container.GetBlockBlobReference(item.FileLocation);
 
                     item.Image = blob.Uri.AbsoluteUri;
+                    item.StoreLink = linkName.PaymentLinkUrl;
                 }
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = store };

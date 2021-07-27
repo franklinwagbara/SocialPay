@@ -2570,3 +2570,4 @@ ERROR 2021-07-26 12:57:22,821 181808ms StoreRepository        ?                 
 ClientConnectionId:00000000-0000-0000-0000-000000000000
 Error Number:53,State:0,Class:20 |  | 7/26/2021 12:57:22 PM
 INFO  2021-07-26 13:01:11,953 410940ms StoreRepository        ?                  - Task starts to get stores |  | 7/26/2021 1:01:06 PM
+INFO  2021-07-27 16:08:13,201 80052ms StoreRepository        ?                  - Task starts to get stores |  | 7/27/2021 4:08:13 PM

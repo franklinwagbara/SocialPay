@@ -169,6 +169,7 @@ namespace SocialPay.API
             services.AddScoped<IProductCategoryService, ProductCategoryService>();
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<INotification, Notification>();
+            services.AddScoped<IMerchantPaymentSetupService, MerchantPaymentSetupService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();
             services.AddScoped<StoreRepository>();
