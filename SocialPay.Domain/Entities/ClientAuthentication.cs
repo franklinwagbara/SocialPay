@@ -48,6 +48,7 @@ namespace SocialPay.Domain.Entities
         public string ReferralCode { get; set; }
         [Column(TypeName = "NVARCHAR(20)")]
         public string ReferCode { get; set; }
+        public bool HasRegisteredCompany { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
         public virtual ICollection<PinRequest> PinRequest { get; set; }

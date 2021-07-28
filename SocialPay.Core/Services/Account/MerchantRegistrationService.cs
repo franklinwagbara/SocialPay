@@ -137,8 +137,10 @@ namespace SocialPay.Core.Services.Account
                             UserName = signUpRequestDto.Email,
                             IsLocked = false,
                             ReferralCode = signUpRequestDto.ReferralCode,
-                            ReferCode = $"{"SP-"}{referCode}"
+                            ReferCode = $"{"SP-"}{referCode}",
+                            HasRegisteredCompany = signUpRequestDto.HasRegisteredCompany
                         };
+
                         await _context.ClientAuthentication.AddAsync(model);
                         await _context.SaveChangesAsync();
 
@@ -154,6 +156,7 @@ namespace SocialPay.Core.Services.Account
                             LastDateModified = DateTime.Now,
                             status = MerchantWalletProcess.CreateAccount
                         };
+
                         await _context.MerchantWallet.AddAsync(merchantWallet);
                         await _context.SaveChangesAsync();
 
@@ -256,9 +259,13 @@ namespace SocialPay.Core.Services.Account
                            SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateToken.ClientAuthenticationId);
 
                         if (getuserInfo == null)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };                      
 
                         getuserInfo.StatusCode = MerchantOnboardingProcess.SignUp;
+
+                        if (!getuserInfo.HasRegisteredCompany)
+                            getuserInfo.StatusCode = MerchantOnboardingProcess.BusinessInfo;
+
                         _context.ClientAuthentication.Update(getuserInfo);
                         await _context.SaveChangesAsync();
                         validateToken.Status = true;

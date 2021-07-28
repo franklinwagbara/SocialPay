@@ -51,6 +51,7 @@ namespace SocialPay.Helper.ViewModel
         public string Chargebackemail { get; set; }
         public string Logo { get; set; }
         public DateTime Date { get; set; }
+        public bool HasRegisteredCompany { get; set; }
         public BankInfoViewModel BankInfo { get; set; }
     }
 }

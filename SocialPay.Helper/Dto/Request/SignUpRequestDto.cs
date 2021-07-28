@@ -30,6 +30,7 @@ namespace SocialPay.Helper.Dto.Request
         [Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
         public string ConfirmPassword { get; set; }
         public string ReferralCode { get; set; }
+        public bool HasRegisteredCompany { get; set; }
     }
 
     public class SignUpConfirmationRequestDto

@@ -68,7 +68,8 @@ namespace SocialPay.Core.Services.Report
                                     BusinessPhoneNumber = b.BusinessPhoneNumber, BusinessName = b.BusinessName,
                                     Chargebackemail = b.Chargebackemail,
                                     Logo = _appSettings.BaseApiUrl + b.FileLocation + "/" + b.Logo,
-                                    Date = c.DateEntered
+                                    Date = c.DateEntered,
+                                    HasRegisteredCompany = c.HasRegisteredCompany
                                 }).ToList();
                 result = response;
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
