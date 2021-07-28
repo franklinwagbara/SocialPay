@@ -348,38 +348,38 @@ namespace SocialPay.API.Controllers
 
 
 
-        //////[AllowAnonymous]
-        //////[HttpPost]
-        //////[Route("clear-user-account")]
-        //////public async Task<IActionResult> ClearUserDetails(string email, string reference)
-        //////{
-        //////    _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("clear-user-account")]
+        public async Task<IActionResult> ClearUserDetails(string email, string reference)
+        {
+            _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
 
-        //////    var response = new WebApiResponse { };
-        //////    try
-        //////    {
-        //////        if (reference != "3efa178h")
-        //////            return BadRequest();
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "3efa178h")
+                    return BadRequest();
 
-        //////        if (ModelState.IsValid)
-        //////        {
-        //////            var result = await _transactionService.ClearUserAccount(email);
-        //////            return Ok(result);
-        //////        }
-        //////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //////            .Select(e => e.ErrorMessage));
-        //////        response.ResponseCode = AppResponseCodes.Failed;
-        //////        response.Data = message;
-        //////        return BadRequest(response);
+                if (ModelState.IsValid)
+                {
+                    var result = await _transactionService.ClearUserAccount(email);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        //////    }
-        //////    catch (Exception ex)
-        //////    {
-        //////        _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-        //////        response.ResponseCode = AppResponseCodes.InternalError;
-        //////        return BadRequest(response);
-        //////    }
-        //////}
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
 

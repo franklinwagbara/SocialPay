@@ -524,7 +524,7 @@ namespace SocialPay.Core.Services.Account
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
 
                         if (model.Logo == null)
-                        {
+                        { 
                             await transaction.CommitAsync();
                             _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
 
