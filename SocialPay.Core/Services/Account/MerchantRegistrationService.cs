@@ -485,9 +485,11 @@ namespace SocialPay.Core.Services.Account
 
                         await _context.MerchantBusinessInfo.AddAsync(businessInfoModel);
                         await _context.SaveChangesAsync();
+
                         getUserInfo.StatusCode = MerchantOnboardingProcess.BusinessInfo;
                         getUserInfo.LastDateModified = DateTime.Now;
                         await _context.SaveChangesAsync();
+
                         var cacheKey = Convert.ToString(clientId);
                         string serializedCustomerList;
                         var userInfo = new UserInfoViewModel { };
@@ -502,6 +504,7 @@ namespace SocialPay.Core.Services.Account
                             serializedCustomerList = JsonConvert.SerializeObject(userInfo);
                             redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
                             var options1 = new DistributedCacheEntryOptions()
+
                             .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                             .SetSlidingExpiration(TimeSpan.FromMinutes(15));
 

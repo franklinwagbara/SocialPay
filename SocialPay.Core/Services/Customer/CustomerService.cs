@@ -142,10 +142,13 @@ namespace SocialPay.Core.Services.Customer
                         var getMerchantId = await _context.MerchantBusinessInfo
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
 
+                        ////var generateToken = await _payWithSpectaService
+                        ////    .InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference,
+                        ////    getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey);
+
                         var generateToken = await _payWithSpectaService
-                            .InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference,
-                            getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey);
-                        
+                            .InitiatePayment(CustomerTotalAmount, "Social pay", model.TransactionReference);
+
                         if (generateToken.ResponseCode != AppResponseCodes.Success)
                         {
                             return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
@@ -250,8 +253,10 @@ namespace SocialPay.Core.Services.Customer
                         logCustomerInfo.CustomerId = customerId;
                         logCustomerInfo.Document = newFileName;
                         logCustomerInfo.FileLocation = "CustomerDocuments";
+                       
                         await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                         await _context.SaveChangesAsync();
+                       
                         _log4net.Info("About to save uploaded document" + " | " + model.TransactionReference + " | " + DateTime.Now);
 
                         if (model.Document != null)
@@ -277,8 +282,7 @@ namespace SocialPay.Core.Services.Customer
                                  .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
 
                                 var generateToken = await _payWithSpectaService
-                                    .InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef, 
-                                    getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey);
+                                    .InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef);
                                
                                 if (generateToken.ResponseCode != AppResponseCodes.Success)
                                 {
@@ -298,6 +302,7 @@ namespace SocialPay.Core.Services.Customer
                             paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                             paymentResponse.CustomerId = customerId; 
                             paymentResponse.PaymentLink = paymentData;
+                           
                             _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                             return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
@@ -318,6 +323,7 @@ namespace SocialPay.Core.Services.Customer
                         encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                         paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                         paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+                      
                         _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
@@ -335,8 +341,7 @@ namespace SocialPay.Core.Services.Customer
                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
 
                     var generateToken = await _payWithSpectaService
-                        .InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", paymentRef,
-                        getMerchantId.SpectaMerchantID, getMerchantId.SpectaMerchantKey);
+                        .InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", paymentRef);
                    
                     if (generateToken.ResponseCode != AppResponseCodes.Success)
                     {
@@ -349,15 +354,18 @@ namespace SocialPay.Core.Services.Customer
 
                     return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                 }
+
                 logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
                 await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                 await _context.SaveChangesAsync();
+
                 encryptedText =$"{_appSettings.mid}{_appSettings.paymentCombination}{getPaymentDetails.TotalAmount}{_appSettings.paymentCombination}{paymentRef}";
                 encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                 //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
                 paymentData =  _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
                 paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
                 _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+               
                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
             }
             catch (Exception ex)
