@@ -585,7 +585,8 @@ namespace SocialPay.Core.Services.Account
                     .Include(x => x.MerchantBusinessInfo)
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-                if (getUserInfo.MerchantBusinessInfo.Count == 0)
+
+                if (getUserInfo.MerchantBusinessInfo.Count == 0 && getUserInfo.HasRegisteredCompany)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBusinessInfoRequired };
 
                 if (getUserInfo.MerchantBankInfo.Count > 0)
