@@ -14,18 +14,21 @@ namespace SocialPay.Core.Services.QrCode
         private readonly INibbsQrMerchantService _nibbsQrMerchantService;
         private readonly INibbsQrSubMerchantService _nibbsQrSubMerchantService;
         private readonly INibbsQrMerchantResponseService _nibbsQrMerchantResponseService;
+        private readonly IClientAuthenticationService _clientAuthenticationService;
         // private readonly NibbsQRCodeAPIService _nibbsQRCodeAPIService;
         private readonly MerchantPersonalInfoRepository _merchantPersonalInfoRepository;
         private readonly NibbsQrRepository _nibbsQrRepository;
         public NibbsQrBaseService(INibbsQrMerchantService nibbsQrMerchantService, NibbsQrRepository nibbsQrRepository,
             MerchantPersonalInfoRepository merchantPersonalInfoRepository, INibbsQrSubMerchantService nibbsQrSubMerchantService,
-            INibbsQrMerchantResponseService nibbsQrMerchantResponseService)
+            INibbsQrMerchantResponseService nibbsQrMerchantResponseService,
+            IClientAuthenticationService clientAuthenticationService)
         {
             _nibbsQrMerchantService = nibbsQrMerchantService ?? throw new ArgumentNullException(nameof(nibbsQrMerchantService));
             _nibbsQrRepository = nibbsQrRepository ?? throw new ArgumentNullException(nameof(nibbsQrRepository));
             _merchantPersonalInfoRepository = merchantPersonalInfoRepository ?? throw new ArgumentNullException(nameof(merchantPersonalInfoRepository));
             _nibbsQrSubMerchantService = nibbsQrSubMerchantService ?? throw new ArgumentNullException(nameof(nibbsQrSubMerchantService));
             _nibbsQrMerchantResponseService = nibbsQrMerchantResponseService ?? throw new ArgumentNullException(nameof(nibbsQrMerchantResponseService));
+            _clientAuthenticationService = clientAuthenticationService ?? throw new ArgumentNullException(nameof(clientAuthenticationService));
         }
 
         public async Task<WebApiResponse> CreateMerchantAsync(DefaultMerchantRequestDto requestDto, long clientId)
@@ -36,10 +39,11 @@ namespace SocialPay.Core.Services.QrCode
             if (await _nibbsQrMerchantService.ExistsAsync(clientId))
                 return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Data = "Duplicate Merchant" };
 
-            var merchant = await _merchantPersonalInfoRepository.GetCompleteMerchantPersonalDetailsAsync(clientId);
+           // var merchant = await _merchantPersonalInfoRepository.GetCompleteMerchantPersonalDetailsAsync(clientId);
+            var merchant = await _clientAuthenticationService.GetUserByClientIdInfo(clientId);
 
-            if (merchant.ResponseCode != AppResponseCodes.Success)
-                return new WebApiResponse { ResponseCode = merchant.ResponseCode };
+            if (merchant == null)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
             var model = new NibbsQrMerchantViewModel
             {
@@ -47,11 +51,10 @@ namespace SocialPay.Core.Services.QrCode
                 IsDeleted = false,
                 Address = requestDto.Address,
                 Contact = requestDto.Contact,
-                Email = merchant.BusinessEmail,
+                Email = merchant.Email,
                 Fee = 00,
-                Name = merchant.BusinessName,
-                Phone = merchant.BusinessPhoneNumber,
-                Tin = merchant.Tin
+                Name = merchant.FullName,
+                Phone = merchant.PhoneNumber
             };
 
             return await _nibbsQrRepository.CreateMerchantAsync(model, clientId);

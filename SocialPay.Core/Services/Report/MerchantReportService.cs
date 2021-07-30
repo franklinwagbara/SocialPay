@@ -44,7 +44,6 @@ namespace SocialPay.Core.Services.Report
 
         public async Task<WebApiResponse> GetMerchants()
         {
-            //var result = new List<MerchantsViewModel>();
             var result = new List<MerchantBusinessInfoViewModel>();
             try
             {
@@ -69,35 +68,13 @@ namespace SocialPay.Core.Services.Report
                                     Chargebackemail = b.Chargebackemail,
                                     Logo = _appSettings.BaseApiUrl + b.FileLocation + "/" + b.Logo,
                                     Date = c.DateEntered,
-                                    HasRegisteredCompany = c.HasRegisteredCompany
+                                    HasRegisteredCompany = c.HasRegisteredCompany 
                                 }).ToList();
+
                 result = response;
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
-                //var clients = await _context.ClientAuthentication
-                //    .Include(x => x.MerchantBankInfo)
-                //    .Include(x => x.MerchantBusinessInfo)
-                //    .Include(x => x.MerchantActivitySetup)
-                //    .Include(x => x.MerchantPaymentSetup)
-                //    .Where(x => x.RoleName == RoleDetails.Merchant).ToListAsync();
-
-                //foreach (var item in clients)
-                //{
-                //    result1.Add(new MerchantBusinessInfoViewModel {  BusinessEmail = item.MerchantBusinessInfo.Select(x=>x.BusinessEmail).First() })
-                //}
-
-
-                //var bankInfo = new List<BankInfoViewModel>();
-                //var businessInfo = new List<BusinessInfoViewModel>();
-                //foreach (var item in clients)
-                //{
-                //    bankInfo.Add(new BankInfoViewModel { AccountName = item.MerchantBankInfo.Select(x => x.AccountName).FirstOrDefault() });
-                //    bankInfo.Add(new BankInfoViewModel { BankName = item.MerchantBankInfo.Select(x => x.BankName).FirstOrDefault() });
-                //    businessInfo.Add(new BusinessInfoViewModel { BusinessEmail = item.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault() });
-                //    businessInfo.Add(new BusinessInfoViewModel { BusinessName = item.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault() });
-                //}
-                //result.Add(new MerchantsViewModel { bankInfo = bankInfo });
-                //result.Add(new MerchantsViewModel { businessInfo = businessInfo });
-                //return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+               
             }
             catch (Exception ex)
             {

@@ -6,6 +6,7 @@ using SocialPay.Core.Interface;
 using SocialPay.Core.Store;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Notification;
+using System;
 using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
@@ -19,7 +20,7 @@ namespace SocialPay.API.Controllers
 
         public StoreController(StoreRepository storeRepository, INotification notification) : base(notification)
         {
-            _storeRepository = storeRepository;
+            _storeRepository = storeRepository ?? throw new ArgumentNullException(nameof(storeRepository));
         }
 
         [HttpPost]

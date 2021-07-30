@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210730091902_created-dstv-gotv-tables")]
+    partial class createddstvgotvtables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -924,6 +926,9 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("customerId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("merchantId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("merchantReference")
                         .HasColumnType("nvarchar(max)");
 
@@ -952,6 +957,9 @@ namespace SocialPay.Domain.Migrations
 
                     b.Property<long>("DstvAccountLookupId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("merchantId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("merchantReference")
                         .HasColumnType("nvarchar(max)");
@@ -997,115 +1005,6 @@ namespace SocialPay.Domain.Migrations
                     b.HasKey("FailedTransactionsId");
 
                     b.ToTable("FailedTransactions");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.FioranoBillsPaymentResponse", b =>
-                {
-                    b.Property<long>("FioranoBillsPaymentResponseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Balance")
-                        .HasColumnType("NVARCHAR(15)");
-
-                    b.Property<string>("CHARGEAMT")
-                        .HasColumnType("NVARCHAR(15)");
-
-                    b.Property<string>("COMMAMT")
-                        .HasColumnType("NVARCHAR(90)");
-
-                    b.Property<string>("FTID")
-                        .HasColumnType("NVARCHAR(30)");
-
-                    b.Property<long>("FioranoBillsRequestId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("JsonResponse")
-                        .HasColumnType("NVARCHAR(550)");
-
-                    b.Property<string>("PaymentReference")
-                        .HasColumnType("NVARCHAR(90)");
-
-                    b.Property<string>("ReferenceID")
-                        .HasColumnType("NVARCHAR(90)");
-
-                    b.Property<string>("ResponseCode")
-                        .HasColumnType("NVARCHAR(20)");
-
-                    b.Property<string>("ResponseText")
-                        .HasColumnType("NVARCHAR(280)");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("FioranoBillsPaymentResponseId");
-
-                    b.HasIndex("FioranoBillsRequestId");
-
-                    b.ToTable("FioranoBillsPaymentResponse");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.FioranoBillsRequest", b =>
-                {
-                    b.Property<long>("FioranoBillsRequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("BillsType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("ClientAuthenticationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("CommissionCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreditAccountNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreditCurrency")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DebitAcctNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DebitAmount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DebitCurrency")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SessionId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionBranch")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrxnLocation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VtellerAppID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("narrations")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("FioranoBillsRequestId");
-
-                    b.HasIndex("ClientAuthenticationId");
-
-                    b.ToTable("FioranoBillsRequest");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.FioranoT24CardCreditRequest", b =>
@@ -3046,24 +2945,6 @@ namespace SocialPay.Domain.Migrations
                     b.HasOne("SocialPay.Domain.Entities.DstvAccountLookup", "DstvAccountLookup")
                         .WithMany("DstvAccountLookupResponse")
                         .HasForeignKey("DstvAccountLookupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.FioranoBillsPaymentResponse", b =>
-                {
-                    b.HasOne("SocialPay.Domain.Entities.FioranoBillsRequest", "FioranoBillsRequest")
-                        .WithMany("FioranoBillsPaymentResponse")
-                        .HasForeignKey("FioranoBillsRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.FioranoBillsRequest", b =>
-                {
-                    b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
-                        .WithMany("FioranoBillsRequest")
-                        .HasForeignKey("ClientAuthenticationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

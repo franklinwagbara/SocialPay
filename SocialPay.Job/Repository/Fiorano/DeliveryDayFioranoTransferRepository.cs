@@ -40,6 +40,7 @@ namespace SocialPay.Job.Repository.Fiorano
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+
                     var fioranoRequestBody = new FTRequest
                     {
                         SessionId = Guid.NewGuid().ToString(),

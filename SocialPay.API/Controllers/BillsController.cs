@@ -1,47 +1,43 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SocialPay.Core.Services.Bill;
 using SocialPay.Helper;
+using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SocialPay.Core.Extensions.Common;
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace SocialPay.API.Controllers
 {
-    [Route("api/socialpay/transaction")]
+    [Route("api/socialpay/bills")]
     [ApiController]
-    public class BillsController : ControllerBase
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class BillsController : BaseController
     {
-        public BillsController()
+        private readonly BillService _billservice;
+        public BillsController(BillService billService, INotification notification) : base(notification)
         {
-
+            _billservice = billService ?? throw new ArgumentNullException(nameof(billService));
         }
 
+        [HttpGet]
+        [Route("dstv-gotv-get-billers")]
+        public async Task<IActionResult> GetBillers() => Response(await _billservice.GetBillersAsync(User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
         [HttpPost]
-        [Route("dstv-subscription")]
-        public async Task<IActionResult> CreateUser([FromBody] string Number)
-        {
-            // _log4net.Info("Tasks starts to create account" + " | " + model.Email + " | " + DateTime.Now);
-            var response = new WebApiResponse { };
+        [Route("dstv-gotv-account-lookup")]
+        public async Task<IActionResult> DstvGotvAccountLookp([FromBody] DstvAccountLookupDto request) => Response(await _billservice.PayUAccountLookupPayment(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
-            if (ModelState.IsValid)
-            {
-                var identity = User.Identity as ClaimsIdentity;
-                var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-                return Ok();
-            }
-
-            var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                .Select(e => e.ErrorMessage));
-
-            response.ResponseCode = AppResponseCodes.Failed;
-            response.Data = message;
-
-            return BadRequest(response);
-        }
+        [HttpPost]
+        [Route("dstv-gotv-single-payment")]
+        public async Task<IActionResult> DstvGotvAccountSinglePayment([FromBody] SingleDstvPaymentDto request) => Response(await _billservice.PayUSingleDstvPayment(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
     }
 }

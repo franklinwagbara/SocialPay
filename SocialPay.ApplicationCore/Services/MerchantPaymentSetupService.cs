@@ -42,7 +42,7 @@ namespace SocialPay.ApplicationCore.Services
 
         public async Task UpdateAsync(PaymentLinkViewModel model)
         {
-            var entity = await _linkSetup.GetSingleAsync(x => x.MerchantStoreId == model.MerchantStoreId);
+            var entity = await _linkSetup.GetSingleAsync(x => x.MerchantStoreId == model.MerchantPaymentSetupId);
 
           
             entity.LastDateModified = DateTime.Now;

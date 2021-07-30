@@ -60,5 +60,11 @@ namespace SocialPay.Domain
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<QrPaymentRequest> QrPaymentRequest { get; set; }
         public DbSet<QrPaymentResponse> QrPaymentResponse { get; set; }
+        public DbSet<SingleDstvPayment> SingleDstvPayment { get; set; }
+        public DbSet<SingleDstvPaymentResponse> SingleDstvPaymentResponse { get; set; }
+        public DbSet<DstvAccountLookup> DstvAccountLookup { get; set; }
+        public DbSet<DstvAccountLookupResponse> DstvAccountLookupResponse { get; set; }
+        public DbSet<FioranoBillsRequest> FioranoBillsRequest { get; set; }
+        public DbSet<FioranoBillsPaymentResponse> FioranoBillsPaymentResponse { get; set; }
     }
 }

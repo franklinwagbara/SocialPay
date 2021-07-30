@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210730095517_created-billers-fiorano-table")]
+    partial class createdbillersfioranotable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -924,6 +926,9 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("customerId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("merchantId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("merchantReference")
                         .HasColumnType("nvarchar(max)");
 
@@ -952,6 +957,9 @@ namespace SocialPay.Domain.Migrations
 
                     b.Property<long>("DstvAccountLookupId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("merchantId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("merchantReference")
                         .HasColumnType("nvarchar(max)");

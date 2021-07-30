@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
@@ -14,11 +15,13 @@ namespace SocialPay.Core.Services.Merchant
     public class MerchantPersonalInfoRepository
     {
         private readonly SocialPayDbContext _context;
-        public MerchantPersonalInfoRepository(SocialPayDbContext context)
+        public MerchantPersonalInfoRepository(SocialPayDbContext context, IServiceProvider services)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            Services = services ?? throw new ArgumentNullException(nameof(services));
         }
 
+        public IServiceProvider Services { get; }
         public async Task<BusinessInfoViewModel> GetCompleteMerchantPersonalDetailsAsync(long clientId)
         {
             try
@@ -45,5 +48,33 @@ namespace SocialPay.Core.Services.Merchant
                 return new BusinessInfoViewModel { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+        public async Task <List<ClientAuthenticationViewModel>> GetCompleteMerchantClientInfoDetailsAsync()
+        {
+            var result = new List<ClientAuthenticationViewModel>();
+
+            try
+            {
+                using var scope = Services.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+
+
+                var query = await _context.ClientAuthentication.Where(x => !_context.MerchantQRCodeOnboarding
+                .Select(b => b.ClientAuthenticationId).Contains(x.ClientAuthenticationId)).ToListAsync();
+
+                foreach (var item in query)
+                {
+                    result.Add(new ClientAuthenticationViewModel { PhoneNumber = item.PhoneNumber,
+                    Email = item.Email});
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return result;
+            }
+        }
+
     }
 }

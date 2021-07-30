@@ -25,10 +25,13 @@ using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.AzureBlob;
+using SocialPay.Core.Services.Bill;
 using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Data;
+using SocialPay.Core.Services.Fiorano;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Merchant;
+using SocialPay.Core.Services.PayU;
 using SocialPay.Core.Services.Products;
 using SocialPay.Core.Services.QrCode;
 using SocialPay.Core.Services.Report;
@@ -45,6 +48,9 @@ using SocialPay.Helper.Notification;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
+using SocialPay.Job.Repository.NibbsMerchantJobService.Interface;
+using SocialPay.Job.Repository.NibbsMerchantJobService.Repository;
+using SocialPay.Job.Repository.NibbsMerchantJobService.Services;
 using SocialPay.Job.Repository.NonEscrowBankTransactions;
 using SocialPay.Job.Repository.NonEscrowCardWalletTransaction;
 using SocialPay.Job.Repository.NonEscrowOtherWalletTransaction;
@@ -170,12 +176,20 @@ namespace SocialPay.API
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<INotification, Notification>();
             services.AddScoped<IMerchantPaymentSetupService, MerchantPaymentSetupService>();
+            services.AddScoped<IClientAuthenticationService, ClientAuthenticationService>();
+            services.AddScoped<IFioranoRequestService, FioranoRequestService>();
+            services.AddScoped<IFioranoResponseService, FioranoResponseService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();
             services.AddScoped<StoreRepository>();
             services.AddScoped<StoreBaseRepository>();
             services.AddScoped<NibbsQrBaseService>();
             services.AddScoped<NibbsQrRepository>();
+            services.AddScoped<BillService>();
+            services.AddScoped<DstvPaymentService>();
+            services.AddScoped<FioranoService>();
+            services.AddScoped<FioranoAPIService>();
+            services.AddSingleton<NibbsQrJobRepository>();
             services.AddScoped<NibbsQRCodeAPIService>();
             services.AddScoped<MerchantPersonalInfoRepository>();
             services.AddSingleton<WalletRepoJobService>();
@@ -213,6 +227,7 @@ namespace SocialPay.API
             services.AddSingleton<PendingPayWithCardTransaction>();
             services.AddSingleton<CreditDebitService>();
             services.AddScoped<IProcessMerchantWalletService, ProcessMerchantWalletService>();
+            services.AddSingleton<ICreateNibbsMerchantService, CreateNibbsMerchantService>();
             services.AddSingleton<ProcessMerchantWalletTransactions>();
 
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
@@ -230,6 +245,12 @@ namespace SocialPay.API
             ////////});
 
             ///Main jobs starts
+
+            //services.AddCronJob<CreateNibbsMerchantTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CreateNibbsMerchantTask;
+            //});
 
             ////services.AddCronJob<CardPaymentTask>(c =>
             ////{

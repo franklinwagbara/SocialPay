@@ -102,5 +102,10 @@
         public string nibsQRCodeCheckSumHeaderName { get; set; }
         public string nibsQRCodeClientId { get; set; }
         public string nibsQRCodeClientSecret { get; set; }
+        public string paywithPayUBaseUrl { get; set; }
+        public string paywithPayUSingleDstvPurchaseUrlExtension { get; set; }
+        public string paywithPayUAccountLookupDstvPurchaseUrlExtension { get; set; }
+        public string GetBillersUrl { get; set; }
+
     }
 }

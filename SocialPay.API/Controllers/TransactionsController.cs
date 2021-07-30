@@ -221,7 +221,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         [Route("accept-reject-order")]
         public async Task<IActionResult> AcceptRejectOrder([FromBody] AcceptRejectRequestDto model)

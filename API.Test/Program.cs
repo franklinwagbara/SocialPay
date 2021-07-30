@@ -42,6 +42,10 @@ namespace API.Test
 
             var json = JsonConvert.SerializeObject(model);
 
+            var getBillers = await client.PostAsync("stl/payu/products/get-Bouquets", null);
+
+            var billerContent = await getBillers.Content.ReadAsStringAsync();
+
             var apiresponse = await client.PostAsync("stl/payu/accounts-lookup/dstv-gotv",
                     new StringContent(json, Encoding.UTF8, "application/json"));
 

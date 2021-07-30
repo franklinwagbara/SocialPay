@@ -24,6 +24,9 @@ namespace SocialPay.Domain.Entities
             ProductCategory = new HashSet<ProductCategory>();
             MerchantQRCodeOnboarding = new HashSet<MerchantQRCodeOnboarding>();
             QrPaymentRequest = new HashSet<QrPaymentRequest>();
+            DstvAccountLookup = new HashSet<DstvAccountLookup>();
+            SingleDstvPayment = new HashSet<SingleDstvPayment>();
+            FioranoBillsRequest = new HashSet<FioranoBillsRequest>();
         }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]
@@ -83,5 +86,8 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<Product> Product { get; set; }
         public virtual ICollection<MerchantQRCodeOnboarding> MerchantQRCodeOnboarding { get; set; }
         public virtual ICollection<QrPaymentRequest> QrPaymentRequest { get; set; }
+        public virtual ICollection<DstvAccountLookup> DstvAccountLookup { get; set; }
+        public virtual ICollection<SingleDstvPayment> SingleDstvPayment { get; set; }
+        public virtual ICollection<FioranoBillsRequest> FioranoBillsRequest { get; set; }
     }
 }

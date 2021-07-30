@@ -14,5 +14,6 @@
         public string NonEscrowWalletTransactionTask { get; set; }
         public string NonEscrowBankTransactionTask { get; set; }
         public string ProcessFailedMerchantWalletTask { get; set; }
+        public string CreateNibbsMerchantTask { get; set; }
     }
 }
