@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.QrCode
 {
-    public class NibbsQRCodeAPIService
+    public class NibbsQRCodeAPIJobService
     {
         private readonly HttpClient _client;
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NibbsQRCodeAPIService));
 
-        public NibbsQRCodeAPIService(IOptions<AppSettings> appSettings)
+        public NibbsQRCodeAPIJobService(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
 
@@ -26,7 +26,6 @@ namespace SocialPay.Core.Services.QrCode
             {
                 BaseAddress = new Uri(_appSettings.nibsQRCodeBaseUrl)
             };
-
         }
 
         public async Task<CreateNibsMerchantQrCodeResponse> CreateMerchant(CreateNibsMerchantRequestDto requestModel)
@@ -167,12 +166,12 @@ namespace SocialPay.Core.Services.QrCode
 
                 response.jsonResponse = result;
                 response.ResponseCode = AppResponseCodes.Failed;
-
                 return response;
 
             }
             catch (Exception ex)
             {
+
                 return new BindMechantResponseDto { ResponseCode = AppResponseCodes.InternalError };
             }
         }

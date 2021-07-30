@@ -20,16 +20,16 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
         private readonly NibbsQrBaseService _nibbsQrBaseService;
         private readonly NibbsQrRepository _nibbsQrRepository;
         private readonly MerchantPersonalInfoRepository _merchantPersonalInfoRepository;
-        private readonly NibbsQrJobRepository _nibbsQrJobRepository;
+        private readonly NibbsQrJobCreateMerchantRepository _nibbsQrJobCreateMerchantRepository;
         public CreateNibbsMerchantService(IServiceProvider services,
-                     NibbsQrJobRepository nibbsQrJobRepository)
+                     NibbsQrJobCreateMerchantRepository nibbsQrJobCreateMerchantRepository)
         {
             Services = services ?? throw new ArgumentNullException(nameof(services));
 
             //_nibbsQrBaseService = nibbsQrBaseService ?? throw new ArgumentNullException(nameof(nibbsQrBaseService));
             //_merchantPersonalInfoRepository = merchantPersonalInfoRepository ?? throw new ArgumentNullException(nameof(merchantPersonalInfoRepository));
             //_nibbsQrRepository = nibbsQrRepository ?? throw new ArgumentNullException(nameof(nibbsQrRepository));
-            _nibbsQrJobRepository = nibbsQrJobRepository ?? throw new ArgumentNullException(nameof(nibbsQrJobRepository));
+            _nibbsQrJobCreateMerchantRepository = nibbsQrJobCreateMerchantRepository ?? throw new ArgumentNullException(nameof(nibbsQrJobCreateMerchantRepository));
         }
 
         public IServiceProvider Services { get; }
@@ -44,7 +44,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
 
-                    var query = await context.ClientAuthentication.Where(x => !context.MerchantQRCodeOnboarding
+                    var query = await context.ClientAuthentication.Where(x => x.StatusCode == "00" && !context.MerchantQRCodeOnboarding
                       .Select(b => b.ClientAuthenticationId).Contains(x.ClientAuthenticationId)).ToListAsync();
 
                     var model = new DefaultMerchantRequestDto();
@@ -52,22 +52,21 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
                     var qrRequest = new List<NibbsQrMerchantViewModel>();
 
                     foreach (var item in query)
-                    {
-                      
+                    {                      
                         qrRequest.Add(new NibbsQrMerchantViewModel
                         {
-                            ClientAuthenticationId = item.ClientAuthenticationId,
                             IsDeleted = false,
-                            Address = "",
+                            Address = item.FullName,
                             Contact = item.PhoneNumber,
                             Email = item.Email,
                             Fee = 00,
                             Name = item.FullName,
-                            Phone = item.PhoneNumber
+                            Phone = item.PhoneNumber,
+                            ClientAuthenticationId = item.ClientAuthenticationId
                         });
                     }
 
-                    await _nibbsQrJobRepository.ProcessTransactions(qrRequest);                  
+                    await _nibbsQrJobCreateMerchantRepository.ProcessTransactions(qrRequest);                  
 
                     return "Task Completed";
                 }

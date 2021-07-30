@@ -179,6 +179,7 @@ namespace SocialPay.API
             services.AddScoped<IClientAuthenticationService, ClientAuthenticationService>();
             services.AddScoped<IFioranoRequestService, FioranoRequestService>();
             services.AddScoped<IFioranoResponseService, FioranoResponseService>();
+            services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();
             services.AddScoped<StoreRepository>();
@@ -189,7 +190,10 @@ namespace SocialPay.API
             services.AddScoped<DstvPaymentService>();
             services.AddScoped<FioranoService>();
             services.AddScoped<FioranoAPIService>();
-            services.AddSingleton<NibbsQrJobRepository>();
+            services.AddSingleton<NibbsQrJobCreateMerchantRepository>();
+            services.AddSingleton<NibbsQrJobCreateSubMerchantRepository>();
+            services.AddSingleton<BindMerchantServiceRepository>();
+            services.AddSingleton<NibbsQRCodeAPIJobService>();
             services.AddScoped<NibbsQRCodeAPIService>();
             services.AddScoped<MerchantPersonalInfoRepository>();
             services.AddSingleton<WalletRepoJobService>();
@@ -228,6 +232,7 @@ namespace SocialPay.API
             services.AddSingleton<CreditDebitService>();
             services.AddScoped<IProcessMerchantWalletService, ProcessMerchantWalletService>();
             services.AddSingleton<ICreateNibbsMerchantService, CreateNibbsMerchantService>();
+            services.AddSingleton<IBindMerchantService, BindMerchantService>();
             services.AddSingleton<ProcessMerchantWalletTransactions>();
 
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
@@ -245,6 +250,18 @@ namespace SocialPay.API
             ////////});
 
             ///Main jobs starts
+
+            //services.AddCronJob<BindMerchantTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.BindMerchantTask;
+            //});
+
+            //services.AddCronJob<CreateNibbsSubMerchantTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CreateNibbsMerchantTask;
+            //});
 
             //services.AddCronJob<CreateNibbsMerchantTask>(c =>
             //{

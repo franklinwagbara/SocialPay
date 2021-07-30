@@ -123,14 +123,14 @@ namespace SocialPay.API.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {
-                    var result = await _authRepoService.Authenticate(model);                   
-                    return Ok(result);
-                }
+                    return Ok(await _authRepoService.Authenticate(model));
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
+
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }

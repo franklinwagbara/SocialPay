@@ -44,7 +44,7 @@ namespace SocialPay.Core.Services.Bill
 
             var accountlookdstv = new DstvAccountLookup
             {
-                merchantReference = model.merchantReference,
+                merchantReference = $"{"SP-"}{"B-"}{Guid.NewGuid().ToString()}",
                 transactionType = model.transactionType,
                 vasId = model.vasId,
                 countryCode = model.countryCode,
@@ -52,9 +52,16 @@ namespace SocialPay.Core.Services.Bill
                 ClientAuthenticationId = clientId
             };
 
+            if(await _context.DstvAccountLookup.AnyAsync(x=>x.merchantReference == accountlookdstv.merchantReference))
+                return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicatePaymentReference, Message = "Duplicate Payment Reference" };
+
             await _context.DstvAccountLookup.AddAsync(accountlookdstv);
+            await _context.SaveChangesAsync();
 
             var postsingledstvbill = await _payWithPayUService.InitiatePayUDstvAccountLookupPayment(model);
+
+            if (postsingledstvbill.resultCode != AppResponseCodes.Success)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request Failed", Data = postsingledstvbill};
 
             var response = (DstvAccountLookupResponseDto)postsingledstvbill.DataObj;
 
@@ -64,14 +71,12 @@ namespace SocialPay.Core.Services.Bill
                 pointOfFailure = response?.pointOfFailure,
                 resultCode = postsingledstvbill?.resultCode,
                 payUVasReference = response?.payUVasReference,
-                merchantReference = response?.merchantReference
+                merchantReference = response?.merchantReference,
+                DstvAccountLookupId = accountlookdstv.DstvAccountLookupId
             };
 
             await _context.DstvAccountLookupResponse.AddAsync(lookuppaymentresponse);
-            await _context.SaveChangesAsync();
-
-            if (postsingledstvbill.resultCode != AppResponseCodes.Success)
-                return new WebApiResponse { ResponseCode = postsingledstvbill.resultCode };
+            await _context.SaveChangesAsync();            
 
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = postsingledstvbill };
         }
