@@ -179,6 +179,7 @@ namespace SocialPay.API
             services.AddScoped<IClientAuthenticationService, ClientAuthenticationService>();
             services.AddScoped<IFioranoRequestService, FioranoRequestService>();
             services.AddScoped<IFioranoResponseService, FioranoResponseService>();
+            services.AddScoped<IMerchantBankingInfoService, MerchantBankingInfoService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();

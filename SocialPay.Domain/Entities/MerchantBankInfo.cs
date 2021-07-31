@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialPay.Domain.Entities
 {
-    public class MerchantBankInfo
+    public class MerchantBankInfo : BaseEntity
     {
         public long MerchantBankInfoId { get; set; }
         public long ClientAuthenticationId { get; set; }

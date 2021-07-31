@@ -18,20 +18,31 @@ namespace SocialPay.Core.Services.Fiorano
         private readonly FioranoAPIService _fioranoService;
         private readonly IFioranoRequestService _fioranoRequestService;
         private readonly IFioranoResponseService _fioranoResponseService;
+        private readonly IMerchantBankingInfoService _merchantBankingInfoService;
         private readonly AppSettings _appSettings;
         public FioranoService(FioranoAPIService fioranoService, IFioranoRequestService fioranoRequestService,
-            IOptions<AppSettings> appSettings, IFioranoResponseService fioranoResponseService)
+            IOptions<AppSettings> appSettings, IFioranoResponseService fioranoResponseService,
+            IMerchantBankingInfoService merchantBankingInfoService)
         {
             _appSettings = appSettings.Value;
             _fioranoService = fioranoService ?? throw new ArgumentNullException(nameof(fioranoService));
             _fioranoRequestService = fioranoRequestService ?? throw new ArgumentNullException(nameof(fioranoRequestService));
             _fioranoResponseService = fioranoResponseService ?? throw new ArgumentNullException(nameof(fioranoResponseService));
+            _merchantBankingInfoService = merchantBankingInfoService ?? throw new ArgumentNullException(nameof(merchantBankingInfoService));
         }
 
         public async Task<WebApiResponse> InitiateFioranoRequest(FioranoBillsRequestDto fioranoBillsRequestDto, long clientId)
         {
             try
             {
+                var bankInfo = await _merchantBankingInfoService.GetMerchantBankInfo(clientId);
+
+                if (bankInfo == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found" };
+
+                if(bankInfo.BankCode != _appSettings.SterlingBankCode)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
+
                 var model = new FTRequest
                 {
                     SessionId = Guid.NewGuid().ToString(),
@@ -41,7 +52,7 @@ namespace SocialPay.Core.Services.Fiorano
                     VtellerAppID = _appSettings.fioranoVtellerAppID,
                     TrxnLocation = _appSettings.fioranoTrxnLocation,
                     TransactionType = _appSettings.fioranoTransactionType,
-                    DebitAcctNo = _appSettings.socialPayNominatedAccountNo,
+                    DebitAcctNo = bankInfo.Nuban,
                     TransactionBranch = "NG0020006",
                     narrations = "Social Pay Bills Payment",
                     DebitAmount = fioranoBillsRequestDto.DebitAmount,
@@ -51,17 +62,17 @@ namespace SocialPay.Core.Services.Fiorano
                 var requestModel = new FioranoRequestViewModel
                 {
                     SessionId = model.SessionId,
-                    CommissionCode = _appSettings.fioranoCommisionCode,
-                    CreditCurrency = _appSettings.fioranoCreditCurrency,
-                    DebitCurrency = _appSettings.fioranoCreditCurrency,
-                    VtellerAppID = _appSettings.fioranoVtellerAppID,
-                    TrxnLocation = _appSettings.fioranoTrxnLocation,
-                    TransactionType = _appSettings.fioranoTransactionType,
-                    DebitAcctNo = _appSettings.socialPayNominatedAccountNo,
+                    CommissionCode = model.CommissionCode,
+                    CreditCurrency = model.CreditCurrency,
+                    DebitCurrency = model.DebitCurrency,
+                    VtellerAppID = model.VtellerAppID,
+                    TrxnLocation = model.TrxnLocation,
+                    TransactionType = model.TransactionType,
+                    DebitAcctNo = model.DebitAcctNo,
                     TransactionBranch = "NG0020006",
                     narrations = "Social Pay Bills Payment",
-                    DebitAmount = fioranoBillsRequestDto.DebitAmount,
-                    CreditAccountNo = _appSettings.socialT24AccountNo,
+                    DebitAmount = model.DebitAmount,
+                    CreditAccountNo = model.CreditAccountNo,
                     ClientAuthenticationId = clientId
                 };
 
