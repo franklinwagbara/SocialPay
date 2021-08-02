@@ -15,13 +15,15 @@ namespace SocialPay.Core.Services.QrCode
         private readonly INibbsQrSubMerchantService _nibbsQrSubMerchantService;
         private readonly INibbsQrMerchantResponseService _nibbsQrMerchantResponseService;
         private readonly IClientAuthenticationService _clientAuthenticationService;
+        private readonly INibbsQrSubMerchantResponseService _nibbsQrSubMerchantResponseService;
         // private readonly NibbsQRCodeAPIService _nibbsQRCodeAPIService;
         private readonly MerchantPersonalInfoRepository _merchantPersonalInfoRepository;
         private readonly NibbsQrRepository _nibbsQrRepository;
         public NibbsQrBaseService(INibbsQrMerchantService nibbsQrMerchantService, NibbsQrRepository nibbsQrRepository,
             MerchantPersonalInfoRepository merchantPersonalInfoRepository, INibbsQrSubMerchantService nibbsQrSubMerchantService,
             INibbsQrMerchantResponseService nibbsQrMerchantResponseService,
-            IClientAuthenticationService clientAuthenticationService)
+            IClientAuthenticationService clientAuthenticationService,
+            INibbsQrSubMerchantResponseService nibbsQrSubMerchantResponseService)
         {
             _nibbsQrMerchantService = nibbsQrMerchantService ?? throw new ArgumentNullException(nameof(nibbsQrMerchantService));
             _nibbsQrRepository = nibbsQrRepository ?? throw new ArgumentNullException(nameof(nibbsQrRepository));
@@ -29,6 +31,7 @@ namespace SocialPay.Core.Services.QrCode
             _nibbsQrSubMerchantService = nibbsQrSubMerchantService ?? throw new ArgumentNullException(nameof(nibbsQrSubMerchantService));
             _nibbsQrMerchantResponseService = nibbsQrMerchantResponseService ?? throw new ArgumentNullException(nameof(nibbsQrMerchantResponseService));
             _clientAuthenticationService = clientAuthenticationService ?? throw new ArgumentNullException(nameof(clientAuthenticationService));
+            _nibbsQrSubMerchantResponseService = nibbsQrSubMerchantResponseService ?? throw new ArgumentNullException(nameof(nibbsQrSubMerchantResponseService));
         }
 
         public async Task<WebApiResponse> CreateMerchantAsync(DefaultMerchantRequestDto requestDto, long clientId)
@@ -71,6 +74,8 @@ namespace SocialPay.Core.Services.QrCode
 
                 if (merchantResponseInfo == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+
+               // var subMerchantnfo = await _nibbsQrSubMerchantService.GetMerchantInfo()
 
                 var model = new NibbsSubMerchantViewModel
                 {
@@ -118,30 +123,32 @@ namespace SocialPay.Core.Services.QrCode
             }
         }
 
+        static string RandomDigits(int length = 16)
+        {
+            var firstFourthen = DateTime.Now.ToString("yyyyMMddhhmmss");
+            var random = new Random();
+            string s = string.Empty;
+            for (int i = 0; i < length; i++)
+                s = String.Concat(s, random.Next(10).ToString());
+            var number = firstFourthen.ToString() + s;
+            return number;
+        }
         public async Task<WebApiResponse> DynamicPaymentAsync(DynamicPaymentRequestDto request, long clientId)
         {
             try
             {
-                var merchant = await _nibbsQrMerchantService.GetMerchantStatusInfo(clientId, NibbsMerchantOnboarding.BindMerchant);
+                var merchant = await _nibbsQrSubMerchantResponseService.GetMerchantInfo(clientId);
 
-                var clientInfo = await _clientAuthenticationService.GetUserByClientIdInfo(clientId);
-
-                if (clientInfo.QrCodeStatus != NibbsMerchantOnboarding.BindMerchant)
+                if (merchant == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.QRMerchantOnboardingNotFoundOrCompleted, Message = "QR Merchant onboarding not found/completed" };
-
-                var qrInfo = await _nibbsQrMerchantResponseService.GetMerchantInfo(merchant.MerchantQRCodeOnboardingId);
-                //var merchant = await _nibbsQrMerchantService
 
                 var defaultRequest = new DynamicPaymentDefaultRequestDto
                 {
                     amount = request.amount,
-                    customerIdentifier = merchant.Email,
-                    orderNo = request.orderNo,
-                    userAccountName = qrInfo.merchantName,
-                    userAccountNumber = qrInfo.mchNo,
-                    userBankVerificationNumber = clientInfo.Bvn,
-                    userGps = request.userGps,
-                    userKycLevel = "1"
+                    mchNo = merchant.MchNo,
+                    subMchNo = merchant.SubMchNo,
+                    orderType = "4",
+                    orderNo = RandomDigits()
                 };
 
                 return await _nibbsQrRepository.QrDynamicPayAsync(defaultRequest, clientId);

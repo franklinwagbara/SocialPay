@@ -1,28 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 
-namespace SocialPay.Domain.Entities
+namespace SocialPay.Helper.ViewModel
 {
-    public class SubMerchantQRCodeOnboardingResponse : BaseEntity
-    {      
+    public class SubMerchantQrResponseViewModel
+    {
         public long SubMerchantQRCodeOnboardingResponseId { get; set; }
         public long ClientAuthenticationId { get; set; }
         public long SubMerchantQRCodeOnboardingId { get; set; }
-        [Column(TypeName = "NVARCHAR(50)")]
         public string ReturnCode { get; set; }
-        [Column(TypeName = "NVARCHAR(130)")]
         public string ReturnMsg { get; set; }
-        [Column(TypeName = "NVARCHAR(50)")]
         public string MchNo { get; set; }
-        [Column(TypeName = "NVARCHAR(130)")]
         public string MerchantName { get; set; }
-        [Column(TypeName = "NVARCHAR(60)")]
         public string SubMchNo { get; set; }
         public string QrCode { get; set; }
         public string JsonResponse { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime DateEntered { get; set; } = DateTime.Now;
-        public SubMerchantQRCodeOnboarding SubMerchantQRCodeOnboarding { get; set; }
+        public DateTime DateEntered { get; set; }
     }
 }

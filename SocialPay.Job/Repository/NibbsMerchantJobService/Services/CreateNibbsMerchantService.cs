@@ -45,7 +45,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
 
                     var query = await context.ClientAuthentication.Where(x => x.StatusCode == "00" && !context.MerchantQRCodeOnboarding
-                      .Select(b => b.ClientAuthenticationId).Contains(x.ClientAuthenticationId)).ToListAsync();
+                      .Select(b => b.ClientAuthenticationId).Contains(x.ClientAuthenticationId)).Take(5).ToListAsync();
 
                     var model = new DefaultMerchantRequestDto();
 

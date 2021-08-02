@@ -299,97 +299,95 @@ namespace SocialPay.Core.Services.Merchant
             }
         }
 
-
         public async Task<WebApiResponse> QrDynamicPayAsync(DynamicPaymentDefaultRequestDto model, long clientId)
         {
             try
             {
-                var defaultRequest = new DynamicPaymentDefaultRequestDto
-                {
-                    amount = model.amount,
-                    customerIdentifier = model.customerIdentifier,
-                    orderNo = model.orderNo,
-                    userAccountName = model.userAccountName,
-                    userAccountNumber = model.userAccountNumber,
-                    userBankVerificationNumber = model.userBankVerificationNumber,
-                    userGps = model.userGps,
-                    userKycLevel = model.userKycLevel
-                };
+                //var defaultRequest = new DynamicPaymentDefaultRequestDto
+                //{
+                //    amount = model.amount,
+                //   mchNo = model.mchNo,
+                //   orderNo = 
+                //};
 
-                var createNibbsSubMerchant = await _nibbsQRCodeAPIService.DynamicPay(defaultRequest);
+                var createPayment = await _nibbsQRCodeAPIService.DynamicPay(model);
 
-                using (var transaction = await _context.Database.BeginTransactionAsync())
-                {
-                    try
-                    {
-                        //var merchant = new QrPaymentRequest
-                        //{
+                if (createPayment.ResponseCode == AppResponseCodes.Success)
+                    return new WebApiResponse { ResponseCode = createPayment.ResponseCode, Data = createPayment };
 
-                        //};
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = createPayment };
 
-                        //await _context.QrPaymentRequest.AddAsync(merchant);
-                        //await _context.SaveChangesAsync();
+                //using (var transaction = await _context.Database.BeginTransactionAsync())
+                //{
+                //    try
+                //    {
+                //        //var merchant = new QrPaymentRequest
+                //        //{
 
-                        ////var defaultRequest = new DynamicPaymentDefaultRequestDto
-                        ////{
-                        ////    amount = model.amount,
-                        ////    customerIdentifier = model.customerIdentifier,
-                        ////    orderNo = model.orderNo,
-                        ////    userAccountName = model.userAccountName,
-                        ////    userAccountNumber = model.userAccountNumber,
-                        ////    userBankVerificationNumber = model.userBankVerificationNumber,
-                        ////    userGps = model.userGps,
-                        ////    userKycLevel = model.userKycLevel
-                        ////};
+                //        //};
 
-                        ////var createNibbsSubMerchant = await _nibbsQRCodeAPIService.DynamicPay(defaultRequest);
+                //        //await _context.QrPaymentRequest.AddAsync(merchant);
+                //        //await _context.SaveChangesAsync();
 
-                        //var merchantResponseLog = new SubMerchantQRCodeOnboardingResponse();
+                //        ////var defaultRequest = new DynamicPaymentDefaultRequestDto
+                //        ////{
+                //        ////    amount = model.amount,
+                //        ////    customerIdentifier = model.customerIdentifier,
+                //        ////    orderNo = model.orderNo,
+                //        ////    userAccountName = model.userAccountName,
+                //        ////    userAccountNumber = model.userAccountNumber,
+                //        ////    userBankVerificationNumber = model.userBankVerificationNumber,
+                //        ////    userGps = model.userGps,
+                //        ////    userKycLevel = model.userKycLevel
+                //        ////};
 
-                        //// merchantResponseLog.SubMerchantQRCodeOnboardingId = merchant.SubMerchantQRCodeOnboardingId;
+                //        ////var createNibbsSubMerchant = await _nibbsQRCodeAPIService.DynamicPay(defaultRequest);
 
-                        //if (createNibbsSubMerchant.ResponseCode == AppResponseCodes.Success)
-                        //{
-                        //    //merchantResponseLog.MchNo = createNibbsSubMerchant.mchNo;
-                        //    //merchantResponseLog.MerchantName = createNibbsSubMerchant.merchantName;
-                        //    //merchantResponseLog.QrCode = createNibbsSubMerchant.qrCode;
-                        //    //merchantResponseLog.ReturnCode = createNibbsSubMerchant.returnCode;
-                        //    //merchantResponseLog.ReturnMsg = createNibbsSubMerchant.returnMsg;
-                        //    //merchantResponseLog.SubMchNo = createNibbsSubMerchant.subMchNo;
-                        //    //merchantResponseLog.IsDeleted = false;
+                //        //var merchantResponseLog = new SubMerchantQRCodeOnboardingResponse();
 
-                        //    await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
-                        //    await _context.SaveChangesAsync();
+                //        //// merchantResponseLog.SubMerchantQRCodeOnboardingId = merchant.SubMerchantQRCodeOnboardingId;
 
-                        //    await transaction.CommitAsync();
+                //        //if (createNibbsSubMerchant.ResponseCode == AppResponseCodes.Success)
+                //        //{
+                //        //    //merchantResponseLog.MchNo = createNibbsSubMerchant.mchNo;
+                //        //    //merchantResponseLog.MerchantName = createNibbsSubMerchant.merchantName;
+                //        //    //merchantResponseLog.QrCode = createNibbsSubMerchant.qrCode;
+                //        //    //merchantResponseLog.ReturnCode = createNibbsSubMerchant.returnCode;
+                //        //    //merchantResponseLog.ReturnMsg = createNibbsSubMerchant.returnMsg;
+                //        //    //merchantResponseLog.SubMchNo = createNibbsSubMerchant.subMchNo;
+                //        //    //merchantResponseLog.IsDeleted = false;
 
-                        //    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
-                        //}
+                //        //    await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
+                //        //    await _context.SaveChangesAsync();
 
-                        //merchantResponseLog.JsonResponse = createNibbsSubMerchant.jsonResponse;
+                //        //    await transaction.CommitAsync();
 
-                        //await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
-                        //await _context.SaveChangesAsync();
+                //        //    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
+                //        //}
 
-                        //await transaction.CommitAsync();
+                //        //merchantResponseLog.JsonResponse = createNibbsSubMerchant.jsonResponse;
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Failed creating merchant" };
+                //        //await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
+                //        //await _context.SaveChangesAsync();
 
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
+                //        //await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-                    }
-                }
+                //        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Failed creating merchant" };
+
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        await transaction.RollbackAsync();
+
+                //        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                //    }
+                //}
             }
             catch (Exception ex)
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
-
 
     }
 }
