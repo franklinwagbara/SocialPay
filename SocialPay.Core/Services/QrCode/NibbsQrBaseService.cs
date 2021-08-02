@@ -122,17 +122,32 @@ namespace SocialPay.Core.Services.QrCode
         {
             try
             {
-               
+                var merchant = await _nibbsQrMerchantService.GetMerchantStatusInfo(clientId, NibbsMerchantOnboarding.BindMerchant);
 
-                var model = new NibbsSubMerchantViewModel
+                var clientInfo = await _clientAuthenticationService.GetUserByClientIdInfo(clientId);
+
+                if (clientInfo.QrCodeStatus != NibbsMerchantOnboarding.BindMerchant)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.QRMerchantOnboardingNotFoundOrCompleted, Message = "QR Merchant onboarding not found/completed" };
+
+                var qrInfo = await _nibbsQrMerchantResponseService.GetMerchantInfo(merchant.MerchantQRCodeOnboardingId);
+                //var merchant = await _nibbsQrMerchantService
+
+                var defaultRequest = new DynamicPaymentDefaultRequestDto
                 {
-                    // ClientAuthenticationId = clientId,
+                    amount = request.amount,
+                    customerIdentifier = merchant.Email,
+                    orderNo = request.orderNo,
+                    userAccountName = qrInfo.merchantName,
+                    userAccountNumber = qrInfo.mchNo,
+                    userBankVerificationNumber = clientInfo.Bvn,
+                    userGps = request.userGps,
+                    userKycLevel = "1"
                 };
 
-
+                return await _nibbsQrRepository.QrDynamicPayAsync(defaultRequest, clientId);
                 // await _nibbsQrMerchantService.AddAsync(model);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
+               // return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
             }
             catch (Exception ex)
             {

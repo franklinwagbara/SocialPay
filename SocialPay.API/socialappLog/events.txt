@@ -2587,3 +2587,17 @@ INFO  2021-07-30 16:06:44,676 152205ms NibbsQRCodeAPIService  ?                 
 INFO  2021-07-30 18:15:38,222 244158ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000058188","merchantName":"Opeyemi Olugunojin","merchantEmail":"opeyemifred@gmail.com","merchantPhoneNumber":"08032094353","subFixed":"0.00","subAmount":"0.00"} | 7/30/2021 6:15:38 PM
 INFO  2021-07-30 18:24:09,934 209078ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000058188","merchantName":"Opeyemi Olugunojin","merchantEmail":"opeyemifred@gmail.com","merchantPhoneNumber":"08032094353","subFixed":"0.00","subAmount":"0.00"} | 7/30/2021 6:24:09 PM
 ERROR 2021-07-30 18:24:17,179 216323ms eateMerchantRepository ?                  - Job Service-Base Error occured | 0 | This SqlTransaction has completed; it is no longer usable. | 7/30/2021 6:24:17 PM
+INFO  2021-08-02 09:30:14,122 315435ms AccountsController     ?                  - Tasks starts to create account | festypat9@gmail.com | 8/2/2021 9:30:14 AM
+INFO  2021-08-02 09:30:14,689 316003ms antRegistrationService ?                  - Initiating create merchant account | festypat9@gmail.com | 8/2/2021 9:30:14 AM
+INFO  2021-08-02 09:32:13,523 434837ms AccountsController     ?                  - Tasks starts to create account | festypat9@gmail.com | 8/2/2021 9:32:13 AM
+INFO  2021-08-02 09:32:25,083 446396ms antRegistrationService ?                  - Initiating create merchant account | festypat9@gmail.com | 8/2/2021 9:32:24 AM
+INFO  2021-08-02 09:33:04,729 486042ms AccountsController     ?                  - Tasks starts to create account | festypat9@gmail.com | 8/2/2021 9:33:04 AM
+INFO  2021-08-02 09:33:07,522 488835ms antRegistrationService ?                  - Initiating create merchant account | festypat9@gmail.com | 8/2/2021 9:33:07 AM
+INFO  2021-08-02 09:33:15,361 496674ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-10-1990 | 8/2/2021 9:33:15 AM
+ERROR 2021-08-02 09:33:36,482 517795ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22341210148 | System.FormatException: String '20-10-1990' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth) in G:\SterlingApps\SocialPay\SocialPay\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 64 | 8/2/2021 9:33:36 AM
+INFO  2021-08-02 09:33:46,893 528207ms AccountsController     ?                  - Tasks starts to create account | festypat9@gmail.com | 8/2/2021 9:33:46 AM
+INFO  2021-08-02 09:33:59,803 541117ms antRegistrationService ?                  - Initiating create merchant account | festypat9@gmail.com | 8/2/2021 9:33:59 AM
+INFO  2021-08-02 09:34:05,925 547239ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 10-20-1990 | 8/2/2021 9:34:05 AM

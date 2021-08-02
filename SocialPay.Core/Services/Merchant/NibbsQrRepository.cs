@@ -304,53 +304,74 @@ namespace SocialPay.Core.Services.Merchant
         {
             try
             {
+                var defaultRequest = new DynamicPaymentDefaultRequestDto
+                {
+                    amount = model.amount,
+                    customerIdentifier = model.customerIdentifier,
+                    orderNo = model.orderNo,
+                    userAccountName = model.userAccountName,
+                    userAccountNumber = model.userAccountNumber,
+                    userBankVerificationNumber = model.userBankVerificationNumber,
+                    userGps = model.userGps,
+                    userKycLevel = model.userKycLevel
+                };
+
+                var createNibbsSubMerchant = await _nibbsQRCodeAPIService.DynamicPay(defaultRequest);
+
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                        var merchant = new QrPaymentRequest
-                        {
+                        //var merchant = new QrPaymentRequest
+                        //{
 
-                        };
+                        //};
 
-                        await _context.QrPaymentRequest.AddAsync(merchant);
-                        await _context.SaveChangesAsync();
+                        //await _context.QrPaymentRequest.AddAsync(merchant);
+                        //await _context.SaveChangesAsync();
 
-                        var defaultRequest = new DynamicPaymentDefaultRequestDto
-                        {
+                        ////var defaultRequest = new DynamicPaymentDefaultRequestDto
+                        ////{
+                        ////    amount = model.amount,
+                        ////    customerIdentifier = model.customerIdentifier,
+                        ////    orderNo = model.orderNo,
+                        ////    userAccountName = model.userAccountName,
+                        ////    userAccountNumber = model.userAccountNumber,
+                        ////    userBankVerificationNumber = model.userBankVerificationNumber,
+                        ////    userGps = model.userGps,
+                        ////    userKycLevel = model.userKycLevel
+                        ////};
 
-                        };
+                        ////var createNibbsSubMerchant = await _nibbsQRCodeAPIService.DynamicPay(defaultRequest);
 
-                        var createNibbsSubMerchant = await _nibbsQRCodeAPIService.DynamicPay(defaultRequest);
+                        //var merchantResponseLog = new SubMerchantQRCodeOnboardingResponse();
 
-                        var merchantResponseLog = new SubMerchantQRCodeOnboardingResponse();
+                        //// merchantResponseLog.SubMerchantQRCodeOnboardingId = merchant.SubMerchantQRCodeOnboardingId;
 
-                        // merchantResponseLog.SubMerchantQRCodeOnboardingId = merchant.SubMerchantQRCodeOnboardingId;
+                        //if (createNibbsSubMerchant.ResponseCode == AppResponseCodes.Success)
+                        //{
+                        //    //merchantResponseLog.MchNo = createNibbsSubMerchant.mchNo;
+                        //    //merchantResponseLog.MerchantName = createNibbsSubMerchant.merchantName;
+                        //    //merchantResponseLog.QrCode = createNibbsSubMerchant.qrCode;
+                        //    //merchantResponseLog.ReturnCode = createNibbsSubMerchant.returnCode;
+                        //    //merchantResponseLog.ReturnMsg = createNibbsSubMerchant.returnMsg;
+                        //    //merchantResponseLog.SubMchNo = createNibbsSubMerchant.subMchNo;
+                        //    //merchantResponseLog.IsDeleted = false;
 
-                        if (createNibbsSubMerchant.ResponseCode == AppResponseCodes.Success)
-                        {
-                            //merchantResponseLog.MchNo = createNibbsSubMerchant.mchNo;
-                            //merchantResponseLog.MerchantName = createNibbsSubMerchant.merchantName;
-                            //merchantResponseLog.QrCode = createNibbsSubMerchant.qrCode;
-                            //merchantResponseLog.ReturnCode = createNibbsSubMerchant.returnCode;
-                            //merchantResponseLog.ReturnMsg = createNibbsSubMerchant.returnMsg;
-                            //merchantResponseLog.SubMchNo = createNibbsSubMerchant.subMchNo;
-                            //merchantResponseLog.IsDeleted = false;
+                        //    await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
+                        //    await _context.SaveChangesAsync();
 
-                            await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
-                            await _context.SaveChangesAsync();
+                        //    await transaction.CommitAsync();
 
-                            await transaction.CommitAsync();
+                        //    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
+                        //}
 
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
-                        }
+                        //merchantResponseLog.JsonResponse = createNibbsSubMerchant.jsonResponse;
 
-                        merchantResponseLog.JsonResponse = createNibbsSubMerchant.jsonResponse;
+                        //await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
+                        //await _context.SaveChangesAsync();
 
-                        await _context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
-                        await _context.SaveChangesAsync();
-
-                        await transaction.CommitAsync();
+                        //await transaction.CommitAsync();
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Failed creating merchant" };
 

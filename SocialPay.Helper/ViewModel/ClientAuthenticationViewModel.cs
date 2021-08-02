@@ -19,6 +19,7 @@ namespace SocialPay.Helper.ViewModel
         public string ReferralCode { get; set; }
         public string ReferCode { get; set; }
         public bool HasRegisteredCompany { get; set; }
+        public string QrCodeStatus { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; }
     }

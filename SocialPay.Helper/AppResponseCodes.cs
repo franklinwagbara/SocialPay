@@ -54,6 +54,7 @@
         public const string DuplicateProductName = "50";
         public const string DuplicateTin = "51";
         public const string DuplicatePaymentReference = "52";
+        public const string QRMerchantOnboardingNotFoundOrCompleted = "53";
     }
 
     public class MerchantOnboardingProcess

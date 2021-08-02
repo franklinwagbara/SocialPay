@@ -89,6 +89,7 @@ namespace SocialPay.Core.Repositories.UserService
             try
             {
                 var getToken = await GetAccountResetAsync(model.Token);
+
                 if (getToken == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
@@ -106,12 +107,15 @@ namespace SocialPay.Core.Repositories.UserService
                         getUserInfo.ClientSecretHash = passwordHash;
                         getUserInfo.ClientSecretSalt = passwordSalt;
                         _context.Update(getUserInfo);
+
                         await _context.SaveChangesAsync();
                         getToken.IsCompleted = true;
                         getToken.LastDateModified = DateTime.Now;
                         _context.Update(getToken);
+
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
+
                         _log4net.Info("ChangeUserPassword request saved" + " | " + model.Token + " | " + appKey + " | " + DateTime.Now);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
