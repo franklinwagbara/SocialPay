@@ -177,13 +177,16 @@ namespace SocialPay.Core.Services.QrCode
             }
         }
 
-        public async Task<DynamicPaymentResponseDto> DynamicPay(DynamicPaymentDefaultRequestDto requestModel)
+        public async Task<DynamicQRCodeResponsDto> DynamicPay(DynamicPaymentDefaultRequestDto requestModel)
         {
             try
             {
+                requestModel.mchNo = "M0000000001";
+                requestModel.subMchNo = "S0000000002";
+
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
 
-                var response = new DynamicPaymentResponseDto();
+                var response = new DynamicQRCodeResponsDto();
 
                 _log4net.Info("Initiating Create sub Merchant request" + " | " + jsonRequest + " | " + DateTime.Now);
 
@@ -199,14 +202,22 @@ namespace SocialPay.Core.Services.QrCode
 
                 if (request.IsSuccessStatusCode)
                 {
-                    response = JsonConvert.DeserializeObject<DynamicPaymentResponseDto>(result);
+                   
+                    response = JsonConvert.DeserializeObject<DynamicQRCodeResponsDto>(result);
+
+                    if (response.returnCode != "Success")
+                    {
+                        response.ResponseCode = AppResponseCodes.Failed;
+
+                        return response;
+                    }
 
                     response.ResponseCode = AppResponseCodes.Success;
 
                     return response;
                 }
 
-                response.jsonResponse = result;
+                //response.jsonResponse = result;
                 response.ResponseCode = AppResponseCodes.Failed;
 
                 return response;
@@ -215,7 +226,7 @@ namespace SocialPay.Core.Services.QrCode
             catch (Exception ex)
             {
 
-                return new DynamicPaymentResponseDto { ResponseCode = AppResponseCodes.InternalError };
+                return new DynamicQRCodeResponsDto { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 

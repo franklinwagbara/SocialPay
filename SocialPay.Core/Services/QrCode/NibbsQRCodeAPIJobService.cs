@@ -34,6 +34,7 @@ namespace SocialPay.Core.Services.QrCode
             {
                 requestModel.Tin = "012348484";
                 requestModel.Fee = 0.5;
+                requestModel.Phone = "4532366644";
 
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
 

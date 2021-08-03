@@ -110,13 +110,15 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
                                         await transaction.CommitAsync();
 
                                     }
+                                    else
+                                    {
+                                        //merchantResponseLog.JsonResponse = bindNibbsMerchant.jsonResponse;
 
-                                    merchantResponseLog.JsonResponse = bindNibbsMerchant.jsonResponse;
+                                        //await context.BindMerchantResponse.AddAsync(merchantResponseLog);
+                                        //await context.SaveChangesAsync();
 
-                                    await context.BindMerchantResponse.AddAsync(merchantResponseLog);
-                                    await context.SaveChangesAsync();
-
-                                    await transaction.CommitAsync();
+                                        //await transaction.CommitAsync();
+                                    }                                   
 
                                 }
 

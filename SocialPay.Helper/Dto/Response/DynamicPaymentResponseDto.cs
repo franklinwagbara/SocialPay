@@ -4,6 +4,17 @@ using System.Text;
 
 namespace SocialPay.Helper.Dto.Response
 {
+    public class DynamicQRCodeResponsDto
+    {
+        public string ResponseCode { get; set; }
+        public string returnCode { get; set; }
+        public string orderSn { get; set; }
+        public string codeUrl { get; set; }
+        public string returnMsg { get; set; }
+        public string paymentReference { get; set; }
+        public string amount { get; set; }
+        public string sessionID { get; set; }
+    }
     public class DynamicPaymentResponseDto
     {
         public string nameEnquiryRef { get; set; }

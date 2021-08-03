@@ -118,12 +118,17 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
                                         //return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
                                     }
 
-                                    merchantResponseLog.JsonResponse = createNibbsSubMerchant.jsonResponse;
+                                    else
+                                    {
 
-                                    await context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
-                                    await context.SaveChangesAsync();
+                                        //merchantResponseLog.JsonResponse = createNibbsSubMerchant.jsonResponse;
 
-                                    await transaction.CommitAsync();
+                                        //await context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
+                                        //await context.SaveChangesAsync();
+
+                                        //await transaction.CommitAsync();
+                                    }
+
 
                                 }
 

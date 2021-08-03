@@ -38,7 +38,8 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
 
-                    var merchants = await context.MerchantQRCodeOnboarding.Where(x => x.Status == NibbsMerchantOnboarding.CreateAccount).ToListAsync();
+                    var merchants = await context.MerchantQRCodeOnboarding.Where(x => x.Status == NibbsMerchantOnboarding.CreateAccount 
+                    && x.ClientAuthenticationId == 192).ToListAsync();
 
                     if(merchants.Count > 0)
                         await _nibbsQrJobCreateSubMerchantRepository.ProcessTransactions(merchants);
