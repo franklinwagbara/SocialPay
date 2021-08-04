@@ -294,9 +294,7 @@ namespace SocialPay.Core.Repositories.Customer
                     return await GetInvoiceTransactionDetails(validateReference.TransactionReference);               
 
                 if(validateReference.MerchantStoreId > 0)
-                {
                     return await _storeRepository.GetStoreInfobyStoreIdAsync(validateReference.MerchantStoreId);
-                }
 
                 var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
                 var mapper = config.CreateMapper();

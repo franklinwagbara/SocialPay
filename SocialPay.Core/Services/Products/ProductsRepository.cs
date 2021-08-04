@@ -241,6 +241,7 @@ namespace SocialPay.Core.Services.Products
                 var query = (from s in stores
                              join pc in _context.ProductCategories on s.ClientAuthenticationId equals pc.ClientAuthenticationId
                              join pr in _context.Products on pc.ProductCategoryId equals pr.ProductCategoryId
+                             join pi in _context.ProductInventory on pr.ProductId equals pi.ProductId
                              where pr.MerchantStoreId == storeId
                              
                              select new StoreProductsViewModel
@@ -254,7 +255,8 @@ namespace SocialPay.Core.Services.Products
                                  Options = pr.Options,
                                  StoreDescription = s.Description,
                                  ProductDescription = pr.Description,
-                                 ProductId = pr.ProductId
+                                 ProductId = pr.ProductId,
+                                 Quantity = pi.Quantity
                                 
                              }).ToList();
 

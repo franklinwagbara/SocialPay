@@ -75,6 +75,7 @@ namespace SocialPay.API.Controllers
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
+
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
 
