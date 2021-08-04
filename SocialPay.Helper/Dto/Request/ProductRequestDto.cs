@@ -13,6 +13,7 @@ namespace SocialPay.Helper.Dto.Request
         public long StoreId { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
+        public int Quantity { get; set; }
         public decimal Price { get; set; }
       //  public bool Options { get; set; }
         public List<int> Size { get; set; }

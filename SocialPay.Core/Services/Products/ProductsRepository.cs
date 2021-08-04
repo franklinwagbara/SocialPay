@@ -94,6 +94,16 @@ namespace SocialPay.Core.Services.Products
                             blobRequest.ImageDetail.Clear();
                         }
 
+                        var inventory = new ProductInventory
+                        {
+                            ProductId = model.ProductId,
+                            Quantity = request.Quantity,
+                            LastDateModified = DateTime.Now
+                        };
+
+                        await _context.ProductInventory.AddAsync(inventory);
+                        await _context.SaveChangesAsync();
+
                         await _context.ProductItems.AddRangeAsync(proDetails);
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
@@ -163,25 +173,9 @@ namespace SocialPay.Core.Services.Products
                 var query = (from s in stores
                              join pc in _context.ProductCategories on s.ClientAuthenticationId equals pc.ClientAuthenticationId
                              join pr in _context.Products on pc.ProductCategoryId equals pr.ProductCategoryId
+                             join pi in _context.ProductInventory on pr.ProductId equals pi.ProductId
                              where pr.MerchantStoreId == storeId
-                             // join pi in _context.ProductItems on pr.ProductId equals pi.ProductId                          
-
-                             //var employeeRecord = from e in stores
-                             //                     join d in _context.ProductCategories on e.ClientAuthenticationId equals d.ClientAuthenticationId into table1
-                             //                     from d in table1.ToList()
-                             //                     join i in _context.Products on d.ProductCategoryId equals i.ProductCategoryId into table2
-                             //                     from i in table2.ToList()
-                             //                     join pi in _context.ProductItems on i.ProductId equals pi.ProductId into table3
-                             //                     from pi in table3.ToList()
-
-                             //                     let data = productItems.Add(new ProductItemViewModel { FileLocation = pi.FileLocation})
-
-                             //                     select new StoreProductsViewModel
-                             //                     {
-                             //                         ProductItemsViewModel = pi,
-                             //                         department = d,
-                             //                         incentive = i
-                             //                     };
+                             
                              select new StoreProductsViewModel
                              {
                                  StoreName = s.StoreName,
@@ -193,20 +187,11 @@ namespace SocialPay.Core.Services.Products
                                  Options = pr.Options,
                                  StoreDescription = s.Description,
                                  ProductDescription = pr.Description,
-                                 ProductId = pr.ProductId
-                                 //ProductItemsViewModel = new List<ProductItemViewModel>
-                                 //{
-                                 //    new ProductItemViewModel { FileLocation = pi.FileLocation },
-                                 //}
-
-
-                                 //} = p.ProductPhotoMaps.Select(pp => pp.FileName).ToList()
-                                 // ProductItemViewModel = productItems.Add(new ProductItemViewModel { FileLocation = pi.FileLocation}),
+                                 ProductId = pr.ProductId,
+                                 Quantity = pi.Quantity                                 
                              }).ToList();
 
-                //var productDetails = 
-
-                // query.ForEach(x=>x.ProductItemsViewModel.Select(x => x.FileLocation == ).ToList()
+               
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems

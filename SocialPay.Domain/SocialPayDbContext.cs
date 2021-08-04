@@ -66,5 +66,6 @@ namespace SocialPay.Domain
         public DbSet<DstvAccountLookupResponse> DstvAccountLookupResponse { get; set; }
         public DbSet<FioranoBillsRequest> FioranoBillsRequest { get; set; }
         public DbSet<FioranoBillsPaymentResponse> FioranoBillsPaymentResponse { get; set; }
+        public DbSet<ProductInventory> ProductInventory { get; set; }
     }
 }

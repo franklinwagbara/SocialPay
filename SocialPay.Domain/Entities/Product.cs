@@ -9,6 +9,7 @@ namespace SocialPay.Domain.Entities
         public Product()
         {
             ProductItems = new HashSet<ProductItems>();
+            ProductInventory = new HashSet<ProductInventory>();
         }
         public long ProductId { get; set; }
         public long ProductCategoryId { get; set; }
@@ -27,6 +28,7 @@ namespace SocialPay.Domain.Entities
         public DateTime LastDateModified { get; set; }
         public ProductCategory ProductCategory { get; set; }
         public virtual ICollection<ProductItems> ProductItems { get; set; }
+        public virtual ICollection<ProductInventory> ProductInventory { get; set; }
         //public Store Store { get; set; }
     }
 }

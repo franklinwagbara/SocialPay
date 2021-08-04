@@ -9,6 +9,7 @@ namespace SocialPay.Helper.ViewModel
         public string StoreName { get; set; }
         public string ProductName { get; set; }
         public long ProductId { get; set; }
+        public int Quantity { get; set; }
         public string ProductDescription { get; set; }
         public string StoreDescription { get; set; }
         public decimal Price { get; set; }
