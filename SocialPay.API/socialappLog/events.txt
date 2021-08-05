@@ -2698,3 +2698,13 @@ INFO  2021-08-05 11:03:44,677 65401ms CustomerRepoService    ?                  
 INFO  2021-08-05 11:03:47,376 68100ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/5/2021 11:03:47 AM
 INFO  2021-08-05 11:29:40,781 234459ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/5/2021 11:29:40 AM
 INFO  2021-08-05 11:29:44,273 237951ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/5/2021 11:29:44 AM
+INFO  2021-08-05 12:14:49,534 82937ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/5/2021 12:14:49 PM
+INFO  2021-08-05 12:14:53,680 87083ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/5/2021 12:14:53 PM
+INFO  2021-08-05 12:15:03,767 97170ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 8/5/2021 12:15:03 PM
+INFO  2021-08-05 12:15:22,512 115915ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 8/5/2021 12:15:22 PM
+INFO  2021-08-05 12:30:00,378 23000ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 8/5/2021 12:30:00 PM
+INFO  2021-08-05 12:30:01,955 24578ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 8/5/2021 12:30:01 PM
+INFO  2021-08-05 12:33:09,372 211995ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 8/5/2021 12:33:09 PM
+INFO  2021-08-05 12:33:33,639 236262ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 8/5/2021 12:33:33 PM
+INFO  2021-08-05 12:33:33,673 236296ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/5/2021 12:33:33 PM
+INFO  2021-08-05 12:33:37,005 239628ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/5/2021 12:33:37 PM

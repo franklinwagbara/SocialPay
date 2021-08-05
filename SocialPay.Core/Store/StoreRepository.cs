@@ -106,7 +106,7 @@ namespace SocialPay.Core.Store
         }
 
 
-        public async Task<WebApiResponse> GetStoreInfobyStoreIdAsync(long storeId)
+        public async Task<WebApiResponse> GetStoreInfobyStoreIdAsync(long storeId, string transactionReference)
         {
             _log4net.Info("Task starts to get stores" + " | " + storeId + " | " + DateTime.Now);
 
@@ -116,7 +116,7 @@ namespace SocialPay.Core.Store
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
                // var products = await GetProductsByIdAsync(storeId);             
-                return await GetProductsByIdAsync(storeId);
+                return await GetProductsByStoreIdAsync(storeId, transactionReference);
                 // return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store", Data = products };
             }
             catch (Exception ex)
@@ -362,7 +362,7 @@ namespace SocialPay.Core.Store
         }
 
 
-        public async Task<WebApiResponse> GetProductsByIdAsync(long storeId)
+        public async Task<WebApiResponse> GetProductsByStoreIdAsync(long storeId, string transactionReference)
         {
             try
             {
@@ -370,7 +370,7 @@ namespace SocialPay.Core.Store
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
-                return await _productsRepository.GetProductsByStoreId(storeId);              
+                return await _productsRepository.GetProductsByStoreId(storeId, transactionReference);              
             }
             catch (Exception ex)
             {

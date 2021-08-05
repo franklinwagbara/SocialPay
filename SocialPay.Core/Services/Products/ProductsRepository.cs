@@ -291,14 +291,19 @@ namespace SocialPay.Core.Services.Products
         }
 
 
-        public async Task<WebApiResponse> GetProductsByStoreId(long storeId)
+        public async Task<WebApiResponse> GetProductsByStoreId(long storeId, string transactionReference)
         {
             try
             {
-                var productItems = new List<ProductItemViewModel>();
+
+                var storeDetail = new StoreDetailsViewModel();
 
                 var stores = await _context.MerchantStore
                     .Where(x => x.MerchantStoreId == storeId).ToListAsync();
+
+                storeDetail.StoreName = stores.Select(x => x.StoreName).FirstOrDefault();
+                storeDetail.StoreDescription = stores.Select(x => x.Description).FirstOrDefault();
+                storeDetail.TransactionReference = transactionReference;
 
                 var query = (from s in stores
                              join pc in _context.ProductCategories on s.ClientAuthenticationId equals pc.ClientAuthenticationId
@@ -306,16 +311,14 @@ namespace SocialPay.Core.Services.Products
                              join pi in _context.ProductInventory on pr.ProductId equals pi.ProductId
                              where pr.MerchantStoreId == storeId
                              
-                             select new StoreProductsViewModel
+                             select new StoreProductsDetailsViewModel
                              {
-                                 StoreName = s.StoreName,
                                  ProductName = pr.ProductName,
                                  Price = pr.Price,
                                  Size = pr.Size,
                                  Category = pc.CategoryName,
                                  Color = pr.Color,
                                  Options = pr.Options,
-                                 StoreDescription = s.Description,
                                  ProductDescription = pr.Description,
                                  ProductId = pr.ProductId,
                                  Quantity = pi.Quantity
@@ -341,12 +344,14 @@ namespace SocialPay.Core.Services.Products
 
                         image.Url = blob.Uri.AbsoluteUri;
 
-                        item.ProductItemsViewModel = getProductsItem;
+                        item.Products = getProductsItem;
                     }
                 }
 
+                storeDetail.StoreDetails = query;
+
                 if (query.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail };
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
             }
