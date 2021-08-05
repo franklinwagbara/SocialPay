@@ -190,7 +190,8 @@ namespace SocialPay.Core.Services.QrCode
 
                 var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
 
-                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXWebhookChecksum, _appSettings.nibsQRCodeClientId);
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
+               // _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXWebhookChecksum, _appSettings.nibsQRCodeClientId);
                 _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
 
                 var request = await _client.PostAsync($"{_appSettings.nibsQRCodeWebHookRegisterUrl}",
@@ -200,9 +201,9 @@ namespace SocialPay.Core.Services.QrCode
 
                 if (request.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<List<WebHookFilterResponseDto>>(content);
+                   // var apiResponse = JsonConvert.DeserializeObject<List<WebHookFilterResponseDto>>(content);
                     response.ResponseCode = AppResponseCodes.Success;
-                    response.Data = apiResponse;
+                    response.Data = "Success";
                     return response;
                 }
 

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/socialpay/qRcode")]
     [ApiController]
     public class NibbsQRCodeController : BaseController
@@ -104,6 +104,11 @@ namespace SocialPay.API.Controllers
         [HttpGet]
         [Route("get-web-hook-filter")]
         public async Task<IActionResult> GetWebHook() => Response(await _nibbsQrBaseService.WebHookFilterAsync(User.GetSessionDetails().ClientId).ConfigureAwait(false));
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("webhook-transaction-log")]
+        public async Task<IActionResult> WebHookRequestLog([FromBody] WebHookValidationRequestDto request) => Response(await _nibbsQrBaseService.WebHookTransactionLog(request).ConfigureAwait(false));
 
 
         [HttpPost]

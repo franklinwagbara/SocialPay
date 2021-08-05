@@ -163,6 +163,11 @@ namespace SocialPay.Core.Services.QrCode
             }
         }
 
+        public async Task<WebApiResponse> WebHookTransactionLog(WebHookValidationRequestDto model)
+        {
+            return await _nibbsQrRepository.WebHookTransactionLogAsync(model);
+        }
+
         public async Task<WebApiResponse> RegsiterWebHook(RegisterWebhookRequestDto model, long clientId)
         {
             return await _nibbsQrRepository.RegisterWebHookAsync(model);

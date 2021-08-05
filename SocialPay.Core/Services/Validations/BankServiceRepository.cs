@@ -55,7 +55,7 @@ namespace SocialPay.Core.Services.Validations
             //                    Years, Months, Days, Hours, Seconds);
         }
 
-        public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth)
+        public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth, string fullname = "")
         {
             try
             {
@@ -93,6 +93,9 @@ namespace SocialPay.Core.Services.Validations
                 int ageLimit = Convert.ToInt32(_appSettings.ageLimit);
 
                 var currentAge = CalculateAge(dob);
+
+                //if(!fullname.Equals($"{bvnDetails.FirstName}{""}{bvnDetails.LastName}"))
+                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetails };
 
                 if (currentAge.Year >= ageLimit)
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };              

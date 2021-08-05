@@ -68,5 +68,6 @@ namespace SocialPay.Domain
         public DbSet<FioranoBillsPaymentResponse> FioranoBillsPaymentResponse { get; set; }
         public DbSet<ProductInventory> ProductInventory { get; set; }
         public DbSet<WebHookRequest> WebHookRequest { get; set; }
+        public DbSet<WebHookTransactionRequestLog> WebHookTransactionRequestLog { get; set; }
     }
 }

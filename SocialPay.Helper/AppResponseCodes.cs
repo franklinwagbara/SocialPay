@@ -55,6 +55,7 @@
         public const string DuplicateTin = "51";
         public const string DuplicatePaymentReference = "52";
         public const string QRMerchantOnboardingNotFoundOrCompleted = "53";
+        public const string InvalidBVNDetails = "54";
     }
 
     public class MerchantOnboardingProcess

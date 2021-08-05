@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialPay.ApplicationCore.Interfaces.Service;
 using SocialPay.Core.Services.QrCode;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
@@ -18,10 +19,13 @@ namespace SocialPay.Core.Services.Merchant
     {
         private readonly SocialPayDbContext _context;
         private readonly NibbsQRCodeAPIService _nibbsQRCodeAPIService;
-        public NibbsQrRepository(SocialPayDbContext context, NibbsQRCodeAPIService nibbsQRCodeAPIService)
+        private readonly IWebHookTransactionRequestService _webHookTransactionRequestService;
+        public NibbsQrRepository(SocialPayDbContext context, NibbsQRCodeAPIService nibbsQRCodeAPIService,
+            IWebHookTransactionRequestService webHookTransactionRequestService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _nibbsQRCodeAPIService = nibbsQRCodeAPIService ?? throw new ArgumentNullException(nameof(nibbsQRCodeAPIService));
+            _webHookTransactionRequestService = webHookTransactionRequestService ?? throw new ArgumentNullException(nameof(webHookTransactionRequestService));
         }
 
         public async Task<WebApiResponse> CreateMerchantAsync(NibbsQrMerchantViewModel model, long clientId)
@@ -389,6 +393,37 @@ namespace SocialPay.Core.Services.Merchant
             }
         }
 
+        public async Task<WebApiResponse> WebHookTransactionLogAsync(WebHookValidationRequestDto model)
+        {
+            try
+            {
+                var request = new WebHookTransactionRequestViewModel
+                {
+                    MerchantFee = model.merchantFee,
+                    MerchantName = model.merchantName,
+                    MerchantNo = model.merchantNo,
+                    NotificationType = model.notificationType,
+                    OrderNo = model.orderNo,
+                    OrderSn = model.orderSn,
+                    ResidualAmount = model.residualAmount,
+                    Sign = model.sign,
+                    SubMerchantName = model.subMerchantName,
+                    SubMerchantNo = model.subMerchantNo,
+                    TimeStamp = model.timeStamp,
+                    TransactionAmount = model.transactionAmount,
+                    TransactionTime = model.transactionTime,
+                    TransactionType = model.transactionType
+                };
+
+                await _webHookTransactionRequestService.AddAsync(request);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success" };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
+            }
+        }
         public async Task<WebApiResponse> RegisterWebHookAsync(RegisterWebhookRequestDto model)
         {
             return await _nibbsQRCodeAPIService.RegisterNewWebHook(model);

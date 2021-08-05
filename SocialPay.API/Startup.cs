@@ -180,6 +180,7 @@ namespace SocialPay.API
             services.AddScoped<IFioranoRequestService, FioranoRequestService>();
             services.AddScoped<IFioranoResponseService, FioranoResponseService>();
             services.AddScoped<IMerchantBankingInfoService, MerchantBankingInfoService>();
+            services.AddScoped<IWebHookTransactionRequestService, WebHookTransactionRequestService>();
             services.AddScoped<INibbsQrSubMerchantResponseService, NibbsQrSubMerchantResponseService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
@@ -277,11 +278,11 @@ namespace SocialPay.API
             //    c.CronExpression = options.CardPaymentTask;
             //});
 
-            services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            });
+            //services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            //});
 
             //services.AddCronJob<NonEscrowBankTransactionTask>(c =>
             //{
@@ -295,11 +296,11 @@ namespace SocialPay.API
             ////    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
             ////});
 
-            ////services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowWalletTransactionTask;
-            ////});
+            //services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.NonEscrowWalletTransactionTask;
+            //});
 
             //////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
             //////{
