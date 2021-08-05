@@ -105,6 +105,11 @@ namespace SocialPay.API.Controllers
         [Route("get-web-hook-filter")]
         public async Task<IActionResult> GetWebHook() => Response(await _nibbsQrBaseService.WebHookFilterAsync(User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
+        [HttpGet]
+        [Route("get-qr-code-transaction-status")]
+        public async Task<IActionResult> GetQRTransaction([FromQuery] string transactionReference) => Response(await _nibbsQrBaseService.TransactionStatus(transactionReference).ConfigureAwait(false));
+
+
         [AllowAnonymous]
         [HttpPost]
         [Route("webhook-transaction-log")]

@@ -393,6 +393,25 @@ namespace SocialPay.Core.Services.Merchant
             }
         }
 
+        public async Task<WebApiResponse> WebHookTransactionStatusAsync(string reference)
+        {
+            try
+            {               
+
+               var request = await _webHookTransactionRequestService.GetTransactionByreference(reference);
+
+                if (request == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not founf" };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = request };
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
+            }
+        }
+
+
         public async Task<WebApiResponse> WebHookTransactionLogAsync(WebHookValidationRequestDto model)
         {
             try
