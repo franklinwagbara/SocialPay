@@ -25,4 +25,18 @@ namespace SocialPay.Helper.ViewModel
         public string FileLocation { get; set; }
         public string Url { get; set; }
     }
+
+    public class ProductsDetailsViewModel
+    {
+        public string ProductName { get; set; }
+        public long ProductId { get; set; }
+        public int Quantity { get; set; }
+        public string ProductDescription { get; set; }
+        public decimal Price { get; set; }
+        public string Size { get; set; }
+        public string Color { get; set; }
+        public string Category { get; set; }
+        public bool Options { get; set; }
+        public List<ProductItemViewModel> ProductItemsViewModel { get; set; }
+    }
 }

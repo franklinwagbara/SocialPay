@@ -341,6 +341,27 @@ namespace SocialPay.Core.Store
 
         }
 
+
+        public async Task<WebApiResponse> GetProductsByIdAsync(UserDetailsViewModel userModel, long productId)
+        {
+            try
+            {
+
+                var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
+
+                return await _productsRepository.GetProductsByClientIdProductId(productId);
+               
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
+        }
+
+
         public async Task<WebApiResponse> GetProductsByIdAsync(long storeId)
         {
             try

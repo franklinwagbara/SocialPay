@@ -46,5 +46,9 @@ namespace SocialPay.API.Controllers
         [HttpGet]
         [Route("get-products")]
         public async Task<IActionResult> GetProducts([FromQuery] long storeId) => Response(await _storeRepository.GetProductsAsync(User.GetSessionDetails(), storeId).ConfigureAwait(false));
+
+        [HttpGet]
+        [Route("get-products-by-Id")]
+        public async Task<IActionResult> GetProductsById([FromQuery] long productId) => Response(await _storeRepository.GetProductsByIdAsync(User.GetSessionDetails(), productId).ConfigureAwait(false));
     }
 }
