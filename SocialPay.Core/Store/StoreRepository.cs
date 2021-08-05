@@ -115,9 +115,9 @@ namespace SocialPay.Core.Store
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
-                var products = await GetProductsByIdAsync(storeId);             
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store", Data = products };
+               // var products = await GetProductsByIdAsync(storeId);             
+                return await GetProductsByIdAsync(storeId);
+                // return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store", Data = products };
             }
             catch (Exception ex)
             {

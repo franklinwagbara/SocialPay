@@ -2688,3 +2688,11 @@ INFO  2021-08-03 17:05:35,225 201557ms NibbsQRCodeAPIService  ?                 
 INFO  2021-08-03 17:12:35,086 238480ms CustomerController     ?                  - Task starts to initiate payments |  | 8/3/2021 5:12:35 PM
 INFO  2021-08-03 17:12:51,386 254780ms CustomerRepoService    ?                  - Task starts to save payments MakePayment info |  | 0844445 | 8/3/2021 5:12:51 PM
 INFO  2021-08-03 17:13:01,306 264700ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000001","subMchNo":"S0000000002","orderNo":"202108030512556733382007018405","orderType":"4","amount":"1000.00"} | 8/3/2021 5:13:01 PM
+INFO  2021-08-05 10:32:38,392 136717ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/5/2021 10:32:38 AM
+INFO  2021-08-05 10:32:58,215 156540ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/5/2021 10:32:58 AM
+INFO  2021-08-05 10:41:35,977 674302ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/5/2021 10:41:35 AM
+INFO  2021-08-05 10:41:37,620 675945ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/5/2021 10:41:37 AM
+INFO  2021-08-05 10:59:07,423 82386ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/5/2021 10:59:07 AM
+INFO  2021-08-05 10:59:10,668 85631ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/5/2021 10:59:10 AM
+INFO  2021-08-05 11:03:44,677 65401ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/5/2021 11:03:44 AM
+INFO  2021-08-05 11:03:47,376 68100ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/5/2021 11:03:47 AM

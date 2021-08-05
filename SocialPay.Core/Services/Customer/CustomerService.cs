@@ -75,12 +75,13 @@ namespace SocialPay.Core.Services.Customer
                 //string dv = decryptedReference1.Split(",")[3];
                 // var decryptedReference = transactionReference.Decrypt(_appSettings.appKey).Split(",")[3];
 
-                var result = await _customerService.GetTransactionDetails(transactionReference);
+                //var result = await _customerService.GetTransactionDetails(transactionReference);
 
-                if (result == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentLink };
+                //if (result == null)
+                //    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentLink };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+               return await _customerService.GetTransactionDetails(transactionReference);
+              //  return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
             {
