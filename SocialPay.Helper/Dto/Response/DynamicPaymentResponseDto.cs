@@ -38,4 +38,11 @@ namespace SocialPay.Helper.Dto.Response
         public string ResponseCode { get; set; }
         public string jsonResponse { get; set; }
     }
+
+    public class WebHookFilterResponseDto
+    {
+        public string ResponseCode { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+    }
 }

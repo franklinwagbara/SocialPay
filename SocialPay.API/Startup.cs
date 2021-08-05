@@ -271,11 +271,11 @@ namespace SocialPay.API
             //    c.CronExpression = options.CreateNibbsMerchantTask;
             //});
 
-            ////services.AddCronJob<CardPaymentTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.CardPaymentTask;
-            ////});
+            //services.AddCronJob<CardPaymentTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CardPaymentTask;
+            //});
 
             ////services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
             ////{
@@ -283,11 +283,11 @@ namespace SocialPay.API
             ////    c.CronExpression = options.CreditDefaultMerchantWalletTask;
             ////});
 
-            ////services.AddCronJob<NonEscrowBankTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowBankTransactionTask;
-            ////});
+            //services.AddCronJob<NonEscrowBankTransactionTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.NonEscrowBankTransactionTask;
+            //});
 
             ////services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
             ////{

@@ -10,15 +10,19 @@ namespace SocialPay.Helper.Dto.Request
         [Required(ErrorMessage = "Amount is required")]
         public string amountInCents { get; set; }
         public List<CustomField> customFields { get; set; }
-        [Required(ErrorMessage = "MerchantId is required")]
-        public string merchantId { get; set; }
+      
         [Required(ErrorMessage = "Merchant Reference is required")]
         public string merchantReference { get; set; }
-        [Required(ErrorMessage = "Transaction Type is required")]
+       // [Required(ErrorMessage = "Transaction Type is required")]        
+        public string customerId { get; set; }
+
+    }
+
+    public class SingleDstvPaymentDefaultDto : SingleDstvPaymentDto
+    {
         public string transactionType { get; set; }
         public string vasId { get; set; }
         public string countryCode { get; set; }
-        public string customerId { get; set; }
 
     }
 

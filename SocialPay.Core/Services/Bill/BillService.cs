@@ -38,9 +38,17 @@ namespace SocialPay.Core.Services.Bill
             return await _payWithPayUService.GetDstvGotvBillers(clientId);
         }
 
-        public async Task<WebApiResponse> PayUAccountLookupPayment(DstvAccountLookupDto model, long clientId)
+        public async Task<WebApiResponse> PayUAccountLookupPayment(string customerId, long clientId)
         {
-           // clientId = 167;
+            // clientId = 167;
+
+            var model = new DstvAccountLookupDto
+            {
+                customerId = customerId,
+                countryCode = _appSettings.CountryCode,
+                vasId = _appSettings.VasId,
+                transactionType = _appSettings.AccountLookTransactionType
+            };
 
             var accountlookdstv = new DstvAccountLookup
             {
@@ -95,11 +103,10 @@ namespace SocialPay.Core.Services.Bill
             }
 
             singledstv.amountInCents = model.amountInCents;
-            singledstv.merchantId = model.merchantId;
             singledstv.merchantReference = model.merchantReference;
-            singledstv.transactionType = model.transactionType;
-            singledstv.vasId = model.vasId;
-            singledstv.countryCode = model.countryCode;
+            singledstv.transactionType = _appSettings.SinglePaymentTransactionType;
+            singledstv.vasId = _appSettings.VasId;
+            singledstv.countryCode = _appSettings.CountryCode;
             singledstv.customerId = model.customerId;
 
             await _context.SingleDstvPayment.AddAsync(singledstv);
@@ -112,7 +119,6 @@ namespace SocialPay.Core.Services.Bill
             {
                 resultMessage = response?.resultMessage,
                 pointOfFailure = response?.pointOfFailure,
-                merchantId = model?.merchantId,
                 resultCode = postsingledstvbill?.resultCode,
                 payUVasReference = response?.payUVasReference,
                 merchantReference = response?.merchantReference

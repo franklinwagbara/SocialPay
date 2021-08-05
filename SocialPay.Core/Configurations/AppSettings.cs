@@ -97,15 +97,22 @@
         public string nibsQRCodeCreateSubMerchantUrl { get; set; }
         public string nibsQRCodeBindMerchantAccountUrl { get; set; }
         public string nibsQRCodeDynamicPayUrl { get; set; }
+        public string nibsQRCodeWebHookFilterUrl { get; set; }
+        public string nibsQRCodeWebHookRegisterUrl { get; set; }
         public string nibsQRCodeXClientHeaderName { get; set; }
         public string nibsQRCodeXClientHeaderValue { get; set; }
         public string nibsQRCodeCheckSumHeaderName { get; set; }
+        public string nibsQRCodeXWebhookChecksum { get; set; }
         public string nibsQRCodeClientId { get; set; }
         public string nibsQRCodeClientSecret { get; set; }
         public string paywithPayUBaseUrl { get; set; }
         public string paywithPayUSingleDstvPurchaseUrlExtension { get; set; }
         public string paywithPayUAccountLookupDstvPurchaseUrlExtension { get; set; }
         public string GetBillersUrl { get; set; }
+        public string CountryCode { get; set; }
+        public string AccountLookTransactionType { get; set; }
+        public string SinglePaymentTransactionType { get; set; }
+        public string VasId { get; set; }
 
     }
 }

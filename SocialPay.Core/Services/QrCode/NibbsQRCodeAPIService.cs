@@ -6,6 +6,7 @@ using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -174,6 +175,77 @@ namespace SocialPay.Core.Services.QrCode
             catch (Exception ex)
             {
                 return new BindMechantResponseDto { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+       // public static string T
+
+        public async Task<WebApiResponse> RegisterNewWebHook(RegisterWebhookRequestDto model)
+        {
+            var response = new WebApiResponse();
+           
+            try
+            {
+                var jsonRequest = JsonConvert.SerializeObject(model);
+
+                var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
+
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXWebhookChecksum, _appSettings.nibsQRCodeClientId);
+                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
+
+                var request = await _client.PostAsync($"{_appSettings.nibsQRCodeWebHookRegisterUrl}",
+                    new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
+
+                var content = await request.Content.ReadAsStringAsync();
+
+                if (request.IsSuccessStatusCode)
+                {
+                    var apiResponse = JsonConvert.DeserializeObject<List<WebHookFilterResponseDto>>(content);
+                    response.ResponseCode = AppResponseCodes.Success;
+                    response.Data = apiResponse;
+                    return response;
+                }
+
+                response.ResponseCode = AppResponseCodes.Failed;
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+
+        public async Task<WebApiResponse> GetWebHookFilter()
+        {
+            var response = new WebApiResponse();
+
+            try
+            {
+                var request = await _client.GetAsync(_appSettings.nibsQRCodeWebHookFilterUrl);
+
+                var content = await request.Content.ReadAsStringAsync();
+
+                if (request.IsSuccessStatusCode)
+                {
+                    var apiResponse = JsonConvert.DeserializeObject<List<WebHookFilterResponseDto>>(content);
+                    response.ResponseCode = AppResponseCodes.Success;
+                    response.Data = apiResponse;
+                    return response;
+                }
+
+                response.ResponseCode = AppResponseCodes.Failed;
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 

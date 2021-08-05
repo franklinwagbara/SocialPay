@@ -66,7 +66,7 @@ namespace SocialPay.Core.Services.PayU
         public async Task<InitiatePayUPaymentResponse> InitiatePayUSingleDstvPayment(SingleDstvPaymentDto model)
 
         {
-            _log4net.Info("InitiatePayment request" + " | " + model.amountInCents + " | " + model.countryCode + " | " + model.vasId + " | " + model.merchantReference + " | " + model.transactionType + " | " + model.customerId + " | " + model.merchantId + DateTime.Now);
+            _log4net.Info("InitiatePayment request" + " | " + model.amountInCents + " | " +  model.merchantReference + " | " + model.customerId + " | "  + DateTime.Now);
 
             var apiResponse = new InitiatePayUPaymentResponse { };
 
@@ -75,7 +75,7 @@ namespace SocialPay.Core.Services.PayU
 
                 var jsonRequest = JsonConvert.SerializeObject(model);
 
-                _log4net.Info("InitiatePayment pay with specta request" + " | " + model.merchantReference + " | " + model.merchantId + " | " + jsonRequest + " | " + DateTime.Now);
+                _log4net.Info("InitiatePayment pay with specta request" + " | " + model.merchantReference + " | " +  jsonRequest + " | " + DateTime.Now);
 
                 var request = await _client.PostAsync($"{_appSettings.paywithPayUSingleDstvPurchaseUrlExtension}",
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
@@ -95,7 +95,7 @@ namespace SocialPay.Core.Services.PayU
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "InitiatePayment" + " | " + model.merchantReference + " | " + model.customerId + " | " + model.merchantId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "InitiatePayment" + " | " + model.merchantReference + " | " + model.customerId  + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new InitiatePayUPaymentResponse { resultCode = AppResponseCodes.InternalError };
             }

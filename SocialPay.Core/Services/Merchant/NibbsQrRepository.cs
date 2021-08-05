@@ -389,5 +389,14 @@ namespace SocialPay.Core.Services.Merchant
             }
         }
 
+        public async Task<WebApiResponse> RegisterWebHookAsync(RegisterWebhookRequestDto model)
+        {
+            return await _nibbsQRCodeAPIService.RegisterNewWebHook(model);
+        }
+
+        public async Task<WebApiResponse> GetWebHookFilter()
+        {
+           return await _nibbsQRCodeAPIService.GetWebHookFilter();
+        }
     }
 }
