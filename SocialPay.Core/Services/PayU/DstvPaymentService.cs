@@ -101,12 +101,12 @@ namespace SocialPay.Core.Services.PayU
         }
 
 
-        public async Task<InitiatePayUPaymentResponse> InitiatePayUDstvAccountLookupPayment(DstvAccountLookupDto model)
+        public async Task<DstvAccountLookupResponseDto> InitiatePayUDstvAccountLookupPayment(DstvAccountLookupDto model)
 
         {
             _log4net.Info("InitiatePayment request" + " | " + model.countryCode + " | " + model.vasId + " | " + model.merchantReference + " | " + model.transactionType + " | " + model.customerId  + " | " + DateTime.Now);
 
-            var apiResponse = new InitiatePayUPaymentResponse { };
+            var apiResponse = new DstvAccountLookupResponseDto { };
             try
             {
 
@@ -121,19 +121,19 @@ namespace SocialPay.Core.Services.PayU
 
                 if (request.IsSuccessStatusCode)
                 {
-                    var successfulResponse = JsonConvert.DeserializeObject<DstvAccountLookupResponseDto>(content);
-                    apiResponse.DataObj = successfulResponse;
-                    apiResponse.resultCode = AppResponseCodes.Success;
+                    apiResponse = JsonConvert.DeserializeObject<DstvAccountLookupResponseDto>(content);
+                    //apiResponse.DataObj = successfulResponse;
+                   // apiResponse.resultCode = AppResponseCodes.Success;
 
                     return apiResponse;
                 }
-                return new InitiatePayUPaymentResponse { resultCode = AppResponseCodes.Failed };
+                return new DstvAccountLookupResponseDto { resultCode = AppResponseCodes.Failed };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "InitiatePayment" + " | " + model.merchantReference + " | " + model.customerId  + " | " + ex + " | " + DateTime.Now);
 
-                return new InitiatePayUPaymentResponse { resultCode = AppResponseCodes.InternalError };
+                return new DstvAccountLookupResponseDto { resultCode = AppResponseCodes.InternalError };
             }
         }
 

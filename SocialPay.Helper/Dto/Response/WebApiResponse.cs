@@ -12,8 +12,6 @@ namespace SocialPay.Helper.Dto.Response
 
     public class InitiatePayUPaymentResponse
     {
-
-        public long SingleDstvPaymentResponseId { get; set; }
         public string merchantReference { get; set; }
         public string payUVasReference { get; set; }
         public string resultCode { get; set; }

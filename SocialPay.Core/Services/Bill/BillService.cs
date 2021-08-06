@@ -48,9 +48,9 @@ namespace SocialPay.Core.Services.Bill
             return await _airtimeVendingService.GetNetworkProducts(networkId);
         }
 
-        public async Task<WebApiResponse> PayUAccountLookupPayment(string customerId, long clientId)
+        public async Task<DstvAccountLookupResponseDto> PayUAccountLookupPayment(string customerId, long clientId)
         {
-            // clientId = 167;
+           //  clientId = 167;
 
             var model = new DstvAccountLookupDto
             {
@@ -71,7 +71,7 @@ namespace SocialPay.Core.Services.Bill
             };
 
             if(await _context.DstvAccountLookup.AnyAsync(x=>x.merchantReference == accountlookdstv.merchantReference))
-                return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicatePaymentReference, Message = "Duplicate Payment Reference" };
+                return new DstvAccountLookupResponseDto { resultCode = AppResponseCodes.DuplicatePaymentReference, resultMessage = "Duplicate Payment Reference" };
 
             await _context.DstvAccountLookup.AddAsync(accountlookdstv);
             await _context.SaveChangesAsync();
@@ -79,24 +79,25 @@ namespace SocialPay.Core.Services.Bill
             var postsingledstvbill = await _payWithPayUService.InitiatePayUDstvAccountLookupPayment(model);
 
             if (postsingledstvbill.resultCode != AppResponseCodes.Success)
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request Failed", Data = postsingledstvbill};
+                return postsingledstvbill;
 
-            var response = (DstvAccountLookupResponseDto)postsingledstvbill.DataObj;
+          //  var response = (DstvAccountLookupResponseDto)postsingledstvbill.DataObj;
 
             var lookuppaymentresponse = new DstvAccountLookupResponse
             {
-                resultMessage = response?.resultMessage,
+                resultMessage = postsingledstvbill.resultMessage,
                 //pointOfFailure = response?.po,
-                resultCode = postsingledstvbill?.resultCode,
-                payUVasReference = response?.payUVasReference,
-                merchantReference = response?.merchantReference,
+                resultCode = postsingledstvbill.resultCode,
+                payUVasReference = postsingledstvbill.payUVasReference,
+                merchantReference = postsingledstvbill.merchantReference,
                 DstvAccountLookupId = accountlookdstv.DstvAccountLookupId
             };
 
             await _context.DstvAccountLookupResponse.AddAsync(lookuppaymentresponse);
-            await _context.SaveChangesAsync();            
+            await _context.SaveChangesAsync();
 
-            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = postsingledstvbill };
+            return postsingledstvbill;
+           // return new InitiatePayUPaymentResponse { resultCode = AppResponseCodes.Success, Data = postsingledstvbill };
         }
 
         public async Task<WebApiResponse> PayUSingleDstvPayment(SingleDstvPaymentDto model, long clientId)
