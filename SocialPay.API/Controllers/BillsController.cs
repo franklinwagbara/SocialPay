@@ -19,7 +19,7 @@ namespace SocialPay.API.Controllers
 {
     [Route("api/socialpay/bills")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BillsController : BaseController
     {
         private readonly BillService _billservice;

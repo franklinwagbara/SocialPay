@@ -53,7 +53,7 @@ namespace SocialPay.Core.Services.Bill
 
         public async Task<WebApiResponse> PayUAccountLookupPayment(string customerId, long clientId)
         {
-            // clientId = 167;
+             clientId = 167;
 
             var model = new DstvAccountLookupDto
             {
