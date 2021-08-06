@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Merchant;

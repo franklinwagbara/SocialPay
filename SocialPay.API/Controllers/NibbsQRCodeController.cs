@@ -3,13 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Services.QrCode;
-using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
-using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.Notification;
 using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers

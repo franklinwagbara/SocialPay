@@ -7,11 +7,8 @@ using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
-using SocialPay.Helper.Dto.Response;
-using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository

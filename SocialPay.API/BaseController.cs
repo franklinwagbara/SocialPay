@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.Notification;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using static SocialPay.Helper.Models.NotificationModel;
 
 namespace SocialPay.API

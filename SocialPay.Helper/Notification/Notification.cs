@@ -1,9 +1,7 @@
 ﻿using FluentValidation.Results;
 using SocialPay.Helper.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using static SocialPay.Helper.Models.NotificationModel;
 
 namespace SocialPay.Helper.Notification

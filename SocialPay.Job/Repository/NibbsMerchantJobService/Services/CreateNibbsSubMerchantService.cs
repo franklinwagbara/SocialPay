@@ -1,15 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SocialPay.Core.Services.QrCode;
 using SocialPay.Domain;
 using SocialPay.Job.Repository.NibbsMerchantJobService.Interface;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using SocialPay.Helper.Dto.Request;
-using SocialPay.Core.Services.Merchant;
 using SocialPay.Helper.ViewModel;
 using SocialPay.Job.Repository.NibbsMerchantJobService.Repository;
 using SocialPay.Helper;

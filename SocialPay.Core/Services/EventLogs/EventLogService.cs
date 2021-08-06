@@ -7,7 +7,6 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.EventLogs

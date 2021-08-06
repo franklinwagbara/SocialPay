@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SocialPay.Helper.Validator;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace SocialPay.Helper.Dto.Request
 {

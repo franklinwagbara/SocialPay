@@ -2,12 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
-using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Merchant

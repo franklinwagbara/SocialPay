@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Job.Repository.NibbsMerchantJobService.Interface;
-using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.Services;
 using System;
 using System.Threading;

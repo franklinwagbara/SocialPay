@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Extensions.Common;
-using SocialPay.Core.Interface;
 using SocialPay.Core.Store;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Notification;

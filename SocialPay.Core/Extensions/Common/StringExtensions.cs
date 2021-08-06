@@ -1,8 +1,5 @@
 ﻿using SocialPay.Core.Extensions.Utilities.Cryptography;
 using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace SocialPay.Core.Extensions.Common
 {

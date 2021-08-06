@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Fiorano;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Notification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using SocialPay.Core.Extensions.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

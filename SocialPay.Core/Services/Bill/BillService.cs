@@ -8,10 +8,7 @@ using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
 using SocialPay.Core.Services.AirtimeVending;
 
 namespace SocialPay.Core.Services.Bill
@@ -53,7 +50,7 @@ namespace SocialPay.Core.Services.Bill
 
         public async Task<WebApiResponse> PayUAccountLookupPayment(string customerId, long clientId)
         {
-             clientId = 167;
+            // clientId = 167;
 
             var model = new DstvAccountLookupDto
             {
