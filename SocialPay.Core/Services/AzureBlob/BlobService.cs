@@ -78,6 +78,30 @@ namespace SocialPay.Core.Services.AzureBlob
             { }
         }
 
+        public async Task UploadCSV(BlobOnboardingCSVRequest request)
+        {
+            try
+            {
+                var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
+
+                using var ms = new MemoryStream();
+                request.Image.CopyTo(ms);
+                ms.Position = 0;
+
+                var storageAccountString = new BlobServiceClient(options.blobConnectionstring);
+
+                BlobContainerClient containerBlob = storageAccountString.GetBlobContainerClient(options.containerName);
+
+                await containerBlob.CreateIfNotExistsAsync(PublicAccessType.Blob);
+
+                BlockBlobClient blockBlob = containerBlob.GetBlockBlobClient(request.FileLocation);
+
+                var c = await blockBlob.UploadAsync(ms);
+
+            }
+            catch (Exception ex)
+            { }
+        }
 
     }
 }

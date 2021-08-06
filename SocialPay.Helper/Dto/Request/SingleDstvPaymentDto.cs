@@ -31,4 +31,9 @@ namespace SocialPay.Helper.Dto.Request
         public string key { get; set; }
         public string value { get; set; }
     }
+
+    public class AccountLookUpRequest
+    {
+        public string CustomerId { get; set; }
+    }
 }

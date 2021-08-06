@@ -57,6 +57,7 @@
         public const string QRMerchantOnboardingNotFoundOrCompleted = "53";
         public const string InvalidBVNDetails = "54";
         public const string InvalidBVNDetailsFirstNameOrLastName = "55";
+        public const string InvalidCSVFormat = "56";
     }
 
     public class MerchantOnboardingProcess

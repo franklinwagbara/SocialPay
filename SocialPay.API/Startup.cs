@@ -186,6 +186,7 @@ namespace SocialPay.API
             services.AddScoped<IEventLogRequestService, EventLogRequestService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
             services.AddScoped<EventLogService>();
+            services.AddScoped<CreateBulkMerchantService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();
             services.AddScoped<StoreRepository>();

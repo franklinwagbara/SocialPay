@@ -30,4 +30,11 @@ namespace SocialPay.Helper.Dto.Request
         public string RequestType { get; set; }
         public long ClientId { get; set; }
     }
+
+    public class BlobOnboardingCSVRequest : DefaultDocumentRequest
+    {
+        public Stream ImageStream { get; set; }
+        public string FileType { get; set; }
+        public string RequestType { get; set; }
+    }
 }
