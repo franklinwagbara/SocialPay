@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Services.Customer;
+using SocialPay.Core.Services.Store;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
@@ -18,14 +19,16 @@ namespace SocialPay.API.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly CustomerRepoService _customerRepoService;
+        private readonly StoreBaseRepository _storeBaseRepository;
         private readonly InvoiceService _invoiceService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CustomerController));
 
         public CustomerController(CustomerRepoService customerRepoService,
-            InvoiceService invoiceService)
+            InvoiceService invoiceService, StoreBaseRepository storeBaseRepository)
         {
             _customerRepoService = customerRepoService;
             _invoiceService = invoiceService;
+            _storeBaseRepository = storeBaseRepository ?? throw new ArgumentNullException(nameof(storeBaseRepository));
         }
 
         [HttpGet]
@@ -57,7 +60,7 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
-
+        //CustomerStorePaymentRequestDto
         [HttpPost]
         [Route("initiate-payment")]
         public async Task<IActionResult> InitiatePayment([FromForm] CustomerPaymentRequestDto model)
@@ -70,6 +73,38 @@ namespace SocialPay.API.Controllers
 
                 if (ModelState.IsValid)
                     return Ok(await _customerRepoService.InitiatePayment(model));
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("An error occured while initiating payment" + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("initiate-store-payment")]
+        public async Task<IActionResult> InitiateStorePayment([FromBody] CustomerStorePaymentRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            _log4net.Info("Task starts to initiate store payments" + " | " + model.TransactionReference + " | " + DateTime.Now);
+
+            try
+            {
+
+                if (ModelState.IsValid)
+                    return Ok(await _storeBaseRepository.InitiatePayment(model));
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));

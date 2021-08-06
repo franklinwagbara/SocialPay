@@ -2719,3 +2719,7 @@ INFO  2021-08-05 12:57:00,118 520088ms tMerchantWalletService ?                 
 INFO  2021-08-05 13:27:00,114 77218ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 8/5/2021 1:27:00 PM
 INFO  2021-08-05 13:27:00,845 77949ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 8/5/2021 1:27:00 PM
 INFO  2021-08-05 13:30:07,345 264449ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 8/5/2021 1:30:07 PM
+INFO  2021-08-06 08:37:45,181 112125ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/6/2021 8:37:45 AM
+INFO  2021-08-06 08:37:51,020 117964ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/6/2021 8:37:51 AM
+INFO  2021-08-06 08:39:39,391 226334ms CustomerController     ?                  - Task starts to initiate store payments | So-Pay-7ff48825795c4948a6535869c08cce32 | 8/6/2021 8:39:39 AM
+INFO  2021-08-06 08:39:46,020 232964ms StoreBaseRepository    ?                  - Task starts to save store payments MakePayment info | So-Pay-7ff48825795c4948a6535869c08cce32 | string | 8/6/2021 8:39:45 AM

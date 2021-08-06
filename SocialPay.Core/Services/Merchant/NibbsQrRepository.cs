@@ -395,7 +395,7 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> WebHookTransactionStatusAsync(string reference)
         {
-            try
+            try   
             {               
 
                var request = await _webHookTransactionRequestService.GetTransactionByreference(reference);

@@ -4,9 +4,12 @@ using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Services.AzureBlob;
+using SocialPay.Core.Services.QrCode;
+using SocialPay.Core.Services.Specta;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
+using SocialPay.Helper.Cryptography;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.ViewModel;
@@ -25,13 +28,23 @@ namespace SocialPay.Core.Services.Store
         private readonly AppSettings _appSettings;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly BlobService _blobService;
+        private readonly NibbsQrBaseService _nibbsQrBaseService;
+        private readonly PayWithSpectaService _payWithSpectaService;
+        private readonly EncryptDecryptAlgorithm _encryptDecryptAlgorithm;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(StoreBaseRepository));
+
         public StoreBaseRepository(SocialPayDbContext context, IOptions<AppSettings> appSettings,
-            IHostingEnvironment environment, BlobService blobService)
+            IHostingEnvironment environment, BlobService blobService, 
+            NibbsQrBaseService nibbsQrBaseService, PayWithSpectaService payWithSpectaService,
+            EncryptDecryptAlgorithm encryptDecryptAlgorithm)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _appSettings = appSettings.Value;
             _hostingEnvironment = environment ?? throw new ArgumentNullException(nameof(environment));
             _blobService = blobService ?? throw new ArgumentNullException(nameof(blobService));
+            _nibbsQrBaseService = nibbsQrBaseService ?? throw new ArgumentNullException(nameof(nibbsQrBaseService));
+            _payWithSpectaService = payWithSpectaService ?? throw new ArgumentNullException(nameof(payWithSpectaService));
+            _encryptDecryptAlgorithm = encryptDecryptAlgorithm ?? throw new ArgumentNullException(nameof(encryptDecryptAlgorithm));
         }
 
         public async Task<WebApiResponse> CreateNewStore(StoreRequestDto request, UserDetailsViewModel userModel)
@@ -152,6 +165,267 @@ namespace SocialPay.Core.Services.Store
             catch (Exception ex)
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
+        {
+            return await _context.MerchantPaymentSetup
+                .Include(x => x.CustomerTransaction)
+                .SingleOrDefaultAsync(p => p.TransactionReference
+              == refId
+            );
+        }
+        public async Task<InitiatePaymentResponse> InitiatePayment(CustomerStorePaymentRequestDto model)
+        {
+            _log4net.Info("Task starts to save store payments MakePayment info" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+            try
+            {
+                //model.TransactionReference = "So-Pay-7e33d9c740da465faafad4b0dbf67fe1";
+
+                long customerId = 0;
+                string encryptedText = string.Empty;
+                string encryptData = string.Empty;
+                string paymentData = string.Empty;
+                var paymentResponse = new CustomerResponseDto { };
+
+                var paymentRef = $"{"SP-ST"}{Guid.NewGuid().ToString()}";
+
+                var getLinkType = await _context.LinkCategory.SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+
+                // var getPaymentDetails = await _customerService.GetTransactionReference(model.TransactionReference);
+
+                var getPaymentDetails = await _context.MerchantPaymentSetup.Include(x => x.CustomerTransaction)
+                    .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
+
+                if (getPaymentDetails == null)
+                    return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
+
+
+                var totalAmount = model.Items.Sum(x => x.TotalAmount);
+
+                var logCustomerInfo = new CustomerOtherPaymentsInfo
+                {
+                    ClientAuthenticationId = getPaymentDetails.ClientAuthenticationId,
+                    CustomerDescription = model.CustomerDescription,
+                    MerchantPaymentSetupId = getPaymentDetails.MerchantPaymentSetupId,
+                    Channel = model.Channel,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    Fullname = model.Fullname,
+                    TransactionReference = model.TransactionReference,
+                    PaymentReference = paymentRef
+                };
+
+                ////if (getLinkType.Channel == MerchantPaymentLinkCategory.Escrow || getLinkType.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
+                ////{
+                ////    var getClient = await _customerService.GetClientDetails(model.Email);
+
+                ////    customerId = Convert.ToInt32(getClient.Data);
+                ////    if (getClient.ResponseCode != AppResponseCodes.Success)
+                ////    {
+                ////        var newCustomerAccess = Guid.NewGuid().ToString("N").Substring(0, 10);
+                ////        var createCustomer = await _customerService.CreateNewCustomer(model.Email, newCustomerAccess, model.Fullname,
+                ////           model.PhoneNumber);
+
+                ////        if (createCustomer.ResponseCode != AppResponseCodes.Success)
+                ////            return new InitiatePaymentResponse { ResponseCode = createCustomer.ResponseCode };
+
+                ////        customerId = Convert.ToInt32(createCustomer.Data);
+
+                ////        var emailModal = new EmailRequestDto
+                ////        {
+                ////            Subject = "Guest Account Access",
+                ////            SourceEmail = _appSettings.senderEmailInfo,
+                ////            DestinationEmail = model.Email,
+                ////            // DestinationEmail = "festypat9@gmail.com",
+                ////        };
+
+                ////        var mailBuilder = new StringBuilder();
+                ////        mailBuilder.AppendLine("Dear" + " " + model.Email + "," + "<br />");
+                ////        mailBuilder.AppendLine("<br />");
+                ////        mailBuilder.AppendLine("You have successfully sign up as a Guest.<br />");
+                ////        mailBuilder.AppendLine("Kindly use this token" + "  " + newCustomerAccess + "  " + "to login" + " " + "" + "<br />");
+                ////        mailBuilder.AppendLine("Best Regards,");
+                ////        emailModal.EmailBody = mailBuilder.ToString();
+
+                ////        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                ////    }
+                ////}
+
+
+                if (getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)
+                {
+                   
+
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        logCustomerInfo.Amount = model.CustomerAmount;
+                        logCustomerInfo.CustomerId = customerId;
+
+                        await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        _log4net.Info("save successfully" + " | " + model.TransactionReference + " | " + DateTime.Now);
+
+                        //decimal CustomerTotalAmount = model.CustomerAmount;// + getPaymentDetails.ShippingFee;
+                        if (getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)
+                        {
+                            if (model.Channel == PaymentChannel.NibbsQR)
+                            {
+                                var qrRequest = new DynamicPaymentRequestDto
+                                {
+                                    amount = Convert.ToString(getPaymentDetails.TotalAmount),
+                                };
+
+                                var initiateQrPayment = await _nibbsQrBaseService.DynamicPaymentAsync(qrRequest, getPaymentDetails.ClientAuthenticationId);
+
+                                return new InitiatePaymentResponse
+                                {
+                                    ResponseCode = initiateQrPayment.ResponseCode,
+                                    Data = initiateQrPayment,
+                                    PaymentRef = paymentRef,
+                                    TransactionReference = model.TransactionReference
+                                };
+                            }
+
+                            if (model.Channel == PaymentChannel.PayWithSpecta)
+                            {
+                                _log4net.Info("Task starts to initiate pay with specta" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+                                var getMerchantId = await _context.MerchantBusinessInfo
+                                 .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
+
+                                var generateToken = await _payWithSpectaService
+                                    .InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef);
+
+                                if (generateToken.ResponseCode != AppResponseCodes.Success)
+                                    return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
+
+                                paymentResponse.CustomerId = customerId;
+                                paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+
+                                _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+                                return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
+                            }
+
+                            encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{logCustomerInfo.Amount}{_appSettings.paymentCombination}{paymentRef}";
+                            encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
+                            paymentData = $"{_appSettings.sterlingpaymentGatewayRequestUrl}{encryptData}";
+                            paymentResponse.CustomerId = customerId;
+                            paymentResponse.PaymentLink = paymentData;
+
+                            _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+                            return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
+                        }
+
+                        if (model.Channel == PaymentChannel.PayWithSpecta)
+                        {
+                            var generateToken = await _payWithSpectaService.InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef);
+                            
+                            if (generateToken.ResponseCode != AppResponseCodes.Success)
+                                return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
+                           
+                            paymentResponse.CustomerId = customerId;
+                            paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+
+                            return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
+                        }
+
+                        if (model.Channel == PaymentChannel.NibbsQR)
+                        {
+                            var qrRequest = new DynamicPaymentRequestDto
+                            {
+                                amount = Convert.ToString(getPaymentDetails.TotalAmount),
+                            };
+
+                            var initiateQrPayment = await _nibbsQrBaseService.DynamicPaymentAsync(qrRequest, getPaymentDetails.ClientAuthenticationId);
+
+                            return new InitiatePaymentResponse
+                            {
+                                ResponseCode = initiateQrPayment.ResponseCode,
+                                Data = initiateQrPayment,
+                                PaymentRef = paymentRef,
+                                TransactionReference = model.TransactionReference
+                            };
+                        }
+
+                        encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{logCustomerInfo.Amount}{_appSettings.paymentCombination}{paymentRef}";
+                        encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
+                        paymentData = $"{_appSettings.sterlingpaymentGatewayRequestUrl}{encryptData}";
+                        paymentResponse.CustomerId = customerId; 
+                        paymentResponse.PaymentLink = paymentData;
+
+                        _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+                        return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
+                    }
+                }
+                if (model.Channel == PaymentChannel.PayWithSpecta && getPaymentDetails.PaymentCategory != MerchantPaymentLinkCategory.Escrow)
+                {
+                    _log4net.Info("Task starts to initiate pay with specta" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+                    logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
+                    await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
+                    await _context.SaveChangesAsync();
+
+                    var getMerchantId = await _context.MerchantBusinessInfo
+                           .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
+
+                    var generateToken = await _payWithSpectaService
+                        .InitiatePayment(getPaymentDetails.TotalAmount, "Social pay", paymentRef);
+
+                    if (generateToken.ResponseCode != AppResponseCodes.Success)
+                    {
+                        return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
+                    }
+
+                    paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+
+                    _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+                    return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
+                }
+
+                if (model.Channel == PaymentChannel.NibbsQR)
+                {
+                    var qrRequest = new DynamicPaymentRequestDto
+                    {
+                        amount = Convert.ToString(getPaymentDetails.TotalAmount),
+                    };
+
+                    var initiateQrPayment = await _nibbsQrBaseService.DynamicPaymentAsync(qrRequest, getPaymentDetails.ClientAuthenticationId);
+
+                    return new InitiatePaymentResponse
+                    {
+                        ResponseCode = initiateQrPayment.ResponseCode,
+                        Data = initiateQrPayment,
+                        PaymentRef = paymentRef,
+                        TransactionReference = model.TransactionReference
+                    };
+                }
+
+                logCustomerInfo.Amount = getPaymentDetails.TotalAmount;
+                await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
+                await _context.SaveChangesAsync();
+
+                encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{getPaymentDetails.TotalAmount}{_appSettings.paymentCombination}{paymentRef}";
+                encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
+                //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
+                paymentData = $"{_appSettings.sterlingpaymentGatewayRequestUrl}{encryptData}";
+                paymentResponse.CustomerId = customerId; 
+                paymentResponse.PaymentLink = paymentData;
+                _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+                return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("An error occured while trying to initiate payment MakePayment" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
