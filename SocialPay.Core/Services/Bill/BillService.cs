@@ -89,7 +89,7 @@ namespace SocialPay.Core.Services.Bill
             var lookuppaymentresponse = new DstvAccountLookupResponse
             {
                 resultMessage = response?.resultMessage,
-                pointOfFailure = response?.pointOfFailure,
+                //pointOfFailure = response?.po,
                 resultCode = postsingledstvbill?.resultCode,
                 payUVasReference = response?.payUVasReference,
                 merchantReference = response?.merchantReference,

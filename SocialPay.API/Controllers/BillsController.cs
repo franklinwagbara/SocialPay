@@ -32,9 +32,9 @@ namespace SocialPay.API.Controllers
         [Route("dstv-gotv-get-bouquets")]
         public async Task<IActionResult> GetBillers() => Response(await _billservice.GetBillersAsync(User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
-        [HttpPost]
+        [HttpGet]
         [Route("dstv-gotv-account-lookup")]
-        public async Task<IActionResult> DstvGotvAccountLookp([FromBody] AccountLookUpRequest request) => Response(await _billservice.PayUAccountLookupPayment(request.CustomerId, User.GetSessionDetails().ClientId).ConfigureAwait(false));
+        public async Task<IActionResult> DstvGotvAccountLookp([FromQuery] AccountLookUpRequest request) => Response(await _billservice.PayUAccountLookupPayment(request.CustomerId, User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
         [HttpPost]
         [Route("dstv-gotv-single-payment")]
