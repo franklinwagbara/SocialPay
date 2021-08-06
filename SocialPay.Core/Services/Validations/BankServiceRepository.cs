@@ -1,7 +1,9 @@
 ﻿using BanksServices;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
+using SocialPay.Core.Services.EventLogs;
 using SocialPay.Helper;
+using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Linq;
@@ -13,10 +15,12 @@ namespace SocialPay.Core.Services.Validations
     {
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(BankServiceRepository));
+        private readonly EventLogService _eventLogService;
 
-        public BankServiceRepository(IOptions<AppSettings> appSettings)
+        public BankServiceRepository(IOptions<AppSettings> appSettings, EventLogService eventLogService)
         {
             _appSettings = appSettings.Value;
+            _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
         }
 
         private AgeCalculatorViewModel CalculateAge(DateTime Dob)
@@ -55,11 +59,22 @@ namespace SocialPay.Core.Services.Validations
             //                    Years, Months, Days, Hours, Seconds);
         }
 
-        public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth, string fullname = "")
+        public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth, string firstname, 
+            string lastname, string email)
         {
+           
             try
             {
                 _log4net.Info("Initiating BvnValidation request" + " | " + bvn + " | " + dateOfbirth + " | " + DateTime.Now);
+
+                var eventLog = new EventRequestDto
+                {
+                    ModuleAccessed = EventLogProcess.BvnValidation,
+                    Description = "Bvn Validation request",
+                    UserId = email
+                };
+
+                await _eventLogService.ActivityRequestLog(eventLog);
 
                 var currentDob = DateTime.Parse(dateOfbirth).ToString("dd-MMM-yy");
 
@@ -71,8 +86,8 @@ namespace SocialPay.Core.Services.Validations
                     .Select(b => new BvnViewModel
                     {
                         Bvn = b.Element("Bvn")?.Value,
-                        FirstName = b.Element("FirstName")?.Value,
-                        LastName = b.Element("LastName")?.Value,
+                        FirstName = b.Element("FirstName")?.Value.ToLower(),
+                        LastName = b.Element("LastName")?.Value.ToLower(),
                         PhoneNumber = b.Element("PhoneNumber")?.Value,
                         DateOfBirth = b.Element("DateOfBirth")?.Value,
                         MiddleName = b.Element("MiddleName")?.Value,
@@ -94,8 +109,8 @@ namespace SocialPay.Core.Services.Validations
 
                 var currentAge = CalculateAge(dob);
 
-                //if(!fullname.Equals($"{bvnDetails.FirstName}{""}{bvnDetails.LastName}"))
-                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetails };
+                if (!firstname.Equals($"{bvnDetails.FirstName}") || !lastname.Equals($"{bvnDetails.LastName}"))
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetailsFirstNameOrLastName };
 
                 if (currentAge.Year >= ageLimit)
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };              

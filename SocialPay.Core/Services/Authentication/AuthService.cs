@@ -8,6 +8,7 @@ using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
+using SocialPay.Core.Services.EventLogs;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
@@ -34,12 +35,13 @@ namespace SocialPay.Core.Services.Authentication
         private readonly UserRepoService _userRepoService;
         private readonly IDistributedCache _distributedCache;
         private readonly IPersonalInfoService _personalInfoService;
+        private readonly EventLogService _eventLogService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AuthRepoService));
 
         public AuthRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             Utilities utilities, ADRepoService aDRepoService, IDistributedCache distributedCache,
             WalletRepoService walletRepoService, UserRepoService userRepoService,
-            IPersonalInfoService personalInfoService) : base(context)
+            IPersonalInfoService personalInfoService, EventLogService eventLogService) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -49,7 +51,7 @@ namespace SocialPay.Core.Services.Authentication
             _walletRepoService = walletRepoService;
             _userRepoService = userRepoService;
             _personalInfoService = personalInfoService ?? throw new ArgumentNullException(nameof(personalInfoService));
-
+            _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
         }
 
         public async Task<ClientAuthentication> GetClientDetails(string email)
@@ -73,6 +75,16 @@ namespace SocialPay.Core.Services.Authentication
 
             try
             {
+
+                var eventLog = new EventRequestDto
+                {
+                    ModuleAccessed = EventLogProcess.Login,
+                    Description = "user login request",
+                    UserId = loginRequestDto.Email                    
+                };
+
+                await _eventLogService.ActivityRequestLog(eventLog);
+
                 var cacheKey = string.Empty;
                 var userInfo = new UserInfoViewModel { };
 
@@ -166,6 +178,12 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.QRStatus = validateuserInfo.MerchantQRCodeOnboarding.Count == 0 ? NibbsMerchantOnboarding.NotProfiled : validateuserInfo.MerchantQRCodeOnboarding.Select(x => x.Status).FirstOrDefault();
                     tokenResult.Refcode = validateuserInfo.ReferCode == string.Empty ? string.Empty : validateuserInfo.ReferCode;
 
+                    eventLog.ModuleAccessed = EventLogProcess.Login;
+                    eventLog.Description = "Login was successful";
+                    eventLog.ClientAuthenticationId = validateuserInfo.ClientAuthenticationId;
+
+                    await _eventLogService.ActivityRequestLog(eventLog);
+
                     return tokenResult;
                 }
                 // check if password is correct
@@ -178,11 +196,14 @@ namespace SocialPay.Core.Services.Authentication
                             userLoginAttempts.LoginAttempt++;
                             userLoginAttempts.IsSuccessful = false;
                             _context.ClientLoginStatus.Update(userLoginAttempts);
+
                             await _context.SaveChangesAsync();
+
                             var loginDetails = new LoginAttemptHistory
                             {
                                 ClientAuthenticationId = userLoginAttempts.ClientAuthenticationId
                             };
+
                             await _context.LoginAttemptHistory.AddAsync(loginDetails);
                             await _context.SaveChangesAsync();
 
@@ -191,12 +212,14 @@ namespace SocialPay.Core.Services.Authentication
                                 validateuserInfo.IsLocked = true;
                                 validateuserInfo.LastDateModified = DateTime.Now;
                                 _context.ClientAuthentication.Update(validateuserInfo);
+
                                 await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
                                 _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
                                 return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked };
                             }
+
                             await transaction.CommitAsync();
                             _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
@@ -240,6 +263,7 @@ namespace SocialPay.Core.Services.Authentication
                         Expires = DateTime.UtcNow.AddDays(1),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                     };
+
                     cacheKey = Convert.ToString(validateuserInfo.ClientAuthenticationId);
                     userInfo.Email = validateuserInfo.Email;
                     userInfo.StatusCode = validateuserInfo.StatusCode;
@@ -275,12 +299,11 @@ namespace SocialPay.Core.Services.Authentication
                 }
 
                 double availableWalletBalance = 0;
+
                 var getwalletInfo = await _walletRepoService.GetWalletDetailsAsync(validateuserInfo.PhoneNumber);
 
                 if (getwalletInfo != null)
-                {
                     availableWalletBalance = getwalletInfo.Data == null ? 0 : getwalletInfo.Data.Availablebalance;
-                }
 
                 tokenDescriptor = new SecurityTokenDescriptor
                 {
@@ -339,6 +362,12 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.QRStatus = validateuserInfo.MerchantQRCodeOnboarding.Count == 0 ? NibbsMerchantOnboarding.NotProfiled : validateuserInfo.MerchantQRCodeOnboarding.Select(x => x.Status).FirstOrDefault();
 
                 _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
+
+                eventLog.ModuleAccessed = EventLogProcess.Login;
+                eventLog.Description = "Login was successful";
+                eventLog.ClientAuthenticationId = validateuserInfo.ClientAuthenticationId;
+
+                await _eventLogService.ActivityRequestLog(eventLog);
 
                 return tokenResult;
             }

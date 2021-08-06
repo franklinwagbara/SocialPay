@@ -7,6 +7,7 @@ using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Messaging.SendGrid;
+using SocialPay.Core.Services.EventLogs;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Tin;
 using SocialPay.Core.Services.Validations;
@@ -39,6 +40,8 @@ namespace SocialPay.Core.Services.Account
         private readonly TinService _tinService;
         private readonly IDistributedCache _distributedCache;
         private readonly SendGridEmailService _sendGridEmailService;
+        private readonly EventLogService _eventLogService;
+
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantRegistrationService));
         public MerchantRegistrationService(SocialPayDbContext context,
             IOptions<AppSettings> appSettings, EmailService emailService,
@@ -46,7 +49,8 @@ namespace SocialPay.Core.Services.Account
             BankServiceRepository bankServiceRepository,
             IBSReposervice iBSReposervice, WalletRepoService walletRepoService,
             TinService tinService,
-            IDistributedCache distributedCache, SendGridEmailService sendGridEmailService) : base(context)
+            IDistributedCache distributedCache, SendGridEmailService sendGridEmailService,
+            EventLogService eventLogService) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -59,6 +63,7 @@ namespace SocialPay.Core.Services.Account
             _distributedCache = distributedCache;
             _tinService = tinService;
             _sendGridEmailService = sendGridEmailService;
+            _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
         }
 
         private async Task<string> GetReferCode()
@@ -91,7 +96,9 @@ namespace SocialPay.Core.Services.Account
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
 
-                var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn, signUpRequestDto.DateOfBirth);
+                var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn, 
+                    signUpRequestDto.DateOfBirth, signUpRequestDto.FirstName.ToLower(),
+                    signUpRequestDto.LastName.ToLower(), signUpRequestDto.Email);
 
                 if (validateUser.ResponseCode != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = validateUser.ResponseCode };
@@ -129,7 +136,7 @@ namespace SocialPay.Core.Services.Account
                             Bvn = signUpRequestDto.Bvn,
                             Email = signUpRequestDto.Email,
                             StatusCode = MerchantOnboardingProcess.CreateAccount,
-                            FullName = signUpRequestDto.Fullname,
+                            FullName = $"{signUpRequestDto.FirstName}{" "}{signUpRequestDto.LastName}",
                             IsDeleted = false,
                             PhoneNumber = signUpRequestDto.PhoneNumber,
                             RoleName = RoleDetails.Merchant,
@@ -149,8 +156,8 @@ namespace SocialPay.Core.Services.Account
                             ClientAuthenticationId = model.ClientAuthenticationId,
                             CurrencyCode = _appSettings.currencyCode,
                             DoB = signUpRequestDto.DateOfBirth,
-                            Firstname = signUpRequestDto.Fullname,
-                            Lastname = model.FullName,
+                            Firstname = signUpRequestDto.FirstName,
+                            Lastname = signUpRequestDto.LastName,
                             Mobile = signUpRequestDto.PhoneNumber,
                             Gender = signUpRequestDto.Gender,
                             LastDateModified = DateTime.Now,
@@ -191,7 +198,7 @@ namespace SocialPay.Core.Services.Account
                         };
 
                         var mailBuilder = new StringBuilder();
-                        mailBuilder.AppendLine("Dear" + " " + signUpRequestDto.Email + "," + "<br />");
+                        mailBuilder.AppendLine("Dear" + " " + signUpRequestDto.FirstName + "," + "<br />");
                         mailBuilder.AppendLine("<br />");
                         mailBuilder.AppendLine("You have successfully sign up. Please confirm your sign up by clicking the link below.<br />");
                         mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
@@ -207,6 +214,16 @@ namespace SocialPay.Core.Services.Account
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
 
                         await transaction.CommitAsync();
+
+                        var eventLog = new EventRequestDto
+                        {
+                            ModuleAccessed = EventLogProcess.MerchantSignUp,
+                            Description = "Merchant Signup was successful",
+                            UserId = signUpRequestDto.Email,
+                            ClientAuthenticationId = model.ClientAuthenticationId
+                        };
+
+                        await _eventLogService.ActivityRequestLog(eventLog);
 
                         _log4net.Info("Initiating create merchant account was successful" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
 
@@ -276,6 +293,8 @@ namespace SocialPay.Core.Services.Account
                         var userInfo = new UserInfoViewModel { };
                         var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
 
+                        var eventLog = new EventRequestDto();
+
                         if (redisCustomerList != null)
                         {
                             await _distributedCache.RemoveAsync(cacheKey);
@@ -292,6 +311,14 @@ namespace SocialPay.Core.Services.Account
 
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
+
+
+                            eventLog.ModuleAccessed = EventLogProcess.MerchantSignUpConfirmation;
+                            eventLog.Description = "Merchant Signup confirmation was successful";
+                            eventLog.UserId = getuserInfo.Email;
+                            eventLog.ClientAuthenticationId = getuserInfo.ClientAuthenticationId;
+
+                            await _eventLogService.ActivityRequestLog(eventLog);
                             _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
@@ -310,6 +337,13 @@ namespace SocialPay.Core.Services.Account
 
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
+
+                        eventLog.ModuleAccessed = EventLogProcess.MerchantSignUpConfirmation;
+                        eventLog.Description = "Merchant Signup confirmation was successful";
+                        eventLog.UserId = getuserInfo.Email;
+                        eventLog.ClientAuthenticationId = getuserInfo.ClientAuthenticationId;
+
+                        await _eventLogService.ActivityRequestLog(eventLog);
 
                         _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
 

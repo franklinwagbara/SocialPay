@@ -2725,3 +2725,33 @@ INFO  2021-08-06 08:39:39,391 226334ms CustomerController     ?                 
 INFO  2021-08-06 08:39:46,020 232964ms StoreBaseRepository    ?                  - Task starts to save store payments MakePayment info | So-Pay-7ff48825795c4948a6535869c08cce32 | string | 8/6/2021 8:39:45 AM
 INFO  2021-08-06 10:37:28,429 2863845ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/6/2021 10:37:28 AM
 INFO  2021-08-06 10:37:36,645 2872060ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/6/2021 10:37:36 AM
+INFO  2021-08-06 12:19:48,849 189396ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:19:48 PM
+INFO  2021-08-06 12:19:55,387 195934ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:19:55 PM
+INFO  2021-08-06 12:20:15,131 215678ms BankServiceRepository  ?                  - Initiating BvnValidation request | 2234121048 | 20-Oct-1990 | 8/6/2021 12:20:14 PM
+INFO  2021-08-06 12:21:25,011 285558ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:21:25 PM
+INFO  2021-08-06 12:21:27,734 288281ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:21:27 PM
+INFO  2021-08-06 12:21:31,739 292286ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-Oct-1990 | 8/6/2021 12:21:31 PM
+INFO  2021-08-06 12:22:29,065 349612ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:22:29 PM
+INFO  2021-08-06 12:22:31,749 352297ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:22:31 PM
+INFO  2021-08-06 12:22:36,435 356982ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-Oct-1990 | 8/6/2021 12:22:36 PM
+INFO  2021-08-06 12:28:24,493 106020ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:28:24 PM
+INFO  2021-08-06 12:28:28,231 109758ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:28:28 PM
+INFO  2021-08-06 12:28:39,227 120753ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-Oct-1990 | 8/6/2021 12:28:39 PM
+INFO  2021-08-06 12:33:02,627 73847ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:33:02 PM
+INFO  2021-08-06 12:33:05,362 76582ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:33:05 PM
+INFO  2021-08-06 12:33:10,992 82212ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-Oct-1990 | 8/6/2021 12:33:10 PM
+INFO  2021-08-06 12:33:51,003 122223ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:33:51 PM
+INFO  2021-08-06 12:33:53,504 124724ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:33:53 PM
+INFO  2021-08-06 12:33:55,294 126514ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-Oct-1990 | 8/6/2021 12:33:55 PM
+INFO  2021-08-06 12:34:20,389 151609ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:34:20 PM
+INFO  2021-08-06 12:34:24,411 155631ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:34:24 PM
+INFO  2021-08-06 12:34:28,670 159890ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-Oct-1990 | 8/6/2021 12:34:28 PM
+INFO  2021-08-06 12:41:28,975 67009ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:41:28 PM
+INFO  2021-08-06 12:41:38,351 76384ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:41:38 PM
+INFO  2021-08-06 12:41:41,919 79953ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-Oct-1990 | 8/6/2021 12:41:41 PM
+INFO  2021-08-06 12:42:24,980 123013ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:42:24 PM
+INFO  2021-08-06 12:42:28,274 126307ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:42:28 PM
+INFO  2021-08-06 12:42:29,914 127947ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-Oct-1990 | 8/6/2021 12:42:29 PM
+INFO  2021-08-06 12:42:52,450 150483ms AccountsController     ?                  - Tasks starts to create account | festytesdf@gmail.com | 8/6/2021 12:42:52 PM
+INFO  2021-08-06 12:42:54,631 152664ms antRegistrationService ?                  - Initiating create merchant account | festytesdf@gmail.com | 8/6/2021 12:42:54 PM
+INFO  2021-08-06 12:42:55,865 153898ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22341210148 | 20-Oct-1990 | 8/6/2021 12:42:55 PM

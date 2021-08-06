@@ -15,9 +15,15 @@ namespace SocialPay.Helper.Dto.Request
         [RegularExpression(@"^\d*[0-9]\d*$", ErrorMessage = "Only number between 0 - 9 allowed")]
         [MaxLength(11, ErrorMessage = "Bvn Number cannot be greater than 11")]
         public string Bvn { get; set; }
-        [Required(ErrorMessage = "FullName")]
-        [MaxLength(55, ErrorMessage = "Full name cannot be greater than 55")]
-        public string Fullname { get; set; }
+
+        [Required(ErrorMessage = "FirstName")]
+        [MaxLength(55, ErrorMessage = "First name cannot be greater than 55")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "LastName")]
+        [MaxLength(55, ErrorMessage = "Last name cannot be greater than 55")]
+        public string LastName { get; set; }
+     
         [Required(ErrorMessage = "Date of birth")]
         [MaxLength(15, ErrorMessage = "Date of birth cannot be greater than 15")]
         public string DateOfBirth { get; set; }

@@ -28,6 +28,7 @@ using SocialPay.Core.Services.AzureBlob;
 using SocialPay.Core.Services.Bill;
 using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Data;
+using SocialPay.Core.Services.EventLogs;
 using SocialPay.Core.Services.Fiorano;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Merchant;
@@ -182,7 +183,9 @@ namespace SocialPay.API
             services.AddScoped<IMerchantBankingInfoService, MerchantBankingInfoService>();
             services.AddScoped<IWebHookTransactionRequestService, WebHookTransactionRequestService>();
             services.AddScoped<INibbsQrSubMerchantResponseService, NibbsQrSubMerchantResponseService>();
+            services.AddScoped<IEventLogRequestService, EventLogRequestService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
+            services.AddScoped<EventLogService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();
             services.AddScoped<MerchantPersonalInfoBaseService>();
             services.AddScoped<StoreRepository>();

@@ -56,6 +56,7 @@
         public const string DuplicatePaymentReference = "52";
         public const string QRMerchantOnboardingNotFoundOrCompleted = "53";
         public const string InvalidBVNDetails = "54";
+        public const string InvalidBVNDetailsFirstNameOrLastName = "55";
     }
 
     public class MerchantOnboardingProcess
@@ -175,5 +176,13 @@
         public const string SuperAdministrator = "Super Administrator";
         public const string Administrator = "Administrator";     
         public const string CustomerAccount = "Guest";     
+    }
+
+    public class EventLogProcess
+    {
+        public const string Login = "Login";      
+        public const string BvnValidation = "Bvn Sign Validation Request";      
+        public const string MerchantSignUp = "Merchant Signup";      
+        public const string MerchantSignUpConfirmation = "Merchant Signup Confirmation";      
     }
 }

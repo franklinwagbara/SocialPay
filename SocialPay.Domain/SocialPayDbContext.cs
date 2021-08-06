@@ -70,5 +70,6 @@ namespace SocialPay.Domain
         public DbSet<WebHookRequest> WebHookRequest { get; set; }
         public DbSet<WebHookTransactionRequestLog> WebHookTransactionRequestLog { get; set; }
         public DbSet<StoreTransactionLog> StoreTransactionLog { get; set; }
+        public DbSet<EventLog> EventLog { get; set; }
     }
 }

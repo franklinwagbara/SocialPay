@@ -44,9 +44,8 @@ namespace SocialPay.API.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {
                     return Ok(await _merchantRegistrationService.CreateNewMerchant(model));
-                }
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
