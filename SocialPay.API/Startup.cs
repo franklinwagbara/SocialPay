@@ -23,6 +23,7 @@ using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
+using SocialPay.Core.Services.AirtimeVending;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.AzureBlob;
 using SocialPay.Core.Services.Bill;
@@ -195,6 +196,7 @@ namespace SocialPay.API
             services.AddScoped<NibbsQrRepository>();
             services.AddScoped<BillService>();
             services.AddScoped<DstvPaymentService>();
+            services.AddScoped<AirtimeVendingService>();
             services.AddScoped<FioranoService>();
             services.AddScoped<FioranoAPIService>();
             services.AddSingleton<NibbsQrJobCreateMerchantRepository>();

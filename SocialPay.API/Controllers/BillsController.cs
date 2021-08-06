@@ -39,5 +39,17 @@ namespace SocialPay.API.Controllers
         [HttpPost]
         [Route("dstv-gotv-single-payment")]
         public async Task<IActionResult> DstvGotvAccountSinglePayment([FromBody] SingleDstvPaymentDto request) => Response(await _billservice.PayUSingleDstvPayment(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
+
+        [HttpGet]
+        [Route("network-providers")]
+        public async Task<IActionResult> NetWorkProviders() => Response(await _billservice.GetNetworkProviders(User.GetSessionDetails().ClientId).ConfigureAwait(false));
+
+        [HttpGet]
+        [Route("network-products/{billerId}")]
+        public async Task<IActionResult> NetworkProducts([FromQuery] int billerId) => Response(await _billservice.GetAirtimeProducts(User.GetSessionDetails().ClientId, billerId).ConfigureAwait(false));
+
+        //[HttpPost]
+        //[Route("airtime-subscription}")]
+        //public async Task<IActionResult> AirtimeSubscription([FromBody] int billerId) => Response(await _billservice.GetAirtimeProducts(User.GetSessionDetails().ClientId, billerId).ConfigureAwait(false));
     }
 }

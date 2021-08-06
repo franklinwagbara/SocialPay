@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using SocialPay.Core.Services.AirtimeVending;
 
 namespace SocialPay.Core.Services.Bill
 {
@@ -21,21 +22,33 @@ namespace SocialPay.Core.Services.Bill
         private readonly SocialPayDbContext _context;
         private readonly AppSettings _appSettings;
         private readonly DstvPaymentService _payWithPayUService;
+        private readonly AirtimeVendingService _airtimeVendingService;
 
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(BillService));
 
-        public BillService(SocialPayDbContext context, IOptions<AppSettings> appSettings, DstvPaymentService payWithPayUService)
+        public BillService(SocialPayDbContext context, IOptions<AppSettings> appSettings, 
+            DstvPaymentService payWithPayUService, AirtimeVendingService airtimeVendingService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _appSettings = appSettings.Value;
             _payWithPayUService = payWithPayUService ?? throw new ArgumentNullException(nameof(payWithPayUService));
-
+            _airtimeVendingService = airtimeVendingService ?? throw new ArgumentNullException(nameof(airtimeVendingService));
         }
 
         public async Task<GetBillerResponseDto> GetBillersAsync(long clientId)
         {
             //clientId = 167;
             return await _payWithPayUService.GetDstvGotvBillers(clientId);
+        }
+
+        public async Task<WebApiResponse> GetNetworkProviders(long clientId)
+        {
+            return await _airtimeVendingService.NetworkProviders();
+        }
+
+        public async Task<WebApiResponse> GetAirtimeProducts(long clientId, int networkId)
+        {
+            return await _airtimeVendingService.GetNetworkProducts(networkId);
         }
 
         public async Task<WebApiResponse> PayUAccountLookupPayment(string customerId, long clientId)

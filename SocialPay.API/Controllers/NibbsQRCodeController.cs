@@ -115,7 +115,6 @@ namespace SocialPay.API.Controllers
         [Route("webhook-transaction-log")]
         public async Task<IActionResult> WebHookRequestLog([FromBody] WebHookValidationRequestDto request) => Response(await _nibbsQrBaseService.WebHookTransactionLog(request).ConfigureAwait(false));
 
-
         [HttpPost]
         [Route("register-webhook")]
         public async Task<IActionResult> RegisterWebHook([FromBody] RegisterWebhookRequestDto request) => Response(await _nibbsQrBaseService.RegsiterWebHook(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));

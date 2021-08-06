@@ -113,6 +113,9 @@
         public string AccountLookTransactionType { get; set; }
         public string SinglePaymentTransactionType { get; set; }
         public string VasId { get; set; }
-
+        public string airtimePaymentBaseUrl { get; set; }
+        public string GetBillerByCategoryUrl { get; set; }
+        public string GetBillerByCategoryValue { get; set; }
+        public string GetBillerProductsUrl { get; set; }
     }
 }
