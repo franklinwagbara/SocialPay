@@ -38,11 +38,8 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (ModelState.IsValid)
-                {
-                  
+                if (ModelState.IsValid)                  
                     return Ok(await _customerRepoService.GetLinkDetails(model.TransactionReference));
-                }
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));

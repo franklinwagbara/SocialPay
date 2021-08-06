@@ -93,5 +93,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<SingleDstvPayment> SingleDstvPayment { get; set; }
         public virtual ICollection<FioranoBillsRequest> FioranoBillsRequest { get; set; }
         public virtual ICollection<WebHookRequest> WebHookRequest { get; set; }
+        public virtual ICollection<StoreTransactionLog> StoreTransactionLog { get; set; }
     }
 }

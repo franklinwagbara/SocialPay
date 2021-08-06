@@ -49,11 +49,11 @@ namespace SocialPay.Helper.Dto.Request
 
     public class CheckOutItems
     {
-        public string ProductId { get; set; }
-        public string Quantity { get; set; }
+        public long ProductId { get; set; }
+        public int Quantity { get; set; }
         public string Color { get; set; }
         public string Size { get; set; }
-        public double TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; }
     }
 
     public class PaymentValidationRequestDto

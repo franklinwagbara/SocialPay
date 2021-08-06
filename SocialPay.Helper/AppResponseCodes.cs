@@ -75,6 +75,12 @@
         public const string Processed = "02";       
     }
 
+    public class StoreTransactionRequestProcess
+    {
+        public const string InitiateRequest = "01";
+        public const string FailedRequest = "02";
+        public const string ConfirmedTransaction = "00";
+    }
     public class NibbsMerchantOnboarding
     {
         public const string CreateAccount = "01";

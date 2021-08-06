@@ -9,6 +9,7 @@ namespace SocialPay.Helper.ViewModel
         public string TransactionReference { get; set; }
         public string StoreName { get; set; }
         public string StoreDescription { get; set; }
+        public string StoreLogoUrl { get; set; }
         public List<StoreProductsDetailsViewModel> StoreDetails { get; set; }
     }
 

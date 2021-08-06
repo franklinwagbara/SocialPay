@@ -2723,3 +2723,5 @@ INFO  2021-08-06 08:37:45,181 112125ms CustomerRepoService    ?                 
 INFO  2021-08-06 08:37:51,020 117964ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/6/2021 8:37:51 AM
 INFO  2021-08-06 08:39:39,391 226334ms CustomerController     ?                  - Task starts to initiate store payments | So-Pay-7ff48825795c4948a6535869c08cce32 | 8/6/2021 8:39:39 AM
 INFO  2021-08-06 08:39:46,020 232964ms StoreBaseRepository    ?                  - Task starts to save store payments MakePayment info | So-Pay-7ff48825795c4948a6535869c08cce32 | string | 8/6/2021 8:39:45 AM
+INFO  2021-08-06 10:37:28,429 2863845ms CustomerRepoService    ?                  - GetLinkDetails | Pels store | 8/6/2021 10:37:28 AM
+INFO  2021-08-06 10:37:36,645 2872060ms StoreRepository        ?                  - Task starts to get stores | 18 | 8/6/2021 10:37:36 AM

@@ -290,7 +290,6 @@ namespace SocialPay.Core.Services.Products
             }
         }
 
-
         public async Task<WebApiResponse> GetProductsByStoreId(long storeId, string transactionReference)
         {
             try
@@ -325,6 +324,11 @@ namespace SocialPay.Core.Services.Products
                                 
                              }).ToList();
 
+
+                var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=monthlystatement;AccountKey=TiB4RbTOMBFU85N3icORuByCenohH4zhVW644VYYW4O+fCJh8jBxzIE6l9hhlCwCb9lJq0jFDHdQtGe+xl0iAg==;EndpointSuffix=core.windows.net");
+                var blobClient = storageAccount.CreateCloudBlobClient();
+                CloudBlobContainer container = blobClient.GetContainerReference("socialpay");
+
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems
@@ -335,11 +339,7 @@ namespace SocialPay.Core.Services.Products
                                                  }).ToListAsync();
 
                     foreach (var image in getProductsItem)
-                    {
-                        var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=monthlystatement;AccountKey=TiB4RbTOMBFU85N3icORuByCenohH4zhVW644VYYW4O+fCJh8jBxzIE6l9hhlCwCb9lJq0jFDHdQtGe+xl0iAg==;EndpointSuffix=core.windows.net");
-                        var blobClient = storageAccount.CreateCloudBlobClient();
-
-                        CloudBlobContainer container = blobClient.GetContainerReference("socialpay");
+                    {                      
                         CloudBlockBlob blob = container.GetBlockBlobReference(image.FileLocation);
 
                         image.Url = blob.Uri.AbsoluteUri;
@@ -349,6 +349,12 @@ namespace SocialPay.Core.Services.Products
                 }
 
                 storeDetail.StoreDetails = query;
+
+               // var linkName = await _merchantPaymentSetupService.GetPaymentLinksId(item.MerchantStoreId);
+               // CloudBlobContainer storeContainer = blobClient.GetContainerReference(options.containerName);
+                CloudBlockBlob storeblob = container.GetBlockBlobReference(stores.Select(x=>x.FileLocation).FirstOrDefault());
+
+                storeDetail.StoreLogoUrl = storeblob.Uri.AbsoluteUri;
 
                 if (query.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail };
