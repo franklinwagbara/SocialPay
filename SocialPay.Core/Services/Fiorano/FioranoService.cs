@@ -116,7 +116,7 @@ namespace SocialPay.Core.Services.Fiorano
 
                 await _fioranoResponseService.AddAsync(response);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed, Message ="Transaction Failed", Data = debitCustomer };
             }
             catch (Exception ex)
             {
