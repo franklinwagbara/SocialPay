@@ -100,7 +100,14 @@ namespace SocialPay.Core.Repositories.UserService
 
                 byte[] passwordHash, passwordSalt;
                 _utilities.CreatePasswordHash(model.NewPassword.Encrypt(appKey), out passwordHash, out passwordSalt);
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+
+                var encryptedPassword = model.NewPassword.Encrypt(_appSettings.appKey);
+
+                if (await _context.AccountHistory.AnyAsync(x => x.ClientAuthenticationId == getToken.ClientAuthenticationId
+                 && x.ClientSecret == encryptedPassword))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicatePassword, Message = "Password already used" };
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
@@ -114,6 +121,18 @@ namespace SocialPay.Core.Repositories.UserService
                         _context.Update(getToken);
 
                         await _context.SaveChangesAsync();
+
+                        var accountHistory = new AccountHistory
+                        {
+                            ClientAuthenticationId = getToken.ClientAuthenticationId,
+                            ClientSecretHash = passwordHash,
+                            ClientSecretSalt = passwordSalt,
+                            ClientSecret = encryptedPassword,
+                        };
+
+                        await _context.AccountHistory.AddAsync(accountHistory);
+                        await _context.SaveChangesAsync();
+
                         await transaction.CommitAsync();
 
                         _log4net.Info("ChangeUserPassword request saved" + " | " + model.Token + " | " + appKey + " | " + DateTime.Now);
