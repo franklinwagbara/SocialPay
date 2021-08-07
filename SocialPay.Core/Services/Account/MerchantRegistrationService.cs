@@ -189,6 +189,17 @@ namespace SocialPay.Core.Services.Account
                         await _context.PinRequest.AddAsync(pinRequestModel);
                         await _context.SaveChangesAsync();
 
+                        var accountHistory = new AccountHistory
+                        {
+                            ClientAuthenticationId = model.ClientAuthenticationId,
+                            ClientSecretHash = passwordHash,
+                            ClientSecretSalt = passwordSalt,
+                            ClientSecret = signUpRequestDto.Password.Encrypt(_appSettings.appKey),
+                        };
+
+                        await _context.AccountHistory.AddAsync(accountHistory);
+                        await _context.SaveChangesAsync();
+
                         var emailModal = new EmailRequestDto
                         {
                             Subject = "Merchant Signed Up",
@@ -206,11 +217,11 @@ namespace SocialPay.Core.Services.Account
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
 
-                        var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                       // var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                        //  var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
-                        if (sendMail.ResponseCode != AppResponseCodes.Success)
+                        if (sendMail != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
 
                         await transaction.CommitAsync();

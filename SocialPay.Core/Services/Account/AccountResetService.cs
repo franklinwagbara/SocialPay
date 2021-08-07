@@ -37,6 +37,7 @@ namespace SocialPay.Core.Services.Account
                 _log4net.Info("GenerateResetToken" + " | " + email + " | " +  DateTime.Now);
 
                 var getUser = await _userRepoService.GetClientAuthenticationAsync(email);
+
                 if(getUser == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
@@ -158,7 +159,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-               // clientId = 40084;
+               // clientId = 203;
                 return await _userRepoService.ResetPassword(model, clientId);               
             }
             catch (Exception ex)

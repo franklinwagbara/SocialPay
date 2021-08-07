@@ -58,6 +58,7 @@
         public const string InvalidBVNDetails = "54";
         public const string InvalidBVNDetailsFirstNameOrLastName = "55";
         public const string InvalidCSVFormat = "56";
+        public const string PasswordAlreadyUsed = "57";
     }
 
     public class MerchantOnboardingProcess

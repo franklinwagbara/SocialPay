@@ -200,6 +200,7 @@ namespace SocialPay.Core.Repositories.UserService
                 _log4net.Info("ResetPassword request" + " | " + clientId + " | " +  DateTime.Now);
 
                 var userInfo = await GetClientAuthenticationClientIdAsync(clientId);
+
                 if(userInfo == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
 
@@ -209,22 +210,53 @@ namespace SocialPay.Core.Repositories.UserService
                 if (VerifyPasswordHash(model.NewPassword.Encrypt(_appSettings.appKey), userInfo.ClientSecretHash, userInfo.ClientSecretSalt))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicatePassword };
 
+                var encryptedPassword = model.NewPassword.Encrypt(_appSettings.appKey);
+
+                if (await _context.AccountHistory.AnyAsync(x => x.ClientAuthenticationId == clientId
+                 && x.ClientSecret == encryptedPassword))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicatePassword, Message = "Password already used" };
+
                 byte[] passwordHash, passwordSalt;
                 _utilities.CreatePasswordHash(model.NewPassword.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
 
-                userInfo.ClientSecretHash = passwordHash;
-                userInfo.ClientSecretSalt = passwordSalt;
-                userInfo.LastDateModified = DateTime.Now;
-                _context.ClientAuthentication.Update(userInfo);
-                await _context.SaveChangesAsync();
-                _log4net.Info("ResetPassword request saved" + " | " + clientId + " | " + DateTime.Now);
+                using(var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        userInfo.ClientSecretHash = passwordHash;
+                        userInfo.ClientSecretSalt = passwordSalt;
+                        userInfo.LastDateModified = DateTime.Now;
+                        _context.ClientAuthentication.Update(userInfo);
+                        await _context.SaveChangesAsync();
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        var accountHistory = new AccountHistory
+                        {
+                            ClientAuthenticationId = userInfo.ClientAuthenticationId,
+                            ClientSecretHash = passwordHash,
+                            ClientSecretSalt = passwordSalt,
+                            ClientSecret = encryptedPassword,
+                        };
 
+                        await _context.AccountHistory.AddAsync(accountHistory);
+                        await _context.SaveChangesAsync();
+
+                        await transaction.CommitAsync();
+
+                        _log4net.Info("ResetPassword request saved" + " | " + clientId + " | " + DateTime.Now);
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Password reset was successful" };
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        _log4net.Error("Error occured" + " | " + "ResetPassword" + " | " + clientId + " | " + ex + " | " + DateTime.Now);
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                    }
+                }
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "ResetPassword" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "ResetPassword" + " | " + clientId + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
