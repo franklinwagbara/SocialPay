@@ -38,11 +38,11 @@ namespace SocialPay.API.Controllers
         public async Task<IActionResult> NetWorkProviders() => Response(await _billservice.GetNetworkProviders(User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
         [HttpGet]
-        [Route("network-products/{billerId}")]
+        [Route("network-products")]
         public async Task<IActionResult> NetworkProducts([FromQuery] int billerId) => Response(await _billservice.GetAirtimeProducts(User.GetSessionDetails().ClientId, billerId).ConfigureAwait(false));
 
         //[HttpPost]
         //[Route("airtime-subscription}")]
-        //public async Task<IActionResult> AirtimeSubscription([FromBody] int billerId) => Response(await _billservice.GetAirtimeProducts(User.GetSessionDetails().ClientId, billerId).ConfigureAwait(false));
+        //public async Task<IActionResult> AirtimeSubscriptionRequest([FromBody] VendAirtimeDTO request) => Response(await _billservice.VendAirtimeRequest(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
     }
 }

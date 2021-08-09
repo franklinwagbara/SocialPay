@@ -73,5 +73,6 @@ namespace SocialPay.Domain
         public DbSet<EventLog> EventLog { get; set; }
         public DbSet<AccountHistory> AccountHistory { get; set; }
         public DbSet<StoreTransactionLogDetails> StoreTransactionLogDetails { get; set; }
+        public DbSet<VendAirtimeRequestLog> VendAirtimeRequestLog { get; set; }
     }
 }

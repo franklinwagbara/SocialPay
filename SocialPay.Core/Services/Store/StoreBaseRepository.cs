@@ -257,8 +257,8 @@ namespace SocialPay.Core.Services.Store
                             await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                             await _context.SaveChangesAsync();
 
-                            await _context.StoreTransactionLog.AddAsync(transactionLog);
-                            await _context.SaveChangesAsync();
+                            //await _context.StoreTransactionLog.AddAsync(transactionLog);
+                            //await _context.SaveChangesAsync();
 
                             await _context.StoreTransactionLogDetails.AddRangeAsync(transactionLogDetails);
                             await _context.SaveChangesAsync();
@@ -379,8 +379,8 @@ namespace SocialPay.Core.Services.Store
                             await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                             await _context.SaveChangesAsync();
 
-                            await _context.StoreTransactionLog.AddAsync(transactionLog);
-                            await _context.SaveChangesAsync();
+                            //await _context.StoreTransactionLog.AddAsync(transactionLog);
+                            //await _context.SaveChangesAsync();
 
                             await _context.StoreTransactionLogDetails.AddRangeAsync(transactionLogDetails);
                             await _context.SaveChangesAsync();
@@ -416,15 +416,15 @@ namespace SocialPay.Core.Services.Store
                             await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                             await _context.SaveChangesAsync();
 
-                            await _context.StoreTransactionLog.AddAsync(transactionLog);
-                            await _context.SaveChangesAsync();
+                            //await _context.StoreTransactionLog.AddAsync(transactionLog);
+                            //await _context.SaveChangesAsync();
 
                             await _context.StoreTransactionLogDetails.AddRangeAsync(transactionLogDetails);
                             await _context.SaveChangesAsync();
 
                             var initiateQrPayment = await _nibbsQrBaseService.DynamicPaymentAsync(qrRequest, getPaymentDetails.ClientAuthenticationId);
 
-                            // await transaction.CommitAsync();
+                             await transaction.CommitAsync();
 
                             return new InitiatePaymentResponse
                             {
@@ -454,7 +454,7 @@ namespace SocialPay.Core.Services.Store
                         paymentResponse.CustomerId = customerId;
                         paymentResponse.PaymentLink = paymentData;
 
-                        // await transaction.CommitAsync();
+                         await transaction.CommitAsync();
                         _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };

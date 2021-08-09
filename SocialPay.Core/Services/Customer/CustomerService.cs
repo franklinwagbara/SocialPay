@@ -119,7 +119,7 @@ namespace SocialPay.Core.Services.Customer
 
             try
             {
-                //model.TransactionReference = "So-Pay-7e33d9c740da465faafad4b0dbf67fe1";
+              //  model.TransactionReference = "So-Pay-3402fece65e84d6d858b35f2c1778601";
 
                 long customerId = 0;
                 string encryptedText = string.Empty;

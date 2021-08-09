@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -57,6 +58,8 @@ using SocialPay.Job.Repository.NonEscrowCardWalletTransaction;
 using SocialPay.Job.Repository.NonEscrowOtherWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
 using SocialPay.Job.Repository.PayWithCard;
+using SocialPay.Job.Services;
+using SocialPay.Job.TaskSchedules;
 using SocialPay.Persistance.Repositories;
 
 namespace SocialPay.API
@@ -182,6 +185,7 @@ namespace SocialPay.API
             services.AddScoped<IWebHookTransactionRequestService, WebHookTransactionRequestService>();
             services.AddScoped<INibbsQrSubMerchantResponseService, NibbsQrSubMerchantResponseService>();
             services.AddScoped<IEventLogRequestService, EventLogRequestService>();
+            services.AddScoped<IVendAirtimeRequestService, VendAirtimeRequestService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
             services.AddScoped<EventLogService>();
             services.AddScoped<CreateBulkMerchantService>();

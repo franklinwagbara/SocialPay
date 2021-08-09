@@ -28,6 +28,7 @@ namespace SocialPay.Domain.Entities
             SingleDstvPayment = new HashSet<SingleDstvPayment>();
             FioranoBillsRequest = new HashSet<FioranoBillsRequest>();
             WebHookRequest = new HashSet<WebHookRequest>();
+            VendAirtimeRequestLog = new HashSet<VendAirtimeRequestLog>();
         }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]
@@ -95,5 +96,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<WebHookRequest> WebHookRequest { get; set; }
         public virtual ICollection<StoreTransactionLog> StoreTransactionLog { get; set; }
         public virtual ICollection<AccountHistory> AccountHistory { get; set; }
+        public virtual ICollection<VendAirtimeRequestLog> VendAirtimeRequestLog { get; set; }
     }
 }

@@ -117,5 +117,9 @@
         public string GetBillerByCategoryUrl { get; set; }
         public string GetBillerByCategoryValue { get; set; }
         public string GetBillerProductsUrl { get; set; }
+        public string vtuDefaultEmail { get; set; }
+        public string vtuTransactionType { get; set; }
+        public int vtuRequestType { get; set; }
+        public int vtuAppId { get; set; }
     }
 }

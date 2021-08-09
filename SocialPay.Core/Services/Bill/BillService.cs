@@ -10,6 +10,8 @@ using SocialPay.Helper.Dto.Response;
 using System;
 using System.Threading.Tasks;
 using SocialPay.Core.Services.AirtimeVending;
+using SocialPay.ApplicationCore.Interfaces.Service;
+using SocialPay.Helper.ViewModel;
 
 namespace SocialPay.Core.Services.Bill
 {
@@ -20,16 +22,22 @@ namespace SocialPay.Core.Services.Bill
         private readonly AppSettings _appSettings;
         private readonly DstvPaymentService _payWithPayUService;
         private readonly AirtimeVendingService _airtimeVendingService;
+        private readonly IVendAirtimeRequestService _vendAirtimeRequestService;
+        private readonly IMerchantBankingInfoService _merchantBankingInfoService;
 
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(BillService));
 
         public BillService(SocialPayDbContext context, IOptions<AppSettings> appSettings, 
-            DstvPaymentService payWithPayUService, AirtimeVendingService airtimeVendingService)
+            DstvPaymentService payWithPayUService, AirtimeVendingService airtimeVendingService,
+            IVendAirtimeRequestService vendAirtimeRequestService,
+            IMerchantBankingInfoService merchantBankingInfoService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _appSettings = appSettings.Value;
             _payWithPayUService = payWithPayUService ?? throw new ArgumentNullException(nameof(payWithPayUService));
             _airtimeVendingService = airtimeVendingService ?? throw new ArgumentNullException(nameof(airtimeVendingService));
+            _vendAirtimeRequestService = vendAirtimeRequestService ?? throw new ArgumentNullException(nameof(vendAirtimeRequestService));
+            _merchantBankingInfoService = merchantBankingInfoService ?? throw new ArgumentNullException(nameof(merchantBankingInfoService));
         }
 
         public async Task<GetBillerResponseDto> GetBillersAsync(long clientId)
@@ -46,6 +54,44 @@ namespace SocialPay.Core.Services.Bill
         public async Task<WebApiResponse> GetAirtimeProducts(long clientId, int networkId)
         {
             return await _airtimeVendingService.GetNetworkProducts(networkId);
+        }
+
+        public async Task<WebApiResponse> VendAirtimeRequest(VendAirtimeDTO vendAirtimeDTO, long clientId)
+        {
+            var bankInfo = await _merchantBankingInfoService.GetMerchantBankInfo(clientId);
+           
+            if (bankInfo == null)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found" };
+
+            if (bankInfo.BankCode != _appSettings.SterlingBankCode)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
+
+            var generator = new Random();
+
+            var referenceId = generator.Next(100000, 1000000).ToString() + "" + generator.Next(100000, 1000000).ToString();
+
+            var model = new VendAirtimeViewModel
+            {
+                ReferenceId = referenceId,
+                RequestType = _appSettings.vtuRequestType,
+                Translocation = "",
+                Amount = Convert.ToDecimal(vendAirtimeDTO.amt),
+                Paymentcode = vendAirtimeDTO.paymentcode,
+                Mobile = vendAirtimeDTO.mobile,
+                email = _appSettings.vtuDefaultEmail,
+                SubscriberInfo1 = vendAirtimeDTO.mobile,
+                nuban = "0065428109",
+               // nuban = bankInfo.Nuban,
+                TransactionType = _appSettings.vtuTransactionType,
+                AppId = _appSettings.vtuAppId,
+                TerminalID = ""
+            };
+
+            await _vendAirtimeRequestService.AddAsync(model);
+            
+            //return await _airtimeVendingService.GetNetworkProducts(networkId);
+
+            return new WebApiResponse { };
         }
 
         public async Task<DstvAccountLookupResponseDto> PayUAccountLookupPayment(string customerId, long clientId)

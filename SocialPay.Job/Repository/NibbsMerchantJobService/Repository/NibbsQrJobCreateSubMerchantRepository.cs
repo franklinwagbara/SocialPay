@@ -92,6 +92,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
                                         merchantResponseLog.ReturnCode = createNibbsSubMerchant.returnCode;
                                         merchantResponseLog.ReturnMsg = createNibbsSubMerchant.returnMsg;
                                         merchantResponseLog.SubMchNo = createNibbsSubMerchant.subMchNo;
+                                        merchantResponseLog.ClientAuthenticationId = item.ClientAuthenticationId;
                                         merchantResponseLog.IsDeleted = false;
 
                                         await context.SubMerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
