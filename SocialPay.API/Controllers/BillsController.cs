@@ -41,8 +41,9 @@ namespace SocialPay.API.Controllers
         [Route("network-products")]
         public async Task<IActionResult> NetworkProducts([FromQuery] int billerId) => Response(await _billservice.GetAirtimeProducts(User.GetSessionDetails().ClientId, billerId).ConfigureAwait(false));
 
-        //[HttpPost]
-        //[Route("airtime-subscription}")]
-        //public async Task<IActionResult> AirtimeSubscriptionRequest([FromBody] VendAirtimeDTO request) => Response(await _billservice.VendAirtimeRequest(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("buy-airtime")]
+        public async Task<IActionResult> AirtimeSubscriptionRequest([FromBody] VendAirtimeDTO request) => Response(await _billservice.VendAirtimeRequest(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
     }
 }
