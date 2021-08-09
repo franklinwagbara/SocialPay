@@ -31,12 +31,16 @@ namespace SocialPay.Core.Services.AirtimeVending
             var apiResponse = new WebApiResponse { };
             try
             {
-                var response = await _client.GetAsync($"{_appSettings.GetBillerByCategoryUrl}{_appSettings.GetBillerByCategoryValue}");
+                var request = await _client.GetAsync($"{_appSettings.GetBillerByCategoryUrl}{_appSettings.GetBillerByCategoryValue}");
 
-                if (!response.IsSuccessStatusCode)
+                var content = await request.Content.ReadAsStringAsync();
+
+                _log4net.Info("get network providers response" + " - "+ content + " - "+ DateTime.Now);
+
+                if (!request.IsSuccessStatusCode)
                     new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = { } };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = await response.Content.ReadAsStringAsync() };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = content };
             }
             catch (Exception ex)
             {
