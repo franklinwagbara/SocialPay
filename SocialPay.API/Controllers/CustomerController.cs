@@ -57,7 +57,7 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
-        //CustomerStorePaymentRequestDto
+        
         [HttpPost]
         [Route("initiate-payment")]
         public async Task<IActionResult> InitiatePayment([FromForm] CustomerPaymentRequestDto model)
@@ -148,12 +148,11 @@ namespace SocialPay.API.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {
                     return Ok(await _customerRepoService.PaymentConfirmation(model));
-                }
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
+
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
 
@@ -166,7 +165,8 @@ namespace SocialPay.API.Controllers
 
                 return StatusCode(500, response);
             }
-        }       
+        }
+
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]

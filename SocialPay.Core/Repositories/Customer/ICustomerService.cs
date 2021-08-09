@@ -436,14 +436,14 @@ namespace SocialPay.Core.Repositories.Customer
             return paymentview;
         }
 
-
-
         public async Task<WebApiResponse> LogInvoicePaymentResponse(PaymentValidationRequestDto model, string reference)
         {
             try
             {
                 var linkInfo = await GetLinkCategorybyTranref(model.TransactionReference);
+
                 var logFailedResponse = new FailedTransactions();
+
                 if (linkInfo != null & linkInfo.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {
                     var getpaymentInfo = await GetInvoicePaymentInfo(model.TransactionReference, model.InvoiceReference);

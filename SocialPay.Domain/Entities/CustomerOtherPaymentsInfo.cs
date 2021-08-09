@@ -29,6 +29,8 @@ namespace SocialPay.Domain.Entities
         public string FileLocation { get; set; }
         [Column(TypeName = "NVARCHAR(90)")]
         public string PaymentReference { get; set; }
+        [Column(TypeName = "NVARCHAR(20)")]
+        public string Category { get; set; }
         public bool PaymentStatus { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual MerchantPaymentSetup MerchantPaymentSetup { get; set; }

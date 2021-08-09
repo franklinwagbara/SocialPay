@@ -119,6 +119,12 @@
         public const string SocialPayToMerchant = "02";
     }
 
+    public class CustomerPaymentCategory
+    {
+        public const string BasicLink = "01";
+        public const string StoreLink = "02";
+    }
+
 
     public class AcceptRejectRequest
     {

@@ -8,6 +8,7 @@ using SocialPay.Core.Messaging;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Services.QrCode;
 using SocialPay.Core.Services.Specta;
+using SocialPay.Core.Services.Store;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -36,12 +37,14 @@ namespace SocialPay.Core.Services.Customer
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly TransactionReceipt _transactionReceipt;
         private readonly NibbsQrBaseService _nibbsQrBaseService;
+        private readonly StoreBaseRepository _storeBaseRepository;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CustomerRepoService));
         public CustomerRepoService(ICustomerService customerService, IOptions<AppSettings> appSettings,
             EncryptDecryptAlgorithm encryptDecryptAlgorithm, EncryptDecrypt encryptDecrypt,
             EmailService emailService, IHostingEnvironment environment,
             SocialPayDbContext context, PayWithSpectaService payWithSpectaService,
-            TransactionReceipt transactionReceipt, NibbsQrBaseService nibbsQrBaseService)
+            TransactionReceipt transactionReceipt, NibbsQrBaseService nibbsQrBaseService,
+            StoreBaseRepository storeBaseRepository)
         {
             _customerService = customerService;
             _appSettings = appSettings.Value;
@@ -53,7 +56,7 @@ namespace SocialPay.Core.Services.Customer
             _payWithSpectaService = payWithSpectaService;
             _transactionReceipt = transactionReceipt;
             _nibbsQrBaseService = nibbsQrBaseService ?? throw new ArgumentNullException(nameof(nibbsQrBaseService));
-
+            _storeBaseRepository = storeBaseRepository ?? throw new ArgumentNullException(nameof(storeBaseRepository));
         }
 
         public async Task<WebApiResponse> GetLinkDetails(string transactionReference)
@@ -201,7 +204,8 @@ namespace SocialPay.Core.Services.Customer
                     PhoneNumber = model.PhoneNumber,
                     Fullname = model.Fullname,
                     TransactionReference = model.TransactionReference,
-                    PaymentReference = paymentRef
+                    PaymentReference = paymentRef,
+                    Category = CustomerPaymentCategory.BasicLink
                 };
 
                 ////if (getLinkType.Channel == MerchantPaymentLinkCategory.Escrow || getLinkType.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
@@ -452,10 +456,17 @@ namespace SocialPay.Core.Services.Customer
                     PaymentReference = model.PaymentReference,
                     TransactionReference = model.TransactionReference
                 };
+
                 await _context.PaymentResponse.AddAsync(logResponse);
                 await _context.SaveChangesAsync();
 
                 var validateLinkType = await _customerService.GetLinkCategorybyTranref(model.TransactionReference);
+
+                var getPaymentCategory = await _context.CustomerOtherPaymentsInfo
+                    .SingleOrDefaultAsync(x => x.PaymentReference == model.PaymentReference);
+
+                if (getPaymentCategory.Category == CustomerPaymentCategory.StoreLink)
+                    return await _storeBaseRepository.PaymentConfirmation(model);
 
                 if (validateLinkType.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {
