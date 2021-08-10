@@ -29,6 +29,7 @@ namespace SocialPay.Domain.Entities
             FioranoBillsRequest = new HashSet<FioranoBillsRequest>();
             WebHookRequest = new HashSet<WebHookRequest>();
             VendAirtimeRequestLog = new HashSet<VendAirtimeRequestLog>();
+            TenantProfile = new HashSet<TenantProfile>();
         }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]
@@ -97,5 +98,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<StoreTransactionLog> StoreTransactionLog { get; set; }
         public virtual ICollection<AccountHistory> AccountHistory { get; set; }
         public virtual ICollection<VendAirtimeRequestLog> VendAirtimeRequestLog { get; set; }
+        public virtual ICollection<TenantProfile> TenantProfile { get; set; }
     }
 }

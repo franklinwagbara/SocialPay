@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210810112605_created-tenant-api-profile-table")]
+    partial class createdtenantapiprofiletable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2858,17 +2860,8 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("NVARCHAR(350)");
 
-                    b.Property<string>("AuthKey")
-                        .HasColumnType("NVARCHAR(150)");
-
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("ClientId")
-                        .HasColumnType("NVARCHAR(90)");
-
-                    b.Property<string>("ClientSecret")
-                        .HasColumnType("NVARCHAR(90)");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
@@ -2876,17 +2869,11 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("NVARCHAR(90)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("LastDateModified")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("NVARCHAR(90)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.Property<string>("TenantName")
                         .HasColumnType("NVARCHAR(90)");
@@ -3021,8 +3008,8 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("AppId")
                         .HasColumnType("int");

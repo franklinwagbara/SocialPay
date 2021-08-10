@@ -75,7 +75,7 @@ namespace SocialPay.Core.Services.Bill
                 ReferenceId = referenceId,
                 RequestType = _appSettings.vtuRequestType,
                 Translocation = "",
-                Amount = Convert.ToDecimal(vendAirtimeDTO.amt),
+                Amount = Convert.ToDouble(vendAirtimeDTO.amt),
                 Paymentcode = vendAirtimeDTO.paymentcode,
                 Mobile = vendAirtimeDTO.mobile,
                 email = _appSettings.vtuDefaultEmail,

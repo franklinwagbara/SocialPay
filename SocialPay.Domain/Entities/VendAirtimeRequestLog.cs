@@ -27,7 +27,7 @@ namespace SocialPay.Domain.Entities
         [Column(TypeName = "NVARCHAR(45)")]
         public string Paymentcode { get; set; }
         public string Mobile { get; set; }
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual ClientAuthentication ClientAuthentication { get; set; }
     }

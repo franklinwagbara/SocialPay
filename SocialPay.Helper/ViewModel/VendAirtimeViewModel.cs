@@ -11,7 +11,7 @@ namespace SocialPay.Helper.ViewModel
         public string ReferenceId { get; set; }
         public string Translocation { get; set; }
         public string email { get; set; }
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
         public string SubscriberInfo1 { get; set; }
         public string nuban { get; set; }
         public string Mobile { get; set; }

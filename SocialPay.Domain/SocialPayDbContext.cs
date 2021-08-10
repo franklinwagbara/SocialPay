@@ -74,5 +74,6 @@ namespace SocialPay.Domain
         public DbSet<AccountHistory> AccountHistory { get; set; }
         public DbSet<StoreTransactionLogDetails> StoreTransactionLogDetails { get; set; }
         public DbSet<VendAirtimeRequestLog> VendAirtimeRequestLog { get; set; }
+        public DbSet<TenantProfile> TenantProfile { get; set; }
     }
 }

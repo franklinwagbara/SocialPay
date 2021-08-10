@@ -39,6 +39,7 @@ using SocialPay.Core.Services.QrCode;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
 using SocialPay.Core.Services.Store;
+using SocialPay.Core.Services.Tenant;
 using SocialPay.Core.Services.Tin;
 using SocialPay.Core.Services.Transaction;
 using SocialPay.Core.Services.Validations;
@@ -186,6 +187,7 @@ namespace SocialPay.API
             services.AddScoped<INibbsQrSubMerchantResponseService, NibbsQrSubMerchantResponseService>();
             services.AddScoped<IEventLogRequestService, EventLogRequestService>();
             services.AddScoped<IVendAirtimeRequestService, VendAirtimeRequestService>();
+            services.AddScoped<ITenantProfileService, TenantProfileService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
             services.AddScoped<EventLogService>();
             services.AddScoped<CreateBulkMerchantService>();
@@ -200,6 +202,7 @@ namespace SocialPay.API
             services.AddScoped<AirtimeVendingService>();
             services.AddScoped<FioranoService>();
             services.AddScoped<FioranoAPIService>();
+            services.AddScoped<TenantProfileAPIService>();
             services.AddSingleton<NibbsQrJobCreateMerchantRepository>();
             services.AddSingleton<NibbsQrJobCreateSubMerchantRepository>();
             services.AddSingleton<BindMerchantServiceRepository>();
@@ -273,11 +276,11 @@ namespace SocialPay.API
             //    c.CronExpression = options.CreateNibbsMerchantTask;
             //});
 
-            services.AddCronJob<CreateNibbsMerchantTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.CreateNibbsMerchantTask;
-            });
+            ////services.AddCronJob<CreateNibbsMerchantTask>(c =>
+            ////{
+            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////    c.CronExpression = options.CreateNibbsMerchantTask;
+            ////});
 
             //services.AddCronJob<CardPaymentTask>(c =>
             //{

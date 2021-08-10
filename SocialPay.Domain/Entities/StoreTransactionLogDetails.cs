@@ -17,6 +17,7 @@ namespace SocialPay.Domain.Entities
         public string Size { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
+        [Column(TypeName = "NVARCHAR(10)")]
         public string TransactionStatus { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public virtual StoreTransactionLog StoreTransactionLog { get; set; }
