@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.ViewModel;
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.AirtimeVending
@@ -62,6 +65,32 @@ namespace SocialPay.Core.Services.AirtimeVending
                     new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = await response.Content.ReadAsStringAsync() };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + " GetPaymentItem" + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<WebApiResponse> AirtimeSubscription(VendAirtimeViewModel model)
+        {
+            try
+            {
+                _log4net.Info("airtimeSubscription request" + DateTime.Now);
+
+                var jsonRequest = JsonConvert.SerializeObject(model);
+
+                var request = await _client.PostAsync(_appSettings.PayBillerUrl,
+                    new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
+
+                var content = await request.Content.ReadAsStringAsync();
+
+                if (!request.IsSuccessStatusCode)
+                    new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Subscription failed" };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = content };
             }
             catch (Exception ex)
             {

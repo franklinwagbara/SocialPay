@@ -89,9 +89,8 @@ namespace SocialPay.Core.Services.Bill
 
             await _vendAirtimeRequestService.AddAsync(model);
             
-            //return await _airtimeVendingService.GetNetworkProducts(networkId);
+            return await _airtimeVendingService.AirtimeSubscription(model);
 
-            return new WebApiResponse { };
         }
 
         public async Task<DstvAccountLookupResponseDto> PayUAccountLookupPayment(string customerId, long clientId)
