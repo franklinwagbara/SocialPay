@@ -278,7 +278,7 @@ namespace SocialPay.Core.Services.Store
 
                                     var initiateQrPayment = await _nibbsQrBaseService.DynamicPaymentAsync(qrRequest, getPaymentDetails.ClientAuthenticationId);
 
-                                    //await transaction.CommitAsync();
+                                    await transaction.CommitAsync();
 
                                     return new InitiatePaymentResponse
                                     {
@@ -307,6 +307,8 @@ namespace SocialPay.Core.Services.Store
 
                                     _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
+                                    await transaction.CommitAsync();
+
                                     return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                                 }
 
@@ -318,6 +320,8 @@ namespace SocialPay.Core.Services.Store
                                 paymentResponse.PaymentLink = paymentData;
 
                                 _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+                                await transaction.CommitAsync();
 
                                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                             }
@@ -332,7 +336,7 @@ namespace SocialPay.Core.Services.Store
                                 paymentResponse.CustomerId = customerId;
                                 paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
 
-                                // await transaction.CommitAsync();
+                                 await transaction.CommitAsync();
 
                                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                             }
@@ -346,7 +350,7 @@ namespace SocialPay.Core.Services.Store
 
                                 var initiateQrPayment = await _nibbsQrBaseService.DynamicPaymentAsync(qrRequest, getPaymentDetails.ClientAuthenticationId);
 
-                                // await transaction.CommitAsync();
+                                 await transaction.CommitAsync();
 
                                 return new InitiatePaymentResponse
                                 {
@@ -364,7 +368,7 @@ namespace SocialPay.Core.Services.Store
                             paymentResponse.CustomerId = customerId;
                             paymentResponse.PaymentLink = paymentData;
 
-                            //await transaction.CommitAsync();
+                            await transaction.CommitAsync();
 
                             _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
