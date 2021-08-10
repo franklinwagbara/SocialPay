@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210810153654_updated-qrpayment-table")]
+    partial class updatedqrpaymenttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2511,9 +2513,6 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
                     b.Property<long>("ClientAuthenticationId")
                         .HasColumnType("bigint");
 
@@ -2552,8 +2551,8 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
+                    b.Property<string>("Amount")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CodeUrl")
                         .HasColumnType("nvarchar(max)");
@@ -2565,7 +2564,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OrderSn")
-                        .HasColumnType("NVARCHAR(190)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentReference")
                         .HasColumnType("nvarchar(max)");
@@ -2574,7 +2573,7 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("ReturnCode")
-                        .HasColumnType("NVARCHAR(90)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReturnMsg")
                         .HasColumnType("nvarchar(max)");

@@ -17,12 +17,18 @@ namespace SocialPay.Core.Services.Merchant
         private readonly SocialPayDbContext _context;
         private readonly NibbsQRCodeAPIService _nibbsQRCodeAPIService;
         private readonly IWebHookTransactionRequestService _webHookTransactionRequestService;
+        private readonly IQrPaymentRequestService _qrPaymentRequestService;
+        private readonly IQrPaymentResponseService _qrPaymentResponseService;
         public NibbsQrRepository(SocialPayDbContext context, NibbsQRCodeAPIService nibbsQRCodeAPIService,
-            IWebHookTransactionRequestService webHookTransactionRequestService)
+            IWebHookTransactionRequestService webHookTransactionRequestService,
+            IQrPaymentRequestService qrPaymentRequestService,
+            IQrPaymentResponseService qrPaymentResponseService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _nibbsQRCodeAPIService = nibbsQRCodeAPIService ?? throw new ArgumentNullException(nameof(nibbsQRCodeAPIService));
             _webHookTransactionRequestService = webHookTransactionRequestService ?? throw new ArgumentNullException(nameof(webHookTransactionRequestService));
+            _qrPaymentRequestService = qrPaymentRequestService ?? throw new ArgumentNullException(nameof(qrPaymentRequestService));
+            _qrPaymentResponseService = qrPaymentResponseService ?? throw new ArgumentNullException(nameof(qrPaymentResponseService));
         }
 
         public async Task<WebApiResponse> CreateMerchantAsync(NibbsQrMerchantViewModel model, long clientId)
@@ -304,19 +310,39 @@ namespace SocialPay.Core.Services.Merchant
         {
             try
             {
-                //var defaultRequest = new DynamicPaymentDefaultRequestDto
-                //{
-                //    amount = model.amount,
-                //   mchNo = model.mchNo,
-                //   orderNo = 
-                //};
+                var request = new QrRequestPaymentViewModel
+                {
+                    ClientAuthenticationId = clientId,
+                    LastDateModified = DateTime.Now,
+                    MchNo = model.mchNo,
+                    OrderNo = model.orderNo,
+                    OrderType = model.orderType,
+                    SubMchNo = model.subMchNo,
+                    Amount = Convert.ToDouble(model.amount)
+                };
+
+                var logRequest = await _qrPaymentRequestService.AddAsync(request);
 
                 var createPayment = await _nibbsQRCodeAPIService.DynamicPay(model);
 
-                if (createPayment.ResponseCode == AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = createPayment.ResponseCode, Data = createPayment };
+                if (createPayment.ResponseCode != AppResponseCodes.Success)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = createPayment };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = createPayment };
+                var response = new QrPaymentResponseViewModel
+                {
+                    Amount = Convert.ToDouble(createPayment.amount),
+                    SessionID = createPayment.sessionID,
+                    CodeUrl = createPayment.codeUrl,
+                    OrderSn = createPayment.orderSn,
+                    PaymentReference = createPayment.paymentReference,
+                    QrPaymentRequestId = logRequest.QrPaymentRequestId,
+                    ReturnCode = createPayment.returnCode,
+                    ReturnMsg = createPayment.returnMsg
+                };
+
+                await _qrPaymentResponseService.AddAsync(response);
+
+                return new WebApiResponse { ResponseCode = createPayment.ResponseCode, Data = createPayment };
 
                 //using (var transaction = await _context.Database.BeginTransactionAsync())
                 //{
@@ -392,10 +418,10 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> WebHookTransactionStatusAsync(string reference)
         {
-            try   
-            {               
+            try
+            {
 
-               var request = await _webHookTransactionRequestService.GetTransactionByreference(reference);
+                var request = await _webHookTransactionRequestService.GetTransactionByreference(reference);
 
                 if (request == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not founf" };
@@ -447,7 +473,7 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> GetWebHookFilter()
         {
-           return await _nibbsQRCodeAPIService.GetWebHookFilter();
+            return await _nibbsQRCodeAPIService.GetWebHookFilter();
         }
     }
 }
