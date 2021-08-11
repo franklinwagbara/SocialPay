@@ -42,5 +42,19 @@ namespace SocialPay.Core.Services.Tenant
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured" };
             }
         }
+
+
+        public async Task<WebApiResponse> GetTenant(long clientId)
+        {
+            try
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = await _tenantProfileService.GetAllAsync() };
+            }
+            catch (Exception ex)
+            {
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
+            }
+        }
     }
 }

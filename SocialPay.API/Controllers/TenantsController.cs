@@ -27,5 +27,9 @@ namespace SocialPay.API.Controllers
         [HttpPost]
         [Route("create-tenant-profile")]
         public async Task<IActionResult> CreateTenantProfile([FromBody] TenantProfileRequestDto request) => Response(await _tenantProfileAPIService.CreateNewTenant(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
+
+        [HttpGet]
+        [Route("get-tenant")]
+        public async Task<IActionResult> GetTenant() => Response(await _tenantProfileAPIService.GetTenant(User.GetSessionDetails().ClientId).ConfigureAwait(false));
     }
 }
