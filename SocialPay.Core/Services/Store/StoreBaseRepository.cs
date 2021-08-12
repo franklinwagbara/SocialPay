@@ -131,11 +131,11 @@ namespace SocialPay.Core.Services.Store
 
                         model.TransactionReference = newGuid;
 
-                        model.PaymentLinkUrl = $"{_appSettings.paymentlinkUrl}{model.CustomUrl}";
+                        model.PaymentLinkUrl = $"{_appSettings.paymentstorelinkUrl}{model.CustomUrl}";
 
                         if (string.IsNullOrEmpty(model.CustomUrl))
                         {
-                            model.PaymentLinkUrl = $"{_appSettings.paymentlinkUrl}{model.TransactionReference}";
+                            model.PaymentLinkUrl = $"{_appSettings.paymentstorelinkUrl}{model.TransactionReference}";
                             model.CustomUrl = model.TransactionReference;
                         }
 
