@@ -445,8 +445,9 @@ namespace SocialPay.Core.Services.Store
 
                         await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                         await _context.SaveChangesAsync();
-                        await _context.StoreTransactionLog.AddAsync(transactionLog);
-                        await _context.SaveChangesAsync();
+
+                        //await _context.StoreTransactionLog.AddAsync(transactionLog);
+                        //await _context.SaveChangesAsync();
 
                         await _context.StoreTransactionLogDetails.AddRangeAsync(transactionLogDetails);
                         await _context.SaveChangesAsync();

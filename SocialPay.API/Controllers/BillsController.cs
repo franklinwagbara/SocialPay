@@ -12,7 +12,7 @@ namespace SocialPay.API.Controllers
 {
     [Route("api/socialpay/bills")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BillsController : BaseController
     {
         private readonly BillService _billservice;
@@ -40,7 +40,6 @@ namespace SocialPay.API.Controllers
         [HttpGet]
         [Route("network-products")]
         public async Task<IActionResult> NetworkProducts([FromQuery] int billerId) => Response(await _billservice.GetAirtimeProducts(User.GetSessionDetails().ClientId, billerId).ConfigureAwait(false));
-
 
         [HttpPost]
         [Route("buy-airtime")]

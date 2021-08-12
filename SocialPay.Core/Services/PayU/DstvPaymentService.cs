@@ -62,19 +62,18 @@ namespace SocialPay.Core.Services.PayU
         }
 
 
-        public async Task<InitiatePayUPaymentResponse> InitiatePayUSingleDstvPayment(SingleDstvPaymentDto model)
-
+        public async Task<SingleDstvPaymentResponseDto> InitiatePayUSingleDstvPayment(SingleDstvPaymentDefaultDto model)
         {
-            _log4net.Info("InitiatePayment request" + " | " + model.amountInCents + " | " +  model.merchantReference + " | " + model.customerId + " | "  + DateTime.Now);
+            _log4net.Info("Single payment request" + " | " + model.amountInCents + " | " +  model.merchantReference + " | " + model.customerId + " | "  + DateTime.Now);
 
-            var apiResponse = new InitiatePayUPaymentResponse { };
+            var apiResponse = new SingleDstvPaymentResponseDto { };
 
             try
             {
 
                 var jsonRequest = JsonConvert.SerializeObject(model);
 
-                _log4net.Info("InitiatePayment pay with specta request" + " | " + model.merchantReference + " | " +  jsonRequest + " | " + DateTime.Now);
+                _log4net.Info("Single payment json request" + " | " + model.merchantReference + " | " +  jsonRequest + " | " + DateTime.Now);
 
                 var request = await _client.PostAsync($"{_appSettings.paywithPayUSingleDstvPurchaseUrlExtension}",
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
@@ -83,20 +82,25 @@ namespace SocialPay.Core.Services.PayU
 
                 if (request.IsSuccessStatusCode)
                 {
-                    var successfulResponse = JsonConvert.DeserializeObject<SingleDstvPaymentResponseDto>(content);
-                    apiResponse.DataObj = successfulResponse;
-                    apiResponse.resultCode = AppResponseCodes.Success;
+                    apiResponse = JsonConvert.DeserializeObject<SingleDstvPaymentResponseDto>(content);
 
-                    return apiResponse;
+                    if(apiResponse.resultCode == AppResponseCodes.Success)
+                    {
+                        apiResponse.resultCode = AppResponseCodes.Success;
+
+                        return apiResponse;
+                    }
+
+                    return apiResponse;                 
                 }
 
-                return new InitiatePayUPaymentResponse { resultCode = AppResponseCodes.Failed };
+                return new SingleDstvPaymentResponseDto { resultCode = AppResponseCodes.Failed };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "InitiatePayment" + " | " + model.merchantReference + " | " + model.customerId  + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "InitiatePayment" + " | " + model.merchantReference + " | " + model.customerId  + " | " + ex + " | " + DateTime.Now);
 
-                return new InitiatePayUPaymentResponse { resultCode = AppResponseCodes.InternalError };
+                return new SingleDstvPaymentResponseDto { resultCode = AppResponseCodes.InternalError };
             }
         }
 

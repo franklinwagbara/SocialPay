@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using SocialPay.Core.Services.AirtimeVending;
 using SocialPay.ApplicationCore.Interfaces.Service;
 using SocialPay.Helper.ViewModel;
+using System.Linq;
 
 namespace SocialPay.Core.Services.Bill
 {
@@ -148,45 +149,67 @@ namespace SocialPay.Core.Services.Bill
         public async Task<WebApiResponse> PayUSingleDstvPayment(SingleDstvPaymentDto model, long clientId)
         {
 
-            //if(await _context.SingleDstvPayment.AnyAsync(x=> x.)
-
-            var singledstv = new SingleDstvPayment();
-
-            foreach (var item in model.customFields)
+            try
             {
-                singledstv.key = item.key;
-                singledstv.value = item.value;
+                //if(await _context.SingleDstvPayment.AnyAsync(x=> x.)
+
+                clientId = 200;
+
+                var singledstv = new SingleDstvPayment();
+
+                foreach (var item in model.customFields)
+                {
+                    singledstv.key = item.key;
+                    singledstv.value = item.value;
+                }
+
+                singledstv.amountInCents = model.amountInCents;
+                singledstv.merchantReference = model.merchantReference;
+                singledstv.transactionType = _appSettings.SinglePaymentTransactionType;
+                singledstv.vasId = _appSettings.VasId;
+                singledstv.countryCode = _appSettings.CountryCode;
+                singledstv.customerId = model.customerId;
+                singledstv.ClientAuthenticationId = clientId;
+
+                await _context.SingleDstvPayment.AddAsync(singledstv);
+                await _context.SaveChangesAsync();
+
+                var defaultRequest = new SingleDstvPaymentDefaultDto
+                {
+                    amountInCents = model.amountInCents,
+                    countryCode = _appSettings.CountryCode,
+                    customerId = model.customerId,
+                    customFields = model.customFields,
+                    merchantReference = model.merchantReference,
+                    transactionType = _appSettings.SinglePaymentTransactionType,
+                    vasId = _appSettings.VasId
+                };
+
+                var postsingledstvbill = await _payWithPayUService.InitiatePayUSingleDstvPayment(defaultRequest);
+
+                var singledstvpaymentresponse = new SingleDstvPaymentResponse
+                {
+                    resultMessage = postsingledstvbill.resultMessage,
+                    resultCode = postsingledstvbill.resultCode,
+                    payUVasReference = postsingledstvbill.payUVasReference,
+                    merchantReference = postsingledstvbill.merchantReference,
+                    SingleDstvPaymentId = singledstv.SingleDstvPaymentId
+                };
+
+                await _context.SingleDstvPaymentResponse.AddAsync(singledstvpaymentresponse);
+                await _context.SaveChangesAsync();
+
+                var message = postsingledstvbill.customFields.customfield.Select(x => x.value).FirstOrDefault();
+
+                if (postsingledstvbill.resultCode != AppResponseCodes.Success)
+                    return new WebApiResponse { ResponseCode = postsingledstvbill.resultCode };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = postsingledstvbill };
             }
-
-            singledstv.amountInCents = model.amountInCents;
-            singledstv.merchantReference = model.merchantReference;
-            singledstv.transactionType = _appSettings.SinglePaymentTransactionType;
-            singledstv.vasId = _appSettings.VasId;
-            singledstv.countryCode = _appSettings.CountryCode;
-            singledstv.customerId = model.customerId;
-
-            await _context.SingleDstvPayment.AddAsync(singledstv);
-
-            var postsingledstvbill = await _payWithPayUService.InitiatePayUSingleDstvPayment(model);
-
-            var response = (SingleDstvPaymentResponseDto)postsingledstvbill.DataObj;
-
-            var singledstvpaymentresponse = new SingleDstvPaymentResponse
+            catch (Exception ex)
             {
-                resultMessage = response?.resultMessage,
-                pointOfFailure = response?.pointOfFailure,
-                resultCode = postsingledstvbill?.resultCode,
-                payUVasReference = response?.payUVasReference,
-                merchantReference = response?.merchantReference
-            };
-
-            await _context.SingleDstvPaymentResponse.AddAsync(singledstvpaymentresponse);
-            await _context.SaveChangesAsync();
-
-            if (postsingledstvbill.resultCode != AppResponseCodes.Success)
-                return new WebApiResponse { ResponseCode = postsingledstvbill.resultCode };
-
-            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = postsingledstvbill };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured" };
+            }
 
         }
 
