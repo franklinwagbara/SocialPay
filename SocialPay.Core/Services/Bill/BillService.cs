@@ -153,7 +153,7 @@ namespace SocialPay.Core.Services.Bill
             {
                 //if(await _context.SingleDstvPayment.AnyAsync(x=> x.)
 
-                clientId = 200;
+                //clientId = 200;
 
                 var singledstv = new SingleDstvPayment();
 
@@ -199,12 +199,9 @@ namespace SocialPay.Core.Services.Bill
                 await _context.SingleDstvPaymentResponse.AddAsync(singledstvpaymentresponse);
                 await _context.SaveChangesAsync();
 
-                var message = postsingledstvbill.customFields.customfield.Select(x => x.value).FirstOrDefault();
+              //  var message = postsingledstvbill.customFields.customfield.Select(x => x.value).FirstOrDefault();            
 
-                if (postsingledstvbill.resultCode != AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = postsingledstvbill.resultCode };
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = postsingledstvbill };
+                return new WebApiResponse { ResponseCode = postsingledstvbill.resultCode, Data = postsingledstvbill };
             }
             catch (Exception ex)
             {
