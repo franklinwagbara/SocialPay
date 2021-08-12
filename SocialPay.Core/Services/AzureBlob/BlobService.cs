@@ -3,7 +3,9 @@ using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Microsoft.Extensions.Configuration;
 using SocialPay.Core.Configurations;
+using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
+using SocialPay.Helper.Dto.Response;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -76,7 +78,7 @@ namespace SocialPay.Core.Services.AzureBlob
             { }
         }
 
-        public async Task UploadCSV(BlobOnboardingCSVRequest request)
+        public async Task<WebApiResponse> UploadCSV(BlobOnboardingCSVRequest request)
         {
             try
             {
@@ -94,11 +96,15 @@ namespace SocialPay.Core.Services.AzureBlob
 
                 BlockBlobClient blockBlob = containerBlob.GetBlockBlobClient(request.FileLocation);
 
-                var c = await blockBlob.UploadAsync(ms);
+                await blockBlob.UploadAsync(ms);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success" };
 
             }
             catch (Exception ex)
-            { }
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
+            }
         }
 
     }

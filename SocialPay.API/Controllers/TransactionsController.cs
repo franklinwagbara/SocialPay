@@ -330,9 +330,7 @@ namespace SocialPay.API.Controllers
             {
 
                 if (ModelState.IsValid)
-                {
                     return Ok(await _customerRepoService.DecryptMessage(responseMessage));
-                }
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));

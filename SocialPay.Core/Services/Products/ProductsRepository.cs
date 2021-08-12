@@ -159,8 +159,7 @@ namespace SocialPay.Core.Services.Products
             }
         }
 
-
-        public async Task<WebApiResponse> GetProductsByClientIdStoreId(long clientId, long storeId)
+        public async Task<WebApiResponse> GetProductsByClientIdStoreId(long clientId, long storeId, string azureConnectionString, string containerName)
         {
             try
             {
@@ -190,7 +189,12 @@ namespace SocialPay.Core.Services.Products
                                  Quantity = pi.Quantity                                 
                              }).ToList();
 
-               
+
+                var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
+                var blobClient = storageAccount.CreateCloudBlobClient();
+
+                CloudBlobContainer container = blobClient.GetContainerReference(containerName);
+
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems
@@ -202,11 +206,7 @@ namespace SocialPay.Core.Services.Products
 
                     foreach (var image in getProductsItem)
                     {
-                        var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=monthlystatement;AccountKey=TiB4RbTOMBFU85N3icORuByCenohH4zhVW644VYYW4O+fCJh8jBxzIE6l9hhlCwCb9lJq0jFDHdQtGe+xl0iAg==;EndpointSuffix=core.windows.net");
-                        var blobClient = storageAccount.CreateCloudBlobClient();
-
-                        //CloudBlobContainer container = blobClient.GetContainerReference(options.containerName);
-                        CloudBlobContainer container = blobClient.GetContainerReference("socialpay");
+                      
                         CloudBlockBlob blob = container.GetBlockBlobReference(image.FileLocation);
 
                         image.Url = blob.Uri.AbsoluteUri;
@@ -228,7 +228,7 @@ namespace SocialPay.Core.Services.Products
             }
         }
 
-        public async Task<WebApiResponse> GetProductsByClientIdProductId(long productId)
+        public async Task<WebApiResponse> GetProductsByClientIdProductId(long productId, string azureConnectionString, string containerName)
         {
             try
             {
@@ -252,6 +252,11 @@ namespace SocialPay.Core.Services.Products
                              }).ToList();
 
 
+                var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
+                var blobClient = storageAccount.CreateCloudBlobClient();
+
+                CloudBlobContainer container = blobClient.GetContainerReference(containerName);
+
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems
@@ -263,11 +268,6 @@ namespace SocialPay.Core.Services.Products
 
                     foreach (var image in getProductsItem)
                     {
-                        var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=monthlystatement;AccountKey=TiB4RbTOMBFU85N3icORuByCenohH4zhVW644VYYW4O+fCJh8jBxzIE6l9hhlCwCb9lJq0jFDHdQtGe+xl0iAg==;EndpointSuffix=core.windows.net");
-                        var blobClient = storageAccount.CreateCloudBlobClient();
-
-                        //CloudBlobContainer container = blobClient.GetContainerReference(options.containerName);
-                        CloudBlobContainer container = blobClient.GetContainerReference("socialpay");
                         CloudBlockBlob blob = container.GetBlockBlobReference(image.FileLocation);
 
                         image.Url = blob.Uri.AbsoluteUri;
@@ -289,7 +289,8 @@ namespace SocialPay.Core.Services.Products
             }
         }
 
-        public async Task<WebApiResponse> GetProductsByStoreId(long storeId, string transactionReference)
+        public async Task<WebApiResponse> GetProductsByStoreId(long storeId, string transactionReference, 
+            string azureConnectionString, string containerName)
         {
             try
             {
@@ -324,9 +325,11 @@ namespace SocialPay.Core.Services.Products
                              }).ToList();
 
 
-                var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=monthlystatement;AccountKey=TiB4RbTOMBFU85N3icORuByCenohH4zhVW644VYYW4O+fCJh8jBxzIE6l9hhlCwCb9lJq0jFDHdQtGe+xl0iAg==;EndpointSuffix=core.windows.net");
+                var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
+
                 var blobClient = storageAccount.CreateCloudBlobClient();
-                CloudBlobContainer container = blobClient.GetContainerReference("socialpay");
+
+                CloudBlobContainer container = blobClient.GetContainerReference(containerName);
 
                 foreach (var item in query)
                 {
@@ -348,9 +351,7 @@ namespace SocialPay.Core.Services.Products
                 }
 
                 storeDetail.StoreDetails = query;
-
-               // var linkName = await _merchantPaymentSetupService.GetPaymentLinksId(item.MerchantStoreId);
-               // CloudBlobContainer storeContainer = blobClient.GetContainerReference(options.containerName);
+              
                 CloudBlockBlob storeblob = container.GetBlockBlobReference(stores.Select(x=>x.FileLocation).FirstOrDefault());
 
                 storeDetail.StoreLogoUrl = storeblob.Uri.AbsoluteUri;

@@ -62,17 +62,17 @@ namespace SocialPay.Core.Services.Merchant
             }
         }
 
-        private async Task<string> ProcessCSVFile(IFormFile doc, string documentName)
+        private async Task<WebApiResponse> ProcessCSVFile(IFormFile doc, string documentName)
         {
             try
             {
                 if (doc == null || doc.Length == 0)
-                    return AppResponseCodes.InvalidCSVFormat;
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidCSVFormat, Message = "Invalid CSV" };
 
                 string fileExtension = Path.GetExtension(doc.FileName);
 
                 if (fileExtension != ".csv")
-                    return AppResponseCodes.InvalidCSVFormat;
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidCSVFormat, Message = "Invalid CSV" };
 
                 var rootFolder = _hostingEnvironment.WebRootPath;
                 var fileName = doc.FileName;
@@ -93,16 +93,13 @@ namespace SocialPay.Core.Services.Merchant
 
                 blobRequest.FileLocation = $"{blobRequest.RequestType}/{blobRequest.FileType}/{blobRequest.ImageGuidId}.csv";
 
-                //storeModel.Image = newFileName;
-                await _blobService.UploadCSV(blobRequest);
-
-                return AppResponseCodes.Success;
+                return await _blobService.UploadCSV(blobRequest);
 
             }
             catch (Exception ex)
 
             {
-                return AppResponseCodes.InternalError;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error" };
             }
         }
 
@@ -112,8 +109,10 @@ namespace SocialPay.Core.Services.Merchant
             try
             {
                 var processCSV = await ProcessCSVFile(doc, "BulkCreateMerchantBankInfo");
-                if (processCSV != "00")
-                    return new WebApiResponse { ResponseCode = processCSV, Data = { } };
+
+                if (processCSV.ResponseCode != AppResponseCodes.Success)
+                    return processCSV;
+
                 string responseCode;
                 List<BulkSignUpResponseDto> res = new List<BulkSignUpResponseDto>();
                 using (var sreader = new StreamReader(doc.OpenReadStream()))
@@ -182,10 +181,14 @@ namespace SocialPay.Core.Services.Merchant
             try
             {
                 var processCSV = await ProcessCSVFile(doc, "BulkCreateMerchantBusinessInfo");
-                if (processCSV != "00")
-                    return new WebApiResponse { ResponseCode = processCSV, Data = { } };
+
+                if (processCSV.ResponseCode != AppResponseCodes.Success)
+                    return processCSV;
+
                 string responseCode;
-                List<BulkSignUpResponseDto> res = new List<BulkSignUpResponseDto>();
+
+                var res = new List<BulkSignUpResponseDto>();
+
                 using (var sreader = new StreamReader(doc.OpenReadStream()))
                 {
                     string[] headers = sreader.ReadLine().Split(',');

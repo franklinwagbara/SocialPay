@@ -101,16 +101,9 @@ namespace SocialPay.Core.Services.Store
                         model.PaymentLinkName = request.StoreLink == null ? string.Empty : request.StoreLink;
                         model.MerchantDescription = request.Description == null ? string.Empty : request.Description;
                         model.CustomUrl = request.StoreName == null ? string.Empty : request.StoreName;
-                        // model.RedirectAfterPayment = paymentModel.RedirectAfterPayment == false ? false : paymentModel.RedirectAfterPayment;
-                        // model.DeliveryMethod = paymentModel.DeliveryMethod == null ? string.Empty : paymentModel.DeliveryMethod;
                         model.ClientAuthenticationId = userModel.ClientId;
                         model.MerchantStoreId = storeModel.MerchantStoreId;
                         model.LinkCategory = MerchantLinkCategory.Store;
-                        // model.PaymentCategory = paymentModel.PaymentCategory == null ? string.Empty : paymentModel.PaymentCategory;
-                        // model.ShippingFee = paymentModel.ShippingFee < 1 ? 0 : paymentModel.ShippingFee;
-                        //  model.TotalAmount = model.MerchantAmount + model.ShippingFee;
-                        // model.DeliveryTime = paymentModel.DeliveryTime < 1 ? 0 : paymentModel.DeliveryTime;
-                        //model.PaymentMethod = paymentModel.PaymentMethod == null ? string.Empty : paymentModel.PaymentMethod;
 
                         var newGuid = $"{"So-Pay-"}{Guid.NewGuid().ToString("N")}";
 
@@ -153,7 +146,6 @@ namespace SocialPay.Core.Services.Store
                         await _context.SaveChangesAsync();
 
                         await _blobService.UploadStore(blobRequest);
-                        //request.Image.CopyTo(new FileStream(filePath, FileMode.Create));
 
                         await transaction.CommitAsync();
 
@@ -169,6 +161,8 @@ namespace SocialPay.Core.Services.Store
             }
             catch (Exception ex)
             {
+                _log4net.Error("An error occured while trying to create store" + " | " + request.StoreName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -189,8 +183,6 @@ namespace SocialPay.Core.Services.Store
                 var paymentRef = $"{"SP-ST"}{Guid.NewGuid().ToString()}";
 
                 var getLinkType = await _context.LinkCategory.SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
-
-                // var getPaymentDetails = await _customerService.GetTransactionReference(model.TransactionReference);
 
                 var getPaymentDetails = await _context.MerchantPaymentSetup.Include(x => x.CustomerTransaction)
                     .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
@@ -420,8 +412,6 @@ namespace SocialPay.Core.Services.Store
                             await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
                             await _context.SaveChangesAsync();
 
-                            //await _context.StoreTransactionLog.AddAsync(transactionLog);
-                            //await _context.SaveChangesAsync();
 
                             await _context.StoreTransactionLogDetails.AddRangeAsync(transactionLogDetails);
                             await _context.SaveChangesAsync();
@@ -475,7 +465,7 @@ namespace SocialPay.Core.Services.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured while trying to initiate payment MakePayment" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("An error occured while trying to initiate payment MakePayment" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + ex + " | " + DateTime.Now);
                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -559,7 +549,7 @@ namespace SocialPay.Core.Services.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "PaymentConfirmation" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "PaymentConfirmation" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -798,7 +788,7 @@ namespace SocialPay.Core.Services.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
