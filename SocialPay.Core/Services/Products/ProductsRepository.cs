@@ -19,6 +19,8 @@ namespace SocialPay.Core.Services.Products
     {
         private readonly SocialPayDbContext _context;
         private readonly BlobService _blobService;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ProductsRepository));
+
         public ProductsRepository(SocialPayDbContext context, BlobService blobService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -29,7 +31,9 @@ namespace SocialPay.Core.Services.Products
         {
             try
             {
-               // userModel.ClientId = 167;
+                _log4net.Info("Task starts to create new product" + " | " + request.ProductName + " - "+ userModel.UserID + " | " + DateTime.Now);
+
+                // userModel.ClientId = 167;
                 var reference = $"{"So-"}{Guid.NewGuid().ToString("N")}";
               
                 var color = string.Empty;
@@ -111,6 +115,8 @@ namespace SocialPay.Core.Services.Products
                     }
                     catch (Exception ex)
                     {
+                        _log4net.Error("Error occured" + " | " + "Create new product" + " | " + ex + " | " + request.ProductName + " - " + userModel.UserID + " | " + DateTime.Now);
+
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -120,6 +126,8 @@ namespace SocialPay.Core.Services.Products
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "Create new product" + " | " + ex + " | " + request.ProductName + " - "+ userModel.UserID + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -128,6 +136,8 @@ namespace SocialPay.Core.Services.Products
         {
             try
             {
+                _log4net.Info("Task starts to get product by clientId" + " | " + clientId + " - " +  DateTime.Now);
+
                 var productCategory = await _context.ProductCategories.Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
 
                 var query = (from c in productCategory
@@ -155,14 +165,18 @@ namespace SocialPay.Core.Services.Products
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "Getting product" + " - " + ex + " - " +  clientId + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
             }
         }
 
         public async Task<WebApiResponse> GetProductsByClientIdStoreId(long clientId, long storeId, string azureConnectionString, string containerName)
         {
-            try
+            try  
             {
+                _log4net.Info("Task starts to get product by clientId and storeid" + " | " + clientId + " - " + storeId + " - "+ DateTime.Now);
+
                 var productItems = new List<ProductItemViewModel>();
 
                 var stores = await _context.MerchantStore
@@ -224,6 +238,8 @@ namespace SocialPay.Core.Services.Products
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "Get products by client id" + " | " + ex + " | " + clientId + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
             }
         }
@@ -232,6 +248,8 @@ namespace SocialPay.Core.Services.Products
         {
             try
             {
+                _log4net.Info("Task starts to get product by productid" + " | " + productId + " - " + DateTime.Now);
+
                 var productItems = new List<ProductItemViewModel>();
 
                 var query = (from pro in _context.Products where pro.ProductId == productId
@@ -285,6 +303,8 @@ namespace SocialPay.Core.Services.Products
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "Get product by Id" + " | " + ex + " | " + productId + " - " +  DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
             }
         }
@@ -294,6 +314,7 @@ namespace SocialPay.Core.Services.Products
         {
             try
             {
+                _log4net.Info("Task starts to get product by storeId" + " | " + storeId + " - " + DateTime.Now);
 
                 var storeDetail = new StoreDetailsViewModel();
 
@@ -363,6 +384,8 @@ namespace SocialPay.Core.Services.Products
             }
             catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "Get product by store id" + " | " + ex + " | " + storeId + " - " +  DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
             }
         }
