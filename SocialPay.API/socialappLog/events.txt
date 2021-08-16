@@ -2865,3 +2865,6 @@ INFO  2021-08-12 19:15:06,847 122902ms StoreRepository        ?                 
 INFO  2021-08-12 19:23:48,067 83794ms StoreRepository        ?                  - Task starts to get stores |  | 8/12/2021 7:23:47 PM
 INFO  2021-08-12 19:30:58,081 59173ms CustomerRepoService    ?                  - GetLinkDetails | pels | 8/12/2021 7:30:58 PM
 INFO  2021-08-12 19:31:46,812 107903ms StoreRepository        ?                  - Task starts to get stores | 20 | 8/12/2021 7:31:46 PM
+INFO  2021-08-16 17:13:57,989 115249ms CustomerRepoService    ?                  - GetLinkDetails | pels | 8/16/2021 5:13:57 PM
+INFO  2021-08-16 17:14:06,252 123512ms StoreRepository        ?                  - Task starts to get stores | 20 | 8/16/2021 5:14:06 PM
+INFO  2021-08-16 17:14:10,400 127660ms ProductsRepository     ?                  - Task starts to get product by storeId | 20 - 8/16/2021 5:14:10 PM
