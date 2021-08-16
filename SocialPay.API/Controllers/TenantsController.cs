@@ -16,7 +16,7 @@ namespace SocialPay.API.Controllers
     [Route("api/socialpay/tenant")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Administrator")]
-    public class TenantsController : BaseController
+    public class TenantsController : BaseController 
     {
         private readonly TenantProfileAPIService _tenantProfileAPIService;
         public TenantsController(TenantProfileAPIService tenantProfileAPIService, INotification notification) : base(notification)

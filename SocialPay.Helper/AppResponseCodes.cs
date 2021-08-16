@@ -98,6 +98,7 @@
         public const string Card = "02";
         public const string PayWithSpecta = "03";
         public const string NibbsQR = "04";
+        public const string USSD = "05";
     }
     public class MerchantLinkCategory
     {

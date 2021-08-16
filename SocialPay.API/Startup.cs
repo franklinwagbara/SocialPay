@@ -188,6 +188,7 @@ namespace SocialPay.API
             services.AddScoped<IEventLogRequestService, EventLogRequestService>();
             services.AddScoped<IVendAirtimeRequestService, VendAirtimeRequestService>();
             services.AddScoped<ITenantProfileService, TenantProfileService>();
+            services.AddScoped<IUssdRequestLogService, UssdRequestLogService>();
             services.AddScoped<IQrPaymentRequestService, QrPaymentRequestService>();
             services.AddScoped<IQrPaymentResponseService, QrPaymentResponseService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
@@ -205,6 +206,8 @@ namespace SocialPay.API
             services.AddScoped<FioranoService>();
             services.AddScoped<FioranoAPIService>();
             services.AddScoped<TenantProfileAPIService>();
+            services.AddScoped<UssdApiService>();
+            services.AddScoped<UssdService>();
             services.AddSingleton<NibbsQrJobCreateMerchantRepository>();
             services.AddSingleton<NibbsQrJobCreateSubMerchantRepository>();
             services.AddSingleton<BindMerchantServiceRepository>();

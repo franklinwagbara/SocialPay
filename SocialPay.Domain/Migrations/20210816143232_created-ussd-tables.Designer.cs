@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210816143232_created-ussd-tables")]
+    partial class createdussdtables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3027,12 +3029,6 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("Amount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CallBackResponseCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CallBackResponseMessage")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Channel")
                         .HasColumnType("nvarchar(max)");
 
@@ -3048,19 +3044,10 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("InstitutionCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastDateModified")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("MerchantID")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MerchantName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResponseCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResponseMessage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RetrievalReference")
@@ -3075,16 +3062,7 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("TerminalId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TraceID")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TransRef")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionRef")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TransactionType")
@@ -3098,6 +3076,47 @@ namespace SocialPay.Domain.Migrations
                     b.HasIndex("ClientAuthenticationId");
 
                     b.ToTable("UssdServiceRequestLog");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.UssdServiceResponseLog", b =>
+                {
+                    b.Property<long>("UssdServiceResponseLogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("CallBackResponseCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CallBackResponseMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResponseCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResponseMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TraceID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransactionID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransactionRef")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("UssdServiceRequestLogId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("UssdServiceResponseLogId");
+
+                    b.HasIndex("UssdServiceRequestLogId");
+
+                    b.ToTable("UssdServiceResponseLog");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.VendAirtimeRequestLog", b =>
@@ -3836,6 +3855,15 @@ namespace SocialPay.Domain.Migrations
                     b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
                         .WithMany("UssdServiceRequestLog")
                         .HasForeignKey("ClientAuthenticationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.UssdServiceResponseLog", b =>
+                {
+                    b.HasOne("SocialPay.Domain.Entities.UssdServiceRequestLog", "UssdServiceRequestLog")
+                        .WithMany("UssdServiceResponseLog")
+                        .HasForeignKey("UssdServiceRequestLogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

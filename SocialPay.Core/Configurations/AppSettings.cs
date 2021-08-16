@@ -123,5 +123,14 @@
         public string vtuTransactionType { get; set; }
         public int vtuRequestType { get; set; }
         public int vtuAppId { get; set; }
+        public string UssdMerchantID { get; set; }
+        public string UssdChannel { get; set; }
+        public string UssdTransactionType { get; set; }
+        public string UssdMerchantName { get; set; }
+        public string UssdCallbackUrl { get; set; }
+        public string UssdBaseUrl { get; set; }
+        public string UssdTerminalID { get; set; }
+        public string UssdGatewayRequeryMerchantID { get; set; }
+        public string UssdGenerateReference { get; set; }
     }
 }

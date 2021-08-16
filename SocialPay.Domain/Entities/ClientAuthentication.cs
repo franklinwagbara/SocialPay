@@ -30,6 +30,7 @@ namespace SocialPay.Domain.Entities
             WebHookRequest = new HashSet<WebHookRequest>();
             VendAirtimeRequestLog = new HashSet<VendAirtimeRequestLog>();
             TenantProfile = new HashSet<TenantProfile>();
+            UssdServiceRequestLog = new HashSet<UssdServiceRequestLog>();
         }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]
@@ -99,5 +100,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<AccountHistory> AccountHistory { get; set; }
         public virtual ICollection<VendAirtimeRequestLog> VendAirtimeRequestLog { get; set; }
         public virtual ICollection<TenantProfile> TenantProfile { get; set; }
+        public virtual ICollection<UssdServiceRequestLog> UssdServiceRequestLog { get; set; }
     }
 }
