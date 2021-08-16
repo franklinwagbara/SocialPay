@@ -196,9 +196,9 @@ namespace SocialPay.Core.Repositories.UserService
                 mailBuilder.AppendLine("Best Regards,");
                 emailModal.EmailBody = mailBuilder.ToString();
 
-                //var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
-                var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
+                //var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
 
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };

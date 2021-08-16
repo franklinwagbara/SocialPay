@@ -156,13 +156,19 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
+                var identity = User.Identity as ClaimsIdentity;
+                var email = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
                 if (ModelState.IsValid)
-                    return Ok(await _authRepoService.UnlockUserAccount(model));
+                    return Ok(await _authRepoService.UnlockUserAccount(model, Convert.ToInt32(clientId),email));
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
+
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }

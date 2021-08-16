@@ -227,7 +227,7 @@ namespace SocialPay.Core.Services.Authentication
                         }
                         catch (Exception ex)
                         {
-                            _log4net.Error("Error occured" + " | " + "Authenticate" + " | " + loginRequestDto.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                            _log4net.Error("Error occured" + " | " + "Authenticate" + " | " + loginRequestDto.Email + " | " + ex + " | " + DateTime.Now);
 
                             return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError };
                         }
@@ -447,6 +447,8 @@ namespace SocialPay.Core.Services.Authentication
                     }
                     catch (Exception ex)
                     {
+                        _log4net.Error("Error occured" + " | " + "CreateAccount" + " | " + email + " | " + phoneNumber + " | " + ex + " | " + DateTime.Now);
+
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
 
@@ -457,7 +459,7 @@ namespace SocialPay.Core.Services.Authentication
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "CreateAccount" + " | " + email + " | " + phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "CreateAccount" + " | " + email + " | " + phoneNumber + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -479,18 +481,21 @@ namespace SocialPay.Core.Services.Authentication
                 validateUser.LastDateModified = DateTime.Now;
                 _context.Update(validateUser);
                 await _context.SaveChangesAsync();
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "ModifyUserAccount" + " | " + updateUserRequestDto.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "ModifyUserAccount" + " | " + updateUserRequestDto.Email + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
-        public async Task<WebApiResponse> UnlockUserAccount(UpdateUserRequestDto updateUserRequestDto)
+        public async Task<WebApiResponse> UnlockUserAccount(UpdateUserRequestDto updateUserRequestDto, long clientId, string email)
         {
+            _log4net.Info("UnlockUserAccount request" + " | " + updateUserRequestDto.Email + " | " + DateTime.Now);
+
             try
             {
                 var validateUser = await _context.ClientAuthentication
@@ -505,10 +510,21 @@ namespace SocialPay.Core.Services.Authentication
                 getAccountDetails.LoginAttempt = 0;
                 _context.ClientLoginStatus.Update(getAccountDetails);
                 await _context.SaveChangesAsync();
+
                 validateUser.IsLocked = false;
                 validateUser.LastDateModified = DateTime.Now;
                 _context.Update(validateUser);
                 await _context.SaveChangesAsync();
+
+                var eventLog = new EventRequestDto
+                {
+                    ModuleAccessed = EventLogProcess.UnlockAccount,
+                    Description = "Unlocked users account",
+                    UserId = email,
+                    ClientAuthenticationId = clientId
+                };
+
+                await _eventLogService.ActivityRequestLog(eventLog);
 
                 _log4net.Info($"{"Account was successfully unblocked. - "}{updateUserRequestDto.Email} {" - "}{DateTime.Now}");
 
@@ -516,7 +532,7 @@ namespace SocialPay.Core.Services.Authentication
             }
             catch (Exception ex)
             {
-                _log4net.Error($"{"Error occured while trying to unblock user. - "}{updateUserRequestDto.Email} {" - "}{DateTime.Now}");
+                _log4net.Error($"{"Error occured while trying to unblock user. - "}{updateUserRequestDto.Email} {" - "}{ex}{" - "}{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

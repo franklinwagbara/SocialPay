@@ -126,11 +126,11 @@ namespace SocialPay.Core.Repositories.Invoice
 
                 try
                 {
-                    var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
+                    //var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
 
+                    await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
-                    //var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success" };
                 }
                 catch (Exception ex)
                 {

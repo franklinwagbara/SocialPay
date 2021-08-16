@@ -20,6 +20,7 @@ namespace SocialPay.Core.Extensions.Common
 
                 var getData = new UserDetailsViewModel
                 {
+                    Email = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value,
                     UserID = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value,
                     ClientId = Convert.ToInt32(identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value),
                     Role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value,

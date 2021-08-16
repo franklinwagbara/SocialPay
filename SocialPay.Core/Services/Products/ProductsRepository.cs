@@ -383,7 +383,7 @@ namespace SocialPay.Core.Services.Products
                 return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
             }
             catch (Exception ex)
-            {
+            {   
                 _log4net.Error("Error occured" + " | " + "Get product by store id" + " | " + ex + " | " + storeId + " - " +  DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };

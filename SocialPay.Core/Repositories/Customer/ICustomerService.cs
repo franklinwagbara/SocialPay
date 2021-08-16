@@ -744,15 +744,16 @@ namespace SocialPay.Core.Repositories.Customer
                            // mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
 
-                            var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                            //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                            if (sendMail.ResponseCode != AppResponseCodes.Success)
-                                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+                            //if (sendMail.ResponseCode != AppResponseCodes.Success)
+                            //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
-                          //  await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
 
                             emailModal.DestinationEmail = getCustomerInfo.Email;
+
                             mailBuilder.AppendLine("Dear" + " " + getCustomerInfo.Fullname + "," + "<br />");
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Your payment was successful. See details below.<br />");
@@ -761,12 +762,13 @@ namespace SocialPay.Core.Repositories.Customer
                             mailBuilder.AppendLine("<br />");
                            // mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
-                           // await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
-                            var sendCustomerMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
-                            if (sendCustomerMail.ResponseCode != AppResponseCodes.Success)
-                                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+                            //var sendCustomerMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+
+                            //if (sendCustomerMail.ResponseCode != AppResponseCodes.Success)
+                            //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
                             _log4net.Info("Emails was successfully sent" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
@@ -984,13 +986,13 @@ namespace SocialPay.Core.Repositories.Customer
                                 mailBuilder.AppendLine("Best Regards,");
                                 emailModal.EmailBody = mailBuilder.ToString();
 
-                               // await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                                await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
 
-                                var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                                //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                                if (sendMail.ResponseCode != AppResponseCodes.Success)
-                                    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+                                //if (sendMail.ResponseCode != AppResponseCodes.Success)
+                                //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                             }
@@ -1023,12 +1025,12 @@ namespace SocialPay.Core.Repositories.Customer
                             mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
 
-                           // await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
-                            var sendCustomerMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                            //var sendCustomerMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                            if (sendCustomerMail.ResponseCode != AppResponseCodes.Success)
-                                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+                            //if (sendCustomerMail.ResponseCode != AppResponseCodes.Success)
+                            //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                         }

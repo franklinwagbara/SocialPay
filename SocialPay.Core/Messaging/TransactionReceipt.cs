@@ -56,12 +56,12 @@ namespace SocialPay.Core.Messaging
                
                 try
                 {
-                    var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
+                    //var sendMail = await _sendGridEmailService.SendMail(emailModal.EmailBody, emailModal.DestinationEmail, emailModal.Subject);
 
                     //if (sendMail.ResponseCode != AppResponseCodes.Success)
                     //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
-                    //var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                    await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
                     //Email sent
                 }
                 catch (Exception ex)

@@ -5,6 +5,7 @@ using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Services.AzureBlob;
+using SocialPay.Core.Services.EventLogs;
 using SocialPay.Core.Services.QrCode;
 using SocialPay.Core.Services.Specta;
 using SocialPay.Domain;
@@ -33,13 +34,15 @@ namespace SocialPay.Core.Services.Store
         private readonly EncryptDecryptAlgorithm _encryptDecryptAlgorithm;
         private readonly TransactionReceipt _transactionReceipt;
         private readonly EmailService _emailService;
+        private readonly EventLogService _eventLogService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(StoreBaseRepository));
 
         public StoreBaseRepository(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             IHostingEnvironment environment, BlobService blobService,
             NibbsQrBaseService nibbsQrBaseService, PayWithSpectaService payWithSpectaService,
             EncryptDecryptAlgorithm encryptDecryptAlgorithm,
-            TransactionReceipt transactionReceipt, EmailService emailService)
+            TransactionReceipt transactionReceipt, EmailService emailService,
+            EventLogService eventLogService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _appSettings = appSettings.Value;
@@ -50,6 +53,7 @@ namespace SocialPay.Core.Services.Store
             _encryptDecryptAlgorithm = encryptDecryptAlgorithm ?? throw new ArgumentNullException(nameof(encryptDecryptAlgorithm));
             _transactionReceipt = transactionReceipt ?? throw new ArgumentNullException(nameof(transactionReceipt));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
         }
 
         public async Task<WebApiResponse> CreateNewStore(StoreRequestDto request, UserDetailsViewModel userModel)
@@ -149,6 +153,17 @@ namespace SocialPay.Core.Services.Store
 
                         await transaction.CommitAsync();
 
+                        var eventLog = new EventRequestDto
+                        {
+                            ModuleAccessed = EventLogProcess.CreateStore,
+                            Description = "Create new store",
+                            UserId = userModel.Email,
+                            ClientAuthenticationId = model.ClientAuthenticationId
+                        };
+
+                        await _eventLogService.ActivityRequestLog(eventLog);
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store was successfully saved" };
                     }
                     catch (Exception ex)
                     {
@@ -157,7 +172,7 @@ namespace SocialPay.Core.Services.Store
                     }
                 }
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                //return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
@@ -362,7 +377,7 @@ namespace SocialPay.Core.Services.Store
 
                             await transaction.CommitAsync();
 
-                            _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+                            _log4net.Info("Initiate store payment was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                             return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                             // }

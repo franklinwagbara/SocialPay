@@ -429,13 +429,16 @@ namespace SocialPay.Core.Services.Account
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
 
-                        var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                        //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                        if (sendMail.ResponseCode != AppResponseCodes.Success)
+                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                        if (sendMail != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
+
                         await transaction.CommitAsync();
-                        // var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                      
 
                         _log4net.Info("Initiating RequestNewToken was successful" + " | " + DateTime.Now);
 
@@ -463,7 +466,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                //clientId = 18;
+                
                 _log4net.Info("Initiating OnboardMerchantBusinessInfo request" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
 
                 if (!string.IsNullOrEmpty(model.Tin))
@@ -568,10 +571,19 @@ namespace SocialPay.Core.Services.Account
 
                         await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
 
+                        var eventLog = new EventRequestDto();
+                        eventLog.ModuleAccessed = EventLogProcess.MerchantBusinessInfo;
+                        eventLog.Description = "Merchant business info setup";
+                        eventLog.UserId = getUserInfo.Email;
+                        eventLog.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
+
                         if (model.Logo == null)
                         { 
                             await transaction.CommitAsync();
                             _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
+
+
+                            await _eventLogService.ActivityRequestLog(eventLog);
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo };
                         }
@@ -579,6 +591,8 @@ namespace SocialPay.Core.Services.Account
                         model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
 
                         await transaction.CommitAsync();
+                   
+                        await _eventLogService.ActivityRequestLog(eventLog);
 
                         _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
 
@@ -586,7 +600,7 @@ namespace SocialPay.Core.Services.Account
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("An error ocuured while saving merchant business info" + model.BusinessEmail + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        _log4net.Error("An error ocuured while saving merchant business info" + model.BusinessEmail + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
@@ -685,7 +699,7 @@ namespace SocialPay.Core.Services.Account
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             await transaction.RollbackAsync();
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
@@ -873,7 +887,7 @@ namespace SocialPay.Core.Services.Account
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -883,7 +897,7 @@ namespace SocialPay.Core.Services.Account
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -1287,11 +1301,11 @@ namespace SocialPay.Core.Services.Account
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
 
-                        ///var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
-                        var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                        //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                        if (sendMail.ResponseCode != AppResponseCodes.Success)
+                        if (sendMail != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
                         ////if (sendMail != AppResponseCodes.Success)
@@ -1305,7 +1319,7 @@ namespace SocialPay.Core.Services.Account
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        _log4net.Error("Error occured" + " | " + email + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }

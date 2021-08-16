@@ -191,6 +191,9 @@
         public const string Login = "Login";      
         public const string BvnValidation = "Bvn Sign Validation Request";      
         public const string MerchantSignUp = "Merchant Signup";      
+        public const string MerchantBusinessInfo = "Created Merchant Business Info";      
         public const string MerchantSignUpConfirmation = "Merchant Signup Confirmation";      
+        public const string CreateStore = "Create new store";      
+        public const string UnlockAccount = "Unlock account profile";      
     }
 }
