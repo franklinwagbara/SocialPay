@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/socialpay/tenant")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Administrator")]
     public class TenantsController : BaseController
