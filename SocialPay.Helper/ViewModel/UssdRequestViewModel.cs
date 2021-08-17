@@ -13,7 +13,7 @@ namespace SocialPay.Helper.ViewModel
         public string TransactionType { get; set; }
         public string TransRef { get; set; }
         public string MerchantName { get; set; }
-        public string Amount { get; set; }
+        public double Amount { get; set; }
         public string TerminalId { get; set; }
         public string RetrievalReference { get; set; }
         public string InstitutionCode { get; set; }

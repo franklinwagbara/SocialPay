@@ -48,7 +48,7 @@ namespace SocialPay.Core.Services.Bill
                     ClientAuthenticationId = clientId,
                     TransactionType = model.transactionType,
                     TransRef = model.transRef,
-                    Amount = model.amount,
+                    Amount = Convert.ToDouble(model.amount),
                     MerchantName = model.merchantName
 
                 };

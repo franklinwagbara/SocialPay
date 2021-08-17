@@ -305,17 +305,17 @@ namespace SocialPay.API
             //    c.CronExpression = options.NonEscrowBankTransactionTask;
             //});
 
-            ////services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
-            ////});
-
-            //services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            //services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
             //{
             //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.NonEscrowWalletTransactionTask;
+            //    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
             //});
+
+            ////services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            ////{
+            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////    c.CronExpression = options.NonEscrowWalletTransactionTask;
+            ////});
 
             //////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
             //////{

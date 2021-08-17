@@ -22,10 +22,13 @@ namespace SocialPay.Core.Services.Tenant
         {
             try
             {
+                if (await _tenantProfileService.ExistsByEmailAsync(request.Email.ToLower(), request.PhoneNumber))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Message = "Duplicate email or phone number" };
+
                 var model = new TenantProfileViewModel
                 {
                     Address = request.Address,
-                    Email = request.Email,
+                    Email = request.Email.ToLower(),
                     PhoneNumber = request.PhoneNumber,
                     TenantName = request.TenantName,
                     WebSiteUrl = request.WebSiteUrl,

@@ -2868,3 +2868,9 @@ INFO  2021-08-12 19:31:46,812 107903ms StoreRepository        ?                 
 INFO  2021-08-16 17:13:57,989 115249ms CustomerRepoService    ?                  - GetLinkDetails | pels | 8/16/2021 5:13:57 PM
 INFO  2021-08-16 17:14:06,252 123512ms StoreRepository        ?                  - Task starts to get stores | 20 | 8/16/2021 5:14:06 PM
 INFO  2021-08-16 17:14:10,400 127660ms ProductsRepository     ?                  - Task starts to get product by storeId | 20 - 8/16/2021 5:14:10 PM
+INFO  2021-08-17 09:28:01,045 120452ms CustomerController     ?                  - Task starts to initiate payments | So-Pay-3fe62d201ce2436d89c1b5e787b2c4e9So-Pay-3fe62d201ce2436d89c1b5e787b2c4e9 | 8/17/2021 9:28:01 AM
+INFO  2021-08-17 09:29:00,231 179638ms CustomerRepoService    ?                  - Task starts to save payments MakePayment info | So-Pay-3fe62d201ce2436d89c1b5e787b2c4e9So-Pay-3fe62d201ce2436d89c1b5e787b2c4e9 |  | 8/17/2021 9:29:00 AM
+INFO  2021-08-17 09:29:49,108 228516ms CustomerController     ?                  - Task starts to initiate payments | So-Pay-3fe62d201ce2436d89c1b5e787b2c4e9 | 8/17/2021 9:29:49 AM
+INFO  2021-08-17 09:29:50,124 229531ms CustomerRepoService    ?                  - Task starts to save payments MakePayment info | So-Pay-3fe62d201ce2436d89c1b5e787b2c4e9 |  | 8/17/2021 9:29:50 AM
+INFO  2021-08-17 09:30:28,311 267719ms UssdApiService         ?                  - Ussd GenerateReference payload  | 769910289015 | 200 | {"merchantID":"1905SOC1000001","channel":"WEB","transactionType":"0","transRef":"769910289015","merchantName":"SocialPay","callbackUrl":"payment-notification","amount":"0"} | 8/17/2021 9:30:28 AM
+INFO  2021-08-17 09:30:35,852 275259ms UssdApiService         ?                  - Ussd GenerateReference  response | 769910289015 | 0 | null | 200 | 8/17/2021 9:30:35 AM

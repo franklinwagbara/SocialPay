@@ -10,6 +10,7 @@ namespace SocialPay.ApplicationCore.Interfaces.Service
         Task<TenantProfileViewModel> GetProfileEmail(string email);
         Task<int> CountTotalProfilesAsync();
         Task<bool> ExistsAsync(long tenantId);
+        Task<bool> ExistsByEmailAsync(string email, string phoneNumber);
         Task<TenantProfileViewModel> AddAsync(TenantProfileViewModel model);
         Task UpdateAsync(TenantProfileViewModel model);
         Task DeleteAsync(int id);

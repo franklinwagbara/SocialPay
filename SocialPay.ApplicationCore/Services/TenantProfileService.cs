@@ -43,6 +43,11 @@ namespace SocialPay.ApplicationCore.Services
             return await _tenantProfile.ExistsAsync(x => x.TenantProfileId == tenantId);
         }
 
+        public async Task<bool> ExistsByEmailAsync(string email, string phoneNumber)
+        {
+            return await _tenantProfile.ExistsAsync(x => x.Email == email || x.PhoneNumber == phoneNumber);
+        }
+
         public async Task<TenantProfileViewModel> AddAsync(TenantProfileViewModel model)
         {
             var entity = new TenantProfile
