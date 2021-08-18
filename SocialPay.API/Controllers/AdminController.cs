@@ -269,7 +269,7 @@ namespace SocialPay.API.Controllers
         }
 
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [Route("admin-get-customers-transaction-count")]
         public async Task<IActionResult> AdminGetCustomersTransactionCount()
@@ -356,7 +356,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
+        [AllowAnonymous]
         [HttpPost]
         [Route("create-multiple-merchant")]
         public async Task<IActionResult> CreateMultipleMerchant(IFormFile doc)
@@ -387,6 +387,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("create-multiple-merchant-business-info")]
         public async Task<IActionResult> CreateMultipleMerchantBusinessInfo(IFormFile doc)
@@ -415,6 +416,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("create-multiple-merchant-bank-info")]
         public async Task<IActionResult> CreateMultipleMerchantBankInfo(IFormFile doc)
