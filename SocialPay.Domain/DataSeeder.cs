@@ -21,12 +21,12 @@ namespace SocialPay.Domain
             //    _context.SaveChanges();
             //}
 
-            if (!_context.ClientAuthentication.Any(x => x.Email == "oluwasegun.olaleye@sterling.ng"))
+            if (!_context.ClientAuthentication.Any(x => x.Email == "stanley.azubuike@sterling.ng"))
             {
                 var createuser = new ClientAuthentication[]
                 {
-                       new ClientAuthentication { FullName = "oluwasegun olaleye", Email= "oluwasegun.olaleye@sterling.ng",
-                      IsDeleted = false, PhoneNumber = "07059999663", LastDateModified = DateTime.Now, UserName = "olaleyeo",
+                       new ClientAuthentication { FullName = "Stanley Azubuike", Email= "stanley.azubuike@sterling.ng",
+                      IsDeleted = false, PhoneNumber = "07894347423", LastDateModified = DateTime.Now, UserName = "azubuikeys",
                       RoleName ="Super Administrator", StatusCode = "00"
                       },
                 };
