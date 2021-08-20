@@ -2874,3 +2874,24 @@ INFO  2021-08-17 09:29:49,108 228516ms CustomerController     ?                 
 INFO  2021-08-17 09:29:50,124 229531ms CustomerRepoService    ?                  - Task starts to save payments MakePayment info | So-Pay-3fe62d201ce2436d89c1b5e787b2c4e9 |  | 8/17/2021 9:29:50 AM
 INFO  2021-08-17 09:30:28,311 267719ms UssdApiService         ?                  - Ussd GenerateReference payload  | 769910289015 | 200 | {"merchantID":"1905SOC1000001","channel":"WEB","transactionType":"0","transRef":"769910289015","merchantName":"SocialPay","callbackUrl":"payment-notification","amount":"0"} | 8/17/2021 9:30:28 AM
 INFO  2021-08-17 09:30:35,852 275259ms UssdApiService         ?                  - Ussd GenerateReference  response | 769910289015 | 0 | null | 200 | 8/17/2021 9:30:35 AM
+INFO  2021-08-19 12:48:22,932 86683ms CustomerRepoService    ?                  - GetLinkDetails | pels | 8/19/2021 12:48:22 PM
+INFO  2021-08-19 12:49:01,274 125025ms StoreRepository        ?                  - Task starts to get stores | 20 | 8/19/2021 12:49:01 PM
+INFO  2021-08-19 12:49:39,918 163669ms ProductsRepository     ?                  - Task starts to get product by storeId | 20 - 8/19/2021 12:49:39 PM
+ERROR 2021-08-19 12:50:26,503 210254ms ProductsRepository     ?                  - Error occured | Get product by store id | System.ArgumentNullException: Value cannot be null. (Parameter 'blobName')
+   at Microsoft.WindowsAzure.Storage.Core.Util.CommonUtility.AssertNotNull(String paramName, Object value)
+   at Microsoft.WindowsAzure.Storage.Core.Util.CommonUtility.AssertNotNullOrEmpty(String paramName, String value)
+   at Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer.GetBlockBlobReference(String blobName, Nullable`1 snapshotTime)
+   at Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer.GetBlockBlobReference(String blobName)
+   at SocialPay.Core.Services.Products.ProductsRepository.GetProductsByStoreId(Int64 storeId, String transactionReference, String azureConnectionString, String containerName) in G:\SterlingApps\SocialPay\SocialPay\SocialPay.Core\Services\Products\ProductsRepository.cs:line 376 | 20 - 8/19/2021 12:50:26 PM
+INFO  2021-08-19 12:50:38,116 221866ms CustomerRepoService    ?                  - GetLinkDetails | pels | 8/19/2021 12:50:38 PM
+INFO  2021-08-19 12:54:50,876 474627ms StoreRepository        ?                  - Task starts to get stores | 20 | 8/19/2021 12:54:50 PM
+INFO  2021-08-19 12:54:53,538 477289ms ProductsRepository     ?                  - Task starts to get product by storeId | 20 - 8/19/2021 12:54:53 PM
+ERROR 2021-08-19 12:54:54,783 478534ms ProductsRepository     ?                  - Error occured | Get product by store id | System.ArgumentNullException: Value cannot be null. (Parameter 'blobName')
+   at Microsoft.WindowsAzure.Storage.Core.Util.CommonUtility.AssertNotNull(String paramName, Object value)
+   at Microsoft.WindowsAzure.Storage.Core.Util.CommonUtility.AssertNotNullOrEmpty(String paramName, String value)
+   at Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer.GetBlockBlobReference(String blobName, Nullable`1 snapshotTime)
+   at Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer.GetBlockBlobReference(String blobName)
+   at SocialPay.Core.Services.Products.ProductsRepository.GetProductsByStoreId(Int64 storeId, String transactionReference, String azureConnectionString, String containerName) in G:\SterlingApps\SocialPay\SocialPay\SocialPay.Core\Services\Products\ProductsRepository.cs:line 376 | 20 - 8/19/2021 12:54:54 PM
+INFO  2021-08-19 12:55:47,729 531480ms CustomerRepoService    ?                  - GetLinkDetails | pelumi | 8/19/2021 12:55:47 PM
+INFO  2021-08-19 12:55:52,125 535875ms StoreRepository        ?                  - Task starts to get stores | 23 | 8/19/2021 12:55:52 PM
+INFO  2021-08-19 12:56:02,527 546278ms ProductsRepository     ?                  - Task starts to get product by storeId | 23 - 8/19/2021 12:56:02 PM

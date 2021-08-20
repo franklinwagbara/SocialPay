@@ -86,7 +86,6 @@ namespace SocialPay.Core.Services.Customer
                 if (result == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentLink };
 
-               // return await _customerService.GetTransactionDetails(transactionReference);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
