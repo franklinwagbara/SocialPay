@@ -73,6 +73,7 @@ namespace SocialPay.Core.Services.Bill
 
             var model = new VendAirtimeViewModel
             {
+                ClientAuthenticationId = clientId,
                 ReferenceId = referenceId,
                 RequestType = _appSettings.vtuRequestType,
                 Translocation = "",

@@ -54,14 +54,15 @@ namespace SocialPay.ApplicationCore.Services
         {
             var entity = new VendAirtimeRequestLog
             {
-               ClientAuthenticationId = model.ClientAuthenticationId,
-               //Amount = model.Amount,
-               //Status = model.Status,
-               //email = model.email,
-               //paymentcode = model.paymentcode,
-               //PhoneNumber = model.PhoneNumber,
-               //Ref = model.Ref,
-               //RequestType = model.RequestType               
+                ClientAuthenticationId = model.ClientAuthenticationId,
+                Amount = model.Amount,
+                // Status = model.Status,
+                email = model.email,
+                Paymentcode = model.Paymentcode,
+                Mobile = model.Mobile,
+                ReferenceId = model.ReferenceId,
+                RequestType = model.RequestType,
+                nuban = model.nuban
             };
 
             await _vendAirtimeRequestLog.AddAsync(entity);
