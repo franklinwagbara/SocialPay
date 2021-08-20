@@ -91,8 +91,10 @@ namespace SocialPay.Core.Services.Account
             {
                 var banksLdap = new ldapSoapClient(ldapSoapClient.EndpointConfiguration.ldapSoap, _appSettings.LdapServiceUrl);
                 bool validateADUser = await banksLdap.loginAsync(username, password);
+               
                 if(!validateADUser)
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+
                 return new LoginAPIResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception)
