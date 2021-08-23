@@ -104,7 +104,7 @@ namespace SocialPay.Core.Services.Store
 
                         model.PaymentLinkName = request.StoreLink == null ? string.Empty : request.StoreLink;
                         model.MerchantDescription = request.Description == null ? string.Empty : request.Description;
-                        model.CustomUrl = request.StoreName == null ? string.Empty : request.StoreName;
+                        model.CustomUrl = request.StoreLink == null ? string.Empty : request.StoreLink;
                         model.ClientAuthenticationId = userModel.ClientId;
                         model.MerchantStoreId = storeModel.MerchantStoreId;
                         model.LinkCategory = MerchantLinkCategory.Store;
@@ -189,6 +189,8 @@ namespace SocialPay.Core.Services.Store
             try
             {
 
+               // var totalAmount1 = model.Items.Sum(x => x.TotalAmount * x.Quantity);
+
                 long customerId = 0;
                 string encryptedText = string.Empty;
                 string encryptData = string.Empty;
@@ -205,7 +207,7 @@ namespace SocialPay.Core.Services.Store
                 if (getPaymentDetails == null)
                     return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
 
-                var totalAmount = model.Items.Sum(x => x.TotalAmount);
+                var totalAmount = model.Items.Sum(x => x.TotalAmount * x.Quantity);
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {

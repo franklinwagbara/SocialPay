@@ -139,6 +139,7 @@ namespace SocialPay.Core.Services.Authentication
                 var userLoginAttempts = await _userRepoService.GetLoginAttemptAsync(validateuserInfo.ClientAuthenticationId);
 
                 var tokenResult = new LoginAPIResponse();
+
                 var key = Encoding.ASCII.GetBytes(_appSettings.SecretKey);
                 var tokenDescriptor = new SecurityTokenDescriptor();
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -147,10 +148,10 @@ namespace SocialPay.Core.Services.Authentication
                 {
                     _log4net.Info("Authenticate for super admin" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
-                    ////var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
+                    var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
 
-                    ////if (validateUserAD.ResponseCode != AppResponseCodes.Success)
-                    ////    return validateUserAD;
+                    if (validateUserAD.ResponseCode != AppResponseCodes.Success)
+                        return validateUserAD;
 
                     tokenDescriptor = new SecurityTokenDescriptor
                     {
