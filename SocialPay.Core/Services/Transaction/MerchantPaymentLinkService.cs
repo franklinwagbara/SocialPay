@@ -7,6 +7,7 @@ using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Repositories.Invoice;
+using SocialPay.Core.Services.Store;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -27,13 +28,15 @@ namespace SocialPay.Core.Services.Transaction
         private readonly Utilities _utilities;
         private readonly ICustomerService _customerService;
         private readonly InvoiceService _invoiceService;
+        private readonly StoreReportRepository _storeReportRepository;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IDistributedCache _distributedCache;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantPaymentLinkService));
 
         public MerchantPaymentLinkService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             Utilities utilities, ICustomerService customerService, IHostingEnvironment environment,
-            InvoiceService invoiceService, IDistributedCache distributedCache)
+            InvoiceService invoiceService, IDistributedCache distributedCache,
+            StoreReportRepository storeReportRepository)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -42,6 +45,7 @@ namespace SocialPay.Core.Services.Transaction
             _hostingEnvironment = environment;
             _invoiceService = invoiceService;
             _distributedCache = distributedCache;
+            _storeReportRepository = storeReportRepository ?? throw new ArgumentNullException(nameof(storeReportRepository));
         }
 
         public async Task<WebApiResponse> GeneratePaymentLink(MerchantpaymentLinkRequestDto paymentModel,
@@ -207,11 +211,14 @@ namespace SocialPay.Core.Services.Transaction
             }
         }
 
-        public async Task<WebApiResponse> GetCustomerPayments(long clientId)
+        public async Task<WebApiResponse> GetCustomerPayments(long clientId, string transactionType)
         {
             try
             {
                 // clientId = 40072;
+                if (transactionType == TransactionType.StorePayment)
+                    return await _storeReportRepository.GetStoreTransactionsAsync();
+
                 var result = await _customerService.GetCustomerPaymentsByMerchantPayRef(clientId);
                 _log4net.Info("Initiating GetCustomerPayments response" + " | " + clientId + " | " +  DateTime.Now);
 

@@ -45,6 +45,8 @@ namespace SocialPay.Domain.Entities
         public string PaymentReference { get; set; }
         [Column(TypeName = "NVARCHAR(90)")]
         public string OtherPaymentReference { get; set; }
+        [Column(TypeName = "NVARCHAR(10)")]
+        public string TransactionType { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
         public DateTime DeliveryDate { get; set; }

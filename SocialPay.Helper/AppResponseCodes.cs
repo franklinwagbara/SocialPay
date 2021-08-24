@@ -187,6 +187,12 @@
         public const string CustomerAccount = "Guest";     
     }
 
+    public class TransactionType
+    {
+        public const string StorePayment = "01";
+        public const string OtherPayment = "02";
+    }
+
     public class EventLogProcess
     {
         public const string Login = "Login";      

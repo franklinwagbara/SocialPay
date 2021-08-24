@@ -495,7 +495,7 @@ namespace SocialPay.Core.Services.Customer
             {
 
                 var otherPaymentReference = string.Empty;
-                _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " | " + model.Channel + " - " + DateTime.Now);
+              //  _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " | " + model.Channel + " - " + DateTime.Now);
 
                 var logResponse = new PaymentResponse
                 {

@@ -208,6 +208,7 @@ namespace SocialPay.API
             services.AddScoped<TenantProfileAPIService>();
             services.AddScoped<UssdApiService>();
             services.AddScoped<UssdService>();
+            services.AddScoped<StoreReportRepository>();
             services.AddSingleton<NibbsQrJobCreateMerchantRepository>();
             services.AddSingleton<NibbsQrJobCreateSubMerchantRepository>();
             services.AddSingleton<BindMerchantServiceRepository>();

@@ -161,7 +161,9 @@ namespace SocialPay.Core.Repositories.Customer
                          TransactionReference = c.TransactionReference, Fullname = a.Fullname,
                          Document = a.Document == null ? string.Empty : _appSettings.BaseApiUrl + a.FileLocation + "/" + a.Document,
                          CustomerTransactionReference = p.CustomerTransactionReference}).OrderByDescending(x=>x.TransactionDate).ToList();
-            result = response;
+           
+                result = response;
+
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
@@ -615,7 +617,7 @@ namespace SocialPay.Core.Repositories.Customer
 
                 if (validateDuplicateTransaction != null)
                 {
-                    _log4net.Info("LogPaymentResponse" + " - " + model.PaymentReference + " - " + "validateDuplicateTransaction. DuplicateTransaction" + " - " + DateTime.Now);
+                    _log4net.Info("LogPaymentResponse" + " - " + model.PaymentReference + " - " + "validate Duplicate Transaction. DuplicateTransaction" + " - " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
 
@@ -710,6 +712,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Approved;
+                    logconfirmation.TransactionType = TransactionType.OtherPayment;
                    // logconfirmation.CustomerEmail = model.e;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {

@@ -190,7 +190,7 @@ namespace SocialPay.API.Controllers
 
         [HttpGet]
         [Route("get-customer-payments")]
-        public async Task<IActionResult> GetCustomerPayments()
+        public async Task<IActionResult> GetCustomerPayments(string transactionType)
         {
             var response = new WebApiResponse { };
             try
@@ -202,7 +202,7 @@ namespace SocialPay.API.Controllers
                     var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     
-                    return Ok(await _merchantPaymentLinkService.GetCustomerPayments(Convert.ToInt32(clientId)));
+                    return Ok(await _merchantPaymentLinkService.GetCustomerPayments(Convert.ToInt32(clientId), transactionType));
                 }
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)

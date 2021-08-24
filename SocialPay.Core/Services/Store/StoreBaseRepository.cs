@@ -680,6 +680,7 @@ namespace SocialPay.Core.Services.Store
                     logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Approved;
+                    logconfirmation.TransactionType = TransactionType.StorePayment;
                     // logconfirmation.CustomerEmail = model.e;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
@@ -751,7 +752,7 @@ namespace SocialPay.Core.Services.Store
 
                             await transaction.CommitAsync();
 
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Request failed" };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Request Successful" };
                         }
                         catch (Exception ex)
                         {
