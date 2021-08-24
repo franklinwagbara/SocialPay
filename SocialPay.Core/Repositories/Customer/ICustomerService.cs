@@ -100,12 +100,12 @@ namespace SocialPay.Core.Repositories.Customer
         {
             var validateReference = await GetTransactionReference(transactionReference);
 
-            if(validateReference == null)
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference};
+            if (validateReference == null)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
 
             var getMerchantInfo = await GetMerchantInfo(validateReference.ClientAuthenticationId);
 
-            if(getMerchantInfo == null)
+            if (getMerchantInfo == null)
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
 
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = validateReference };
@@ -143,28 +143,42 @@ namespace SocialPay.Core.Repositories.Customer
         {
             try
             {
-                 var result = new List<CustomerPaymentViewModel>();
-           
-            var getPaymentSetupInfo = await _context.MerchantPaymentSetup
-                .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
+                var result = new List<CustomerPaymentViewModel>();
 
-            if (getPaymentSetupInfo.Count == 0)
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+                var getPaymentSetupInfo = await _context.MerchantPaymentSetup
+                    .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
 
-            var response =  (from c in getPaymentSetupInfo
-                             join p in _context.TransactionLog on c.TransactionReference  equals p.TransactionReference
-                         join a in _context.CustomerOtherPaymentsInfo on p.PaymentReference equals a.PaymentReference
-                         select new CustomerPaymentViewModel { MerchantAmount = c.MerchantAmount, CustomerEmail = a.Email,
-                         TotalAmount = a.Amount, CustomerPhoneNumber = a.PhoneNumber, TransactionDate = p.TransactionDate,
-                         ShippingFee = c.ShippingFee, DeliveryMethod = c.DeliveryMethod, CustomerAmount = c.CustomerAmount, 
-                         DeliveryTime = c.DeliveryTime, MerchantDescription = c.MerchantDescription, CustomerDescription = a.CustomerDescription,
-                         TransactionReference = c.TransactionReference, Fullname = a.Fullname,
-                         Document = a.Document == null ? string.Empty : _appSettings.BaseApiUrl + a.FileLocation + "/" + a.Document,
-                         CustomerTransactionReference = p.CustomerTransactionReference}).OrderByDescending(x=>x.TransactionDate).ToList();
-           
+                if (getPaymentSetupInfo.Count == 0)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+
+                var response = (from c in getPaymentSetupInfo
+                                join p in _context.TransactionLog on c.TransactionReference equals p.TransactionReference
+                                join a in _context.CustomerOtherPaymentsInfo on p.PaymentReference equals a.PaymentReference
+                                
+                                where p.TransactionType != TransactionType.StorePayment
+                                
+                                select new CustomerPaymentViewModel
+                                {
+                                    MerchantAmount = c.MerchantAmount,
+                                    CustomerEmail = a.Email,
+                                    TotalAmount = a.Amount,
+                                    CustomerPhoneNumber = a.PhoneNumber,
+                                    TransactionDate = p.TransactionDate,
+                                    ShippingFee = c.ShippingFee,
+                                    DeliveryMethod = c.DeliveryMethod,
+                                    CustomerAmount = c.CustomerAmount,
+                                    DeliveryTime = c.DeliveryTime,
+                                    MerchantDescription = c.MerchantDescription,
+                                    CustomerDescription = a.CustomerDescription,
+                                    TransactionReference = c.TransactionReference,
+                                    Fullname = a.Fullname,
+                                    Document = a.Document == null ? string.Empty : _appSettings.BaseApiUrl + a.FileLocation + "/" + a.Document,
+                                    CustomerTransactionReference = p.CustomerTransactionReference
+                                }).OrderByDescending(x => x.TransactionDate).ToList();
+
                 result = response;
 
-            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
             {
@@ -179,51 +193,56 @@ namespace SocialPay.Core.Repositories.Customer
         public async Task<WebApiResponse> GetCustomerByMerchantId(long clientId)
         {
             var result = new List<CustomerInfoViewModel>();
-          
+
             var getPaymentSetupInfo = await _context.CustomerOtherPaymentsInfo
                 .Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
 
             if (getPaymentSetupInfo.Count == 0)
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
 
-            var response =  (from a in getPaymentSetupInfo                             
-                         join p in _context.TransactionLog on a.PaymentReference equals p.PaymentReference
-                         select new CustomerInfoViewModel { CustomerEmail = a.Email, Fullname = a.Fullname,
-                             CustomerPhoneNumber = a.PhoneNumber, DateRegistered = a.DateEntered, 
-                             ClientAuthenticationId = p.CustomerInfo}).OrderByDescending(x=>x.DateRegistered).ToList();
+            var response = (from a in getPaymentSetupInfo
+                            join p in _context.TransactionLog on a.PaymentReference equals p.PaymentReference
+                            select new CustomerInfoViewModel
+                            {
+                                CustomerEmail = a.Email,
+                                Fullname = a.Fullname,
+                                CustomerPhoneNumber = a.PhoneNumber,
+                                DateRegistered = a.DateEntered,
+                                ClientAuthenticationId = p.CustomerInfo
+                            }).OrderByDescending(x => x.DateRegistered).ToList();
 
 
             var uniquePersons = response.GroupBy(p => p.CustomerEmail)
                            .Select(grp => grp.First())
                            .ToArray();
 
-                    List<CustomerInfoViewModel> distinctPeople = response
-          .GroupBy(p => new { p.CustomerEmail, p.CustomerPhoneNumber })
-          .Select(g => g.First())
-          .ToList();
+            List<CustomerInfoViewModel> distinctPeople = response
+  .GroupBy(p => new { p.CustomerEmail, p.CustomerPhoneNumber })
+  .Select(g => g.First())
+  .ToList();
 
             result = response
-                      .GroupBy(p => new { p.CustomerEmail, p.CustomerPhoneNumber, p.Fullname, p.DateRegistered})
+                      .GroupBy(p => new { p.CustomerEmail, p.CustomerPhoneNumber, p.Fullname, p.DateRegistered })
                       .Select(g => g.First())
                       .ToList();
             result = distinctPeople;
 
-           // response.GroupBy(item => (item.CustomerEmail, item.CustomerPhoneNumber, item.Fullname,
-           // item.DateRegistered)).Select(group => group.First()).ToList();
-           //// var distinctList = response.Distinct(x => x.).ToList();
+            // response.GroupBy(item => (item.CustomerEmail, item.CustomerPhoneNumber, item.Fullname,
+            // item.DateRegistered)).Select(group => group.First()).ToList();
+            //// var distinctList = response.Distinct(x => x.).ToList();
 
-           // result = response;
+            // result = response;
 
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
         }
 
-        public async Task <List<CustomerTransaction>> GetCustomerPaymentsByMerchantId(long merchantId)
+        public async Task<List<CustomerTransaction>> GetCustomerPaymentsByMerchantId(long merchantId)
         {
             return await _context.CustomerTransaction.Where(p => p.MerchantPaymentSetupId
             == merchantId).ToListAsync();
         }
 
-       
+
         public async Task<WebApiResponse> GetClientDetails(string email)
         {
             var getClientInfo = await _authRepoService.GetClientDetails(email);
@@ -234,7 +253,7 @@ namespace SocialPay.Core.Repositories.Customer
 
         public async Task<WebApiResponse> CreateNewCustomer(string email, string password, string fullname, string phoneNumber)
         {
-            var createCustomer = await _authRepoService.CreateAccount(email, password, fullname,  phoneNumber);
+            var createCustomer = await _authRepoService.CreateAccount(email, password, fullname, phoneNumber);
             if (createCustomer == null)
                 return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = createCustomer.Data };
@@ -268,7 +287,7 @@ namespace SocialPay.Core.Repositories.Customer
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
-           
+
         }
 
         public async Task<dynamic> GetTransactionDetails(string customUrl)
@@ -293,9 +312,9 @@ namespace SocialPay.Core.Repositories.Customer
                     return new PaymentLinkViewModel { };
 
                 if (validateLink.Channel == MerchantPaymentLinkCategory.InvoiceLink)
-                    return await GetInvoiceTransactionDetails(validateReference.TransactionReference);               
+                    return await GetInvoiceTransactionDetails(validateReference.TransactionReference);
 
-                if(validateReference.MerchantStoreId > 0)
+                if (validateReference.MerchantStoreId > 0)
                     return await _storeRepository.GetStoreInfobyStoreIdAsync(validateReference.MerchantStoreId, validateReference.TransactionReference);
 
                 var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
@@ -304,7 +323,7 @@ namespace SocialPay.Core.Repositories.Customer
                 paymentview = mapper.Map<PaymentLinkViewModel>(validateReference);
 
                 paymentview.MerchantDocument = validateReference == null ? string.Empty : _appSettings.BaseApiUrl + validateReference.FileLocation + "/" + validateReference.Document;
-                
+
                 paymentview.MerchantInfo = new MerchantInfoViewModel
                 {
                     BusinessEmail = getMerchantInfo.BusinessEmail,
@@ -379,29 +398,49 @@ namespace SocialPay.Core.Repositories.Customer
                 if (getCustomerOrders == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                if(category == MerchantPaymentLinkCategory.InvoiceLink )
+                if (category == MerchantPaymentLinkCategory.InvoiceLink)
                 {
-                     var invoiceResponse = (from c in getCustomerOrders
-                                join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
-                                select new OrdersViewModel { MerchantAmount = m.UnitPrice, DeliveryTime = c.DeliveryDate, 
-                                ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                                 MerchantDescription = m.Description, ClientId = clientId, CustomerTransactionReference = c.CustomerTransactionReference,
-                                TotalAmount = m.TotalAmount, PaymentCategory = category,
-                                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
+                    var invoiceResponse = (from c in getCustomerOrders
+                                           join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
+                                           select new OrdersViewModel
+                                           {
+                                               MerchantAmount = m.UnitPrice,
+                                               DeliveryTime = c.DeliveryDate,
+                                               ShippingFee = m.ShippingFee,
+                                               TransactionReference = m.TransactionReference,
+                                               MerchantDescription = m.Description,
+                                               ClientId = clientId,
+                                               CustomerTransactionReference = c.CustomerTransactionReference,
+                                               TotalAmount = m.TotalAmount,
+                                               PaymentCategory = category,
+                                               OrderStatus = c.OrderStatus,
+                                               RequestId = c.TransactionLogId
+                                           }).ToList();
                     request = invoiceResponse;
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
                 }
 
                 var otherLinksresponse = (from c in getCustomerOrders
-                                join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
-                                join v in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals v.PaymentReference
-                                select new OrdersViewModel { MerchantAmount = m.MerchantAmount, DeliveryTime = c.DeliveryDate, 
-                                ShippingFee = m.ShippingFee, TransactionReference = m.TransactionReference,
-                                DeliveryMethod = m.DeliveryMethod, MerchantDescription = m.MerchantDescription,
-                                TransactionStatus = c.TransactionStatus, CustomerDescription = v.CustomerDescription,
-                                TotalAmount = v.Amount, PaymentCategory = m.PaymentCategory, ClientId = clientId,
-                                CustomerTransactionReference = c.CustomerTransactionReference, PaymentReference = v.PaymentReference,
-                                OrderStatus = c.OrderStatus, RequestId = c.TransactionLogId}).ToList();
+                                          join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
+                                          join v in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals v.PaymentReference
+                                          select new OrdersViewModel
+                                          {
+                                              MerchantAmount = m.MerchantAmount,
+                                              DeliveryTime = c.DeliveryDate,
+                                              ShippingFee = m.ShippingFee,
+                                              TransactionReference = m.TransactionReference,
+                                              DeliveryMethod = m.DeliveryMethod,
+                                              MerchantDescription = m.MerchantDescription,
+                                              TransactionStatus = c.TransactionStatus,
+                                              CustomerDescription = v.CustomerDescription,
+                                              TotalAmount = v.Amount,
+                                              PaymentCategory = m.PaymentCategory,
+                                              ClientId = clientId,
+                                              CustomerTransactionReference = c.CustomerTransactionReference,
+                                              PaymentReference = v.PaymentReference,
+                                              OrderStatus = c.OrderStatus,
+                                              RequestId = c.TransactionLogId
+                                          }).ToList();
 
                 request = otherLinksresponse;
 
@@ -413,7 +452,7 @@ namespace SocialPay.Core.Repositories.Customer
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
-          
+
         }
 
         public async Task<List<MerchantPaymentSetup>> GetAllPaymentLinksByClientId(long clientId)
@@ -422,7 +461,7 @@ namespace SocialPay.Core.Repositories.Customer
             == false && x.ClientAuthenticationId == clientId && x.IsDeleted == false).ToListAsync();
         }
 
-        public async Task <List<PaymentLinkViewModel>> GetPaymentLinks(long clientId)
+        public async Task<List<PaymentLinkViewModel>> GetPaymentLinks(long clientId)
         {
             var paymentview = new List<PaymentLinkViewModel>();
             var validateReference = await GetAllPaymentLinksByClientId(clientId);
@@ -449,16 +488,16 @@ namespace SocialPay.Core.Repositories.Customer
                 if (linkInfo != null & linkInfo.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {
                     var getpaymentInfo = await GetInvoicePaymentInfo(model.TransactionReference, model.InvoiceReference);
-                   
+
                     if (getpaymentInfo == null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
-                   
-                    if(getpaymentInfo.TransactionStatus == TransactionJourneyStatusCodes.Approved)
+
+                    if (getpaymentInfo.TransactionStatus == TransactionJourneyStatusCodes.Approved)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
-                   
+
                     if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                     {
-                        using(var transaction = await _context.Database.BeginTransactionAsync())
+                        using (var transaction = await _context.Database.BeginTransactionAsync())
                         {
                             try
                             {
@@ -471,7 +510,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 logconfirmation.Message = model.Message;
                                 logconfirmation.LastDateModified = DateTime.Now;
                                 logconfirmation.CustomerInfo = model.CustomerId;
-                                logconfirmation.Status = true;                               
+                                logconfirmation.Status = true;
                                 logconfirmation.PaymentReference = model.InvoiceReference;
                                 logconfirmation.PaymentChannel = model.Channel;
                                 logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
@@ -506,17 +545,17 @@ namespace SocialPay.Core.Repositories.Customer
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                             }
                         }
-                      
-                     }
-                    using(var transaction = await _context.Database.BeginTransactionAsync())
+
+                    }
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
                         {
 
                             logFailedResponse.CustomerTransactionReference = getpaymentInfo.CustomerTransactionReference;
                             logFailedResponse.TransactionReference = getpaymentInfo.TransactionReference;
-                            logFailedResponse.Message = model.Message;                 
-                            
+                            logFailedResponse.Message = model.Message;
+
                             await _context.FailedTransactions.AddAsync(logFailedResponse);
                             await _context.SaveChangesAsync();
 
@@ -529,12 +568,12 @@ namespace SocialPay.Core.Repositories.Customer
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
 
-                            if(model.Message.Contains("Incorrect PIN"))
+                            if (model.Message.Contains("Incorrect PIN"))
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.IncorrectTransactionPin, Data = "Incorrect Transaction Pin" };
 
                             if (model.Message.Contains("Insufficient"))
                                 return new WebApiResponse { ResponseCode = AppResponseCodes.InsufficientFunds, Data = "Insufficient Funds" };
-                           
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
                         }
                         catch (Exception ex)
@@ -543,7 +582,7 @@ namespace SocialPay.Core.Repositories.Customer
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                         }
                     }
-                 
+
                 }
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
@@ -679,7 +718,7 @@ namespace SocialPay.Core.Repositories.Customer
                 ////                //Send mail
                 ////                await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
                 ////                    logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
-                                
+
                 ////                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 ////            }
                 ////            catch (Exception ex)
@@ -692,7 +731,7 @@ namespace SocialPay.Core.Repositories.Customer
 
                 ////    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
                 ////}
-              
+
 
                 if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
                 {
@@ -713,7 +752,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.TransactionType = TransactionType.OtherPayment;
-                   // logconfirmation.CustomerEmail = model.e;
+                    // logconfirmation.CustomerEmail = model.e;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
@@ -723,7 +762,7 @@ namespace SocialPay.Core.Repositories.Customer
                             logconfirmation.DeliveryFinalDate = logconfirmation.DeliveryDate.AddDays(2);
                             await _context.TransactionLog.AddAsync(logconfirmation);
                             await _context.SaveChangesAsync();
-                           
+
                             //Send mail
                             await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
                                 logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
@@ -744,7 +783,7 @@ namespace SocialPay.Core.Repositories.Customer
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
                             mailBuilder.AppendLine("<br />");
-                           // mailBuilder.AppendLine("Best Regards,");
+                            // mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
 
                             //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
@@ -763,7 +802,7 @@ namespace SocialPay.Core.Repositories.Customer
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
                             mailBuilder.AppendLine("<br />");
-                           // mailBuilder.AppendLine("Best Regards,");
+                            // mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
 
                             await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
@@ -791,7 +830,7 @@ namespace SocialPay.Core.Repositories.Customer
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    _log4net.Info("Transaction failed" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - "+ DateTime.Now);
+                    _log4net.Info("Transaction failed" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
 
                     try
                     {
@@ -801,7 +840,7 @@ namespace SocialPay.Core.Repositories.Customer
                         logFailedResponse.TransactionReference = model.TransactionReference;
                         logFailedResponse.Message = model.Message;
                         await _context.FailedTransactions.AddAsync(logFailedResponse);
-                        await _context.SaveChangesAsync();                       
+                        await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
 
                         if (model.Message.Contains("Incorrect PIN"))
@@ -827,7 +866,7 @@ namespace SocialPay.Core.Repositories.Customer
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
                 }
-              
+
             }
             catch (Exception ex)
             {
@@ -843,7 +882,7 @@ namespace SocialPay.Core.Repositories.Customer
             {
 
                 var getTransactionLogs = await _context.TransactionLog
-                    .SingleOrDefaultAsync(x => x.PaymentReference == 
+                    .SingleOrDefaultAsync(x => x.PaymentReference ==
                     model.PaymentReference);
                 var logRequest = new ItemAcceptedOrRejected();
                 logRequest.ClientAuthenticationId = clientId;
@@ -855,7 +894,7 @@ namespace SocialPay.Core.Repositories.Customer
                 logRequest.TransactionReference = model.TransactionReference;
                 if (model.ProcessedBy == AcceptRejectRequest.Merchant)
                 {
-                    using(var transaction = await _context.Database.BeginTransactionAsync())
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
                         {
@@ -906,14 +945,14 @@ namespace SocialPay.Core.Repositories.Customer
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                         }
                     }
-                  
+
                 }
 
                 if (getTransactionLogs != null && getTransactionLogs.TransactionStatus != TransactionJourneyStatusCodes.Pending)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionProcessed};
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionProcessed };
 
-                if(getTransactionLogs.DeliveryDate < DateTime.Now)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };                                
+                if (getTransactionLogs.DeliveryDate < DateTime.Now)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };
 
                 //if (await _context.ItemAcceptedOrRejected
                 //    .AnyAsync(x => x.CustomerTransactionReference == model.CustomerTransactionReference))
@@ -936,7 +975,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logRequest.ProcessedBy = model.ProcessedBy;
                     logRequest.OrderStatus = model.Status;
                     logRequest.TransactionReference = model.TransactionReference;
-                  
+
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
@@ -954,7 +993,7 @@ namespace SocialPay.Core.Repositories.Customer
                             //};
                             if (model.Status == TransactionJourneyStatusCodes.Decline)
                             {
-                              
+
                                 //if (response.DeliveryDate.AddDays(sla) < DateTime.Now)
                                 //    return new WebApiResponse { ResponseCode = AppResponseCodes.OrderHasExpired };
 
@@ -1043,7 +1082,7 @@ namespace SocialPay.Core.Repositories.Customer
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                         }
                     }
-                   
+
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidConfirmation };
 
