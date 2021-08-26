@@ -689,7 +689,6 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
-
         public async Task<WebApiResponse> UpdateWalletInfo(string reference)
         {
             try

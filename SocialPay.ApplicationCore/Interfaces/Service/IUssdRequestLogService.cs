@@ -7,7 +7,8 @@ namespace SocialPay.ApplicationCore.Interfaces.Service
     public interface IUssdRequestLogService
     {
         Task<List<UssdRequestViewModel>> GetAllAsync();
-        Task<List<UssdRequestViewModel>> GetUssdByClientId(long clientId);    
+        Task<List<UssdRequestViewModel>> GetUssdByClientId(long clientId);
+        Task<UssdRequestViewModel> GetTransactionByreference(string reference);
         Task<int> CountTotalTransactionAsync();
         Task<bool> ExistsAsync(long clientId);
         Task<UssdRequestViewModel> AddAsync(UssdRequestViewModel model);

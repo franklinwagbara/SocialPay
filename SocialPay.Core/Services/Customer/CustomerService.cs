@@ -352,7 +352,7 @@ namespace SocialPay.Core.Services.Customer
 
                             encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{logCustomerInfo.Amount}{_appSettings.paymentCombination}{paymentRef}";
                             encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
-                            paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
+                            paymentData = $"{_appSettings.sterlingpaymentGatewayRequestUrl}{encryptData}";
                             paymentResponse.CustomerId = customerId;
                             paymentResponse.PaymentLink = paymentData;
 

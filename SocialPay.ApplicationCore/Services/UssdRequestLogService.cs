@@ -38,6 +38,13 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<List<UssdServiceRequestLog>, List<UssdRequestViewModel>>(requests);
         }
 
+        public async Task<UssdRequestViewModel> GetTransactionByreference(string transactionId)
+        {
+            var request = await _ussdServiceRequestLog.GetSingleAsync(x => x.TransactionID == transactionId);
+
+            return _mapper.Map<UssdServiceRequestLog, UssdRequestViewModel>(request);
+        }
+
         public async Task<bool> ExistsAsync(long clientId)
         {
             return await _ussdServiceRequestLog.ExistsAsync(x => x.ClientAuthenticationId == clientId);

@@ -10,8 +10,8 @@ using SocialPay.Domain;
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    [Migration("20210824084710_update-transaction-log")]
-    partial class updatetransactionlog
+    [Migration("20210826084134_Updated-Transaction-Logs")]
+    partial class UpdatedTransactionLogs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

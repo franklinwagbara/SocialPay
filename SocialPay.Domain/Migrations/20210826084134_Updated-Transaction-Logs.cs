@@ -2,7 +2,7 @@
 
 namespace SocialPay.Domain.Migrations
 {
-    public partial class updatetransactionlog : Migration
+    public partial class UpdatedTransactionLogs : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

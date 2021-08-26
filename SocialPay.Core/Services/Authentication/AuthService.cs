@@ -148,10 +148,10 @@ namespace SocialPay.Core.Services.Authentication
                 {
                     _log4net.Info("Authenticate for super admin" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
-                    var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
+                    ////var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
 
-                    if (validateUserAD.ResponseCode != AppResponseCodes.Success)
-                        return validateUserAD;
+                    ////if (validateUserAD.ResponseCode != AppResponseCodes.Success)
+                    ////    return validateUserAD;
 
                     tokenDescriptor = new SecurityTokenDescriptor
                     {
@@ -171,6 +171,7 @@ namespace SocialPay.Core.Services.Authentication
 
                     var adtoken = tokenHandler.CreateToken(tokenDescriptor);
                     var adtokenString = tokenHandler.WriteToken(adtoken);
+
                     tokenResult.AccessToken = adtokenString;
                     tokenResult.ClientId = validateuserInfo.Email;
                     tokenResult.Role = validateuserInfo.RoleName;
@@ -277,14 +278,17 @@ namespace SocialPay.Core.Services.Authentication
                         await _distributedCache.RemoveAsync(cacheKey);
                         serializedCustomerListGuest = JsonConvert.SerializeObject(userInfo);
                         redisCustomerListGuest = Encoding.UTF8.GetBytes(serializedCustomerListGuest);
+
                         var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
                         .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+
                         await _distributedCache.SetAsync(cacheKey, redisCustomerListGuest, options);
                     }
 
                     var guestToken = tokenHandler.CreateToken(tokenDescriptor);
                     var guestTokenString = tokenHandler.WriteToken(guestToken);
+
                     tokenResult.AccessToken = guestTokenString;
                     tokenResult.ClientId = validateuserInfo.Email;
                     tokenResult.Role = validateuserInfo.RoleName;
