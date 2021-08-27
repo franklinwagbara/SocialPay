@@ -38,9 +38,10 @@ namespace SocialPay.ApplicationCore.Services
             return _mapper.Map<List<UssdServiceRequestLog>, List<UssdRequestViewModel>>(requests);
         }
 
-        public async Task<UssdRequestViewModel> GetTransactionByreference(string transactionId)
+        public async Task<UssdRequestViewModel> GetTransactionByreference(string reference)
         {
-            var request = await _ussdServiceRequestLog.GetSingleAsync(x => x.TransactionID == transactionId);
+            var request = await _ussdServiceRequestLog
+                .GetSingleAsync(x => x.TransactionID == reference || x.PaymentReference == reference);
 
             return _mapper.Map<UssdServiceRequestLog, UssdRequestViewModel>(request);
         }

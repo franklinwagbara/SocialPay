@@ -24,7 +24,7 @@ namespace SocialPay.Core.Services.Bill
             _ussdServiceLogRequestService = ussdServiceLogRequestService ?? throw new ArgumentNullException(nameof(ussdServiceLogRequestService));
             _appSettings = appSettings.Value;
         }
-        public async Task<WebApiResponse> GeneratePaymentReference(GenerateReferenceDTO generateReferenceDTO, long clientId)
+        public async Task<WebApiResponse> GeneratePaymentReference(GenerateReferenceDTO generateReferenceDTO, long clientId, string reference)
         {
             try
             {
@@ -49,8 +49,8 @@ namespace SocialPay.Core.Services.Bill
                     TransactionType = model.transactionType,
                     TransRef = model.transRef,
                     Amount = Convert.ToDouble(model.amount),
-                    MerchantName = model.merchantName
-
+                    MerchantName = model.merchantName,
+                    PaymentReference = reference
                 };
 
                 var logRequest = await _ussdServiceLogRequestService.AddAsync(ussdModel);

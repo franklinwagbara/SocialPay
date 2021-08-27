@@ -27,6 +27,7 @@ namespace SocialPay.Helper.ViewModel
         public string CallBackResponseMessage { get; set; }
         public string TransactionRef { get; set; }
         public string TransactionID { get; set; }
+        public string PaymentReference { get; set; }
         public string TraceID { get; set; }
         public DateTime DateEntered { get; set; }
         public DateTime LastDateModified { get; set; }

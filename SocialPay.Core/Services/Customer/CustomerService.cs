@@ -121,7 +121,7 @@ namespace SocialPay.Core.Services.Customer
 
             try
             {
-              //  model.TransactionReference = "So-Pay-3402fece65e84d6d858b35f2c1778601";
+                //  model.TransactionReference = "So-Pay-3402fece65e84d6d858b35f2c1778601";
 
                 long customerId = 0;
                 string encryptedText = string.Empty;
@@ -213,7 +213,7 @@ namespace SocialPay.Core.Services.Customer
                 var logCustomerInfo = new CustomerOtherPaymentsInfo
                 {
                     ClientAuthenticationId = getPaymentDetails.ClientAuthenticationId,
-                    CustomerDescription = model.CustomerDescription, 
+                    CustomerDescription = model.CustomerDescription,
                     MerchantPaymentSetupId = getPaymentDetails.MerchantPaymentSetupId,
                     Channel = model.Channel,
                     Email = model.Email,
@@ -316,8 +316,13 @@ namespace SocialPay.Core.Services.Customer
 
                                 var initiateQrPayment = await _nibbsQrBaseService.DynamicPaymentAsync(qrRequest, getPaymentDetails.ClientAuthenticationId);
 
-                                return new InitiatePaymentResponse { ResponseCode = initiateQrPayment.ResponseCode, Data = initiateQrPayment,
-                                    PaymentRef =  paymentRef, TransactionReference = model.TransactionReference};
+                                return new InitiatePaymentResponse
+                                {
+                                    ResponseCode = initiateQrPayment.ResponseCode,
+                                    Data = initiateQrPayment,
+                                    PaymentRef = paymentRef,
+                                    TransactionReference = model.TransactionReference
+                                };
                             }
 
                             if (model.Channel == PaymentChannel.PayWithSpecta)
@@ -341,14 +346,14 @@ namespace SocialPay.Core.Services.Customer
                                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                             }
 
-                            if(model.Channel == PaymentChannel.USSD)
+                            if (model.Channel == PaymentChannel.USSD)
                             {
                                 var requestModel = new GenerateReferenceDTO
                                 {
                                     amount = Convert.ToString(logCustomerInfo.Amount)
                                 };
 
-                                var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId);
+                                var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId, paymentRef);
 
                                 return new InitiatePaymentResponse { ResponseCode = ussdRequest.ResponseCode, Data = ussdRequest, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                             }
@@ -367,12 +372,12 @@ namespace SocialPay.Core.Services.Customer
                         if (model.Channel == PaymentChannel.PayWithSpecta)
                         {
                             var generateToken = await _payWithSpectaService.InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef);
-                           
+
                             if (generateToken.ResponseCode != AppResponseCodes.Success)
                                 return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
 
                             paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
-                            
+
                             return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                         }
 
@@ -401,7 +406,7 @@ namespace SocialPay.Core.Services.Customer
                                 amount = Convert.ToString(logCustomerInfo.Amount)
                             };
 
-                            var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId);
+                            var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId, paymentRef);
 
                             return new InitiatePaymentResponse { ResponseCode = ussdRequest.ResponseCode, Data = ussdRequest, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                         }
@@ -467,7 +472,7 @@ namespace SocialPay.Core.Services.Customer
                         amount = Convert.ToString(getPaymentDetails.TotalAmount)
                     };
 
-                    var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId);
+                    var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId, paymentRef);
 
                     return new InitiatePaymentResponse { ResponseCode = ussdRequest.ResponseCode, Data = ussdRequest, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                 }
@@ -499,7 +504,7 @@ namespace SocialPay.Core.Services.Customer
             {
 
                 var otherPaymentReference = string.Empty;
-              //  _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " | " + model.Channel + " - " + DateTime.Now);
+                //  _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " | " + model.Channel + " - " + DateTime.Now);
 
                 var logResponse = new PaymentResponse
                 {
@@ -516,8 +521,11 @@ namespace SocialPay.Core.Services.Customer
                 var getPaymentCategory = await _context.CustomerOtherPaymentsInfo
                     .SingleOrDefaultAsync(x => x.PaymentReference == model.PaymentReference);
 
-                if (getPaymentCategory.Category == CustomerPaymentCategory.StoreLink)
-                    return await _storeBaseRepository.PaymentConfirmation(model);
+                if (getPaymentCategory != null)
+                {
+                    if (getPaymentCategory.Category != null && getPaymentCategory.Category == CustomerPaymentCategory.StoreLink)
+                        return await _storeBaseRepository.PaymentConfirmation(model);
+                }
 
                 if (validateLinkType.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {
@@ -612,7 +620,7 @@ namespace SocialPay.Core.Services.Customer
                         if (result.ResponseCode != AppResponseCodes.Success)
                         {
                             _log4net.Info("PaymentConfirmation failed" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
-                            
+
                             return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
                         }
 

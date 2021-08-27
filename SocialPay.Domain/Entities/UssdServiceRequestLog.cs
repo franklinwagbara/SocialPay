@@ -48,6 +48,9 @@ namespace SocialPay.Domain.Entities
         [Column(TypeName = "NVARCHAR(90)")]
         public string TransactionID { get; set; }
         [Column(TypeName = "NVARCHAR(90)")]
+        public string PaymentReference { get; set; }
+
+        [Column(TypeName = "NVARCHAR(90)")]
         public string TraceID { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; } 
