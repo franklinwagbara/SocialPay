@@ -24,7 +24,8 @@ namespace SocialPay.Helper.Dto.Request
 
     public class GatewayRequeryDTO
     {
-        [Required(ErrorMessage = "TransactionID is required")]
+        //[Required(ErrorMessage = "TransactionID is required")]
+       // public string PaymentReference { get; set; }
         public string TransactionID { get; set; }
     }
 

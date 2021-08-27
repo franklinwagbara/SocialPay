@@ -64,47 +64,29 @@ namespace SocialPay.Core.Services.Bill
             }
         }
 
-
-        public async Task<WebApiResponse> UssdTransactionRequery(GatewayRequeryDTO model, long clientId)
+        public async Task<GateWayResponseDto> UssdTransactionRequery(GatewayRequeryRequestDTO payload)
         {
             try
             {
-                var payload = new GatewayRequeryRequestDTO
-                {
-
-                    TransactionID = model.TransactionID,
-                    merchantID = _appSettings.UssdGatewayRequeryMerchantID,
-                    terminalID = _appSettings.UssdTerminalID,
-                    amount = ""
-                };
 
                 var request = JsonConvert.SerializeObject(payload);
 
-                _log4net.Info("GatewayRequery" + " | " + payload.TransactionID + " | " + clientId + " | " + request + " | " + DateTime.Now);
+                _log4net.Info("GatewayRequery" + " | " + payload.TransactionID + " | " + request + " | " + DateTime.Now);
                 var response = await _client.PostAsync("GatewayRequery",
                     new StringContent(request, Encoding.UTF8, "application/json"));
 
                 var result = await response.Content.ReadAsStringAsync();
-                _log4net.Info("Initiate GatewayRequery response" + " | " + model.TransactionID + " | " + payload.amount + " | " + result + " | " + clientId + " | " + DateTime.Now);
+                _log4net.Info("Initiate GatewayRequery response" + " | " + payload.TransactionID + " | " + payload.amount + " | " + result + " | " +  DateTime.Now);
                
-                var successfulResponse = JsonConvert.DeserializeObject<GateWayResponseDto>(result);
-
-                if (successfulResponse.responseCode == AppResponseCodes.Success)
+                if(response.IsSuccessStatusCode)
                 {
-                    //getTransaction.CallBackResponseCode = successfulResponse.responseCode;
-                    //getTransaction.CallBackResponseMessage = successfulResponse.responsemessage;
-                    //getTransaction.RetrievalReference = successfulResponse.retrievalReference;
-                    //getTransaction.InstitutionCode = successfulResponse.institutionCode;
-                    //getTransaction.Customer_mobile = successfulResponse.customer_mobile;
-                    //getTransaction.SubMerchantName = successfulResponse.SubMerchantName;
-                    //getTransaction.UserID = successfulResponse.UserID;
-                    //_context.UssdServiceLog.Update(getTransaction);
-                    //await _context.SaveChangesAsync();
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = successfulResponse.responsemessage };
+                    var successfulResponse = JsonConvert.DeserializeObject<GateWayResponseDto>(result);
 
-
+                    return successfulResponse;
                 }
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = successfulResponse.responsemessage, Data = successfulResponse };
+
+                return new GateWayResponseDto { responseCode = AppResponseCodes.Failed };
+               
             }
             catch (Exception ex)
             {

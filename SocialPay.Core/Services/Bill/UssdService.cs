@@ -78,61 +78,45 @@ namespace SocialPay.Core.Services.Bill
             }
         }
 
-        //public async Task<WebApiResponse> PaymentRequery(GatewayRequeryDTO model, long clientId)
-        //{
-        //    try
-        //    {
-        //        var generator = new Random();
+        public async Task<WebApiResponse> PaymentRequery(string paymentReference)
+        {
+            try
+            {
+                var generator = new Random();
 
-        //        var ussdRequest = await _ussdServiceLogRequestService.GetUssdByClientId
+                var ussdRequestModel = await _ussdServiceLogRequestService.GetTransactionByreference(paymentReference);
 
-        //        var model = new GenerateReferenceRequestDTO
-        //        {
-        //            merchantID = _appSettings.UssdMerchantID,
-        //            amount = generateReferenceDTO.amount,
-        //            callbackUrl = _appSettings.UssdCallbackUrl,
-        //            channel = _appSettings.UssdChannel,
-        //            merchantName = _appSettings.UssdMerchantName,
-        //            transactionType = _appSettings.UssdTransactionType,
-        //            transRef = generator.Next(100000, 1000000).ToString() + "" + generator.Next(100000, 1000000).ToString()
-        //        };
 
-        //        var ussdModel = new UssdRequestViewModel
-        //        {
-        //            MerchantID = model.merchantID,
-        //            Channel = model.channel,
-        //            ClientAuthenticationId = clientId,
-        //            TransactionType = model.transactionType,
-        //            TransRef = model.transRef,
-        //            Amount = Convert.ToDouble(model.amount),
-        //            MerchantName = model.merchantName
+                var request = new GatewayRequeryRequestDTO
+                {
+                    TransactionID = ussdRequestModel.TransactionID,
+                    merchantID = _appSettings.UssdGatewayRequeryMerchantID,
+                    terminalID = _appSettings.UssdTerminalID,
+                    amount = Convert.ToString(ussdRequestModel.Amount)
+                };
 
-        //        };
+                var confirmTransaction = await _ussdApiService.UssdTransactionRequery(request);
 
-        //        var logRequest = await _ussdServiceLogRequestService.AddAsync(ussdModel);
+                if (confirmTransaction.responseCode != AppResponseCodes.Success)
+                    return new WebApiResponse { ResponseCode = confirmTransaction.responseCode, Data = confirmTransaction };
 
-        //        var generateReference = await _ussdApiService.InitiateNewPaymentReference(model, clientId);
+                ussdRequestModel.UssdServiceRequestLogId = ussdRequestModel.UssdServiceRequestLogId;
+                ussdRequestModel.TraceID = confirmTransaction.TraceID;
+                ussdRequestModel.TransactionID = confirmTransaction.TransactionID;
+                ussdRequestModel.TransactionRef = confirmTransaction.reference;
+                ussdRequestModel.ResponseCode = confirmTransaction.responseCode;
+                ussdRequestModel.ResponseMessage = confirmTransaction.responsemessage;
 
-        //        if (generateReference.ResponseCode != AppResponseCodes.Success)
-        //            return new WebApiResponse { ResponseCode = generateReference.ResponseCode, Data = generateReference };
+                await _ussdServiceLogRequestService.UpdateAsync(ussdRequestModel);
 
-        //        ussdModel.UssdServiceRequestLogId = logRequest.UssdServiceRequestLogId;
-        //        ussdModel.TraceID = generateReference.ResponseDetails.TraceID;
-        //        ussdModel.TransactionID = generateReference.ResponseDetails.TransactionID;
-        //        ussdModel.TransactionRef = generateReference.ResponseDetails.Reference;
-        //        ussdModel.ResponseCode = generateReference.ResponseHeader.ResponseCode;
-        //        ussdModel.ResponseMessage = generateReference.ResponseHeader.ResponseMessage;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Request was successful" };
 
-        //        await _ussdServiceLogRequestService.UpdateAsync(ussdModel);
-
-        //        return new WebApiResponse { ResponseCode = generateReference.ResponseCode, Data = generateReference };
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
 
     }
 

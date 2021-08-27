@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,6 +47,7 @@ using SocialPay.Core.Services.Validations;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Core.Store;
 using SocialPay.Domain;
+using SocialPay.Helper.AutoMapperSettings;
 using SocialPay.Helper.Cryptography;
 using SocialPay.Helper.Notification;
 using SocialPay.Job.Repository.BasicWalletFundService;
@@ -138,6 +140,8 @@ namespace SocialPay.API
                      ValidateAudience = false
                  };
              });
+
+            services.AddAutoMapper(typeof(MappingProfiles));
 
             var con = Configuration.GetConnectionString("SocialPayDbContextString");
 

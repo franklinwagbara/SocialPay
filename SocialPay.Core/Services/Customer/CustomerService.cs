@@ -135,8 +135,10 @@ namespace SocialPay.Core.Services.Customer
                 if (getLinkType != null && getLinkType.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                 {
                     var getInvoiceInfo = await _customerService.GetInvoicePaymentAsync(model.TransactionReference);
+
                     if (getInvoiceInfo == null)
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.InvalidPaymentReference };
+
                     var customerReference = Guid.NewGuid().ToString();
 
                     var invoicePayment = new InvoicePaymentInfo
@@ -193,9 +195,10 @@ namespace SocialPay.Core.Services.Customer
 
                     encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{CustomerTotalAmount}{_appSettings.paymentCombination}{paymentRef}";
                     encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
-                    paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
+                    paymentData = $"{_appSettings.sterlingpaymentGatewayRequestUrl}{encryptData}";
                     paymentResponse.InvoiceReference = paymentRef;
                     paymentResponse.PaymentLink = paymentData;
+
                     await _context.InvoicePaymentInfo.AddAsync(invoicePayment);
                     await _context.SaveChangesAsync();
 
@@ -364,11 +367,12 @@ namespace SocialPay.Core.Services.Customer
                         if (model.Channel == PaymentChannel.PayWithSpecta)
                         {
                             var generateToken = await _payWithSpectaService.InitiatePayment(logCustomerInfo.Amount, "Social pay", paymentRef);
+                           
                             if (generateToken.ResponseCode != AppResponseCodes.Success)
-                            {
                                 return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
-                            }
+
                             paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+                            
                             return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                         }
 
@@ -404,7 +408,7 @@ namespace SocialPay.Core.Services.Customer
 
                         encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{logCustomerInfo.Amount}{_appSettings.paymentCombination}{paymentRef}";
                         encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
-                        paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
+                        paymentData = $"{_appSettings.sterlingpaymentGatewayRequestUrl}{encryptData}";
                         paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
 
                         _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
@@ -460,7 +464,7 @@ namespace SocialPay.Core.Services.Customer
                 {
                     var requestModel = new GenerateReferenceDTO
                     {
-                        amount = Convert.ToString(logCustomerInfo.Amount)
+                        amount = Convert.ToString(getPaymentDetails.TotalAmount)
                     };
 
                     var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId);
@@ -474,9 +478,9 @@ namespace SocialPay.Core.Services.Customer
 
                 encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{getPaymentDetails.TotalAmount}{_appSettings.paymentCombination}{paymentRef}";
                 encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
-                //var initiatepayment = Process.Start("cmd", "/C start " + _appSettings.sterlingpaymentGatewayRequestUrl + encryptData);
-                paymentData = _appSettings.sterlingpaymentGatewayRequestUrl + encryptData;
+                paymentData = $"{_appSettings.sterlingpaymentGatewayRequestUrl}{encryptData}";
                 paymentResponse.CustomerId = customerId; paymentResponse.PaymentLink = paymentData;
+
                 _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
@@ -556,7 +560,7 @@ namespace SocialPay.Core.Services.Customer
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPamentChannel };
                 }
 
-                if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank || model.Channel == PaymentChannel.PayWithSpecta)
+                if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank || model.Channel == PaymentChannel.PayWithSpecta || model.Channel == PaymentChannel.USSD)
                 {
                     if (model.Channel == PaymentChannel.Card)
                     {
@@ -600,6 +604,23 @@ namespace SocialPay.Core.Services.Customer
 
                         return await _customerService.LogPaymentResponse(model, string.Empty);
                     }
+
+                    if (model.Channel == PaymentChannel.USSD)
+                    {
+                        var result = await _ussdService.PaymentRequery(model.PaymentReference);
+
+                        if (result.ResponseCode != AppResponseCodes.Success)
+                        {
+                            _log4net.Info("PaymentConfirmation failed" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+                            
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
+                        }
+
+                        model.Message = $"{"success"}{result.Message}";
+
+                        return await _customerService.LogPaymentResponse(model, string.Empty);
+                    }
+
 
                     var oneBankRequest = await _customerService.LogPaymentResponse(model, string.Empty);
                     _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
