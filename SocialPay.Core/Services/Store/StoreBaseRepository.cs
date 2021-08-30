@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
@@ -36,13 +37,13 @@ namespace SocialPay.Core.Services.Store
         private readonly EmailService _emailService;
         private readonly EventLogService _eventLogService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(StoreBaseRepository));
-
+        public IConfiguration Configuration { get; }
         public StoreBaseRepository(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             IHostingEnvironment environment, BlobService blobService,
             NibbsQrBaseService nibbsQrBaseService, PayWithSpectaService payWithSpectaService,
             EncryptDecryptAlgorithm encryptDecryptAlgorithm,
             TransactionReceipt transactionReceipt, EmailService emailService,
-            EventLogService eventLogService)
+            EventLogService eventLogService, IConfiguration configuration)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _appSettings = appSettings.Value;
@@ -54,6 +55,7 @@ namespace SocialPay.Core.Services.Store
             _transactionReceipt = transactionReceipt ?? throw new ArgumentNullException(nameof(transactionReceipt));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
+            Configuration = configuration;
         }
 
         public async Task<WebApiResponse> CreateNewStore(StoreRequestDto request, UserDetailsViewModel userModel)
@@ -72,6 +74,7 @@ namespace SocialPay.Core.Services.Store
                 {
                     try
                     {
+                        var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
                         var storeModel = new MerchantStore
                         {
@@ -95,7 +98,7 @@ namespace SocialPay.Core.Services.Store
                         blobRequest.FileLocation = $"{blobRequest.RequestType}/{Convert.ToString(blobRequest.ClientId)}/{request.StoreName}/{blobRequest.ImageGuidId}.jpg";
 
                         //storeModel.Image = newFileName;
-                        storeModel.FileLocation = blobRequest.FileLocation;
+                        storeModel.FileLocation = $"{options.blobBaseUrl}{blobRequest.FileLocation}";
 
                         await _context.MerchantStore.AddAsync(storeModel);
                         await _context.SaveChangesAsync();

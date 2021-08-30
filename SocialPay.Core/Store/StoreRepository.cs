@@ -70,20 +70,20 @@ namespace SocialPay.Core.Store
                 if (store == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
 
-                var storageAccount = CloudStorageAccount.Parse(options.blobConnectionstring);
+                //var storageAccount = CloudStorageAccount.Parse(options.blobConnectionstring);
 
-                var blobClient = storageAccount.CreateCloudBlobClient();
+                //var blobClient = storageAccount.CreateCloudBlobClient();
 
-                CloudBlobContainer container = blobClient.GetContainerReference(options.containerName);
+                //CloudBlobContainer container = blobClient.GetContainerReference(options.containerName);
 
                 foreach (var item in store)
                 {
 
                     var linkName = await _merchantPaymentSetupService.GetPaymentLinksId(item.MerchantStoreId);
                   
-                    CloudBlockBlob blob = container.GetBlockBlobReference(item.FileLocation);
+                   // CloudBlockBlob blob = container.GetBlockBlobReference(item.FileLocation);
 
-                    item.Image = blob.Uri.AbsoluteUri;
+                    //item.Image = blob.Uri.AbsoluteUri;
                     item.StoreLink = linkName.PaymentLinkUrl;
                 }
 

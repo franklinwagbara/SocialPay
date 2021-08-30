@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using SocialPay.Core.Configurations;
 using SocialPay.Core.Services.AzureBlob;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
@@ -20,11 +22,13 @@ namespace SocialPay.Core.Services.Products
         private readonly SocialPayDbContext _context;
         private readonly BlobService _blobService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ProductsRepository));
-
-        public ProductsRepository(SocialPayDbContext context, BlobService blobService)
+        public IConfiguration Configuration { get; }
+        public ProductsRepository(SocialPayDbContext context, BlobService blobService,
+            IConfiguration configuration)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _blobService = blobService ?? throw new ArgumentNullException(nameof(blobService));
+            Configuration = configuration;
         }
 
         public async Task<WebApiResponse> CreateNewProduct(ProductRequestDto request, UserDetailsViewModel userModel)
@@ -47,6 +51,7 @@ namespace SocialPay.Core.Services.Products
                 {
                     try
                     {
+                        var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
                         var blobRequest = new BlobProductsRequest();
 
@@ -89,7 +94,7 @@ namespace SocialPay.Core.Services.Products
 
                             blobRequest.ImageDetail = productImages;
 
-                            proDetails.Add(new ProductItems { FileLocation = fileLocation, ProductId = model.ProductId });
+                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{fileLocation}", ProductId = model.ProductId });
 
                             await _blobService.UploadProducts(blobRequest);
 
@@ -186,6 +191,7 @@ namespace SocialPay.Core.Services.Products
                              join pc in _context.ProductCategories on s.ClientAuthenticationId equals pc.ClientAuthenticationId
                              join pr in _context.Products on pc.ProductCategoryId equals pr.ProductCategoryId
                              join pi in _context.ProductInventory on pr.ProductId equals pi.ProductId
+                             join proItems in _context.ProductItems on pr.ProductId equals proItems.ProductId
                              where pr.MerchantStoreId == storeId
                              
                              select new StoreProductsViewModel
@@ -200,36 +206,43 @@ namespace SocialPay.Core.Services.Products
                                  StoreDescription = s.Description,
                                  ProductDescription = pr.Description,
                                  ProductId = pr.ProductId,
-                                 Quantity = pi.Quantity                                 
+                                 Quantity = pi.Quantity,
+                                 ProductItemsViewModel = new List<ProductItemViewModel>()
+                                 {
+                                     new ProductItemViewModel
+                                     {
+                                         FileLocation = proItems.FileLocation
+                                     }
+                                 }
                              }).ToList();
 
 
-                var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
-                var blobClient = storageAccount.CreateCloudBlobClient();
+                ////var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
+                ////var blobClient = storageAccount.CreateCloudBlobClient();
 
-                CloudBlobContainer container = blobClient.GetContainerReference(containerName);
+                ////CloudBlobContainer container = blobClient.GetContainerReference(containerName);
 
-                foreach (var item in query)
-                {
-                    var getProductsItem = await (from p in _context.ProductItems
-                                           .Where(x => x.ProductId == item.ProductId)
-                                                 select new ProductItemViewModel
-                                                 {
-                                                     FileLocation = p.FileLocation
-                                                 }).ToListAsync();
+                ////foreach (var item in query)
+                ////{
+                ////    var getProductsItem = await (from p in _context.ProductItems
+                ////                           .Where(x => x.ProductId == item.ProductId)
+                ////                                 select new ProductItemViewModel
+                ////                                 {
+                ////                                     FileLocation = p.FileLocation
+                ////                                 }).ToListAsync();
 
-                    foreach (var image in getProductsItem)
-                    {
+                ////    foreach (var image in getProductsItem)
+                ////    {
                       
-                        CloudBlockBlob blob = container.GetBlockBlobReference(image.FileLocation);
+                ////        CloudBlockBlob blob = container.GetBlockBlobReference(image.FileLocation);
 
-                        image.Url = blob.Uri.AbsoluteUri;
+                ////        image.Url = blob.Uri.AbsoluteUri;
 
-                        item.ProductItemsViewModel = getProductsItem;
-                    }
+                ////        item.ProductItemsViewModel = getProductsItem;
+                ////    }
 
 
-                }
+                ////}
 
                 if (query.Count > 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query };
