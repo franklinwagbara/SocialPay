@@ -340,6 +340,7 @@ namespace SocialPay.Core.Services.Authentication
                     await _distributedCache.RemoveAsync(cacheKey);
                     serializedCustomerList = JsonConvert.SerializeObject(userInfo);
                     redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+
                     var options = new DistributedCacheEntryOptions()
                     .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
                     .SetSlidingExpiration(TimeSpan.FromMinutes(10));
