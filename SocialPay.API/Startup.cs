@@ -298,11 +298,11 @@ namespace SocialPay.API
             //    c.CronExpression = options.CardPaymentTask;
             //});
 
-            ////services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            ////});
+            //services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            //});
 
             //services.AddCronJob<NonEscrowBankTransactionTask>(c =>
             //{

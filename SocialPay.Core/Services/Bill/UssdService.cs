@@ -86,10 +86,9 @@ namespace SocialPay.Core.Services.Bill
 
                 var ussdRequestModel = await _ussdServiceLogRequestService.GetTransactionByreference(paymentReference);
 
-
                 var request = new GatewayRequeryRequestDTO
                 {
-                    TransactionID = ussdRequestModel.TransactionID,
+                    TransactionID = ussdRequestModel.TransactionRef,
                     merchantID = _appSettings.UssdGatewayRequeryMerchantID,
                     terminalID = _appSettings.UssdTerminalID,
                     amount = Convert.ToString(ussdRequestModel.Amount)

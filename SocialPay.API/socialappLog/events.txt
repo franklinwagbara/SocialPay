@@ -2998,3 +2998,18 @@ INFO  2021-08-27 14:33:24,371 454864ms CustomerRepoService    ?                 
 INFO  2021-08-27 14:33:40,831 471324ms UssdApiService         ?                  - GatewayRequery | 21082732812424143814 | {"amount":"5400","merchantID":"1057GIV10000001","terminalID":"1057GIV1","TransactionID":"21082732812424143814"} | 8/27/2021 2:33:40 PM
 INFO  2021-08-27 14:33:58,148 488641ms UssdApiService         ?                  - Initiate GatewayRequery response | 21082732812424143814 | 5400 | {"responseCode":"25","responsemessage":"Record not found","reference":"4275","amount":5400.0,"terminalId":"1057GIV1","merchantId":"1057GIV10000001","retrievalReference":null,"institutionCode":null,"shortName":null,"customer_mobile":"","SubMerchantName":"SocialPay","TransactionID":"21082732812424143814","UserID":"","TraceID":"245431882591"} | 8/27/2021 2:33:58 PM
 INFO  2021-08-27 14:35:00,741 551234ms CustomerRepoService    ?                  - PaymentConfirmation failed | SP-da3be3a9-f974-4b78-aef4-48f5da2f0d49 | So-Pay-0958d306ff9648558663f0b017a648a6 | 8/27/2021 2:35:00 PM
+INFO  2021-09-03 13:35:36,346 8526163ms UssdApiService         ?                  - GatewayRequery | 4275 | {"amount":"5400","merchantID":"1057GIV10000001","terminalID":"1057GIV1","TransactionID":"4275"} | 9/3/2021 1:35:36 PM
+INFO  2021-09-06 08:22:49,820 172923ms AuthRepoService        ?                  - Authenticate | ezinna81@gmail.com | 9/6/2021 8:22:49 AM
+INFO  2021-09-06 08:23:34,895 217998ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08034134689 | 9/6/2021 8:23:34 AM
+INFO  2021-09-06 08:23:46,269 229372ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 9/6/2021 8:23:46 AM
+ERROR 2021-09-06 08:26:59,528 422631ms AuthRepoService        ?                  - Error occured | Authenticate | ezinna81@gmail.com | System.ArgumentNullException: Value cannot be null. (Parameter 'value')
+   at System.Security.Claims.Claim..ctor(String type, String value, String valueType, String issuer, String originalIssuer, ClaimsIdentity subject, String propertyKey, String propertyValue)
+   at System.Security.Claims.Claim..ctor(String type, String value)
+   at SocialPay.Core.Services.Authentication.AuthRepoService.Authenticate(LoginRequestDto loginRequestDto) in G:\SterlingApps\SocialPay\SocialPay\SocialPay.Core\Services\Authentication\AuthService.cs:line 313 | 9/6/2021 8:26:59 AM
+INFO  2021-09-06 08:27:04,779 427882ms AuthRepoService        ?                  - Authenticate | ezinna81@gmail.com | 9/6/2021 8:27:04 AM
+INFO  2021-09-06 08:27:11,239 434342ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08034134689 | 9/6/2021 8:27:11 AM
+INFO  2021-09-06 08:27:12,208 435311ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 9/6/2021 8:27:12 AM
+INFO  2021-09-06 08:33:35,509 40871ms AuthRepoService        ?                  - Authenticate | ezinna81@gmail.com | 9/6/2021 8:33:35 AM
+INFO  2021-09-06 08:33:45,803 51166ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08034134689 | 9/6/2021 8:33:45 AM
+INFO  2021-09-06 08:33:52,160 57523ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 9/6/2021 8:33:52 AM
+INFO  2021-09-06 08:34:11,934 77296ms AuthRepoService        ?                  - Authenticate for login was successful | ezinna81@gmail.com | 9/6/2021 8:34:11 AM
