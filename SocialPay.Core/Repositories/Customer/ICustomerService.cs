@@ -306,16 +306,16 @@ namespace SocialPay.Core.Repositories.Customer
                 if (validateLink == null)
                     return new PaymentLinkViewModel { };
 
-                var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
-
-                if (getMerchantInfo == null)
-                    return new PaymentLinkViewModel { };
-
                 if (validateLink.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                     return await GetInvoiceTransactionDetails(validateReference.TransactionReference);
 
                 if (validateReference.MerchantStoreId > 0)
                     return await _storeRepository.GetStoreInfobyStoreIdAsync(validateReference.MerchantStoreId, validateReference.TransactionReference);
+
+                var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
+
+                if (getMerchantInfo == null)
+                    return new PaymentLinkViewModel { };               
 
                 var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
                 var mapper = config.CreateMapper();

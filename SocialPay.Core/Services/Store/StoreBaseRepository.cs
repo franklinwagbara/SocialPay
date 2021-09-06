@@ -585,7 +585,7 @@ namespace SocialPay.Core.Services.Store
 
                 if (validateDuplicateTransaction != null)
                 {
-                    _log4net.Info("LogPaymentResponse" + " - " + model.PaymentReference + " - " + "validateDuplicateTransaction. DuplicateTransaction" + " - " + DateTime.Now);
+                    _log4net.Info("LogPaymentResponse" + " - " + model.PaymentReference + " - " + "validate Duplicate Transaction. DuplicateTransaction" + " - " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
 
@@ -608,6 +608,8 @@ namespace SocialPay.Core.Services.Store
 
                 var getStoreRequest = await _context.StoreTransactionLog
                     .SingleOrDefaultAsync(x => x.PaymentReference == model.PaymentReference);
+
+               /// var productInvestory = await _context.ProductInventory.SingleOrDefaultAsync(x=>x.ProductInventoryId)
 
                 //for escrow if need to activate
                 ////if (linkInfo != null && linkInfo.Channel == MerchantPaymentLinkCategory.Escrow || linkInfo.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)

@@ -3013,3 +3013,28 @@ INFO  2021-09-06 08:33:35,509 40871ms AuthRepoService        ?                  
 INFO  2021-09-06 08:33:45,803 51166ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08034134689 | 9/6/2021 8:33:45 AM
 INFO  2021-09-06 08:33:52,160 57523ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 9/6/2021 8:33:52 AM
 INFO  2021-09-06 08:34:11,934 77296ms AuthRepoService        ?                  - Authenticate for login was successful | ezinna81@gmail.com | 9/6/2021 8:34:11 AM
+INFO  2021-09-06 18:41:56,455 117822ms CustomerRepoService    ?                  - GetLinkDetails | www.abc.com | 9/6/2021 6:41:56 PM
+INFO  2021-09-06 18:42:04,112 125478ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 9/6/2021 6:42:04 PM
+INFO  2021-09-06 18:42:04,112 125478ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 9/6/2021 6:42:04 PM
+INFO  2021-09-06 18:42:06,159 127526ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 9/6/2021 6:42:06 PM
+INFO  2021-09-06 18:42:06,261 127628ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 1 | 9/6/2021 6:42:06 PM
+INFO  2021-09-06 18:42:06,464 127831ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet | SP-76cdcd1f-c841-4458-a624-5720bfb10623 | So-Pay-3402fece65e84d6d858b35f2c1778601 | 9/6/2021 6:42:06 PM
+INFO  2021-09-06 18:50:15,451 82524ms CustomerRepoService    ?                  - GetLinkDetails | www.abc.com | 9/6/2021 6:50:15 PM
+INFO  2021-09-06 18:50:32,978 100051ms StoreRepository        ?                  - Task starts to get stores | 31 | 9/6/2021 6:50:32 PM
+INFO  2021-09-06 18:51:10,996 138069ms ProductsRepository     ?                  - Task starts to get product by storeId | 31 - 9/6/2021 6:51:10 PM
+INFO  2021-09-06 18:51:10,997 138070ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 9/6/2021 6:51:10 PM
+INFO  2021-09-06 18:51:12,791 139864ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 9/6/2021 6:51:12 PM
+INFO  2021-09-06 19:02:54,497 112613ms CustomerRepoService    ?                  - GetLinkDetails | www.abc.com | 9/6/2021 7:02:54 PM
+INFO  2021-09-06 19:03:01,371 119486ms StoreRepository        ?                  - Task starts to get stores | 31 | 9/6/2021 7:03:01 PM
+INFO  2021-09-06 19:03:15,622 133738ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 9/6/2021 7:03:15 PM
+INFO  2021-09-06 19:03:15,634 133749ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 9/6/2021 7:03:15 PM
+INFO  2021-09-06 19:03:16,514 134629ms ProductsRepository     ?                  - Task starts to get product by storeId | 31 - 9/6/2021 7:03:16 PM
+INFO  2021-09-06 19:03:22,415 140530ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 9/6/2021 7:03:22 PM
+INFO  2021-09-06 19:03:24,738 142853ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 1 | 9/6/2021 7:03:24 PM
+INFO  2021-09-06 19:03:24,851 142966ms hantWalletTransactions ?                  - Job Service-Credit merchant wallet | SP-76cdcd1f-c841-4458-a624-5720bfb10623 | So-Pay-3402fece65e84d6d858b35f2c1778601 | 9/6/2021 7:03:24 PM
+INFO  2021-09-06 19:03:42,068 160184ms hantWalletTransactions ?                  - Job Service-DefaultWalletTransferRequestLog merchant wallet request was successfully logged | SP-76cdcd1f-c841-4458-a624-5720bfb10623 | So-Pay-3402fece65e84d6d858b35f2c1778601 | 9/6/2021 7:03:42 PM
+INFO  2021-09-06 19:03:42,135 160250ms WalletRepoJobService   ?                  - Job Service-Wallet To Wallet TransferAsync | 08076683150 | So-Pay-cc55ee9d-e093-477d-a78 | 0000000002 | 500.00 | 9/6/2021 7:03:42 PM
+INFO  2021-09-06 19:03:49,855 167970ms WalletRepoJobService   ?                  - Job Service-WalletToWalletTransferAsync response | "6fec0b32f72a27321dcfe974f9a4cd886c5d28c1d3a4d8e4b992d7b6735d0160f2c534c56dc76f326158500aae97019f0466254e7581483e224d391bee49ee06d2a71f866be6a6ebde46dee81ebb2ef1" | 08076683150 | So-Pay-cc55ee9d-e093-477d-a78 | 0000000002 | 500.00 | 9/6/2021 7:03:49 PM
+INFO  2021-09-06 19:07:34,676 43386ms CustomerRepoService    ?                  - GetLinkDetails | www.abc.com | 9/6/2021 7:07:34 PM
+INFO  2021-09-06 19:07:42,723 51433ms StoreRepository        ?                  - Task starts to get stores | 31 | 9/6/2021 7:07:42 PM
+INFO  2021-09-06 19:07:49,388 58097ms ProductsRepository     ?                  - Task starts to get product by storeId | 31 - 9/6/2021 7:07:49 PM

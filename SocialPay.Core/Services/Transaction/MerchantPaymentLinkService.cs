@@ -53,7 +53,7 @@ namespace SocialPay.Core.Services.Transaction
         {
             try
             {
-                //clientId = 179;
+                clientId = 209;
                 //userStatus = "00";
                 _log4net.Info("Initiating GeneratePaymentLink request" + " | " + clientId + " | " + paymentModel.PaymentLinkName + " | "+ DateTime.Now);
 
