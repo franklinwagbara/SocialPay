@@ -98,7 +98,7 @@ namespace SocialPay.Core.Services.Store
                         blobRequest.FileLocation = $"{blobRequest.RequestType}/{Convert.ToString(blobRequest.ClientId)}/{request.StoreName}/{blobRequest.ImageGuidId}.jpg";
 
                         //storeModel.Image = newFileName;
-                        storeModel.FileLocation = $"{options.blobBaseUrl}{blobRequest.FileLocation}";
+                        storeModel.FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{blobRequest.FileLocation}";
 
                         await _context.MerchantStore.AddAsync(storeModel);
                         await _context.SaveChangesAsync();

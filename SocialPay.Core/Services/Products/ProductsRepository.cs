@@ -94,7 +94,7 @@ namespace SocialPay.Core.Services.Products
 
                             blobRequest.ImageDetail = productImages;
 
-                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{fileLocation}", ProductId = model.ProductId });
+                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId });
 
                             await _blobService.UploadProducts(blobRequest);
 
