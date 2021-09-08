@@ -30,12 +30,17 @@ namespace SocialPay.Core.Services.Merchant
         private readonly AppSettings _appSettings;
         private readonly EmailService _emailService;
         private readonly Utilities _utilities;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        //private readonly IHostingEnvironment hostingEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly MerchantRegistrationService _merchantRegistrationService;
         private readonly BankServiceRepository _bankServiceRepository;
         public CreateBulkMerchantService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             EmailService emailService, Utilities utilities, MerchantRegistrationService merchantRegistrationService,
-            BankServiceRepository bankServiceRepository)
+            BankServiceRepository bankServiceRepository,
+            IWebHostEnvironment webHostEnvironment,
+            BlobService blobService
+
+            )
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _utilities = utilities ?? throw new ArgumentNullException(nameof(utilities));
@@ -43,6 +48,8 @@ namespace SocialPay.Core.Services.Merchant
             _bankServiceRepository = bankServiceRepository ?? throw new ArgumentNullException(nameof(bankServiceRepository));
             _merchantRegistrationService = merchantRegistrationService ?? throw new ArgumentNullException(nameof(merchantRegistrationService));
             _appSettings = appSettings.Value;
+            _webHostEnvironment = webHostEnvironment;
+            _blobService = blobService;
         }
 
         private async Task<string> GetReferCode()
@@ -74,7 +81,7 @@ namespace SocialPay.Core.Services.Merchant
                 if (fileExtension != ".csv")
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidCSVFormat, Message = "Invalid CSV" };
 
-                var rootFolder = _hostingEnvironment.WebRootPath;
+                var rootFolder = _webHostEnvironment.WebRootPath;
                 var fileName = doc.FileName;
                 var filePath = Path.Combine(rootFolder, "CustomerDocuments");
                 var ext = Path.GetExtension(doc.FileName);
@@ -257,7 +264,7 @@ namespace SocialPay.Core.Services.Merchant
                 string fileExtension = Path.GetExtension(doc.FileName);
                 if (fileExtension != ".csv")
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidCSVFormat };
-                var rootFolder = _hostingEnvironment.WebRootPath;
+                var rootFolder = _webHostEnvironment.WebRootPath;
                 var fileName = doc.FileName;
                 var filePath = Path.Combine(rootFolder, "CustomerDocuments");
                 var ext = Path.GetExtension(doc.FileName);
@@ -338,7 +345,7 @@ namespace SocialPay.Core.Services.Merchant
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
 
-                var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn, 
+                var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn,
                     signUpRequestDto.DateOfBirth, signUpRequestDto.FirstName,
                     signUpRequestDto.LastName, signUpRequestDto.Email);
 
@@ -448,9 +455,9 @@ namespace SocialPay.Core.Services.Merchant
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
 
-                       // var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                        //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
                         if (sendMail != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
