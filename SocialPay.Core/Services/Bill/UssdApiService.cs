@@ -56,6 +56,7 @@ namespace SocialPay.Core.Services.Bill
                     }
 
                     successfulResponse.ResponseCode = AppResponseCodes.Success;
+
                     return successfulResponse;
                 }
 
@@ -82,6 +83,7 @@ namespace SocialPay.Core.Services.Bill
                     new StringContent(request, Encoding.UTF8, "application/json"));
 
                 var result = await response.Content.ReadAsStringAsync();
+
                 _log4net.Info("Initiate GatewayRequery response" + " | " + payload.TransactionID + " | " + payload.amount + " | " + result + " | " +  DateTime.Now);
                
                 if(response.IsSuccessStatusCode)
@@ -96,8 +98,7 @@ namespace SocialPay.Core.Services.Bill
             }
             catch (Exception ex)
             {
-
-                throw;
+                return new GateWayResponseDto { responseCode = AppResponseCodes.InternalError };
             }
         }
     }
