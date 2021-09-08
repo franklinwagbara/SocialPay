@@ -6,6 +6,7 @@ using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging;
 using SocialPay.Core.Services.AzureBlob;
+using SocialPay.Core.Services.Bill;
 using SocialPay.Core.Services.EventLogs;
 using SocialPay.Core.Services.QrCode;
 using SocialPay.Core.Services.Specta;
@@ -36,6 +37,7 @@ namespace SocialPay.Core.Services.Store
         private readonly TransactionReceipt _transactionReceipt;
         private readonly EmailService _emailService;
         private readonly EventLogService _eventLogService;
+        private readonly UssdService _ussdService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(StoreBaseRepository));
         public IConfiguration Configuration { get; }
         public StoreBaseRepository(SocialPayDbContext context, IOptions<AppSettings> appSettings,
@@ -43,7 +45,8 @@ namespace SocialPay.Core.Services.Store
             NibbsQrBaseService nibbsQrBaseService, PayWithSpectaService payWithSpectaService,
             EncryptDecryptAlgorithm encryptDecryptAlgorithm,
             TransactionReceipt transactionReceipt, EmailService emailService,
-            EventLogService eventLogService, IConfiguration configuration)
+            EventLogService eventLogService, IConfiguration configuration,
+            UssdService ussdService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _appSettings = appSettings.Value;
@@ -56,6 +59,7 @@ namespace SocialPay.Core.Services.Store
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
             Configuration = configuration;
+            _ussdService = ussdService ?? throw new ArgumentNullException(nameof(ussdService));
         }
 
         public async Task<WebApiResponse> CreateNewStore(StoreRequestDto request, UserDetailsViewModel userModel)
@@ -281,6 +285,18 @@ namespace SocialPay.Core.Services.Store
                             //decimal CustomerTotalAmount = model.CustomerAmount;// + getPaymentDetails.ShippingFee;
                             if (getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)
                             {
+                                if (model.Channel == PaymentChannel.USSD)
+                                {
+                                    var requestModel = new GenerateReferenceDTO
+                                    {
+                                        amount = Convert.ToString(totalAmount)
+                                    };
+
+                                    var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId, paymentRef);
+
+                                    return new InitiatePaymentResponse { ResponseCode = ussdRequest.ResponseCode, Data = ussdRequest, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
+                                }
+
                                 if (model.Channel == PaymentChannel.NibbsQR)
                                 {
                                     var qrRequest = new DynamicPaymentRequestDto
@@ -373,6 +389,19 @@ namespace SocialPay.Core.Services.Store
                                 };
                             }
 
+                            if (model.Channel == PaymentChannel.USSD)
+                            {
+                                var requestModel = new GenerateReferenceDTO
+                                {
+                                    amount = Convert.ToString(totalAmount)
+                                };
+
+                                var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId, paymentRef);
+
+                                return new InitiatePaymentResponse { ResponseCode = ussdRequest.ResponseCode, Data = ussdRequest, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
+                            }
+
+
                             encryptedText = $"{_appSettings.mid}{_appSettings.paymentCombination}{totalAmount}{_appSettings.paymentCombination}{paymentRef}";
                             encryptData = _encryptDecryptAlgorithm.EncryptAlt(encryptedText);
                             paymentData = $"{_appSettings.sterlingpaymentGatewayRequestUrl}{encryptData}";
@@ -448,6 +477,18 @@ namespace SocialPay.Core.Services.Store
                                 TransactionReference = model.TransactionReference
                             };
 
+                        }
+
+                        if (model.Channel == PaymentChannel.USSD)
+                        {
+                            var requestModel = new GenerateReferenceDTO
+                            {
+                                amount = Convert.ToString(logCustomerInfo.Amount)
+                            };
+
+                            var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId, paymentRef);
+
+                            return new InitiatePaymentResponse { ResponseCode = ussdRequest.ResponseCode, Data = ussdRequest, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                         }
 
 

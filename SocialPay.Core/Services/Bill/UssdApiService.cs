@@ -49,6 +49,12 @@ namespace SocialPay.Core.Services.Bill
                 if(response.IsSuccessStatusCode)
                 {
                     successfulResponse = JsonConvert.DeserializeObject<GenerateReferenceResponseDto>(result);
+
+                    if(successfulResponse == null)
+                    {
+                        return new GenerateReferenceResponseDto { ResponseCode = AppResponseCodes.Failed };
+                    }
+
                     successfulResponse.ResponseCode = AppResponseCodes.Success;
                     return successfulResponse;
                 }
