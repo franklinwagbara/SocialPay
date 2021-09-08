@@ -132,5 +132,9 @@
         public string UssdTerminalID { get; set; }
         public string UssdGatewayRequeryMerchantID { get; set; }
         public string UssdGenerateReference { get; set; }
+        public string BaseUrlTenant { get; set; }
+        public string getTenantUrl { get; set; }
+        public string createTenantUrl { get; set; }
+
     }
 }

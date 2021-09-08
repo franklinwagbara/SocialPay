@@ -269,7 +269,6 @@ namespace SocialPay.API.Controllers
         }
 
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [Route("admin-get-customers-transaction-count")]
         public async Task<IActionResult> AdminGetCustomersTransactionCount()
@@ -298,7 +297,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        //  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [Route("admin-get-customers-transaction-value")]
         public async Task<IActionResult> AdminGetCustomersTransactionValue()
