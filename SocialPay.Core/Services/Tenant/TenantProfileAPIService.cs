@@ -47,6 +47,7 @@ namespace SocialPay.Core.Services.Tenant
                 _client.DefaultRequestHeaders.Add("ClientId", "0");
                 _client.DefaultRequestHeaders.Add("ClientSecret", "0");
                 _client.DefaultRequestHeaders.Add("AuthKey", "0");
+
                 var req = await _client.PostAsync(_appSettings.createTenantUrl,
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
 
@@ -76,6 +77,7 @@ namespace SocialPay.Core.Services.Tenant
                     mailBuilder.AppendLine("AuthKey -" + successfulResponse.data.data.authKey);
                     mailBuilder.AppendLine("<br />");
                     mailBuilder.AppendLine("Best Regards,");
+
                     emailModal.EmailBody = mailBuilder.ToString();
 
                     var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
