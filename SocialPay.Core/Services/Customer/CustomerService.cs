@@ -647,6 +647,11 @@ namespace SocialPay.Core.Services.Customer
         }
 
 
+        //public async Task<WebApiResponse> UssdPaymentConfirmation()
+        //{
+        //    var result = await _ussdService.PaymentRequery(model.PaymentReference);
+        //}
+        
         public async Task<WebApiResponse> AcceptOrRejectItem(AcceptRejectRequestDto model, long clientId)
         {
             _log4net.Info("AcceptOrRejectItem" + " | " + clientId + " | " + model.PaymentReference + "" + model.TransactionReference + " | " + DateTime.Now);

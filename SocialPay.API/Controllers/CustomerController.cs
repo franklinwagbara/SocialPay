@@ -168,6 +168,34 @@ namespace SocialPay.API.Controllers
         }
 
 
+        [HttpPost]
+        [Route("ussd-payment-confirmation")]
+        public async Task<IActionResult> UssdPaymentConfirmation([FromBody] PaymentValidationRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                    return Ok(await _customerRepoService.PaymentConfirmation(model));
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [Route("get-orders")]
