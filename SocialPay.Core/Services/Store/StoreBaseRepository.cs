@@ -483,7 +483,7 @@ namespace SocialPay.Core.Services.Store
                         {
                             var requestModel = new GenerateReferenceDTO
                             {
-                                amount = Convert.ToString(logCustomerInfo.Amount)
+                                amount = Convert.ToString(totalAmount)
                             };
 
                             var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId, paymentRef);
