@@ -122,9 +122,11 @@ namespace SocialPay.Core.Services.Merchant
 
                 string responseCode;
                 List<BulkSignUpResponseDto> res = new List<BulkSignUpResponseDto>();
+
                 using (var sreader = new StreamReader(doc.OpenReadStream()))
                 {
                     string[] headers = sreader.ReadLine().Split(',');
+
                     while (!sreader.EndOfStream)
                     {
 
@@ -208,10 +210,12 @@ namespace SocialPay.Core.Services.Merchant
                         try
                         {
                             responseCode = AppResponseCodes.RecordNotFound;
+
                             if (await _context.ClientAuthentication.AnyAsync(x => x.Email == rows[0].ToString()))
                             {
                                 var getUserInfo = await _context.ClientAuthentication
                                 .SingleOrDefaultAsync(x => x.Email == rows[0].ToString());
+
                                 var businessInfoModel = new MerchantOnboardingInfoRequestDto
                                 {
                                     BusinessEmail = rows[1].ToString(),
@@ -225,7 +229,9 @@ namespace SocialPay.Core.Services.Merchant
                                     SpectaMerchantKey = "",
                                     SpectaMerchantKeyValue = ""
                                 };
+
                                 var result = await _merchantRegistrationService.OnboardMerchantBusinessInfo(businessInfoModel, Convert.ToInt32(getUserInfo.ClientAuthenticationId));
+                                
                                 responseCode = result.ResponseCode;
                             }
 
@@ -239,7 +245,6 @@ namespace SocialPay.Core.Services.Merchant
                         {
                             email = rows[0].ToString(),
                             ResponseCode = responseCode
-
                         });
                     }
                 }
@@ -261,9 +266,12 @@ namespace SocialPay.Core.Services.Merchant
                 string responseCode;
                 if (doc == null || doc.Length == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidCSVFormat };
+
                 string fileExtension = Path.GetExtension(doc.FileName);
+
                 if (fileExtension != ".csv")
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidCSVFormat };
+
                 var rootFolder = _webHostEnvironment.WebRootPath;
                 var fileName = doc.FileName;
                 var filePath = Path.Combine(rootFolder, "CustomerDocuments");
@@ -272,6 +280,7 @@ namespace SocialPay.Core.Services.Merchant
                 var fullpath = Path.Combine(filePath, filename);
 
                 var reference = $"uploadBoardingCSV{"-"}{"ST-"}{Guid.NewGuid().ToString().Substring(18)}";
+
                 var blobRequest = new BlobOnboardingCSVRequest
                 {
                     RequestType = "Documents",
@@ -289,10 +298,12 @@ namespace SocialPay.Core.Services.Merchant
                 using (var sreader = new StreamReader(doc.OpenReadStream()))
                 {
                     string[] headers = sreader.ReadLine().Split(',');
+
                     while (!sreader.EndOfStream)
                     {
 
                         string[] rows = sreader.ReadLine().Split(',');
+
                         if (rows.Length < 1)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidCSVFormat };
                         try
@@ -308,6 +319,7 @@ namespace SocialPay.Core.Services.Merchant
                                 Gender = rows[6].ToString()
 
                             };
+
                             var response = await CreateNewMerchant(item);
                             responseCode = response.ResponseCode;
                         }
