@@ -196,7 +196,7 @@ namespace SocialPay.Core.Services.Store
             try
             {
 
-               // var totalAmount1 = model.Items.Sum(x => x.TotalAmount * x.Quantity);
+                // var totalAmount1 = model.Items.Sum(x => x.TotalAmount * x.Quantity);
 
                 long customerId = 0;
                 string encryptedText = string.Empty;
@@ -364,7 +364,7 @@ namespace SocialPay.Core.Services.Store
                                 paymentResponse.CustomerId = customerId;
                                 paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
 
-                                 await transaction.CommitAsync();
+                                await transaction.CommitAsync();
 
                                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse };
                             }
@@ -378,7 +378,7 @@ namespace SocialPay.Core.Services.Store
 
                                 var initiateQrPayment = await _nibbsQrBaseService.DynamicPaymentAsync(qrRequest, getPaymentDetails.ClientAuthenticationId);
 
-                                 await transaction.CommitAsync();
+                                await transaction.CommitAsync();
 
                                 return new InitiatePaymentResponse
                                 {
@@ -467,7 +467,7 @@ namespace SocialPay.Core.Services.Store
 
                             var initiateQrPayment = await _nibbsQrBaseService.DynamicPaymentAsync(qrRequest, getPaymentDetails.ClientAuthenticationId);
 
-                             await transaction.CommitAsync();
+                            await transaction.CommitAsync();
 
                             return new InitiatePaymentResponse
                             {
@@ -510,7 +510,7 @@ namespace SocialPay.Core.Services.Store
                         paymentResponse.CustomerId = customerId;
                         paymentResponse.PaymentLink = paymentData;
 
-                         await transaction.CommitAsync();
+                        await transaction.CommitAsync();
                         _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
@@ -641,7 +641,7 @@ namespace SocialPay.Core.Services.Store
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
                 }
 
-                var merchantInfo = await _context.MerchantBusinessInfo
+                var merchantInfo = await _context.ClientAuthentication.Include(x => x.MerchantBusinessInfo)
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == paymentSetupInfo.ClientAuthenticationId);
 
                 var getCustomerInfo = await _context.CustomerOtherPaymentsInfo
@@ -650,7 +650,7 @@ namespace SocialPay.Core.Services.Store
                 var getStoreRequest = await _context.StoreTransactionLog
                     .SingleOrDefaultAsync(x => x.PaymentReference == model.PaymentReference);
 
-               /// var productInvestory = await _context.ProductInventory.SingleOrDefaultAsync(x=>x.ProductInventoryId)
+                /// var productInvestory = await _context.ProductInventory.SingleOrDefaultAsync(x=>x.ProductInventoryId)
 
                 //for escrow if need to activate
                 ////if (linkInfo != null && linkInfo.Channel == MerchantPaymentLinkCategory.Escrow || linkInfo.Channel == MerchantPaymentLinkCategory.OneOffEscrowLink)
@@ -744,18 +744,21 @@ namespace SocialPay.Core.Services.Store
                             _context.Update(getStoreRequest);
                             await _context.SaveChangesAsync();
                             //Send mail
+
+
                             await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
-                                logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
+                             logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.FullName);
+
 
                             var emailModal = new EmailRequestDto
                             {
                                 Subject = $"{_appSettings.successfulTransactionEmailSubject}{"-"}{model.TransactionReference}{"-"}",
-                                DestinationEmail = merchantInfo.BusinessEmail,
+                                DestinationEmail = merchantInfo.MerchantBusinessInfo.Count() == 0 ? merchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault() : merchantInfo.Email,
                             };
 
                             var mailBuilder = new StringBuilder();
 
-                            mailBuilder.AppendLine("Dear" + " " + merchantInfo.BusinessName + "," + "<br />");
+                            mailBuilder.AppendLine("Dear" + " " + merchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault() + "," + "<br />");
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Customer was able to make payment successfully. See details below.<br />");
                             mailBuilder.AppendLine("<br />");

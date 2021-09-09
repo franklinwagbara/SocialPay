@@ -497,7 +497,7 @@ namespace SocialPay.Core.Services.Customer
             }
         }
 
-
+        
         public async Task<WebApiResponse> PaymentConfirmation(PaymentValidationRequestDto model)
         {
             try

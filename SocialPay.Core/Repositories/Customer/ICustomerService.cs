@@ -672,7 +672,10 @@ namespace SocialPay.Core.Repositories.Customer
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
                 }
 
-                var merchantInfo = await GetMerchantInfo(paymentSetupInfo.ClientAuthenticationId);
+                // var merchantInfo = await GetMerchantInfo(paymentSetupInfo.ClientAuthenticationId);
+
+                var merchantInfo = await _context.ClientAuthentication.Include(x => x.MerchantBusinessInfo)
+                   .SingleOrDefaultAsync(x => x.ClientAuthenticationId == paymentSetupInfo.ClientAuthenticationId);
 
                 var getCustomerInfo = await _context.CustomerOtherPaymentsInfo
                     .SingleOrDefaultAsync(x => x.PaymentReference == model.PaymentReference);
@@ -765,15 +768,17 @@ namespace SocialPay.Core.Repositories.Customer
 
                             //Send mail
                             await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
-                                logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.BusinessName);
+                            logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.FullName);
+
 
                             var emailModal = new EmailRequestDto
                             {
                                 Subject = $"{_appSettings.successfulTransactionEmailSubject}{"-"}{model.TransactionReference}{"-"}",
-                                DestinationEmail = merchantInfo.BusinessEmail,
+                                DestinationEmail = merchantInfo.MerchantBusinessInfo.Count() == 0 ? merchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault() : merchantInfo.Email,
                             };
+
                             var mailBuilder = new StringBuilder();
-                            mailBuilder.AppendLine("Dear" + " " + merchantInfo.BusinessName + "," + "<br />");
+                            mailBuilder.AppendLine("Dear" + " " + merchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault() + "," + "<br />");
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Customer was able to make payment successfully. See details below.<br />");
                             mailBuilder.AppendLine("<br />");
