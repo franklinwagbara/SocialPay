@@ -161,7 +161,7 @@ namespace SocialPay.API.Controllers
                 var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
                 if (ModelState.IsValid)
-                    return Ok(await _authRepoService.UnlockUserAccount(model, Convert.ToInt32(clientId),email));
+                    return Ok(await _authRepoService.UnlockUserAccount(model, Convert.ToInt32(clientId), email));
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
@@ -180,34 +180,26 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        //[AllowAnonymous]
         [HttpGet]
         [Route("get-merchants")]
-        public async Task<IActionResult> GetMerchants()
+        public async Task<IActionResult> GetMerchants([FromQuery] bool hasCompanyProfile)
         {
             // _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
 
             var response = new WebApiResponse { };
             try
             {
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.GetMerchants());
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
+                return Ok(await _merchantReportService.GetMerchants(hasCompanyProfile));
             }
             catch (Exception ex)
             {
                 // _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 response.ResponseCode = AppResponseCodes.InternalError;
+
                 return BadRequest(response);
             }
         }
+
 
         //[AllowAnonymous]
         [HttpGet]
@@ -354,7 +346,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-       
+
         [HttpPost]
         [Route("create-multiple-merchant")]
         public async Task<IActionResult> CreateMultipleMerchant(IFormFile doc)
@@ -385,7 +377,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-       
+
         [HttpPost]
         [Route("create-multiple-merchant-business-info")]
         public async Task<IActionResult> CreateMultipleMerchantBusinessInfo(IFormFile doc)
@@ -1165,7 +1157,7 @@ namespace SocialPay.API.Controllers
             try
             {
                 if (reference != "r42g")
-                    return BadRequest();  
+                    return BadRequest();
 
                 if (ModelState.IsValid)
                 {

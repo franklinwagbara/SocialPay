@@ -8,6 +8,8 @@ namespace SocialPay.Helper.ViewModel
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string FullName { get; set; }
+        public string ReferralCode { get; set; }
+        public string ReferCode { get; set; }
         public List<BankInfoViewModel> bankInfo { get; set; }
         public List<BusinessInfoViewModel> businessInfo { get; set; }
     }
@@ -39,6 +41,7 @@ namespace SocialPay.Helper.ViewModel
         public string Chargebackemail { get; set; }
         public string Logo { get; set; }
         public string FileLocation { get; set; }
+    
         public string ResponseCode { get; set; }
     }
 
@@ -49,6 +52,8 @@ namespace SocialPay.Helper.ViewModel
         public string BusinessEmail { get; set; }
         public string Country { get; set; }
         public string Chargebackemail { get; set; }
+        public string ReferralCode { get; set; }
+        public string ReferCode { get; set; }
         public string Logo { get; set; }
         public DateTime Date { get; set; }
         public bool HasRegisteredCompany { get; set; }

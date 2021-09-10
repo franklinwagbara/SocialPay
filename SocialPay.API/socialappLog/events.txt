@@ -3079,3 +3079,9 @@ INFO  2021-09-09 16:36:56,610 330025ms StoreBaseRepository    ?                 
 INFO  2021-09-09 17:02:59,994 1893408ms StoreBaseRepository    ?                  - PaymentConfirmation request | SP-STebeeeefb-af19-4ac4-afc5-3bd8e0020c1a | So-Pay-cf33f7a2fa1c42ea8c2f6b87713a3e1d | McyElNdBqvAo%2F6gndWZK1SwCVOjAzmYEZWb%2F1GKV3xAa5wZFxNFGBbYATxdNCqv1xeXR9LNmdqOkL39QwqVJOlit9Oofv%2FTSpevwTkRS2DfOLjMzFxIhKochVE5TUphq2LB%2F1dlLjbG0%20fxQdvgRzw%3D%3D | 02 - 9/9/2021 5:02:59 PM
 INFO  2021-09-09 17:03:51,626 1945040ms StoreBaseRepository    ?                  - PaymentConfirmation response was successful | SP-STebeeeefb-af19-4ac4-afc5-3bd8e0020c1a | So-Pay-cf33f7a2fa1c42ea8c2f6b87713a3e1d | 9/9/2021 5:03:51 PM
 INFO  2021-09-09 17:05:46,394 2059809ms EmailService           ?                  - Email service response |  | 9/9/2021 5:05:46 PM
+INFO  2021-09-10 09:39:44,560 139948ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/10/2021 9:39:44 AM
+INFO  2021-09-10 09:53:37,520 324527ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/10/2021 9:53:37 AM
+INFO  2021-09-10 10:07:42,599 460734ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/10/2021 10:07:42 AM
+INFO  2021-09-10 10:19:16,125 147494ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/10/2021 10:19:16 AM
+INFO  2021-09-10 10:19:44,906 176275ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/10/2021 10:19:44 AM
+INFO  2021-09-10 10:24:29,966 86030ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/10/2021 10:24:29 AM

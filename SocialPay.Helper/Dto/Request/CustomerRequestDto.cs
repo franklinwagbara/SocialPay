@@ -67,6 +67,11 @@ namespace SocialPay.Helper.Dto.Request
      
     }
 
+    public class TransactionPinRequestDto
+    {
+        public long TransactionPin { get; set; }
+    }
+
     public class AcceptRejectRequestDto
     {
         public string TransactionReference { get; set; }

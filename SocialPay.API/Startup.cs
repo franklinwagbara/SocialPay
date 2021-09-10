@@ -191,11 +191,13 @@ namespace SocialPay.API
             services.AddScoped<INibbsQrSubMerchantResponseService, NibbsQrSubMerchantResponseService>();
             services.AddScoped<IEventLogRequestService, EventLogRequestService>();
             services.AddScoped<IVendAirtimeRequestService, VendAirtimeRequestService>();
+            services.AddScoped<IMerchantTransactionSetup, MerchantTransactionSetupService>();
             services.AddScoped<ITenantProfileService, TenantProfileService>();
             services.AddScoped<IUssdRequestLogService, UssdRequestLogService>();
             services.AddScoped<IQrPaymentRequestService, QrPaymentRequestService>();
             services.AddScoped<IQrPaymentResponseService, QrPaymentResponseService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
+            services.AddScoped<TransactionPinSetup>();
             services.AddScoped<EventLogService>();
             services.AddScoped<CreateBulkMerchantService>();
             services.AddScoped<MerchantBusinessInfoBaseService>();

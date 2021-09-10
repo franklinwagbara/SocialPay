@@ -42,43 +42,83 @@ namespace SocialPay.Core.Services.Report
             _appSettings = appSettings.Value;
         }
 
-        public async Task<WebApiResponse> GetMerchants()
+        public async Task<WebApiResponse> GetMerchants(bool hasCompanyProfile)
         {
             var result = new List<MerchantBusinessInfoViewModel>();
             try
             {
-                _log4net.Info("Initiating GetMerchants request" + " | " +  DateTime.Now);
+                _log4net.Info("Initiating GetMerchants request" + " | " + DateTime.Now);
+
 
                 var getMerchantInfo = await _context.ClientAuthentication
-                    .Where(x=>x.RoleName == RoleDetails.Merchant).ToListAsync();
+               .Where(x => x.RoleName == RoleDetails.Merchant && x.HasRegisteredCompany == hasCompanyProfile).ToListAsync();
 
-                var response = (from c in getMerchantInfo
-                                join b in _context.MerchantBusinessInfo on c.ClientAuthenticationId equals b.ClientAuthenticationId
-                                join m in _context.MerchantBankInfo on c.ClientAuthenticationId equals m.ClientAuthenticationId
-                                select new MerchantBusinessInfoViewModel
-                                {
-                                    BankInfo = new BankInfoViewModel 
-                                    { 
-                                        AccountName = m.AccountName, BankName = m.BankName,
-                                        BVN = m.BVN, Country = m.Country, Currency = m.Currency,
-                                        Nuban = m.Nuban
-                                    },
-                                    BusinessEmail = b.BusinessEmail, Country = b.Country,
-                                    BusinessPhoneNumber = b.BusinessPhoneNumber, BusinessName = b.BusinessName,
-                                    Chargebackemail = b.Chargebackemail,
-                                    Logo = _appSettings.BaseApiUrl + b.FileLocation + "/" + b.Logo,
-                                    Date = c.DateEntered,
-                                    HasRegisteredCompany = c.HasRegisteredCompany 
-                                }).ToList();
+                if (hasCompanyProfile)
+                {
+                    var response = (from c in getMerchantInfo
+                                    join b in _context.MerchantBusinessInfo on c.ClientAuthenticationId equals b.ClientAuthenticationId
+                                    join m in _context.MerchantBankInfo on c.ClientAuthenticationId equals m.ClientAuthenticationId
+                                    select new MerchantBusinessInfoViewModel
+                                    {
+                                        BankInfo = new BankInfoViewModel
+                                        {
+                                            AccountName = m.AccountName,
+                                            BankName = m.BankName,
+                                            BVN = m.BVN,
+                                            Country = m.Country,
+                                            Currency = m.Currency,
+                                            Nuban = m.Nuban
+                                        },
+                                        BusinessEmail = b.BusinessEmail,
+                                        Country = b.Country,
+                                        BusinessPhoneNumber = b.BusinessPhoneNumber,
+                                        BusinessName = b.BusinessName,
+                                        Chargebackemail = b.Chargebackemail,
+                                        Logo = _appSettings.BaseApiUrl + b.FileLocation + "/" + b.Logo,
+                                        ReferralCode = c.ReferralCode,
+                                        ReferCode = c.ReferCode,
+                                        Date = c.DateEntered,
+                                        HasRegisteredCompany = c.HasRegisteredCompany
+                                    }).OrderByDescending(x => x.Date).ToList();
 
-                result = response;
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
-               
+                    result = response;
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+                }
+
+                else
+                {
+                    var response = (from c in getMerchantInfo
+                                    join m in _context.MerchantBankInfo on c.ClientAuthenticationId equals m.ClientAuthenticationId
+                                    select new MerchantBusinessInfoViewModel
+                                    {
+                                        BankInfo = new BankInfoViewModel
+                                        {
+                                            AccountName = m.AccountName,
+                                            BankName = m.BankName,
+                                            BVN = m.BVN,
+                                            Country = m.Country,
+                                            Currency = m.Currency,
+                                            Nuban = m.Nuban
+                                        },
+                                        BusinessEmail = c.Email,
+                                        BusinessPhoneNumber = c.PhoneNumber,
+                                        BusinessName = c.FullName,
+                                        Date = c.DateEntered,
+                                        ReferralCode = c.ReferralCode,
+                                        ReferCode = c.ReferCode,
+                                        HasRegisteredCompany = c.HasRegisteredCompany
+                                    }).OrderByDescending(x=>x.Date).ToList();
+
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
+                }
+
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetMerchants" + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "GetMerchants" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = result };
             }
         }
@@ -92,7 +132,7 @@ namespace SocialPay.Core.Services.Report
                 //await _transactionReceipt.ReceiptTemplate("festypat9@gmail.com");
                 var validateTransaction = await _customerService.GetTransactionReference(model.TransactionReference);
 
-                if(validateTransaction == null)
+                if (validateTransaction == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidTransactionReference };
 
                 var getMerchantInfo = await _customerService.GetMerchantInfo(validateTransaction.ClientAuthenticationId);
@@ -103,14 +143,14 @@ namespace SocialPay.Core.Services.Report
                 //    .SingleOrDefault(x => x.CustomerTransactionId == model.CustomerTransactionId);
                 await _transactionReceipt.ReceiptTemplate(validateCustomer.CustomerEmail,
                     validateTransaction.TotalAmount, validateCustomer.TransactionDate,
-                    model.TransactionReference, getMerchantInfo == null ? string.Empty : getMerchantInfo.BusinessName );
+                    model.TransactionReference, getMerchantInfo == null ? string.Empty : getMerchantInfo.BusinessName);
                 //Send Mail here
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GenerateCustomerReceipt" + " | " + model.TransactionReference + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "GenerateCustomerReceipt" + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -121,7 +161,7 @@ namespace SocialPay.Core.Services.Report
             var result = new List<ItemDisputeViewModel>();
             try
             {
-                _log4net.Info("Initiating GetAllLoggedDisputes request" + " | " + clientId + " | "+ DateTime.Now);
+                _log4net.Info("Initiating GetAllLoggedDisputes request" + " | " + clientId + " | " + DateTime.Now);
 
                 //clientId = 30032;
                 if (IsAdmin)
@@ -129,13 +169,15 @@ namespace SocialPay.Core.Services.Report
                     var getallDisputes = await _context.DisputeRequestLog.ToListAsync();
 
                     var dataResponse = (from d in getallDisputes
-                                       join t in _context.TransactionLog on d.PaymentReference equals t.PaymentReference
+                                        join t in _context.TransactionLog on d.PaymentReference equals t.PaymentReference
                                         select new ItemDisputeViewModel
                                         {
-                                            Comment = d.DisputeComment, ProcessedBy = d.ProcessedBy,
+                                            Comment = d.DisputeComment,
+                                            ProcessedBy = d.ProcessedBy,
                                             TransactionReference = t.TransactionReference,
                                             CustomerTransactionReference = t.CustomerTransactionReference,
-                                            DateEntered = d.DateEntered, PaymentReference = d.PaymentReference,
+                                            DateEntered = d.DateEntered,
+                                            PaymentReference = d.PaymentReference,
                                             Document = _appSettings.BaseApiUrl + d.FileLocation + "/" + d.DisputeFile
                                         }).ToList();
 
@@ -145,17 +187,19 @@ namespace SocialPay.Core.Services.Report
                 }
                 var getTransactions = await _context.TransactionLog
                     .Where(x => x.CustomerInfo == clientId || x.ClientAuthenticationId == clientId).ToListAsync();
-              
+
                 var response = (from t in getTransactions
                                 join d in _context.DisputeRequestLog on t.PaymentReference equals d.PaymentReference
-                              select new ItemDisputeViewModel
-                              {
-                                  Comment = d.DisputeComment, TransactionReference = t.TransactionReference,
-                                  CustomerTransactionReference = t.CustomerTransactionReference,
-                                  PaymentReference = d.PaymentReference,
-                                  ProcessedBy = d.ProcessedBy,
-                                  DateEntered = d.DateEntered, Document = _appSettings.BaseApiUrl + d.FileLocation + "/" + d.DisputeFile
-                              }).ToList();
+                                select new ItemDisputeViewModel
+                                {
+                                    Comment = d.DisputeComment,
+                                    TransactionReference = t.TransactionReference,
+                                    CustomerTransactionReference = t.CustomerTransactionReference,
+                                    PaymentReference = d.PaymentReference,
+                                    ProcessedBy = d.ProcessedBy,
+                                    DateEntered = d.DateEntered,
+                                    Document = _appSettings.BaseApiUrl + d.FileLocation + "/" + d.DisputeFile
+                                }).ToList();
 
                 result = response;
                 _log4net.Info("Initiating GetAllLoggedDisputes response" + " | " + clientId + " | " + DateTime.Now);
@@ -164,7 +208,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllLoggedDisputes" + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "GetAllLoggedDisputes" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -176,13 +220,20 @@ namespace SocialPay.Core.Services.Report
             var result = new List<ItemDisputeViewModel>();
             try
             {
-                _log4net.Info("Initiating GetAllUsers request" + " | " +  DateTime.Now);
+                _log4net.Info("Initiating GetAllUsers request" + " | " + DateTime.Now);
 
                 //clientId = 30032;
-                var response = await (from c in _context.ClientAuthentication                               
-                               select new { Email = c.Email, ClientAuthenticationId = c.ClientAuthenticationId,
-                               DateRegistered = c.DateEntered, StatusCode = c.StatusCode, UserRole = c.RoleName,
-                               UserName = c.UserName, PhoneNumber = c.PhoneNumber}).ToListAsync(); 
+                var response = await (from c in _context.ClientAuthentication
+                                      select new
+                                      {
+                                          Email = c.Email,
+                                          ClientAuthenticationId = c.ClientAuthenticationId,
+                                          DateRegistered = c.DateEntered,
+                                          StatusCode = c.StatusCode,
+                                          UserRole = c.RoleName,
+                                          UserName = c.UserName,
+                                          PhoneNumber = c.PhoneNumber
+                                      }).ToListAsync();
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
             }
@@ -206,7 +257,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllInvoiceByMerchantId" + " | " + clientId + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "GetAllInvoiceByMerchantId" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -225,7 +276,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -255,7 +306,7 @@ namespace SocialPay.Core.Services.Report
             try
             {
                 //clientId = 30032;
-                var result = await _context.PaymentResponse.OrderByDescending(x=>x.TransactionDate).ToListAsync();
+                var result = await _context.PaymentResponse.OrderByDescending(x => x.TransactionDate).ToListAsync();
 
                 return new WebApiResponse { ResponseCode = "00", Data = result };
             }
@@ -307,25 +358,37 @@ namespace SocialPay.Core.Services.Report
                 var getTransactions = await _context.MerchantPaymentSetup
                     .Include(c => c.CustomerTransaction)
                     .Include(c => c.CustomerOtherPaymentsInfo)
-                    .Where(x => x.ClientAuthenticationId == clientId 
+                    .Where(x => x.ClientAuthenticationId == clientId
                     && x.PaymentCategory == MerchantPaymentLinkCategory.Escrow
                     || x.PaymentCategory == MerchantPaymentLinkCategory.OneOffEscrowLink).ToListAsync();
                 if (getTransactions.Count == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 var response = (from m in getTransactions
-                              //  join i in _context.ItemAcceptedOrRejected on m.TransactionReference equals i.TransactionReference
-                                join t in  _context.TransactionLog on m.TransactionReference equals t.TransactionReference
+                                    //  join i in _context.ItemAcceptedOrRejected on m.TransactionReference equals i.TransactionReference
+                                join t in _context.TransactionLog on m.TransactionReference equals t.TransactionReference
                                 join c in _context.CustomerOtherPaymentsInfo on t.PaymentReference equals c.PaymentReference
                                 where t.TransactionStatus == status
-                                select new EscrowViewModel {
-                                ShippingFee = m.ShippingFee, PaymentCategory = m.PaymentCategory, PaymentLinkName = m.PaymentLinkName,
-                                MerchantAmount = m.MerchantAmount, DeliveryMethod = m.DeliveryMethod,
-                                MerchantDescription = m.MerchantDescription, TotalAmount = c.Amount, CustomerDescription = c.CustomerDescription,
-                                Channel = t.Category, ClientId = t.ClientAuthenticationId, DeliveryDay = t.DeliveryFinalDate,
-                                CustomerTransactionReference = t.CustomerTransactionReference, CustomerEmail = c.Email,
-                                Fullname = c.Fullname, PhoneNumber = c.PhoneNumber, TransactionReference = c.TransactionReference,
-                                PaymentReference = c.PaymentReference, ActivityStatus = t.ActivityStatus
+                                select new EscrowViewModel
+                                {
+                                    ShippingFee = m.ShippingFee,
+                                    PaymentCategory = m.PaymentCategory,
+                                    PaymentLinkName = m.PaymentLinkName,
+                                    MerchantAmount = m.MerchantAmount,
+                                    DeliveryMethod = m.DeliveryMethod,
+                                    MerchantDescription = m.MerchantDescription,
+                                    TotalAmount = c.Amount,
+                                    CustomerDescription = c.CustomerDescription,
+                                    Channel = t.Category,
+                                    ClientId = t.ClientAuthenticationId,
+                                    DeliveryDay = t.DeliveryFinalDate,
+                                    CustomerTransactionReference = t.CustomerTransactionReference,
+                                    CustomerEmail = c.Email,
+                                    Fullname = c.Fullname,
+                                    PhoneNumber = c.PhoneNumber,
+                                    TransactionReference = c.TransactionReference,
+                                    PaymentReference = c.PaymentReference,
+                                    ActivityStatus = t.ActivityStatus
                                 }).ToList();
 
                 result = response;
@@ -338,7 +401,7 @@ namespace SocialPay.Core.Services.Report
                 //    Channel = p.CustomerTransaction.Count == 0 ? string.Empty : p.CustomerTransaction.Select(x=>x.Channel).First(),
                 //}).ToList();
 
-                return new WebApiResponse {ResponseCode = AppResponseCodes.Success, Data = result };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
             {
@@ -356,8 +419,12 @@ namespace SocialPay.Core.Services.Report
                 var loginstat = new List<ClientLoginStatus>();
                 foreach (var item in getallClients)
                 {
-                    loginstat.Add(new ClientLoginStatus { ClientAuthenticationId = item.ClientAuthenticationId, 
-                    IsSuccessful = true, LoginAttempt = 0});
+                    loginstat.Add(new ClientLoginStatus
+                    {
+                        ClientAuthenticationId = item.ClientAuthenticationId,
+                        IsSuccessful = true,
+                        LoginAttempt = 0
+                    });
                 }
 
                 await _context.ClientLoginStatus.AddRangeAsync(loginstat);
@@ -463,8 +530,8 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
-               // var validateMerchant = await _context.MerchantPaymentSetup
-                  
+                // var validateMerchant = await _context.MerchantPaymentSetup
+
 
                 return new WebApiResponse { ResponseCode = "00", Data = await _context.MerchantPaymentSetup.OrderByDescending(x => x.DateEntered).ToListAsync() };
             }
@@ -513,12 +580,12 @@ namespace SocialPay.Core.Services.Report
                 var validateMerchant = await _context.DebitMerchantWalletTransferRequestLog
                     .SingleOrDefaultAsync(x => x.PaymentReference == reference);
 
-                if(validateMerchant != null)
+                if (validateMerchant != null)
                 {
-                     _context.Remove(validateMerchant);
+                    _context.Remove(validateMerchant);
                     await _context.SaveChangesAsync();
 
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data ="Successful" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
                 }
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record Not found" };
@@ -890,9 +957,9 @@ namespace SocialPay.Core.Services.Report
                 var cacheKey = "pat";
                 //var cacheKey = "festypat";
                 string serializedCustomerList;
-                var userInfo = new UserInfoViewModel{ };
+                var userInfo = new UserInfoViewModel { };
                 var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
-               // await _distributedCache.RemoveAsync(cacheKey);
+                // await _distributedCache.RemoveAsync(cacheKey);
                 if (redisCustomerList != null)
                 {
                     serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
@@ -907,7 +974,7 @@ namespace SocialPay.Core.Services.Report
                 .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
                 .SetSlidingExpiration(TimeSpan.FromMinutes(12));
                 await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
-                
+
                 return new UserInfoViewModel();
             }
             catch (Exception ex)

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Services.Customer;
+using SocialPay.Core.Services.Merchant;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
 using SocialPay.Core.Services.Transaction;
@@ -25,11 +26,12 @@ namespace SocialPay.API.Controllers
         private readonly MerchantReportService _merchantReportService;
         private readonly DisputeRepoService _disputeRepoService;
         private readonly PayWithSpectaService _payWithSpectaService;
+        private readonly TransactionPinSetup _transactionPinSetup;
 
         public TransactionsController(MerchantPaymentLinkService merchantPaymentLinkService,
             CustomerRepoService customerRepoService, MerchantReportService merchantReportService,
             DisputeRepoService disputeRepoService,
-            PayWithSpectaService payWithSpectaService
+            PayWithSpectaService payWithSpectaService, TransactionPinSetup transactionPinSetup
             )
         {
             _merchantPaymentLinkService = merchantPaymentLinkService;
@@ -37,9 +39,11 @@ namespace SocialPay.API.Controllers
             _merchantReportService = merchantReportService;
             _disputeRepoService = disputeRepoService;
             _payWithSpectaService = payWithSpectaService;
+            _transactionPinSetup = transactionPinSetup ?? throw new ArgumentNullException(nameof(transactionPinSetup));
+
         }
 
-       // [AllowAnonymous]
+        // [AllowAnonymous]
         [HttpPost]
         [Route("generate-payment-link")]
         public async Task<IActionResult> GeneratePaymentLink([FromForm] MerchantpaymentLinkRequestDto model)
@@ -220,6 +224,73 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
+
+        [HttpPost]
+        [Route("set-transaction-pin")]
+        public async Task<IActionResult> SetTransactionPin([FromBody] TransactionPinRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                    return Ok(await _transactionPinSetup.TransactionPinSetupAsync(Convert.ToInt32(clientId), Convert.ToString(model.TransactionPin)));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+        [HttpGet]
+        [Route("validate-transaction")]
+        public async Task<IActionResult> ValidateTransaction([FromQuery] TransactionPinRequestDto model)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var identity = User.Identity as ClaimsIdentity;
+                    var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                    return Ok(await _transactionPinSetup.ValidateTransactionAsync(Convert.ToInt32(clientId), Convert.ToString(model.TransactionPin)));
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
 
         [HttpPost]
         [Route("accept-reject-order")]

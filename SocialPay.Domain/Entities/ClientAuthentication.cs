@@ -31,6 +31,7 @@ namespace SocialPay.Domain.Entities
             VendAirtimeRequestLog = new HashSet<VendAirtimeRequestLog>();
             TenantProfile = new HashSet<TenantProfile>();
             UssdServiceRequestLog = new HashSet<UssdServiceRequestLog>();
+            MerchantTransactionSetup = new HashSet<MerchantTransactionSetup>();
         }
         public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(11)")]
@@ -101,5 +102,6 @@ namespace SocialPay.Domain.Entities
         public virtual ICollection<VendAirtimeRequestLog> VendAirtimeRequestLog { get; set; }
         public virtual ICollection<TenantProfile> TenantProfile { get; set; }
         public virtual ICollection<UssdServiceRequestLog> UssdServiceRequestLog { get; set; }
+        public virtual ICollection<MerchantTransactionSetup> MerchantTransactionSetup { get; set; }
     }
 }
