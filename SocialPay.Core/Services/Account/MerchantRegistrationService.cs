@@ -96,7 +96,7 @@ namespace SocialPay.Core.Services.Account
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
 
-                var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn, 
+                var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn,
                     signUpRequestDto.DateOfBirth, signUpRequestDto.FirstName.ToLower(),
                     signUpRequestDto.LastName.ToLower(), signUpRequestDto.Email);
 
@@ -217,7 +217,7 @@ namespace SocialPay.Core.Services.Account
                         mailBuilder.AppendLine("Best Regards,");
                         emailModal.EmailBody = mailBuilder.ToString();
 
-                       // var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                        // var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
@@ -270,8 +270,12 @@ namespace SocialPay.Core.Services.Account
                 var encryptPin = model.Pin.Encrypt(_appSettings.appKey);
                 // var token = model.Token.Trim().Replace(" ", "+");
                 //1At4AGMX7HISvClyC2/mfnc2e/hp6n3gI4yoH7tAej+H+4UQTmnnyG5Rklpqjl02fgj2zoMbDv+ipMNeyDdrTin+/mcQ38u8L+HizkA1CKpAvf1Pxryz+nRB6UbsxhgA
+                //var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.Pin == encryptPin
+                //&& x.Status == false && x.TokenSecret == model.Token);
+
+
                 var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.Pin == encryptPin
-                && x.Status == false && x.TokenSecret == model.Token);
+                && x.Status == false);
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -287,7 +291,7 @@ namespace SocialPay.Core.Services.Account
                            SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateToken.ClientAuthenticationId);
 
                         if (getuserInfo == null)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };                      
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
                         getuserInfo.StatusCode = MerchantOnboardingProcess.SignUp;
 
@@ -438,7 +442,7 @@ namespace SocialPay.Core.Services.Account
 
 
                         await transaction.CommitAsync();
-                      
+
 
                         _log4net.Info("Initiating RequestNewToken was successful" + " | " + DateTime.Now);
 
@@ -466,7 +470,7 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
-                
+
                 _log4net.Info("Initiating OnboardMerchantBusinessInfo request" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
 
                 if (!string.IsNullOrEmpty(model.Tin))
@@ -578,7 +582,7 @@ namespace SocialPay.Core.Services.Account
                         eventLog.ClientAuthenticationId = getUserInfo.ClientAuthenticationId;
 
                         if (model.Logo == null)
-                        { 
+                        {
                             await transaction.CommitAsync();
                             _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
 
@@ -591,7 +595,7 @@ namespace SocialPay.Core.Services.Account
                         model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
 
                         await transaction.CommitAsync();
-                   
+
                         await _eventLogService.ActivityRequestLog(eventLog);
 
                         _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
@@ -1115,7 +1119,7 @@ namespace SocialPay.Core.Services.Account
 
         public async Task<WebApiResponse> UpdateMerchantBusinessInfo(long clientId, MerchantUpdateInfoRequestDto model)
         {
-          //  clientId = 90;
+            //  clientId = 90;
 
             try
             {
@@ -1124,7 +1128,7 @@ namespace SocialPay.Core.Services.Account
                 var getMerchant = await _context.MerchantBusinessInfo
                   .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-                if(getMerchant == null)
+                if (getMerchant == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record not found" };
 
                 model.BusinessName = model.BusinessName == string.Empty ? getMerchant.BusinessName : getMerchant.BusinessName;
