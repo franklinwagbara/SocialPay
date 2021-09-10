@@ -89,7 +89,7 @@ namespace SocialPay.Core.Services.Authentication
                 var userInfo = new UserInfoViewModel { };
 
                 if (string.IsNullOrEmpty(loginRequestDto.Email) || string.IsNullOrEmpty(loginRequestDto.Password))
-                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.Failed };
+                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid Logon" };
 
                 var validateuserInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBusinessInfo)
@@ -101,10 +101,10 @@ namespace SocialPay.Core.Services.Authentication
 
                 // check if username exists
                 if (validateuserInfo == null)
-                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin, Message = "Invalid Logon" };
 
                 if (validateuserInfo.IsLocked == true)
-                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked };
+                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked, Message ="Account locked" };
 
                 var refCode = validateuserInfo.ReferralCode;
 
@@ -219,19 +219,19 @@ namespace SocialPay.Core.Services.Authentication
                                 await transaction.CommitAsync();
                                 _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
-                                return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked };
+                                return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked, Message = "Account Locked" };
                             }
 
                             await transaction.CommitAsync();
                             _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
-                            return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+                            return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin, Message = "Invalid Logon" };
                         }
                         catch (Exception ex)
                         {
                             _log4net.Error("Error occured" + " | " + "Authenticate" + " | " + loginRequestDto.Email + " | " + ex + " | " + DateTime.Now);
 
-                            return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError };
+                            return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured while trying to login" };
                         }
                     }
                 }
@@ -382,7 +382,7 @@ namespace SocialPay.Core.Services.Authentication
             {
                 _log4net.Error("Error occured" + " | " + "Authenticate" + " | " + loginRequestDto.Email + " | " + ex + " | " + DateTime.Now);
 
-                return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured while trying to login" };
             }
 
         }
