@@ -28,18 +28,21 @@ namespace SocialPay.Core.Services.Tin
             {
                 var response = await _client.GetAsync(_appSettings.tinvalidationEndpointUrl + tin);
                 var result = await response.Content.ReadAsStringAsync();
+
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = JsonConvert.DeserializeObject<TinValidationResponseDto>(result);
                     if(jsonResponse.status == false)
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.TinValidationFailed };
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.TinValidationFailed, Message = ResponseMessage.TINValidationError };
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
                 }
-                return new WebApiResponse { ResponseCode = AppResponseCodes.TinValidationFailed };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.TinValidationFailed, Message = ResponseMessage.TINValidationError };
             }
             catch (Exception)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
 

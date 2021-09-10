@@ -93,7 +93,7 @@ namespace SocialPay.Core.Services.Account
             {
                 if (await _context.ClientAuthentication.AnyAsync(x => x.Email == signUpRequestDto.Email
                 || x.PhoneNumber == signUpRequestDto.PhoneNumber || x.Bvn == signUpRequestDto.Bvn))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Message = "Duplicate merchant details" };
 
 
                 var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn,
@@ -101,7 +101,7 @@ namespace SocialPay.Core.Services.Account
                     signUpRequestDto.LastName.ToLower(), signUpRequestDto.Email);
 
                 if (validateUser.ResponseCode != AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode };
+                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode, Message = "Invalid BVN details" };
 
                 var token = $"{DateTime.Now.ToString()}{Guid.NewGuid().ToString()}{DateTime.Now.AddMilliseconds(120)}{Utilities.GeneratePin()}";
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
@@ -222,7 +222,7 @@ namespace SocialPay.Core.Services.Account
                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
                         if (sendMail != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Error occured while sending email" };
 
                         await transaction.CommitAsync();
 
@@ -244,7 +244,7 @@ namespace SocialPay.Core.Services.Account
                     {
                         _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
                     }
                 }
 
@@ -282,16 +282,16 @@ namespace SocialPay.Core.Services.Account
                     try
                     {
                         if (validateToken == null)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = ResponseMessage.RecordNotFound };
 
                         if (validateToken.LastDateModified.AddMinutes(Convert.ToInt32(_appSettings.otpSession)) < DateTime.Now)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.OtpExpired };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.OtpExpired, Message = ResponseMessage.OtpExpired };
 
                         var getuserInfo = await _context.ClientAuthentication.
                            SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateToken.ClientAuthenticationId);
 
                         if (getuserInfo == null)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = ResponseMessage.RecordNotFound };
 
                         getuserInfo.StatusCode = MerchantOnboardingProcess.SignUp;
 
@@ -336,7 +336,7 @@ namespace SocialPay.Core.Services.Account
                             await _eventLogService.ActivityRequestLog(eventLog);
                             _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
 
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
                         }
 
                         await _distributedCache.RemoveAsync(cacheKey);
@@ -362,14 +362,14 @@ namespace SocialPay.Core.Services.Account
 
                         _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
                     }
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "ConfirmSignup" + " | " + model.Pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
                     }
                 }
 
@@ -378,7 +378,7 @@ namespace SocialPay.Core.Services.Account
             {
                 _log4net.Error("Error occured" + " | " + "ConfirmSignup" + " | " + model.Pin + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
 
@@ -396,7 +396,7 @@ namespace SocialPay.Core.Services.Account
 
 
                 if (validateToken == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = ResponseMessage.RecordNotFound };
 
                 var newPin = Utilities.GeneratePin();
 
@@ -438,7 +438,7 @@ namespace SocialPay.Core.Services.Account
                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
                         if (sendMail != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = ResponseMessage.SendMailFailed};
 
 
                         await transaction.CommitAsync();
@@ -446,14 +446,14 @@ namespace SocialPay.Core.Services.Account
 
                         _log4net.Info("Initiating RequestNewToken was successful" + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
                     }
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "RequestNewToken" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.Success };
                     }
                 }
 
@@ -461,7 +461,7 @@ namespace SocialPay.Core.Services.Account
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "RequestNewToken" + " | " + ex + " | " + DateTime.Now);
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
 
@@ -483,13 +483,13 @@ namespace SocialPay.Core.Services.Account
 
                 if (await _context.MerchantBusinessInfo.AnyAsync(x => x.BusinessEmail == model.BusinessEmail ||
                  x.BusinessPhoneNumber == model.BusinessPhoneNumber || x.Chargebackemail == model.Chargebackemail))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Message = ResponseMessage.DuplicateRecord };
 
                 var getUserInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
                 if (getUserInfo.MerchantBusinessInfo.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist, Message = ResponseMessage.DuplicateRecord };
 
 
                 string fileName = string.Empty;
@@ -589,7 +589,7 @@ namespace SocialPay.Core.Services.Account
 
                             await _eventLogService.ActivityRequestLog(eventLog);
 
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo, Message = ResponseMessage.Success };
                         }
 
                         model.Logo.CopyTo(new FileStream(filePath, FileMode.Create));
@@ -600,14 +600,14 @@ namespace SocialPay.Core.Services.Account
 
                         _log4net.Info("Initiating OnboardMerchantBusinessInfo request was successful" + " | " + model.BusinessName + " | " + model.BusinessEmail + " | " + model.BusinessPhoneNumber + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, UserStatus = MerchantOnboardingProcess.BusinessInfo };
                     }
                     catch (Exception ex)
                     {
                         _log4net.Error("An error ocuured while saving merchant business info" + model.BusinessEmail + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
                     }
 
                 }
@@ -616,7 +616,7 @@ namespace SocialPay.Core.Services.Account
             catch (Exception ex)
             {
                 _log4net.Error("An error ocuured while saving merchant business info" + model.BusinessEmail + " | " + ex + " | " + DateTime.Now);
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
 
@@ -629,7 +629,7 @@ namespace SocialPay.Core.Services.Account
                 _log4net.Info("Initiating OnboardMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + clientId + " | " + DateTime.Now);
 
                 if (await _context.MerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban && x.ClientAuthenticationId == clientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Message = ResponseMessage.DuplicateRecord };
 
                 //var nibsRequestModel = new IBSNameEnquiryRequestDto
                 //{
@@ -650,10 +650,10 @@ namespace SocialPay.Core.Services.Account
 
 
                 if (getUserInfo.MerchantBusinessInfo.Count == 0 && getUserInfo.HasRegisteredCompany)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBusinessInfoRequired };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBusinessInfoRequired, Message = ResponseMessage.BusinessInfoRequired };
 
                 if (getUserInfo.MerchantBankInfo.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist, Message = ResponseMessage.DuplicateRecord };
 
                 var bankInfoModel = new MerchantBankInfo
                 {
@@ -679,7 +679,7 @@ namespace SocialPay.Core.Services.Account
                     var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban, getUserInfo.Bvn);
 
                     if (result.ResponseCode != AppResponseCodes.Success)
-                        return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
+                        return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN, Message = ResponseMessage.BvnValidation };
 
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
@@ -701,12 +701,12 @@ namespace SocialPay.Core.Services.Account
 
                             _log4net.Info("Initiating OnboardMerchantBankInfo intrabank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + DateTime.Now);
 
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
                         }
                         catch (Exception)
                         {
                             await transaction.RollbackAsync();
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
                         }
 
                     }
@@ -726,10 +726,10 @@ namespace SocialPay.Core.Services.Account
                 var ibsRequest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModel);
 
                 if (ibsRequest.ResponseCode != AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed, Message = ResponseMessage.InterBankNameEnquiryFailed };
 
                 if (ibsRequest.BVN != getUserInfo.Bvn)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN, Message = ResponseMessage.BvnValidation };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -750,14 +750,14 @@ namespace SocialPay.Core.Services.Account
 
                         _log4net.Info("Initiating OnboardMerchantBankInfo interbank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + getUserInfo.Bvn + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
                     }
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "OnboardMerchantBankInfo" + " | " + model.Nuban + " | " + model.BankName + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
                     }
 
                 }
@@ -766,7 +766,7 @@ namespace SocialPay.Core.Services.Account
             {
                 _log4net.Error("An error ocuured while OnboardMerchantBankInfo merchant info" + model.Nuban + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
 
@@ -783,10 +783,10 @@ namespace SocialPay.Core.Services.Account
                     .Include(x => x.MerchantBankInfo)
                     .Include(x => x.MerchantActivitySetup).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
                 if (getUserInfo.MerchantBankInfo.Count == 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBankInfoRequired };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantBankInfoRequired, Message = ResponseMessage.BusinessInfoRequired };
 
                 if (getUserInfo.MerchantActivitySetup.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantInfoAlreadyExist, Message = ResponseMessage.DuplicateRecord };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -843,7 +843,7 @@ namespace SocialPay.Core.Services.Account
                             await _distributedCache.SetAsync(cacheKey, redisCustomerList, options1);
 
                             _log4net.Info("Initiating TransactionSetupRequest request saved" + " | " + model.ReceiveEmail + " | " + clientId + " | " + model.OutSideLagos + " | " + DateTime.Now);
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.Wallet };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, UserStatus = MerchantOnboardingProcess.Wallet };
                         }
 
                         await _distributedCache.RemoveAsync(cacheKey);
@@ -860,7 +860,7 @@ namespace SocialPay.Core.Services.Account
 
                         _log4net.Info("Initiating TransactionSetupRequest request saved" + " | " + model.ReceiveEmail + " | " + clientId + " | " + model.OutSideLagos + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.Wallet };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, UserStatus = MerchantOnboardingProcess.Wallet };
                         ////var createWallet = await _walletRepoService.CreateMerchantWallet(walletModel);
                         ////if(createWallet.response == AppResponseCodes.Success)
                         ////{
@@ -893,7 +893,7 @@ namespace SocialPay.Core.Services.Account
                     {
                         _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
                     }
                 }
 
@@ -903,7 +903,7 @@ namespace SocialPay.Core.Services.Account
             {
                 _log4net.Error("Error occured" + " | " + model.ReceiveEmail + " | " + clientId + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
 
@@ -915,7 +915,7 @@ namespace SocialPay.Core.Services.Account
                 _log4net.Info("Initiating AddNewMerchantBankInfo request" + " | " + model.BankCode + " | " + model.BankName + " | " + clientId + " | " + DateTime.Now);
 
                 if (await _context.OtherMerchantBankInfo.AnyAsync(x => x.Nuban == model.Nuban && x.ClientAuthenticationId == clientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Message = ResponseMessage.DuplicateRecord };
 
                 var getUserInfo = await _context.ClientAuthentication
                    .Include(x => x.MerchantBankInfo)
@@ -942,7 +942,7 @@ namespace SocialPay.Core.Services.Account
                     var result = await _bankServiceRepository.GetAccountFullInfoAsync(model.Nuban, getUserInfo.Bvn);
 
                     if (result.ResponseCode != AppResponseCodes.Success)
-                        return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN };
+                        return new WebApiResponse { ResponseCode = result.ResponseCode, Data = result.NUBAN, Message = ResponseMessage.BvnValidation };
 
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
@@ -963,14 +963,14 @@ namespace SocialPay.Core.Services.Account
 
                             _log4net.Info("Initiating OnboardOtherMerchantBankInfo intrabank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + DateTime.Now);
 
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, UserStatus = MerchantOnboardingProcess.BankInfo };
                         }
                         catch (Exception ex)
                         {
                             _log4net.Error("An error ocuured while AddNewMerchantBankInfo merchant info" + clientId + " | " + ex + " | " + DateTime.Now);
 
                             await transaction.RollbackAsync();
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
                         }
 
                     }
@@ -991,10 +991,10 @@ namespace SocialPay.Core.Services.Account
                 var ibsRequest = await _iBSReposervice.InitiateNameEnquiry(nibsRequestModel);
 
                 if (ibsRequest.ResponseCode != AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed, Message = ResponseMessage.InterBankNameEnquiryFailed };
 
                 if (ibsRequest.BVN != getUserInfo.Bvn)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidBVN , Message = ResponseMessage .BvnValidation};
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -1014,14 +1014,14 @@ namespace SocialPay.Core.Services.Account
 
                         _log4net.Info("Initiating OnboardMerchantBankInfo interbank request was successful" + " | " + model.BankCode + " | " + model.BankName + " | " + getUserInfo.Bvn + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
                     }
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "OnboardMerchantBankInfo" + " | " + model.Nuban + " | " + model.BankName + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
                     }
 
                 }
@@ -1031,7 +1031,7 @@ namespace SocialPay.Core.Services.Account
             {
                 _log4net.Error("An error ocuured while AddNewMerchantBankInfo merchant info" + clientId + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
 
