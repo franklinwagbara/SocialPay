@@ -93,7 +93,7 @@ namespace SocialPay.Core.Services.Account
             {
                 if (await _context.ClientAuthentication.AnyAsync(x => x.Email == signUpRequestDto.Email
                 || x.PhoneNumber == signUpRequestDto.PhoneNumber || x.Bvn == signUpRequestDto.Bvn))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Message = "Duplicate merchant details" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails, Message = ResponseMessage.DuplicateRecord };
 
 
                 var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn,
@@ -101,7 +101,7 @@ namespace SocialPay.Core.Services.Account
                     signUpRequestDto.LastName.ToLower(), signUpRequestDto.Email);
 
                 if (validateUser.ResponseCode != AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode, Message = "Invalid BVN details" };
+                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode, Message = ResponseMessage.BvnValidation };
 
                 var token = $"{DateTime.Now.ToString()}{Guid.NewGuid().ToString()}{DateTime.Now.AddMilliseconds(120)}{Utilities.GeneratePin()}";
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
@@ -1041,10 +1041,10 @@ namespace SocialPay.Core.Services.Account
             {
 
                 if (!await _context.OtherMerchantBankInfo.AnyAsync(x => x.MerchantOtherBankInfoId == MerchantOtherBankInfoId && x.ClientAuthenticationId == clientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = ResponseMessage.RecordNotFound };
 
                 if (!await _context.MerchantBankInfo.AnyAsync(x => x.ClientAuthenticationId == clientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantDefaultBankInfoNotFound };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.MerchantDefaultBankInfoNotFound, Message = ResponseMessage.DuplicateRecord };
 
                 var getMerchantDefaultBankInfo = await _context.MerchantBankInfo
                 .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
@@ -1068,13 +1068,13 @@ namespace SocialPay.Core.Services.Account
 
                 await _context.SaveChangesAsync();
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
             }
             catch (Exception ex)
             {
                 _log4net.Error("An error ocuured while UpdateMerchantBankInfo merchant info" + clientId + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
 

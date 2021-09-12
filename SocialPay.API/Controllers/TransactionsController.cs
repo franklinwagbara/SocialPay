@@ -107,9 +107,6 @@ namespace SocialPay.API.Controllers
                 response.Data = message;
 
                 return BadRequest(response);
-
-
-
             }
             catch (Exception ex)
             {
@@ -236,10 +233,12 @@ namespace SocialPay.API.Controllers
                 {
                     var identity = User.Identity as ClaimsIdentity;
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var email = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-                    return Ok(await _transactionPinSetup.TransactionPinSetupAsync(Convert.ToInt32(clientId), Convert.ToString(model.TransactionPin)));
+                    return Ok(await _transactionPinSetup
+                        .TransactionPinSetupAsync(Convert.ToInt32(clientId),
+                        Convert.ToString(model.TransactionPin), email));
                 }
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
@@ -269,10 +268,11 @@ namespace SocialPay.API.Controllers
                 {
                     var identity = User.Identity as ClaimsIdentity;
                     var clientName = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                    var role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var email = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     var clientId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-                    return Ok(await _transactionPinSetup.ValidateTransactionAsync(Convert.ToInt32(clientId), Convert.ToString(model.TransactionPin)));
+                    return Ok(await _transactionPinSetup.ValidateTransactionAsync(Convert.ToInt32(clientId),
+                        Convert.ToString(model.TransactionPin), email));
                 }
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
