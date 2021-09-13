@@ -168,7 +168,7 @@ namespace SocialPay.Core.Repositories.UserService
                 var userInfo = await GetClientAuthenticationAsync(model.Email);
                 if (userInfo == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.UserNotFound };
-
+                      
                 byte[] passwordHash, passwordSalt;
                 _utilities.CreatePasswordHash(newPassword.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
 
