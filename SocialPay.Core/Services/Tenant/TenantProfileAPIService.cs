@@ -40,6 +40,7 @@ namespace SocialPay.Core.Services.Tenant
         {
             try
             {
+                //email = "festypat9@gmail.com";
                 _log4net.Info("CreateNewTenant " + DateTime.Now);
                 request.UserId = email;
                 var jsonRequest = JsonConvert.SerializeObject(request);

@@ -159,7 +159,7 @@ namespace SocialPay.Core.Services.Customer
                     {
                         _log4net.Info("Task starts to initiate pay with specta" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
-                        var getMerchantId = await _context.MerchantBusinessInfo
+                        var getMerchantId = await _context.ClientAuthentication
                             .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
 
                         ////var generateToken = await _payWithSpectaService
@@ -173,17 +173,17 @@ namespace SocialPay.Core.Services.Customer
                             return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
 
 
-                        //if (model.Channel == PaymentChannel.USSD)
-                        //{
-                        //    var requestModel = new GenerateReferenceDTO
-                        //    {
-                        //        amount = Convert.ToString(logCustomerInfo.Amount)
-                        //    };
+                        if (model.Channel == PaymentChannel.USSD)
+                        {
+                            var requestModel = new GenerateReferenceDTO
+                            {
+                                amount = Convert.ToString(CustomerTotalAmount)
+                            };
 
-                        //    var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getPaymentDetails.ClientAuthenticationId);
+                            var ussdRequest = await _ussdService.GeneratePaymentReference(requestModel, getLinkType.ClientAuthenticationId, paymentRef);
 
-                        //    return new InitiatePaymentResponse { ResponseCode = ussdRequest.ResponseCode, Data = ussdRequest, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
-                        //}
+                            return new InitiatePaymentResponse { ResponseCode = ussdRequest.ResponseCode, Data = ussdRequest, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
+                        }
 
                         paymentResponse.InvoiceReference = paymentRef;
                         paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);

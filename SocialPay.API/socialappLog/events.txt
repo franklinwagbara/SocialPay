@@ -3085,3 +3085,7 @@ INFO  2021-09-10 10:07:42,599 460734ms MerchantReportService  ?                 
 INFO  2021-09-10 10:19:16,125 147494ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/10/2021 10:19:16 AM
 INFO  2021-09-10 10:19:44,906 176275ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/10/2021 10:19:44 AM
 INFO  2021-09-10 10:24:29,966 86030ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/10/2021 10:24:29 AM
+INFO  2021-09-13 09:20:15,249 73507ms StoreRepository        ?                  - Task starts to get stores |  | 9/13/2021 9:20:15 AM
+INFO  2021-09-13 09:25:30,576 109802ms ProductsRepository     ?                  - Task starts to get product by clientId and storeid | 209 - 0 - 9/13/2021 9:25:30 AM
+INFO  2021-09-13 09:25:52,083 131309ms StoreRepository        ?                  - Task starts to get stores |  | 9/13/2021 9:25:52 AM
+INFO  2021-09-13 09:26:10,972 150198ms ProductsRepository     ?                  - Task starts to get product by clientId and storeid | 209 - 31 - 9/13/2021 9:26:10 AM
