@@ -3097,3 +3097,4 @@ INFO  2021-09-13 14:14:23,011 498187ms antRegistrationService ?                 
 INFO  2021-09-13 14:16:03,994 599170ms antRegistrationService ?                  - Initiating confirm signup | 638929 | 9/13/2021 2:16:03 PM
 INFO  2021-09-13 14:22:27,520 982696ms antRegistrationService ?                  - Initiating confirm signup was successful | 638929 | 9/13/2021 2:22:27 PM
 INFO  2021-09-13 14:55:41,374 50902ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/13/2021 2:55:41 PM
+INFO  2021-09-13 15:04:32,769 91370ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/13/2021 3:04:32 PM

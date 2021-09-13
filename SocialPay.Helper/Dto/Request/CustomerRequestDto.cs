@@ -69,7 +69,10 @@ namespace SocialPay.Helper.Dto.Request
 
     public class TransactionPinRequestDto
     {
-        public long TransactionPin { get; set; }
+        [Required(ErrorMessage = "Transaction Pin")]
+        [MaxLength(4, ErrorMessage = "Pin cannot be greater than 4")]
+        [RegularExpression(@"^\d*[0-9]\d*$", ErrorMessage = "Only number between 0 - 9 allowed")]
+        public string TransactionPin { get; set; }
     }
 
     public class AcceptRejectRequestDto
