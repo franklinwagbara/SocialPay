@@ -3089,3 +3089,11 @@ INFO  2021-09-13 09:20:15,249 73507ms StoreRepository        ?                  
 INFO  2021-09-13 09:25:30,576 109802ms ProductsRepository     ?                  - Task starts to get product by clientId and storeid | 209 - 0 - 9/13/2021 9:25:30 AM
 INFO  2021-09-13 09:25:52,083 131309ms StoreRepository        ?                  - Task starts to get stores |  | 9/13/2021 9:25:52 AM
 INFO  2021-09-13 09:26:10,972 150198ms ProductsRepository     ?                  - Task starts to get product by clientId and storeid | 209 - 31 - 9/13/2021 9:26:10 AM
+INFO  2021-09-13 13:38:59,868 276623ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/13/2021 1:38:59 PM
+INFO  2021-09-13 14:07:47,037 102213ms antRegistrationService ?                  - Initiating confirm signup | 638929 | 9/13/2021 2:07:45 PM
+INFO  2021-09-13 14:10:36,738 271913ms antRegistrationService ?                  - Initiating confirm signup | 638929 | 9/13/2021 2:10:36 PM
+INFO  2021-09-13 14:13:51,402 466578ms antRegistrationService ?                  - Initiating confirm signup | 638929 | 9/13/2021 2:13:51 PM
+INFO  2021-09-13 14:14:23,011 498187ms antRegistrationService ?                  - Initiating confirm signup | 638929 | 9/13/2021 2:14:21 PM
+INFO  2021-09-13 14:16:03,994 599170ms antRegistrationService ?                  - Initiating confirm signup | 638929 | 9/13/2021 2:16:03 PM
+INFO  2021-09-13 14:22:27,520 982696ms antRegistrationService ?                  - Initiating confirm signup was successful | 638929 | 9/13/2021 2:22:27 PM
+INFO  2021-09-13 14:55:41,374 50902ms MerchantReportService  ?                  - Initiating GetMerchants request | 9/13/2021 2:55:41 PM

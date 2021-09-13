@@ -108,7 +108,8 @@ namespace SocialPay.Core.Services.Report
                                         Date = c.DateEntered,
                                         ReferralCode = c.ReferralCode,
                                         ReferCode = c.ReferCode,
-                                        HasRegisteredCompany = c.HasRegisteredCompany
+                                        HasRegisteredCompany = c.HasRegisteredCompany,
+                                        Logo = $"{_appSettings.BaseApiUrl}{"MerchantLogo/defaultLogo.jpg"}",
                                     }).OrderByDescending(x=>x.Date).ToList();
 
 

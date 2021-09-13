@@ -98,9 +98,7 @@ namespace SocialPay.Core.Repositories.Invoice
                 string folderPath = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.EmailTemplatesPath);
 
                 if (!Directory.Exists(folderPath))
-                {
                     Directory.CreateDirectory(folderPath);
-                }
 
                 emailModal.EmailBody = mailBuilder.ToString();
                 
