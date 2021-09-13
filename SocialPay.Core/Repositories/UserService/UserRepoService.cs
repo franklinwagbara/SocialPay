@@ -91,10 +91,10 @@ namespace SocialPay.Core.Repositories.UserService
                 var getToken = await GetAccountResetAsync(model.Token);
 
                 if (getToken == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = ResponseMessage.RecordNotFound };
 
                 if (getToken.DateEntered.AddMinutes(expiredTime) < DateTime.Now)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.TokenExpired };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.TokenExpired, Message = ResponseMessage.OtpExpired };
 
                 var getUserInfo = await GetClientAuthenticationClientIdAsync(getToken.ClientAuthenticationId);
 
@@ -137,14 +137,14 @@ namespace SocialPay.Core.Repositories.UserService
 
                         _log4net.Info("ChangeUserPassword request saved" + " | " + model.Token + " | " + appKey + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
                     }
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "ChangeUserPassword" + " | " + model.Token + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
                     }
                 }
                
@@ -153,7 +153,7 @@ namespace SocialPay.Core.Repositories.UserService
             {
                 _log4net.Error("Error occured" + " | " + "ChangeUserPassword" + " | " + model.Token + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
 
