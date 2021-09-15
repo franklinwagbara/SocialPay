@@ -20,7 +20,7 @@ using SocialPay.Helper.Dto.Response;
 
 namespace SocialPay.API.Controllers
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Administrator")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Administrator")]
     [Route("api/socialpay/admin")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -752,6 +752,66 @@ namespace SocialPay.API.Controllers
 
 
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-card-requests")]
+        public async Task<IActionResult> GetCardTrans([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "4hj2")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.FioranoCardRequest());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-card-requests-default")]
+        public async Task<IActionResult> GetCardTransDefault([FromQuery] string reference, string paymentRefernce)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "h128")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.ClearFioranoCardRequest(paymentRefernce));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
         //[AllowAnonymous]
         //[HttpGet]
         //[Route("get-all-merchant-bank-info")]
@@ -1069,6 +1129,35 @@ namespace SocialPay.API.Controllers
 
                 if (ModelState.IsValid)
                     return Ok(await _merchantReportService.UpdateTransLog(paymentRef, code));
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-updated-trans-local")]
+        public async Task<IActionResult> UpdateTransLocalAync([FromQuery] string reference, string paymentRef, string code)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "4345d")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                    return Ok(await _merchantReportService.UpdateCustomerInfo2(paymentRef, code));
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));

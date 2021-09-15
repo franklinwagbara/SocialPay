@@ -275,7 +275,7 @@ namespace SocialPay.Core.Services.QrCode
 
                 if (request.IsSuccessStatusCode)
                 {
-                   
+                    
                     response = JsonConvert.DeserializeObject<DynamicQRCodeResponsDto>(result);
 
                     if (response.returnCode != "Success")

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -14,6 +15,7 @@ using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -292,6 +294,49 @@ namespace SocialPay.Core.Services.Report
                 var result = await _context.FailedTransactions.ToListAsync();
 
                 return new WebApiResponse { ResponseCode = "00", Data = result };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+        //FioranoT24CardCreditRequest
+
+        public async Task<WebApiResponse> FioranoCardRequest()
+        {
+            try
+            {
+                //clientId = 30032;
+                var result = await _context.FioranoT24CardCreditRequest.OrderByDescending(x => x.TransactionDate).ToListAsync();
+
+                return new WebApiResponse { ResponseCode = "00", Data = result };
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<WebApiResponse> ClearFioranoCardRequest(string reference)
+        {
+            try
+            {
+                var validateMerchant = await _context.FioranoT24CardCreditRequest
+                    .SingleOrDefaultAsync(x => x.PaymentReference == reference);
+
+                if (validateMerchant != null)
+                {
+                    _context.Remove(validateMerchant);
+                    await _context.SaveChangesAsync();
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record Not found" };
             }
             catch (Exception ex)
             {
@@ -703,6 +748,38 @@ namespace SocialPay.Core.Services.Report
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
+
+        public async Task<WebApiResponse> UpdateCustomerInfo2(string paymentReference, string code)
+        {
+
+            var sql = "UPDATE transactionLog SET TransactionJourney = @TransactionJourney where PaymentReference = @PaymentReference";
+            try
+            {
+                using (var connection = new SqlConnection("--------"))
+                {
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@TransactionJourney", SqlDbType.NVarChar).Value = code;
+                        command.Parameters.AddWithValue("@PaymentReference", SqlDbType.NVarChar).Value = paymentReference;
+                      //  command.Parameters.Add("@PaymentReference", SqlDbType.NVarChar).Value = Fnamestring;
+                        // repeat for all variables....
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+
+            }
+         
+            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+        }
+
 
         public async Task<WebApiResponse> ValidateInfo(string reference)
         {
