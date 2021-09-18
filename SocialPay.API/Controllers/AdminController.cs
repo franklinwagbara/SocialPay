@@ -191,7 +191,7 @@ namespace SocialPay.API.Controllers
             {
                 return Ok(await _merchantReportService.GetMerchants(hasCompanyProfile));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                 response.ResponseCode = AppResponseCodes.InternalError;

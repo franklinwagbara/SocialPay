@@ -301,6 +301,7 @@ namespace SocialPay.Core.Services.Account
                         _context.ClientAuthentication.Update(getuserInfo);
                         await _context.SaveChangesAsync();
                         validateToken.Status = true;
+
                         _context.PinRequest.Update(validateToken);
 
                         var cacheKey = Convert.ToString(getuserInfo.ClientAuthenticationId);

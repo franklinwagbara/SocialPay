@@ -70,18 +70,17 @@ namespace SocialPay.API.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {
-                    var result = await _merchantRegistrationService.ConfirmSignUp(model);                  
-                    return Ok(result);
-                }
+                    return Ok(await _merchantRegistrationService.ConfirmSignUp(model));
+
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
                 response.Data = message;
+
                 return BadRequest(response);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
                 return BadRequest(response);
