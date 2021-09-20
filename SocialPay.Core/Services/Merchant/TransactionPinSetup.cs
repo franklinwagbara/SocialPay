@@ -82,6 +82,9 @@ namespace SocialPay.Core.Services.Merchant
             {
                 //clientId = 203;
 
+                if (!await _merchantTransactionSetup.ExistsAsync(clientId))
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionPinDoesNotExit, Message = "Transaction pin not profiled/setup" };
+
                 var merchantInfo = await _merchantTransactionSetup.GetMerchantValidationInfo(clientId, pin.Encrypt(_appSettings.MerchantSetupKey));
                 
                 if (merchantInfo == null)

@@ -148,10 +148,10 @@ namespace SocialPay.Core.Services.Authentication
                 {
                     _log4net.Info("Authenticate for super admin" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
 
-                    ////var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
+                    var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
 
-                    ////if (validateUserAD.ResponseCode != AppResponseCodes.Success)
-                    ////    return validateUserAD;
+                    if (validateUserAD.ResponseCode != AppResponseCodes.Success)
+                        return validateUserAD;
 
                     tokenDescriptor = new SecurityTokenDescriptor
                     {

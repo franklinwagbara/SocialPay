@@ -60,6 +60,7 @@
         public const string InvalidCSVFormat = "56";
         public const string PasswordAlreadyUsed = "57";
         public const string DuplicatePinSetup = "58";
+        public const string TransactionPinDoesNotExit = "59";
     }
 
     public class MerchantOnboardingProcess

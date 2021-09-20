@@ -60,8 +60,6 @@ namespace SocialPay.ApplicationCore.Services
 
             return _mapper.Map<MerchantTransactionSetup, MerchantTransactionSetupViewModel>(entity);
         }
-
-
         public async Task<bool> ExistsAsync(long Id)
         {
             return await _merchantTransactionSetup.ExistsAsync(x => x.ClientAuthenticationId == Id);
