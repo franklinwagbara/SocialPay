@@ -446,7 +446,7 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (reference != "72frt")
+                if (reference != "54dha")
                     return BadRequest();
 
                 if (ModelState.IsValid)

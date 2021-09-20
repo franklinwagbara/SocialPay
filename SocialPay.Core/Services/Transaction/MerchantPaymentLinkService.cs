@@ -72,8 +72,8 @@ namespace SocialPay.Core.Services.Transaction
                     userStatus = result.StatusCode;
                 }
 
-                ////if (userStatus != AppResponseCodes.Success)
-                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile };
+                if (userStatus != AppResponseCodes.Success)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.IncompleteMerchantProfile, Message = ResponseMessage.IncompleteMerchantProfile };
 
                 if (paymentModel.PaymentCategory == MerchantPaymentLinkCategory.Basic                    
                     || paymentModel.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)

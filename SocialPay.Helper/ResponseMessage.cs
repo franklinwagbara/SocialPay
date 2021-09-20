@@ -16,6 +16,7 @@ namespace SocialPay.Helper
         public const string BvnValidation = "BVN validation failed. Please ensure you enter your valid BVN details";
         public const string InterBankNameEnquiryFailed = "Interbank Name Enquiry Failed";
         public const string TINValidationError = "Error occured validating TIN";
+        public const string IncompleteMerchantProfile = "Incomplete profile. Please complete your sign up process";
 
     }
 }

@@ -238,7 +238,7 @@ namespace SocialPay.Core.Services.Account
 
                         _log4net.Info("Initiating create merchant account was successful" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
                     }
                     catch (Exception ex)
                     {
@@ -255,10 +255,9 @@ namespace SocialPay.Core.Services.Account
             {
                 _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
             }
         }
-
 
         public async Task<WebApiResponse> ConfirmSignUp(SignUpConfirmationRequestDto model)
         {
@@ -337,7 +336,7 @@ namespace SocialPay.Core.Services.Account
                             await _eventLogService.ActivityRequestLog(eventLog);
                             _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
 
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, Data = getuserInfo.Email };
                         }
 
                         await _distributedCache.RemoveAsync(cacheKey);
@@ -363,7 +362,7 @@ namespace SocialPay.Core.Services.Account
 
                         _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, Data = getuserInfo.Email };
                     }
                     catch (Exception ex)
                     {
