@@ -465,7 +465,6 @@ namespace SocialPay.Core.Services.Account
             }
         }
 
-
         public async Task<WebApiResponse> OnboardMerchantBusinessInfo(MerchantOnboardingInfoRequestDto model, long clientId)
         {
             try

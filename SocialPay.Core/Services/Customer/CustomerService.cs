@@ -172,7 +172,6 @@ namespace SocialPay.Core.Services.Customer
                         if (generateToken.ResponseCode != AppResponseCodes.Success)
                             return new InitiatePaymentResponse { ResponseCode = generateToken.ResponseCode };
 
-
                         if (model.Channel == PaymentChannel.USSD)
                         {
                             var requestModel = new GenerateReferenceDTO

@@ -59,92 +59,107 @@ namespace SocialPay.Core.Services.Bill
 
         public async Task<WebApiResponse> VendAirtimeRequest(VendAirtimeDTO vendAirtimeDTO, long clientId)
         {
-            var bankInfo = await _merchantBankingInfoService.GetMerchantBankInfo(clientId);
-           
-            if (bankInfo == null)
-                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found" };
-
-            if (bankInfo.BankCode != _appSettings.SterlingBankCode)
-                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
-
-            var generator = new Random();
-
-            var referenceId = generator.Next(100000, 1000000).ToString() + "" + generator.Next(100000, 1000000).ToString();
-
-            var model = new VendAirtimeViewModel
+            try
             {
-                ClientAuthenticationId = clientId,
-                ReferenceId = referenceId,
-                RequestType = _appSettings.vtuRequestType,
-                Translocation = "",
-                Amount = Convert.ToDouble(vendAirtimeDTO.amt),
-                Paymentcode = vendAirtimeDTO.paymentcode,
-                Mobile = vendAirtimeDTO.mobile,
-                email = _appSettings.vtuDefaultEmail,
-                SubscriberInfo1 = vendAirtimeDTO.mobile,
-                nuban = "0065428109",
-               // nuban = bankInfo.Nuban,
-                TransactionType = _appSettings.vtuTransactionType,
-                AppId = _appSettings.vtuAppId,
-                TerminalID = ""
-            };
+                var bankInfo = await _merchantBankingInfoService.GetMerchantBankInfo(clientId);
 
-            await _vendAirtimeRequestService.AddAsync(model);
-            
-            return await _airtimeVendingService.AirtimeSubscription(model);
+                if (bankInfo == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found" };
+
+                if (bankInfo.BankCode != _appSettings.SterlingBankCode)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
+
+                var generator = new Random();
+
+                var referenceId = generator.Next(100000, 1000000).ToString() + "" + generator.Next(100000, 1000000).ToString();
+
+                var model = new VendAirtimeViewModel
+                {
+                    ClientAuthenticationId = clientId,
+                    ReferenceId = referenceId,
+                    RequestType = _appSettings.vtuRequestType,
+                    Translocation = "",
+                    Amount = Convert.ToDouble(vendAirtimeDTO.amt),
+                    Paymentcode = vendAirtimeDTO.paymentcode,
+                    Mobile = vendAirtimeDTO.mobile,
+                    email = _appSettings.vtuDefaultEmail,
+                    SubscriberInfo1 = vendAirtimeDTO.mobile,
+                    nuban = bankInfo.Nuban,
+                    TransactionType = _appSettings.vtuTransactionType,
+                    AppId = _appSettings.vtuAppId,
+                    TerminalID = ""
+                };
+
+                await _vendAirtimeRequestService.AddAsync(model);
+
+                return await _airtimeVendingService.AirtimeSubscription(model);
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Airtime subscription response error" + " - " + vendAirtimeDTO.mobile + " - " + ex + " - " + DateTime.Now);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured processing requests" };
+            }
 
         }
 
         public async Task<DstvAccountLookupResponseDto> PayUAccountLookupPayment(string customerId, long clientId)
         {
-           //  clientId = 167;
-
-            var model = new DstvAccountLookupDto
+            try
             {
-                customerId = customerId,
-                countryCode = _appSettings.CountryCode,
-                vasId = _appSettings.VasId,
-                transactionType = _appSettings.AccountLookTransactionType
-            };
+                //  clientId = 167;
 
-            var accountlookdstv = new DstvAccountLookup
-            {
-                merchantReference = $"{"SP-"}{"B-"}{Guid.NewGuid().ToString()}",
-                transactionType = model.transactionType,
-                vasId = model.vasId,
-                countryCode = model.countryCode,
-                customerId = model.customerId,
-                ClientAuthenticationId = clientId
-            };
+                var model = new DstvAccountLookupDto
+                {
+                    customerId = customerId,
+                    countryCode = _appSettings.CountryCode,
+                    vasId = _appSettings.VasId,
+                    transactionType = _appSettings.AccountLookTransactionType
+                };
 
-            if(await _context.DstvAccountLookup.AnyAsync(x=>x.merchantReference == accountlookdstv.merchantReference))
-                return new DstvAccountLookupResponseDto { resultCode = AppResponseCodes.DuplicatePaymentReference, resultMessage = "Duplicate Payment Reference" };
+                var accountlookdstv = new DstvAccountLookup
+                {
+                    merchantReference = $"{"SP-"}{"B-"}{Guid.NewGuid().ToString()}",
+                    transactionType = model.transactionType,
+                    vasId = model.vasId,
+                    countryCode = model.countryCode,
+                    customerId = model.customerId,
+                    ClientAuthenticationId = clientId
+                };
 
-            await _context.DstvAccountLookup.AddAsync(accountlookdstv);
-            await _context.SaveChangesAsync();
+                if (await _context.DstvAccountLookup.AnyAsync(x => x.merchantReference == accountlookdstv.merchantReference))
+                    return new DstvAccountLookupResponseDto { resultCode = AppResponseCodes.DuplicatePaymentReference, resultMessage = "Duplicate Payment Reference" };
 
-            var postsingledstvbill = await _payWithPayUService.InitiatePayUDstvAccountLookupPayment(model);
+                await _context.DstvAccountLookup.AddAsync(accountlookdstv);
+                await _context.SaveChangesAsync();
 
-            if (postsingledstvbill.resultCode != AppResponseCodes.Success)
+                var postsingledstvbill = await _payWithPayUService.InitiatePayUDstvAccountLookupPayment(model);
+
+                if (postsingledstvbill.resultCode != AppResponseCodes.Success)
+                    return postsingledstvbill;
+
+                //  var response = (DstvAccountLookupResponseDto)postsingledstvbill.DataObj;
+
+                var lookuppaymentresponse = new DstvAccountLookupResponse
+                {
+                    resultMessage = postsingledstvbill.resultMessage,
+                    //pointOfFailure = response?.po,
+                    resultCode = postsingledstvbill.resultCode,
+                    payUVasReference = postsingledstvbill.payUVasReference,
+                    merchantReference = postsingledstvbill.merchantReference,
+                    DstvAccountLookupId = accountlookdstv.DstvAccountLookupId
+                };
+
+                await _context.DstvAccountLookupResponse.AddAsync(lookuppaymentresponse);
+                await _context.SaveChangesAsync();
+
                 return postsingledstvbill;
-
-          //  var response = (DstvAccountLookupResponseDto)postsingledstvbill.DataObj;
-
-            var lookuppaymentresponse = new DstvAccountLookupResponse
+                // return new InitiatePayUPaymentResponse { resultCode = AppResponseCodes.Success, Data = postsingledstvbill };
+            }
+            catch (Exception ex)
             {
-                resultMessage = postsingledstvbill.resultMessage,
-                //pointOfFailure = response?.po,
-                resultCode = postsingledstvbill.resultCode,
-                payUVasReference = postsingledstvbill.payUVasReference,
-                merchantReference = postsingledstvbill.merchantReference,
-                DstvAccountLookupId = accountlookdstv.DstvAccountLookupId
-            };
-
-            await _context.DstvAccountLookupResponse.AddAsync(lookuppaymentresponse);
-            await _context.SaveChangesAsync();
-
-            return postsingledstvbill;
-           // return new InitiatePayUPaymentResponse { resultCode = AppResponseCodes.Success, Data = postsingledstvbill };
+                _log4net.Error("Dstv single account lookup response error" + " - " + customerId + " - " + ex + " - " + DateTime.Now);
+                return new DstvAccountLookupResponseDto {  resultCode = AppResponseCodes.InternalError, resultMessage = "Error occured processing requests" };
+            }
         }
 
         public async Task<WebApiResponse> PayUSingleDstvPayment(SingleDstvPaymentDto model, long clientId)
@@ -206,6 +221,8 @@ namespace SocialPay.Core.Services.Bill
             }
             catch (Exception ex)
             {
+                _log4net.Error("Dstv single payment response error" + " - " + model.customerId + " - " + model.merchantReference + " - "+ ex + " - " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured" };
             }
 

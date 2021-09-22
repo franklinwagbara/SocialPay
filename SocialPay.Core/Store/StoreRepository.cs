@@ -257,8 +257,6 @@ namespace SocialPay.Core.Store
             }
 
         }
-
-
         public async Task<WebApiResponse> GetProductsByIdAsync(UserDetailsViewModel userModel, long productId)
         {
             try

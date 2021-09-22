@@ -18,6 +18,8 @@ namespace SocialPay.Core.Services.Fiorano
         private readonly IFioranoResponseService _fioranoResponseService;
         private readonly IMerchantBankingInfoService _merchantBankingInfoService;
         private readonly AppSettings _appSettings;
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(FioranoService));
+
         public FioranoService(FioranoAPIService fioranoService, IFioranoRequestService fioranoRequestService,
             IOptions<AppSettings> appSettings, IFioranoResponseService fioranoResponseService,
             IMerchantBankingInfoService merchantBankingInfoService)
@@ -31,6 +33,7 @@ namespace SocialPay.Core.Services.Fiorano
 
         public async Task<WebApiResponse> InitiateFioranoRequest(FioranoBillsRequestDto fioranoBillsRequestDto, long clientId)
         {
+            _log4net.Info("Initiating fiorano transaction" + " - " + fioranoBillsRequestDto.TransactionReference + " - " + DateTime.Now);
             try
             {
                 var bankInfo = await _merchantBankingInfoService.GetMerchantBankInfo(clientId);
@@ -38,10 +41,8 @@ namespace SocialPay.Core.Services.Fiorano
                 if (bankInfo == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found" };
 
-                ////if(bankInfo.BankCode != _appSettings.SterlingBankCode)
-                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
-
-                bankInfo.Nuban = "0065428109";
+                if (bankInfo.BankCode != _appSettings.SterlingBankCode)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
 
                 var model = new FTRequest
                 {
@@ -54,7 +55,7 @@ namespace SocialPay.Core.Services.Fiorano
                     TransactionType = _appSettings.fioranoTransactionType,
                     DebitAcctNo = bankInfo.Nuban,
                     TransactionBranch = "NG0020006",
-                    narrations = "Social Pay Bills Payment",
+                    narrations = "Social Pay Bills Payment" + " - " + fioranoBillsRequestDto.TransactionReference,
                     DebitAmount = fioranoBillsRequestDto.DebitAmount,
                     CreditAccountNo = _appSettings.socialT24AccountNo,
                 };
@@ -70,7 +71,7 @@ namespace SocialPay.Core.Services.Fiorano
                     TransactionType = model.TransactionType,
                     DebitAcctNo = model.DebitAcctNo,
                     TransactionBranch = "NG0020006",
-                    narrations = "Social Pay Bills Payment",
+                    narrations = "Social Pay Bills Payment" + " - "+ fioranoBillsRequestDto.TransactionReference,
                     DebitAmount = model.DebitAmount,
                     CreditAccountNo = model.CreditAccountNo,
                     ClientAuthenticationId = clientId
@@ -100,10 +101,11 @@ namespace SocialPay.Core.Services.Fiorano
 
                     await _fioranoResponseService.AddAsync(response);
 
+                    _log4net.Info("Fiorano response was successful" + " - " + fioranoBillsRequestDto.TransactionReference + " - " + debitCustomer.Message + " - " + debitCustomer.FTResponse.FTID + " - "+  DateTime.Now);
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = debitCustomer, Message = "Success" };
 
                 }
-
 
                 response.PaymentReference = fioranoBillsRequestDto.TransactionReference;
                 response.ReferenceID = debitCustomer.FTResponse.ReferenceID;
@@ -118,6 +120,7 @@ namespace SocialPay.Core.Services.Fiorano
             }
             catch (Exception ex)
             {
+                _log4net.Error("Fiorano response error" + " - " + fioranoBillsRequestDto.TransactionReference + " - " + ex + " - " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

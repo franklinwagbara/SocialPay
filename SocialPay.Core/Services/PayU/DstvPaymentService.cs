@@ -28,7 +28,7 @@ namespace SocialPay.Core.Services.PayU
             };
 
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization",
-               Convert.ToBase64String(Encoding.Default.GetBytes("test1:test-1093$18KnX826)Z#fg")));
+               Convert.ToBase64String(Encoding.Default.GetBytes($"{_appSettings.PayUClientId}{":"}{_appSettings.PayUClientSecret}")));
         }
 
         public async Task<GetBillerResponseDto> GetDstvGotvBillers(long clientId)
@@ -41,6 +41,8 @@ namespace SocialPay.Core.Services.PayU
                 var request = await _client.PostAsync($"{_appSettings.GetBillersUrl}", null);
 
                 var content = await request.Content.ReadAsStringAsync();
+
+                _log4net.Info("API response" + " | " + "GetBillers" + " | " + content + " | " + clientId + " | " + DateTime.Now);
 
                 if (request.IsSuccessStatusCode)
                 {
@@ -79,6 +81,8 @@ namespace SocialPay.Core.Services.PayU
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
 
                 var content = await request.Content.ReadAsStringAsync();
+
+                _log4net.Info("Single payment API response" + " | "  + content + " | " + model.merchantReference + " | " + DateTime.Now);
 
                 if (request.IsSuccessStatusCode)
                 {
@@ -122,6 +126,8 @@ namespace SocialPay.Core.Services.PayU
                  new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
 
                 var content = await request.Content.ReadAsStringAsync();
+
+                _log4net.Info("Account lookup API response" + " | "  + content + " | " + model.merchantReference + " | " + DateTime.Now);
 
                 if (request.IsSuccessStatusCode)
                 {

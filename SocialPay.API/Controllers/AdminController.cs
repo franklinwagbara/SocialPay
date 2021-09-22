@@ -436,38 +436,38 @@ namespace SocialPay.API.Controllers
         }
 
 
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("clear-user-account")]
-        public async Task<IActionResult> ClearUserDetails(string email, string reference)
-        {
-            _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
+        //[AllowAnonymous]
+        //[HttpPost]
+        //[Route("clear-user-account")]
+        //public async Task<IActionResult> ClearUserDetails(string email, string reference)
+        //{
+        //    _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
 
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "54dha")
-                    return BadRequest();
+        //    var response = new WebApiResponse { };
+        //    try
+        //    {
+        //        if (reference != "54dha")
+        //            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    var result = await _transactionService.ClearUserAccount(email);
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        //        if (ModelState.IsValid)
+        //        {
+        //            var result = await _transactionService.ClearUserAccount(email);
+        //            return Ok(result);
+        //        }
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        //            .Select(e => e.ErrorMessage));
+        //        response.ResponseCode = AppResponseCodes.Failed;
+        //        response.Data = message;
+        //        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        //        response.ResponseCode = AppResponseCodes.InternalError;
+        //        return BadRequest(response);
+        //    }
+        //}
 
 
 
@@ -1085,93 +1085,93 @@ namespace SocialPay.API.Controllers
 
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-latest-OtherPayment")]
-        public async Task<IActionResult> GetMerchantDetails([FromQuery] string reference, string merchant)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "t562")
-                    return BadRequest();
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-latest-OtherPayment")]
+        ////public async Task<IActionResult> GetMerchantDetails([FromQuery] string reference, string merchant)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "t562")
+        ////            return BadRequest();
 
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _merchantReportService.ValidateMerchantInfo(merchant));
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            return Ok(await _merchantReportService.ValidateMerchantInfo(merchant));
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
-
-
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-updated-trans")]
-        public async Task<IActionResult> UpdateTransLasync([FromQuery] string reference, string paymentRef, string code)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "4345d")
-                    return BadRequest();
-
-                if (ModelState.IsValid)
-                    return Ok(await _merchantReportService.UpdateTransLog(paymentRef, code));
-
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("get-updated-trans-local")]
-        public async Task<IActionResult> UpdateTransLocalAync([FromQuery] string reference, string paymentRef, string code)
-        {
-            var response = new WebApiResponse { };
-            try
-            {
-                if (reference != "4345d")
-                    return BadRequest();
 
-                if (ModelState.IsValid)
-                    return Ok(await _merchantReportService.UpdateCustomerInfo2(paymentRef, code));
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-updated-trans")]
+        ////public async Task<IActionResult> UpdateTransLasync([FromQuery] string reference, string paymentRef, string code)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "4345d")
+        ////            return BadRequest();
 
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////            return Ok(await _merchantReportService.UpdateTransLog(paymentRef, code));
 
-            }
-            catch (Exception ex)
-            {
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
+
+
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("get-updated-trans-local")]
+        ////public async Task<IActionResult> UpdateTransLocalAync([FromQuery] string reference, string paymentRef, string code)
+        ////{
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "4345d")
+        ////            return BadRequest();
+
+        ////        if (ModelState.IsValid)
+        ////            return Ok(await _merchantReportService.UpdateCustomerInfo2(paymentRef, code));
+
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
+
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
         ////[AllowAnonymous]

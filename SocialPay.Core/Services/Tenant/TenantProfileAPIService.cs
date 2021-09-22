@@ -40,7 +40,6 @@ namespace SocialPay.Core.Services.Tenant
         {
             try
             {
-                //email = "festypat9@gmail.com";
                 _log4net.Info("CreateNewTenant " + DateTime.Now);
                 request.UserId = email;
                 var jsonRequest = JsonConvert.SerializeObject(request);
@@ -94,6 +93,8 @@ namespace SocialPay.Core.Services.Tenant
             }
             catch (Exception ex)
             {
+                _log4net.Error("CreateNewTenant error occured " + " - "+ ex + " - "+  DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured" };
             }
         }
@@ -102,7 +103,6 @@ namespace SocialPay.Core.Services.Tenant
         {
             try
             {
-
                 _client.DefaultRequestHeaders.Add("ClientId", "0");
                 _client.DefaultRequestHeaders.Add("ClientSecret", "0");
                 _client.DefaultRequestHeaders.Add("AuthKey", "0");
@@ -120,6 +120,7 @@ namespace SocialPay.Core.Services.Tenant
             }
             catch (Exception ex)
             {
+                _log4net.Error("GetTenant error occured " + " - " + ex + " - " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
             }

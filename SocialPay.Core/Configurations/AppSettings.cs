@@ -136,6 +136,8 @@
         public string BaseUrlTenant { get; set; }
         public string getTenantUrl { get; set; }
         public string createTenantUrl { get; set; }
+        public string PayUClientId { get; set; }
+        public string PayUClientSecret { get; set; }
 
     }
 }
