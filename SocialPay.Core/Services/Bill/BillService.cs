@@ -102,7 +102,7 @@ namespace SocialPay.Core.Services.Bill
 
         }
 
-        public async Task<DstvAccountLookupResponseDto> PayUAccountLookupPayment(string customerId, long clientId)
+        public async Task<WebApiResponse> PayUAccountLookupPayment(string customerId, long clientId)
         {
             try
             {
@@ -127,7 +127,7 @@ namespace SocialPay.Core.Services.Bill
                 };
 
                 if (await _context.DstvAccountLookup.AnyAsync(x => x.merchantReference == accountlookdstv.merchantReference))
-                    return new DstvAccountLookupResponseDto { resultCode = AppResponseCodes.DuplicatePaymentReference, resultMessage = "Duplicate Payment Reference" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicatePaymentReference, Message = "Duplicate Payment Reference", StatusCode = ResponseCodes.Duplicate};
 
                 await _context.DstvAccountLookup.AddAsync(accountlookdstv);
                 await _context.SaveChangesAsync();
@@ -135,7 +135,7 @@ namespace SocialPay.Core.Services.Bill
                 var postsingledstvbill = await _payWithPayUService.InitiatePayUDstvAccountLookupPayment(model);
 
                 if (postsingledstvbill.resultCode != AppResponseCodes.Success)
-                    return postsingledstvbill;
+                    return new WebApiResponse { ResponseCode = postsingledstvbill.resultCode, Message = postsingledstvbill.resultMessage, StatusCode = ResponseCodes.Badrequest };
 
                 //  var response = (DstvAccountLookupResponseDto)postsingledstvbill.DataObj;
 
@@ -152,13 +152,13 @@ namespace SocialPay.Core.Services.Bill
                 await _context.DstvAccountLookupResponse.AddAsync(lookuppaymentresponse);
                 await _context.SaveChangesAsync();
 
-                return postsingledstvbill;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = postsingledstvbill, StatusCode = ResponseCodes.Success };
                 // return new InitiatePayUPaymentResponse { resultCode = AppResponseCodes.Success, Data = postsingledstvbill };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Dstv single account lookup response error" + " - " + customerId + " - " + ex + " - " + DateTime.Now);
-                return new DstvAccountLookupResponseDto {  resultCode = AppResponseCodes.InternalError, resultMessage = "Error occured processing requests" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Internal error occured", StatusCode = ResponseCodes.InternalError };
             }
         }
 

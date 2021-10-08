@@ -72,6 +72,50 @@ namespace SocialPay.API
             });
         }
 
+
+        protected new IActionResult Response(WebApiResponse response)
+        {
+
+            if (IsValidOperation())
+            {
+                if (response == null)
+                    return NotFound(response);
+
+                if (response.StatusCode == 404)
+                    return Conflict(new
+                    {
+                        success = false,
+                        data = response
+                    });
+
+                if (response.StatusCode == 409)
+                    return Conflict(new
+                    {
+                        success = false,
+                        data = response
+                    });
+
+                if (response.StatusCode == 500)
+                    return Conflict(new
+                    {
+                        success = false,
+                        data = response
+                    });
+
+                return Ok(new
+                {
+                    success = true,
+                    data = response
+                });
+            }
+
+            return BadRequest(new
+            {
+                success = false,
+                errors = _notification.Notifications.Select(error => error)
+            });
+        }
+
         protected new IActionResult Response(int? id = null, object response = null)
         {
             if (IsValidOperation())
