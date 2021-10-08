@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SocialPay.Helper.Dto.Response;
 using SocialPay.Helper.Notification;
 using System.Linq;
@@ -78,11 +79,9 @@ namespace SocialPay.API
 
             if (IsValidOperation())
             {
-                if (response == null)
-                    return NotFound(response);
-
-                if (response.StatusCode == 404)
-                    return Conflict(new
+               
+                if (response.StatusCode == 400)
+                    return BadRequest(new
                     {
                         success = false,
                         data = response
@@ -95,18 +94,25 @@ namespace SocialPay.API
                         data = response
                     });
 
-                if (response.StatusCode == 500)
-                    return Conflict(new
+                //if (response.StatusCode == 500)
+                //    return StatusCode(StatusCodes.Status500InternalServerError, (new
+                //    {
+                //        success = false,
+                //        data = response
+                //    }));
+
+                if (response.StatusCode == 200)
+                    return Ok(new
                     {
-                        success = false,
+                        success = true,
                         data = response
                     });
 
-                return Ok(new
+                return StatusCode(StatusCodes.Status500InternalServerError, (new
                 {
-                    success = true,
+                    success = false,
                     data = response
-                });
+                }));
             }
 
             return BadRequest(new
