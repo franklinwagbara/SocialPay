@@ -106,7 +106,7 @@ namespace SocialPay.Core.Services.Bill
         {
             try
             {
-                clientId = 98;
+                //clientId = 98;
 
                 var model = new DstvAccountLookupDto
                 {
