@@ -79,9 +79,22 @@ namespace SocialPay.API
 
             if (IsValidOperation())
             {
-               
+                if (response.StatusCode == 200)
+                    return Ok(new
+                    {
+                        success = true,
+                        data = response
+                    });
+
                 if (response.StatusCode == 400)
                     return BadRequest(new
+                    {
+                        success = false,
+                        data = response
+                    });               
+
+                if (response.StatusCode == 404)
+                    return NotFound(new
                     {
                         success = false,
                         data = response
@@ -92,21 +105,7 @@ namespace SocialPay.API
                     {
                         success = false,
                         data = response
-                    });
-
-                //if (response.StatusCode == 500)
-                //    return StatusCode(StatusCodes.Status500InternalServerError, (new
-                //    {
-                //        success = false,
-                //        data = response
-                //    }));
-
-                if (response.StatusCode == 200)
-                    return Ok(new
-                    {
-                        success = true,
-                        data = response
-                    });
+                    });            
 
                 return StatusCode(StatusCodes.Status500InternalServerError, (new
                 {
