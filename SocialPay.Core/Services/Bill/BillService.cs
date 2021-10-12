@@ -217,13 +217,13 @@ namespace SocialPay.Core.Services.Bill
 
               //  var message = postsingledstvbill.customFields.customfield.Select(x => x.value).FirstOrDefault();            
 
-                return new WebApiResponse { ResponseCode = postsingledstvbill.resultCode, Data = postsingledstvbill };
+                return new WebApiResponse { ResponseCode = postsingledstvbill.resultCode, Data = postsingledstvbill, StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Dstv single payment response error" + " - " + model.customerId + " - " + model.merchantReference + " - "+ ex + " - " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured", StatusCode  = ResponseCodes.InternalError };
             }
 
         }

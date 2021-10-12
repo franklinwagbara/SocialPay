@@ -41,15 +41,15 @@ namespace SocialPay.Core.Services.AirtimeVending
                 _log4net.Info("get network providers response" + " - "+ content + " - "+ DateTime.Now);
 
                 if (!request.IsSuccessStatusCode)
-                    new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = { } };
+                    new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = { }, StatusCode = ResponseCodes.Badrequest };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = content };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = content, StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + " NetworkProviders" + ex.Message.ToString() + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -61,16 +61,21 @@ namespace SocialPay.Core.Services.AirtimeVending
 
                 var response = await _client.GetAsync($"{_appSettings.GetBillerProductsUrl}{networkProviderId}");
 
-                if (!response.IsSuccessStatusCode)
-                    new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+                var content = await response.Content.ReadAsStringAsync();
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = await response.Content.ReadAsStringAsync() };
+                if(!content.Contains("ResponseCode"))
+                   return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, StatusCode = ResponseCodes.RecordNotFound };
+
+                if (!response.IsSuccessStatusCode)
+                   return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, StatusCode = ResponseCodes.RecordNotFound };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = await response.Content.ReadAsStringAsync(), StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + " GetPaymentItem" + ex.Message.ToString() + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -88,15 +93,15 @@ namespace SocialPay.Core.Services.AirtimeVending
                 var content = await request.Content.ReadAsStringAsync();
 
                 if (!request.IsSuccessStatusCode)
-                    new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Subscription failed" };
+                    new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Subscription failed", StatusCode = ResponseCodes.Badrequest };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = content };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = content, StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + " GetPaymentItem" + ex.Message.ToString() + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
 
