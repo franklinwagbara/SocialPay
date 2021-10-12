@@ -43,6 +43,10 @@ namespace SocialPay.Core.Services.AirtimeVending
                 if (!request.IsSuccessStatusCode)
                     new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = { }, StatusCode = ResponseCodes.Badrequest };
 
+                //var data = JsonConvert.DeserializeObject<GetNetWorkProvidersResponseDto>(content);
+
+                //return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = data, StatusCode = ResponseCodes.Success };
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = content, StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)

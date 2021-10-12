@@ -34,13 +34,12 @@ namespace SocialPay.Domain
                 _context.SaveChanges();
             }
 
-
-            if (!_context.ClientAuthentication.Any(x => x.Email == "abayomi.sawyerr@sterling.ng"))
+            if (!_context.ClientAuthentication.Any(x => x.Email == "chukwuka.ezeoke@sterling.ng"))
             {
                 var createuser = new ClientAuthentication[]
                 {
-                       new ClientAuthentication { FullName = "abayomi sawyerr", Email= "abayomi.sawyerr@sterling.ng",
-                      IsDeleted = false, PhoneNumber = "08078272823", LastDateModified = DateTime.Now, UserName = "sawyerra",
+                       new ClientAuthentication { FullName = "Chukwuka Ezeoke", Email= "chukwuka.ezeoke@sterling.ng",
+                      IsDeleted = false, PhoneNumber = "07038881616", LastDateModified = DateTime.Now, UserName = "josezeoke",
                       RoleName ="Super Administrator", StatusCode = "00"
                       },
                 };
@@ -48,18 +47,32 @@ namespace SocialPay.Domain
                 _context.SaveChanges();
             }
 
-            if (!_context.ClientAuthentication.Any(x => x.Email == "Pelumi.Majolagbe@sterling.ng"))
-            {
-                var createuser = new ClientAuthentication[]
-                {
-                         new ClientAuthentication { FullName = "Pelumi Majolagbe", Email= "Pelumi.Majolagbe@sterling.ng",
-                        IsDeleted = false, PhoneNumber = "08045646334", LastDateModified = DateTime.Now, UserName = "majolagbeip",
-                        RoleName ="Super Administrator", StatusCode = "00"
-                        },
-                };
-                _context.ClientAuthentication.AddRange(createuser);
-                _context.SaveChanges();
-            }
+
+            //if (!_context.ClientAuthentication.Any(x => x.Email == "abayomi.sawyerr@sterling.ng"))
+            //{
+            //    var createuser = new ClientAuthentication[]
+            //    {
+            //           new ClientAuthentication { FullName = "abayomi sawyerr", Email= "abayomi.sawyerr@sterling.ng",
+            //          IsDeleted = false, PhoneNumber = "08078272823", LastDateModified = DateTime.Now, UserName = "sawyerra",
+            //          RoleName ="Super Administrator", StatusCode = "00"
+            //          },
+            //    };
+            //    _context.ClientAuthentication.AddRange(createuser);
+            //    _context.SaveChanges();
+            //}
+
+            //if (!_context.ClientAuthentication.Any(x => x.Email == "Pelumi.Majolagbe@sterling.ng"))
+            //{
+            //    var createuser = new ClientAuthentication[]
+            //    {
+            //             new ClientAuthentication { FullName = "Pelumi Majolagbe", Email= "Pelumi.Majolagbe@sterling.ng",
+            //            IsDeleted = false, PhoneNumber = "08045646334", LastDateModified = DateTime.Now, UserName = "majolagbeip",
+            //            RoleName ="Super Administrator", StatusCode = "00"
+            //            },
+            //    };
+            //    _context.ClientAuthentication.AddRange(createuser);
+            //    _context.SaveChanges();
+            //}
         }
     }
 }
