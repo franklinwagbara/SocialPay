@@ -38,11 +38,13 @@ namespace SocialPay.Core.Services.Fiorano
             {
                 var bankInfo = await _merchantBankingInfoService.GetMerchantBankInfo(clientId);
 
-                if (bankInfo == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found" };
+                ////if (bankInfo == null)
+                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found" };
 
-                if (bankInfo.BankCode != _appSettings.SterlingBankCode)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
+                ////if (bankInfo.BankCode != _appSettings.SterlingBankCode)
+                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
+
+                bankInfo.Nuban = "0065428109";
 
                 var model = new FTRequest
                 {
@@ -103,7 +105,7 @@ namespace SocialPay.Core.Services.Fiorano
 
                     _log4net.Info("Fiorano response was successful" + " - " + fioranoBillsRequestDto.TransactionReference + " - " + debitCustomer.Message + " - " + debitCustomer.FTResponse.FTID + " - "+  DateTime.Now);
 
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = debitCustomer, Message = "Success" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = debitCustomer, Message = "Success", StatusCode = ResponseCodes.Success };
 
                 }
 
@@ -116,13 +118,13 @@ namespace SocialPay.Core.Services.Fiorano
 
                 await _fioranoResponseService.AddAsync(response);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed, Message ="Transaction Failed", Data = debitCustomer };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed, Message ="Transaction Failed", Data = debitCustomer, StatusCode = ResponseCodes.Badrequest };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Fiorano response error" + " - " + fioranoBillsRequestDto.TransactionReference + " - " + ex + " - " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
     }
