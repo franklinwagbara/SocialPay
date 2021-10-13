@@ -44,7 +44,8 @@ namespace SocialPay.Core.Services.Fiorano
                 ////if (bankInfo.BankCode != _appSettings.SterlingBankCode)
                 ////    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
 
-                bankInfo.Nuban = "0065428109";
+               // bankInfo.Nuban = "0065428109";
+                bankInfo.Nuban = "0063332884";
 
                 var model = new FTRequest
                 {
