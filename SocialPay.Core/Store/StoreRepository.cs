@@ -68,7 +68,7 @@ namespace SocialPay.Core.Store
                 var store = await _storeService.GetStoresByClientId(userModel.ClientId);
 
                 if (store == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
 
                 //var storageAccount = CloudStorageAccount.Parse(options.blobConnectionstring);
 
@@ -87,13 +87,13 @@ namespace SocialPay.Core.Store
                     item.StoreLink = linkName.PaymentLinkUrl;
                 }
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = store };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = store, StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | "+ DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -153,7 +153,7 @@ namespace SocialPay.Core.Store
                 var category = await _productCategoryService.GetCategoryByNameAndClientId(request.CategoryName, userModel.ClientId);
 
                 if (category != null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateCategoryName, Message = "Duplicate Category Name" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateCategoryName, Message = "Duplicate Category Name", StatusCode = ResponseCodes.Duplicate };
 
                 var model = new ProductCategoryViewModel
                 {
@@ -164,13 +164,13 @@ namespace SocialPay.Core.Store
 
                 await _productCategoryService.AddAsync(model);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "New product category was successfully created" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "New product category was successfully created", StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
                 _log4net.Error("An error occured while trying to create store product category" + " | " + request.CategoryName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -182,15 +182,15 @@ namespace SocialPay.Core.Store
                 var categories = await _productCategoryService.GetAllByClientId(userModel.ClientId);
 
                 if (categories == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = categories };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = categories, StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
                 _log4net.Error("An error occured while trying to get product" + " | " +  userModel.ClientId + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -212,18 +212,18 @@ namespace SocialPay.Core.Store
                 var validateCategory = await _productCategoryService.GetCategoryByIdAndCatId(request.ProductCategoryId, userModel.ClientId);
 
                 if (validateCategory == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
 
                 var validateStore = await _storeService.GetStoreById(request.StoreId, userModel.ClientId);
 
                 if (validateStore == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
 
                 var validatProductDetails = await _productsService
                     .GetProductByNameCatIdAndClientId(request.ProductName, request.ProductCategoryId, request.StoreId);
 
                 if (validatProductDetails != null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateProductName, Message = "Duplicate Product Name" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateProductName, Message = "Duplicate Product Name", StatusCode = ResponseCodes.RecordNotFound };
 
                 return await _productsRepository.CreateNewProduct(request, userModel);            
             }
@@ -233,7 +233,7 @@ namespace SocialPay.Core.Store
 
                 return new WebApiResponse
                 {
-                    ResponseCode = AppResponseCodes.InternalError
+                    ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError
                 };
             }
         }
@@ -272,7 +272,7 @@ namespace SocialPay.Core.Store
             {
                 _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
 
         }

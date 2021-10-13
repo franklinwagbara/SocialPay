@@ -116,14 +116,14 @@ namespace SocialPay.Core.Services.Products
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success" };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", StatusCode= ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         _log4net.Error("Error occured" + " | " + "Create new product" + " | " + ex + " | " + request.ProductName + " - " + userModel.UserID + " | " + DateTime.Now);
 
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
                     }
                 }
 
@@ -133,7 +133,7 @@ namespace SocialPay.Core.Services.Products
             {
                 _log4net.Error("Error occured" + " | " + "Create new product" + " | " + ex + " | " + request.ProductName + " - "+ userModel.UserID + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -245,15 +245,15 @@ namespace SocialPay.Core.Services.Products
                 ////}
 
                 if (query.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query, StatusCode = ResponseCodes.Success };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "Get products by client id" + " | " + ex + " | " + clientId + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -310,15 +310,15 @@ namespace SocialPay.Core.Services.Products
                 }
 
                 if (query.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query, StatusCode = ResponseCodes.Success };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "Get product by Id" + " | " + ex + " | " + productId + " - " +  DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -402,15 +402,15 @@ namespace SocialPay.Core.Services.Products
                 storeDetail.StoreLogoUrl = stores.Select(x => x.FileLocation).FirstOrDefault();
 
                 if (query.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail, StatusCode = ResponseCodes.Success };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
             }
             catch (Exception ex)
             {   
                 _log4net.Error("Error occured" + " | " + "Get product by store id" + " | " + ex + " | " + storeId + " - " +  DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
         }
 

@@ -69,10 +69,10 @@ namespace SocialPay.Core.Services.Store
                 //userModel.ClientId = 90;
 
                 if (await _context.MerchantStore.AnyAsync(x => x.StoreName == request.StoreName && x.ClientAuthenticationId == userModel.ClientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateStoreName, Message = "Duplicate Store Name" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateStoreName, Message = "Duplicate Store Name", StatusCode = ResponseCodes.Duplicate };
 
                 if (await _context.MerchantStore.AnyAsync(x => x.StoreLink == request.StoreLink && x.ClientAuthenticationId == userModel.ClientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Message = "Duplicate Link Name" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Message = "Duplicate Link Name", StatusCode = ResponseCodes.Duplicate };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -122,7 +122,7 @@ namespace SocialPay.Core.Services.Store
                         var encryptedToken = token.Encrypt(_appSettings.appKey);
 
                         if (await _context.MerchantPaymentSetup.AnyAsync(x => x.CustomUrl == request.StoreName || x.PaymentLinkName == request.StoreName))
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name" };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name", StatusCode = ResponseCodes.Duplicate };
 
                         if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))
                         {
@@ -170,12 +170,12 @@ namespace SocialPay.Core.Services.Store
 
                         await _eventLogService.ActivityRequestLog(eventLog);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store was successfully saved" };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store was successfully saved", StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
                     }
                 }
 
@@ -185,7 +185,7 @@ namespace SocialPay.Core.Services.Store
             {
                 _log4net.Error("An error occured while trying to create store" + " | " + request.StoreName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
 

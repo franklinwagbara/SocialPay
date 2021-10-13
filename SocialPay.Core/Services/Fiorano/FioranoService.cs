@@ -38,14 +38,11 @@ namespace SocialPay.Core.Services.Fiorano
             {
                 var bankInfo = await _merchantBankingInfoService.GetMerchantBankInfo(clientId);
 
-                ////if (bankInfo == null)
-                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found" };
+                if (bankInfo == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found", StatusCode = ResponseCodes.RecordNotFound };
 
-                ////if (bankInfo.BankCode != _appSettings.SterlingBankCode)
-                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request" };
-
-               // bankInfo.Nuban = "0065428109";
-                bankInfo.Nuban = "0063332884";
+                if (bankInfo.BankCode != _appSettings.SterlingBankCode)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Merchant bank must be Sterling bank to complete this request", StatusCode = ResponseCodes.RecordNotFound };
 
                 var model = new FTRequest
                 {
