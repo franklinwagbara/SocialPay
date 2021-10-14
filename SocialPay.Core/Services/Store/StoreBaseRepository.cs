@@ -16,6 +16,7 @@ using SocialPay.Helper;
 using SocialPay.Helper.Cryptography;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.Store;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace SocialPay.Core.Services.Store
         private readonly EmailService _emailService;
         private readonly EventLogService _eventLogService;
         private readonly UssdService _ussdService;
+        private readonly StoreLogger _storeLogger;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(StoreBaseRepository));
         public IConfiguration Configuration { get; }
         public StoreBaseRepository(SocialPayDbContext context, IOptions<AppSettings> appSettings,
@@ -46,7 +48,7 @@ namespace SocialPay.Core.Services.Store
             EncryptDecryptAlgorithm encryptDecryptAlgorithm,
             TransactionReceipt transactionReceipt, EmailService emailService,
             EventLogService eventLogService, IConfiguration configuration,
-            UssdService ussdService)
+            UssdService ussdService, StoreLogger storeLogger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _appSettings = appSettings.Value;
@@ -60,6 +62,7 @@ namespace SocialPay.Core.Services.Store
             _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
             Configuration = configuration;
             _ussdService = ussdService ?? throw new ArgumentNullException(nameof(ussdService));
+            _storeLogger = storeLogger ?? throw new ArgumentNullException(nameof(storeLogger));
         }
 
         public async Task<WebApiResponse> CreateNewStore(StoreRequestDto request, UserDetailsViewModel userModel)
@@ -67,6 +70,8 @@ namespace SocialPay.Core.Services.Store
             try
             {
                 //userModel.ClientId = 90;
+
+                _storeLogger.LogRequest($"{"Creating merchant store"}{" "}{userModel.Email}{" - "}{request.StoreName}{"  - "}", false);
 
                 if (await _context.MerchantStore.AnyAsync(x => x.StoreName == request.StoreName && x.ClientAuthenticationId == userModel.ClientId))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateStoreName, Message = "Duplicate Store Name", StatusCode = ResponseCodes.Duplicate };

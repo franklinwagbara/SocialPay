@@ -50,6 +50,7 @@ using SocialPay.Domain;
 using SocialPay.Helper.AutoMapperSettings;
 using SocialPay.Helper.Cryptography;
 using SocialPay.Helper.Notification;
+using SocialPay.Helper.SerilogService.Store;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
@@ -228,6 +229,7 @@ namespace SocialPay.API
             services.AddSingleton<IBSReposerviceJob>();
             services.AddSingleton<EncryptDecryptJob>();
             services.AddSingleton<EncryptDecrypt>();
+            services.AddSingleton<StoreLogger>();
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IAsyncRepository<>), typeof(Repository<>));
