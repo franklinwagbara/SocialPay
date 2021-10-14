@@ -271,20 +271,20 @@ namespace SocialPay.Core.Services.Authentication
                     userInfo.StatusCode = validateuserInfo.StatusCode;
                     string serializedCustomerListGuest = string.Empty;
 
-                    var redisCustomerListGuest = await _distributedCache.GetAsync(cacheKey);
+                    ////////var redisCustomerListGuest = await _distributedCache.GetAsync(cacheKey);
 
-                    if (redisCustomerListGuest == null)
-                    {
-                        await _distributedCache.RemoveAsync(cacheKey);
-                        serializedCustomerListGuest = JsonConvert.SerializeObject(userInfo);
-                        redisCustomerListGuest = Encoding.UTF8.GetBytes(serializedCustomerListGuest);
+                    ////////if (redisCustomerListGuest == null)
+                    ////////{
+                    ////////    await _distributedCache.RemoveAsync(cacheKey);
+                    ////////    serializedCustomerListGuest = JsonConvert.SerializeObject(userInfo);
+                    ////////    redisCustomerListGuest = Encoding.UTF8.GetBytes(serializedCustomerListGuest);
 
-                        var options = new DistributedCacheEntryOptions()
-                        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
-                        .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+                    ////////    var options = new DistributedCacheEntryOptions()
+                    ////////    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
+                    ////////    .SetSlidingExpiration(TimeSpan.FromMinutes(10));
 
-                        await _distributedCache.SetAsync(cacheKey, redisCustomerListGuest, options);
-                    }
+                    ////////    await _distributedCache.SetAsync(cacheKey, redisCustomerListGuest, options);
+                    ////////}
 
                     var guestToken = tokenHandler.CreateToken(tokenDescriptor);
                     var guestTokenString = tokenHandler.WriteToken(guestToken);
@@ -333,20 +333,20 @@ namespace SocialPay.Core.Services.Authentication
                 userInfo.StatusCode = validateuserInfo.StatusCode;
                 string serializedCustomerList = string.Empty;
 
-                var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
+                ////////var redisCustomerList = await _distributedCache.GetAsync(cacheKey);
 
-                if (redisCustomerList == null)
-                {
-                    await _distributedCache.RemoveAsync(cacheKey);
-                    serializedCustomerList = JsonConvert.SerializeObject(userInfo);
-                    redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+                ////////if (redisCustomerList == null)
+                ////////{
+                ////////    await _distributedCache.RemoveAsync(cacheKey);
+                ////////    serializedCustomerList = JsonConvert.SerializeObject(userInfo);
+                ////////    redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
 
-                    var options = new DistributedCacheEntryOptions()
-                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+                ////////    var options = new DistributedCacheEntryOptions()
+                ////////    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20))
+                ////////    .SetSlidingExpiration(TimeSpan.FromMinutes(10));
 
-                    await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
-                }
+                ////////    await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+                ////////}
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var tokenString = tokenHandler.WriteToken(token);
