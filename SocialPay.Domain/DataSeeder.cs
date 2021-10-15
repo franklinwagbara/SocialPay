@@ -47,6 +47,19 @@ namespace SocialPay.Domain
                 _context.SaveChanges();
             }
 
+            if (!_context.ClientAuthentication.Any(x => x.Email == "ferdinand.nnona@sterling.ng"))
+            {
+                var createuser = new ClientAuthentication[]
+                {
+                       new ClientAuthentication { FullName = "Ferdinand Nnona", Email= "ferdinand.nnona@sterling.ng",
+                      IsDeleted = false, PhoneNumber = "07060564377", LastDateModified = DateTime.Now, UserName = "nnonadf",
+                      RoleName ="Super Administrator", StatusCode = "00"
+                      },
+                };
+                _context.ClientAuthentication.AddRange(createuser);
+                _context.SaveChanges();
+            }
+
 
             //if (!_context.ClientAuthentication.Any(x => x.Email == "abayomi.sawyerr@sterling.ng"))
             //{

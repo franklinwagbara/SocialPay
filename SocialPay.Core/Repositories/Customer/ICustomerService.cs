@@ -800,7 +800,13 @@ namespace SocialPay.Core.Repositories.Customer
                             await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
 
-                            emailModal.DestinationEmail = getCustomerInfo.Email;
+                            var customerEmailModal = new EmailRequestDto
+                            {
+                                Subject = $"{_appSettings.successfulTransactionEmailSubject}{"-"}{model.TransactionReference}{"-"}",
+                                DestinationEmail = getCustomerInfo.Email,
+                            };
+
+                            customerEmailModal.DestinationEmail = getCustomerInfo.Email;
 
                             var customermailBuilder = new StringBuilder();
 
@@ -811,9 +817,9 @@ namespace SocialPay.Core.Repositories.Customer
                             customermailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
                             customermailBuilder.AppendLine("<br />");
                             // mailBuilder.AppendLine("Best Regards,");
-                            emailModal.EmailBody = customermailBuilder.ToString();
+                            customerEmailModal.EmailBody = customermailBuilder.ToString();
 
-                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                            await _emailService.SendMail(customerEmailModal, _appSettings.EwsServiceUrl);
 
                             //var sendCustomerMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
