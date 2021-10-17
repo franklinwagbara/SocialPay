@@ -767,8 +767,8 @@ namespace SocialPay.Core.Repositories.Customer
                             await _context.SaveChangesAsync();
 
                             //Send mail
-                            await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
-                            logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.FullName);
+                            ////await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
+                            ////logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.FullName);
 
 
                             var emailModal = new EmailRequestDto
@@ -776,6 +776,8 @@ namespace SocialPay.Core.Repositories.Customer
                                 Subject = $"{_appSettings.successfulTransactionEmailSubject}{"-"}{model.TransactionReference}{"-"}",
                                 DestinationEmail = merchantInfo.MerchantBusinessInfo.Count() == 0 ? merchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault() : merchantInfo.Email,
                             };
+
+                          //  emailModal.DestinationEmail = "festypat9@gmail.com";
 
                             var mailBuilder = new StringBuilder();
                            // mailBuilder.AppendLine("Dear" + " " + merchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault() + "," + "<br />");
@@ -789,6 +791,10 @@ namespace SocialPay.Core.Repositories.Customer
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
                             mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Transaction Reference:" + "  " + logconfirmation.TransactionReference + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Payment Reference:" + "  " + logconfirmation.PaymentReference + "<br />");
+                            mailBuilder.AppendLine("<br />");
                             // mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
 
@@ -799,14 +805,13 @@ namespace SocialPay.Core.Repositories.Customer
 
                             await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
-
                             var customerEmailModal = new EmailRequestDto
                             {
                                 Subject = $"{_appSettings.successfulTransactionEmailSubject}{"-"}{model.TransactionReference}{"-"}",
                                 DestinationEmail = getCustomerInfo.Email,
                             };
 
-                            customerEmailModal.DestinationEmail = getCustomerInfo.Email;
+                           // customerEmailModal.DestinationEmail = getCustomerInfo.Email;
 
                             var customermailBuilder = new StringBuilder();
 
@@ -815,6 +820,10 @@ namespace SocialPay.Core.Repositories.Customer
                             customermailBuilder.AppendLine("Your payment was successful. See details below.<br />");
                             customermailBuilder.AppendLine("<br />");
                             customermailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
+                            customermailBuilder.AppendLine("<br />");
+                            customermailBuilder.AppendLine("Transaction Reference:" + "  " + logconfirmation.TransactionReference + "<br />");
+                            customermailBuilder.AppendLine("<br />");
+                            customermailBuilder.AppendLine("Payment Reference:" + "  " + logconfirmation.PaymentReference + "<br />");
                             customermailBuilder.AppendLine("<br />");
                             // mailBuilder.AppendLine("Best Regards,");
                             customerEmailModal.EmailBody = customermailBuilder.ToString();

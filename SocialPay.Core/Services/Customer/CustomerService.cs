@@ -579,6 +579,7 @@ namespace SocialPay.Core.Services.Customer
                         var decryptResponse = DecryptAlt(decodeMessage);
 
                         model.Message = decryptResponse;
+                       // model.Message = "success";
 
                         var newreference = model.Message.Split("^");
 
@@ -628,13 +629,13 @@ namespace SocialPay.Core.Services.Customer
                         return await _customerService.LogPaymentResponse(model, string.Empty);
                     }
 
-
                     var oneBankRequest = await _customerService.LogPaymentResponse(model, string.Empty);
                     _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
                     return oneBankRequest;
 
                 }
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPamentChannel };
             }
             catch (Exception ex)
@@ -658,6 +659,7 @@ namespace SocialPay.Core.Services.Customer
             try
             {
                 var validateReference = await _customerService.AcceptRejectOrderRequest(model, clientId);
+                
                 return validateReference;
             }
             catch (Exception ex)
@@ -729,7 +731,6 @@ namespace SocialPay.Core.Services.Customer
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
-
 
         public async Task<MerchantBusinessInfo> GetMerchantInfo(long clientId)
         {
