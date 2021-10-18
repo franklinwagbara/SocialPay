@@ -768,8 +768,8 @@ namespace SocialPay.Core.Repositories.Customer
                             await _context.SaveChangesAsync();
 
                             //Send mail
-                            ////await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
-                            ////logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.FullName);
+                            await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,
+                            logconfirmation.TransactionDate, model.TransactionReference, merchantInfo == null ? string.Empty : merchantInfo.FullName);
 
 
                             var emailModal = new EmailRequestDto
