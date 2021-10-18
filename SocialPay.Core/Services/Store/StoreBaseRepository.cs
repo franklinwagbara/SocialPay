@@ -763,7 +763,7 @@ namespace SocialPay.Core.Services.Store
 
                             var mailBuilder = new StringBuilder();
 
-                            mailBuilder.AppendLine("Dear" + " " + merchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault() + "," + "<br />");
+                            mailBuilder.AppendLine("Dear" + " " + merchantInfo.Email + "," + "<br />");
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Customer was able to make payment successfully. See details below.<br />");
                             mailBuilder.AppendLine("<br />");
@@ -772,6 +772,10 @@ namespace SocialPay.Core.Services.Store
                             mailBuilder.AppendLine("Customer Phone number:" + "  " + getCustomerInfo.PhoneNumber + "<br />");
                             mailBuilder.AppendLine("<br />");
                             mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Transaction Reference:" + "  " + logconfirmation.TransactionReference + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Payment Reference:" + "  " + logconfirmation.PaymentReference + "<br />");
                             mailBuilder.AppendLine("<br />");
                             // mailBuilder.AppendLine("Best Regards,");
                             emailModal.EmailBody = mailBuilder.ToString();
@@ -785,17 +789,30 @@ namespace SocialPay.Core.Services.Store
                             //  await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
 
-                            emailModal.DestinationEmail = getCustomerInfo.Email;
-                            mailBuilder.AppendLine("Dear" + " " + getCustomerInfo.Fullname + "," + "<br />");
-                            mailBuilder.AppendLine("<br />");
-                            mailBuilder.AppendLine("Your payment was successful. See details below.<br />");
-                            mailBuilder.AppendLine("<br />");
-                            mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
-                            mailBuilder.AppendLine("<br />");
-                            // mailBuilder.AppendLine("Best Regards,");
-                            emailModal.EmailBody = mailBuilder.ToString();
+                            var customerEmailModal = new EmailRequestDto
+                            {
+                                Subject = $"{_appSettings.successfulTransactionEmailSubject}{"-"}{model.TransactionReference}{"-"}",
+                                DestinationEmail = getCustomerInfo.Email,
+                            };
 
-                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                            // customerEmailModal.DestinationEmail = getCustomerInfo.Email;
+
+                            var customermailBuilder = new StringBuilder();
+
+                            customermailBuilder.AppendLine("Dear" + " " + getCustomerInfo.Fullname + "," + "<br />");
+                            customermailBuilder.AppendLine("<br />");
+                            customermailBuilder.AppendLine("Your payment was successful. See details below.<br />");
+                            customermailBuilder.AppendLine("<br />");
+                            customermailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
+                            customermailBuilder.AppendLine("<br />");
+                            customermailBuilder.AppendLine("Transaction Reference:" + "  " + logconfirmation.TransactionReference + "<br />");
+                            customermailBuilder.AppendLine("<br />");
+                            customermailBuilder.AppendLine("Payment Reference:" + "  " + logconfirmation.PaymentReference + "<br />");
+                            customermailBuilder.AppendLine("<br />");
+                            // mailBuilder.AppendLine("Best Regards,");
+                            customerEmailModal.EmailBody = customermailBuilder.ToString();
+
+                            await _emailService.SendMail(customerEmailModal, _appSettings.EwsServiceUrl);
 
                             //var sendCustomerMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 

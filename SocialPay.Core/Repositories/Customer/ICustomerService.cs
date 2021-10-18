@@ -780,31 +780,31 @@ namespace SocialPay.Core.Repositories.Customer
 
                           //  emailModal.DestinationEmail = "festypat9@gmail.com";
 
-                           //// var mailBuilder = new StringBuilder();
-                           ////// mailBuilder.AppendLine("Dear" + " " + merchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault() + "," + "<br />");
-                           //// mailBuilder.AppendLine("Dear" + " " + merchantInfo.Email + "," + "<br />");
-                           //// mailBuilder.AppendLine("<br />");
-                           //// mailBuilder.AppendLine("Customer was able to make payment successfully. See details below.<br />");
-                           //// mailBuilder.AppendLine("<br />");
-                           //// mailBuilder.AppendLine("Customer Name:" + "  " + getCustomerInfo.Fullname + "<br />");
-                           //// mailBuilder.AppendLine("<br />");
-                           //// mailBuilder.AppendLine("Customer Phone number:" + "  " + getCustomerInfo.PhoneNumber + "<br />");
-                           //// mailBuilder.AppendLine("<br />");
-                           //// mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
-                           //// mailBuilder.AppendLine("<br />");
-                           //// mailBuilder.AppendLine("Transaction Reference:" + "  " + logconfirmation.TransactionReference + "<br />");
-                           //// mailBuilder.AppendLine("<br />");
-                           //// mailBuilder.AppendLine("Payment Reference:" + "  " + logconfirmation.PaymentReference + "<br />");
-                           //// mailBuilder.AppendLine("<br />");
-                           //// // mailBuilder.AppendLine("Best Regards,");
-                           //// emailModal.EmailBody = mailBuilder.ToString();
+                            var mailBuilder = new StringBuilder();
 
-                           //// //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                            mailBuilder.AppendLine("Dear" + " " + merchantInfo.Email + "," + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Customer was able to make payment successfully. See details below.<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Customer Name:" + "  " + getCustomerInfo.Fullname + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Customer Phone number:" + "  " + getCustomerInfo.PhoneNumber + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Transaction Amount:" + "  " + logconfirmation.TotalAmount + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Transaction Reference:" + "  " + logconfirmation.TransactionReference + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            mailBuilder.AppendLine("Payment Reference:" + "  " + logconfirmation.PaymentReference + "<br />");
+                            mailBuilder.AppendLine("<br />");
+                            // mailBuilder.AppendLine("Best Regards,");
+                            emailModal.EmailBody = mailBuilder.ToString();
 
-                           //// //if (sendMail.ResponseCode != AppResponseCodes.Success)
-                           //// //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+                            //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
 
-                           //// await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                            //if (sendMail.ResponseCode != AppResponseCodes.Success)
+                            //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
+
+                            await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
                             var customerEmailModal = new EmailRequestDto
                             {
