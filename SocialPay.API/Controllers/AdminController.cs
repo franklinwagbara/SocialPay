@@ -84,35 +84,6 @@ namespace SocialPay.API.Controllers
 
 
         [HttpPost]
-        [Route("create-user-test")]
-        public async Task<IActionResult> CreateUsertest([FromBody] CreateUserRequestDto model)
-        {
-            _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
-
-            var response = new WebApiResponse { };
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var result = await _aDRepoService.RegisterUser(model);
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                response.ResponseCode = AppResponseCodes.InternalError;
-                return BadRequest(response);
-            }
-        }
-
-        [HttpPost]
         [Route("update-user-account")]
         public async Task<IActionResult> UpdateUserAccount([FromBody] UpdateUserRequestDto model)
         {
