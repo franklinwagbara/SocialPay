@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Services.SpectaOnboardingService.Interface;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Merchant")]
     [Route("api/socialpay/specta")]
     [ApiController]
     public class SpectaController : BaseController
