@@ -122,6 +122,8 @@ namespace SocialPay.API
                 });
 
             });
+
+            services.AddAutoMapper(typeof(MappingProfiles));
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
