@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Merchant")]
     [Route("api/socialpay/specta")]
     [ApiController]
     public class SpectaController : BaseController
@@ -29,6 +28,6 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("register-customer")]
-        public async Task<IActionResult> CreateRegisterCustomerAsync([FromBody] RegisterCustomerRequestDto model) => Response(await _spectaCustomerRegistration.RegisterCustomer(model, User.GetSessionDetails().ClientId).ConfigureAwait(false));
+        public async Task<IActionResult> CreateRegisterCustomerAsync([FromBody] RegisterCustomerRequestDto model) => Response(await _spectaCustomerRegistration.RegisterCustomer(model).ConfigureAwait(false));
     }
 }

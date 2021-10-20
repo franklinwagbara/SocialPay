@@ -8,9 +8,6 @@ using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.SpectaOnboardingService.Services
@@ -29,7 +26,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             _spectaOnboardingService = spectaOnboardingService;
         }
 
-        public async Task<WebApiResponse> RegisterCustomer(RegisterCustomerRequestDto model, long clientId)
+        public async Task<WebApiResponse> RegisterCustomer(RegisterCustomerRequestDto model)
         {
             try
             {
@@ -43,8 +40,8 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                             return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Message = "Duplicate email", StatusCode = ResponseCodes.Duplicate };
 
                         var requestmodel = _mapper.Map<SpectaRegisterCustomerRequest>(model);
-                        requestmodel.ClientAuthenticationId = clientId;
                         requestmodel.RegistrationStatus = SpectaProcessCodes.RegisterCustomer;
+
                         await _context.SpectaRegisterCustomerRequest.AddAsync(requestmodel);
                         await _context.SaveChangesAsync();
 
@@ -75,6 +72,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data, StatusCode = ResponseCodes.Badrequest };
                        
                         await transaction.CommitAsync();
+                        
                         return new WebApiResponse { ResponseCode = SpectaProcessCodes.RegisterCustomer, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)

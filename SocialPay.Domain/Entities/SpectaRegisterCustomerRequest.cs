@@ -12,7 +12,6 @@ namespace SocialPay.Domain.Entities
             SpectaRegisterCustomerResponse = new HashSet<SpectaRegisterCustomerResponse>();
         }
         public long SpectaRegisterCustomerRequestId { get; set; }
-        public long ClientAuthenticationId { get; set; }
         [Column(TypeName = "NVARCHAR(90)")]
         public string name { get; set; }
         [Column(TypeName = "NVARCHAR(90)")]
@@ -40,7 +39,6 @@ namespace SocialPay.Domain.Entities
         [Column(TypeName = "NVARCHAR(10)")]
         public string RegistrationStatus { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
-        public virtual ClientAuthentication ClientAuthentication { get; set; }
         public virtual ICollection<SpectaRegisterCustomerResponse> SpectaRegisterCustomerResponse { get; set; }
 
     }

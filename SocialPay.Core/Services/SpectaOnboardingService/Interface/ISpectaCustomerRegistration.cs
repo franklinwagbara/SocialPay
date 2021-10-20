@@ -9,6 +9,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
 {
     public interface ISpectaCustomerRegistration
     {
-        Task<WebApiResponse> RegisterCustomer(RegisterCustomerRequestDto model, long clientId);
+        Task<WebApiResponse> RegisterCustomer(RegisterCustomerRequestDto model);
     }
 }
