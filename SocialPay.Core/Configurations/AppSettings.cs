@@ -138,6 +138,9 @@
         public string createTenantUrl { get; set; }
         public string PayUClientId { get; set; }
         public string PayUClientSecret { get; set; }
+        public string SpectaRegistrationTenantId { get; set; }
+        public string SpectaRegistrationCustomerUrlExtension { get; set; }
+        public string SpectaRegistrationAuthenticaUrlExtension { get; set; }
 
     }
 }

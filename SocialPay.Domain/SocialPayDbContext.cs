@@ -77,5 +77,7 @@ namespace SocialPay.Domain
         //public DbSet<TenantProfile> TenantProfile { get; set; }
         public DbSet<UssdServiceRequestLog> UssdServiceRequestLog { get; set; }
         public DbSet<MerchantTransactionSetup> MerchantTransactionSetup { get; set; }
+        public DbSet<SpectaRegisterCustomerRequest> SpectaRegisterCustomerRequest { get; set; }
+        public DbSet<SpectaRegisterCustomerResponse> SpectaRegisterCustomerResponse { get; set; }
     }
 }
