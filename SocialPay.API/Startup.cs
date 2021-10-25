@@ -367,8 +367,6 @@ namespace SocialPay.API
             ////////});
 
 
-
-
             var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
             var redisInstance = Configuration.GetSection("RedisConnectionStrings")["RedisInstance"];
 
