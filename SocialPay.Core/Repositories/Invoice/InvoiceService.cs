@@ -116,8 +116,10 @@ namespace SocialPay.Core.Repositories.Invoice
                         builder.Replace("{totalamount}", Convert.ToString(totalAmount));
                         builder.Replace("{trandate}", Convert.ToString(tranDate));
                         builder.Replace("{invoicename}", invoicename);
-                        builder.Replace("{paymentLink}", _appSettings.invoicePaymentlinkUrl + transactionReference);
+                        builder.Replace("{paymentLink}", $"{_appSettings.invoicePaymentlinkUrl}{transactionReference}");
                         builder.Replace("{currentyear}", Convert.ToString(DateTime.Now.Year));
+                        builder.Replace("{transactionReference}", transactionReference);
+                      //  builder.Replace("{payNow}", transactionReference);
 
                         emailModal.EmailBody = builder.ToString();
                     }

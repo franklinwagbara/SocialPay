@@ -138,9 +138,8 @@ namespace SocialPay.Core.Services.Transaction
                                 string path = Path.Combine(this._hostingEnvironment.WebRootPath, _appSettings.MerchantLinkPaymentDocument);
                                
                                 if (!Directory.Exists(path))
-                                {
                                     Directory.CreateDirectory(path);
-                                }
+
                                 string fileName = string.Empty;
                                 var newFileName = string.Empty;
                                 fileName = (paymentModel.Document.FileName);
@@ -344,7 +343,6 @@ namespace SocialPay.Core.Services.Transaction
                 if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
                 var transactionReference = Guid.NewGuid().ToString();
-
 
                 var calculatedDiscount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice * (invoiceRequestDto.discount / 100);
                 var calculatedVAT = _appSettings.vat * (invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice);
