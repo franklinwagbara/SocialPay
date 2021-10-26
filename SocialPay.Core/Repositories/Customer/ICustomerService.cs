@@ -290,6 +290,7 @@ namespace SocialPay.Core.Repositories.Customer
 
         }
 
+     
         public async Task<dynamic> GetTransactionDetails(string customUrl)
         {
             try
@@ -371,7 +372,10 @@ namespace SocialPay.Core.Repositories.Customer
                 if (validateLink == null)
                     return new InvoiceViewModel { };
 
-                var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
+               // var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
+                var getMerchantInfo = await _context.ClientAuthentication
+                    .Include(x=>x.MerchantBankInfo)
+                    .SingleOrDefaultAsync(x=>x.ClientAuthenticationId == validateLink.ClientAuthenticationId);
 
                 var validateReference = await GetInvoicePaymentAsync(refId);
 
@@ -380,16 +384,29 @@ namespace SocialPay.Core.Repositories.Customer
 
                 var config = new MapperConfiguration(cfg => cfg.CreateMap<InvoicePaymentLink, InvoiceViewModel>());
                 var mapper = config.CreateMapper();
+
                 paymentview = mapper.Map<InvoiceViewModel>(validateReference);
+
+                ////paymentview.MerchantInfo = new MerchantInfoViewModel
+                ////{
+                ////    BusinessEmail = getMerchantInfo.BusinessEmail,
+                ////    BusinessPhoneNumber = getMerchantInfo.BusinessPhoneNumber,
+                ////    BusinessName = getMerchantInfo.BusinessName,
+                ////    Chargebackemail = getMerchantInfo.Chargebackemail,
+                ////    Country = getMerchantInfo.Country,
+                ////    Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
+                ////};
 
                 paymentview.MerchantInfo = new MerchantInfoViewModel
                 {
-                    BusinessEmail = getMerchantInfo.BusinessEmail,
-                    BusinessPhoneNumber = getMerchantInfo.BusinessPhoneNumber,
-                    BusinessName = getMerchantInfo.BusinessName,
-                    Chargebackemail = getMerchantInfo.Chargebackemail,
-                    Country = getMerchantInfo.Country,
-                    Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
+                    BusinessEmail = getMerchantInfo == null ? "Invalid Email" : getMerchantInfo.MerchantBusinessInfo == null ? getMerchantInfo.Email : getMerchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault(),
+                    BusinessPhoneNumber = getMerchantInfo == null ? "Invalid Phone number" : getMerchantInfo.MerchantBusinessInfo == null ? getMerchantInfo.PhoneNumber : getMerchantInfo.MerchantBusinessInfo.Select(x => x.BusinessPhoneNumber).FirstOrDefault(),
+                    BusinessName = getMerchantInfo == null ? "Invalid business email" : getMerchantInfo.MerchantBusinessInfo == null ? getMerchantInfo.FullName : getMerchantInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault(),
+                    Chargebackemail = getMerchantInfo == null ? "Invalid charge back email" : getMerchantInfo.MerchantBusinessInfo == null ? "Invalid charge back email" : getMerchantInfo.MerchantBusinessInfo.Select(x => x.Chargebackemail).FirstOrDefault(),
+                    Country = getMerchantInfo == null ? "Invalid country" : getMerchantInfo.MerchantBusinessInfo == null ? "Invalid charge back email" : getMerchantInfo.MerchantBusinessInfo.Select(x => x.Country).FirstOrDefault(),
+                    HasSpectaMerchantID = getMerchantInfo == null ? false : getMerchantInfo.MerchantBusinessInfo == null ? false : getMerchantInfo.MerchantBusinessInfo.Select(x => x.HasSpectaMerchantID).FirstOrDefault(),
+                    Logo = getMerchantInfo == null ? "Invalid business logo" : getMerchantInfo.MerchantBusinessInfo == null ? getMerchantInfo.FullName : _appSettings.BaseApiUrl + getMerchantInfo.MerchantBusinessInfo.Select(x => x.FileLocation).FirstOrDefault() + "/" + getMerchantInfo.MerchantBusinessInfo.Select(x => x.Logo).FirstOrDefault(),
+                    //  Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
                 };
 
                 return paymentview;
