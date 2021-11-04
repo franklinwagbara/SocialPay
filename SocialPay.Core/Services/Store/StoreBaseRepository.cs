@@ -179,6 +179,8 @@ namespace SocialPay.Core.Services.Store
                     }
                     catch (Exception ex)
                     {
+                        _storeLogger.LogRequest($"{"An error occured while trying to create store"}{" "}{userModel.Email}{" - "}{request.StoreName}{" - "}{ex}{" - "}{DateTime.Now}", true);
+
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
                     }
@@ -188,7 +190,9 @@ namespace SocialPay.Core.Services.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured while trying to create store" + " | " + request.StoreName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to create store"}{" "}{userModel.Email}{" - "}{request.StoreName}{" - "}{ex}{" - "}{DateTime.Now}", true);
+
+                //_log4net.Error("An error occured while trying to create store" + " | " + request.StoreName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
@@ -196,7 +200,9 @@ namespace SocialPay.Core.Services.Store
 
         public async Task<InitiatePaymentResponse> InitiatePayment(CustomerStorePaymentRequestDto model)
         {
-            _log4net.Info("Task starts to save store payments MakePayment info" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+            _storeLogger.LogRequest($"{"Task starts to save store payments MakePayment info"}{" "}{model.TransactionReference}{" - "}{model.PhoneNumber}{" - "}{DateTime.Now}", false);
+
+           // _log4net.Info("Task starts to save store payments MakePayment info" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
             try
             {
@@ -284,8 +290,9 @@ namespace SocialPay.Core.Services.Store
                             await _context.StoreTransactionLogDetails.AddRangeAsync(transactionLogDetails);
                             await _context.SaveChangesAsync();
 
+                            _storeLogger.LogRequest($"{"save successfully"}{" "}{model.TransactionReference}{" - "}{model.PhoneNumber}{" - "}{DateTime.Now}", false);
 
-                            _log4net.Info("save successfully" + " | " + model.TransactionReference + " | " + DateTime.Now);
+                           // _log4net.Info("save successfully" + " | " + model.TransactionReference + " | " + DateTime.Now);
 
                             //decimal CustomerTotalAmount = model.CustomerAmount;// + getPaymentDetails.ShippingFee;
                             if (getPaymentDetails.PaymentCategory == MerchantPaymentLinkCategory.OneOffBasicLink)
@@ -324,7 +331,9 @@ namespace SocialPay.Core.Services.Store
 
                                 if (model.Channel == PaymentChannel.PayWithSpecta)
                                 {
-                                    _log4net.Info("Task starts to initiate pay with specta" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+                                    _storeLogger.LogRequest($"{"Task starts to initiate pay with specta"}{" "}{model.TransactionReference}{" - "}{model.PhoneNumber}{" - "}{DateTime.Now}", false);
+
+                                  //  _log4net.Info("Task starts to initiate pay with specta" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                                     var getMerchantId = await _context.MerchantBusinessInfo
                                      .SingleOrDefaultAsync(x => x.ClientAuthenticationId == getLinkType.ClientAuthenticationId);
@@ -338,7 +347,9 @@ namespace SocialPay.Core.Services.Store
                                     paymentResponse.CustomerId = customerId;
                                     paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
 
-                                    _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+                                    _storeLogger.LogRequest($"{"MakePayment info was successful"}{" "}{model.TransactionReference}{" - "}{model.PhoneNumber}{" - "}{DateTime.Now}", false);
+
+                                   // _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                                     await transaction.CommitAsync();
 
@@ -352,7 +363,9 @@ namespace SocialPay.Core.Services.Store
                                 paymentResponse.CustomerId = customerId;
                                 paymentResponse.PaymentLink = paymentData;
 
-                                _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+                                _storeLogger.LogRequest($"{"MakePayment info was successful"}{" "}{model.TransactionReference}{" - "}{model.PhoneNumber}{" - "}{DateTime.Now}", false);
+
+                               // _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                                 await transaction.CommitAsync();
 
@@ -416,14 +429,18 @@ namespace SocialPay.Core.Services.Store
 
                             await transaction.CommitAsync();
 
-                            _log4net.Info("Initiate store payment was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+                            _storeLogger.LogRequest($"{"Initiate store payment was successful"}{" "}{model.TransactionReference}{" - "}{model.PhoneNumber}{" - "}{DateTime.Now}", false);
+
+                           // _log4net.Info("Initiate store payment was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                             return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                             // }
                         }
                         if (model.Channel == PaymentChannel.PayWithSpecta && getPaymentDetails.PaymentCategory != MerchantPaymentLinkCategory.Escrow)
                         {
-                            _log4net.Info("Task starts to initiate pay with specta" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+                            _storeLogger.LogRequest($"{"Task starts to initiate pay with specta"}{" "}{model.TransactionReference}{" - "}{model.PhoneNumber}{" - "}{DateTime.Now}", false);
+
+                           // _log4net.Info("Task starts to initiate pay with specta" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                             logCustomerInfo.Amount = totalAmount;
                             await _context.CustomerOtherPaymentsInfo.AddAsync(logCustomerInfo);
@@ -449,7 +466,9 @@ namespace SocialPay.Core.Services.Store
 
                             await transaction.CommitAsync();
 
-                            _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+                            _storeLogger.LogRequest($"{"MakePayment info was successful"}{" "}{model.TransactionReference}{" - "}{model.PhoneNumber}{" - "}{DateTime.Now}", false);
+
+                          //  _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                             return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
 
@@ -516,7 +535,10 @@ namespace SocialPay.Core.Services.Store
                         paymentResponse.PaymentLink = paymentData;
 
                         await transaction.CommitAsync();
-                        _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
+
+                        _storeLogger.LogRequest($"{"MakePayment info was successful"}{" "}{model.TransactionReference}{" - "}{model.PhoneNumber}{" - "}{DateTime.Now}", false);
+
+                      //  _log4net.Info("MakePayment info was successful" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + DateTime.Now);
 
                         return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.Success, Data = paymentResponse, PaymentRef = paymentRef, TransactionReference = model.TransactionReference };
                     }
@@ -531,7 +553,9 @@ namespace SocialPay.Core.Services.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured while trying to initiate payment MakePayment" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + ex + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to initiate payment MakePayment"}{" "}{model.PhoneNumber}{" - "}{model.TransactionReference}{" - "}{ex}{" - "}{DateTime.Now}", true);
+
+               // _log4net.Error("An error occured while trying to initiate payment MakePayment" + " | " + model.TransactionReference + " | " + model.PhoneNumber + " | " + ex + " | " + DateTime.Now);
                 return new InitiatePaymentResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -543,7 +567,9 @@ namespace SocialPay.Core.Services.Store
 
                 var otherPaymentReference = string.Empty;
 
-                _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " | " + model.Channel + " - " + DateTime.Now);
+                _storeLogger.LogRequest($"{"PaymentConfirmation request"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{model.Message}{" - "}{model.Channel}{" - "}{DateTime.Now}", false);
+
+               // _log4net.Info("PaymentConfirmation request" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " | " + model.Channel + " - " + DateTime.Now);
 
                 var logResponse = new PaymentResponse
                 {
@@ -581,7 +607,9 @@ namespace SocialPay.Core.Services.Store
                             }
                         }
 
-                        _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+                        _storeLogger.LogRequest($"{"PaymentConfirmation response was successful"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{model.Message}{" - "}{model.Channel}{" - "}{DateTime.Now}", false);
+
+                        //_log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
                         return await LogPaymentResponse(model, otherPaymentReference, validateLinkType.Channel);
 
@@ -594,7 +622,9 @@ namespace SocialPay.Core.Services.Store
 
                         if (result.ResponseCode != AppResponseCodes.Success)
                         {
-                            _log4net.Info("PaymentConfirmation failed" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+                            _storeLogger.LogRequest($"{"PaymentConfirmation failed"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{model.Message}{" - "}{model.Channel}{" - "}{DateTime.Now}", false);
+
+                          //  _log4net.Info("PaymentConfirmation failed" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
                         }
@@ -615,6 +645,8 @@ namespace SocialPay.Core.Services.Store
             }
             catch (Exception ex)
             {
+                _storeLogger.LogRequest($"{"An error occured while confirming payment"}{" "}{model.PaymentReference}{" - "}{model.TransactionReference}{" - "}{ex}{" - "}{DateTime.Now}", true);
+
                 _log4net.Error("Error occured" + " | " + "PaymentConfirmation" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
@@ -625,13 +657,14 @@ namespace SocialPay.Core.Services.Store
         {
             try
             {
+                _storeLogger.LogRequest($"{"Task starts to log payment response"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{"validate Duplicate Transaction. DuplicateTransaction"}{" - "}{DateTime.Now}", false);
 
                 var validateDuplicateTransaction = await _context.TransactionLog
                     .SingleOrDefaultAsync(x => x.Message == model.Message);
 
                 if (validateDuplicateTransaction != null)
                 {
-                    _log4net.Info("LogPaymentResponse" + " - " + model.PaymentReference + " - " + "validate Duplicate Transaction. DuplicateTransaction" + " - " + DateTime.Now);
+                    _storeLogger.LogRequest($"{"LogPaymentResponse"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{"validate Duplicate Transaction. DuplicateTransaction"}{" - "}{DateTime.Now}", false);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
 
@@ -642,7 +675,9 @@ namespace SocialPay.Core.Services.Store
 
                 if (paymentSetupInfo == null)
                 {
-                    _log4net.Info("LogPaymentResponse" + " - " + model.PaymentReference + " - " + "paymentSetupInfo. RecordNotFound" + " - " + DateTime.Now);
+                    _storeLogger.LogRequest($"{"LogPaymentResponse"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{"paymentSetupInfo. RecordNotFound"}{" - "}{DateTime.Now}", false);
+
+                   // _log4net.Info("LogPaymentResponse" + " - " + model.PaymentReference + " - " + "paymentSetupInfo. RecordNotFound" + " - " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
                 }
 
@@ -819,7 +854,9 @@ namespace SocialPay.Core.Services.Store
                             //if (sendCustomerMail.ResponseCode != AppResponseCodes.Success)
                             //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
-                            _log4net.Info("Emails was successfully sent" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+                            _storeLogger.LogRequest($"{"Emails was successfully sent"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{DateTime.Now}", false);
+
+                           // _log4net.Info("Emails was successfully sent" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 
                             await transaction.CommitAsync();
 
@@ -827,7 +864,9 @@ namespace SocialPay.Core.Services.Store
                         }
                         catch (Exception ex)
                         {
-                            _log4net.Error("Database Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                            _storeLogger.LogRequest($"{"An error occured while confirming payment"}{" "}{model.PaymentReference}{" - "}{model.TransactionReference}{" - "}{ex}{" - "}{DateTime.Now}", true);
+
+                            //_log4net.Error("Database Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                             await transaction.RollbackAsync();
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
@@ -837,7 +876,9 @@ namespace SocialPay.Core.Services.Store
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    _log4net.Info("Transaction failed" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
+                    _storeLogger.LogRequest($"{"Transaction failed"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{model.Message}{" - "}{DateTime.Now}", false);
+
+                    //_log4net.Info("Transaction failed" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
 
                     try
                     {
@@ -852,14 +893,18 @@ namespace SocialPay.Core.Services.Store
 
                         if (model.Message.Contains("Incorrect PIN"))
                         {
-                            _log4net.Info("Transaction failed" + " | " + "Incorrect PIN" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
+                            _storeLogger.LogRequest($"{"Transaction failed" + " - " + "Incorrect PIN"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{model.Message}{" - "}{DateTime.Now}", false);
+
+                           // _log4net.Info("Transaction failed" + " | " + "Incorrect PIN" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.IncorrectTransactionPin, Data = "Incorrect Transaction Pin" };
                         }
 
                         if (model.Message.Contains("Insufficient"))
                         {
-                            _log4net.Info("Transaction failed" + " | " + "Insufficient" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
+                            _storeLogger.LogRequest($"{"Transaction failed" + " - " + "Insufficient"}{" "}{model.TransactionReference}{" - "}{model.TransactionReference}{" - "}{model.Message}{" - "}{DateTime.Now}", false);
+
+                           // _log4net.Info("Transaction failed" + " | " + "Insufficient" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InsufficientFunds, Data = "Insufficient Funds" };
                         }
 
@@ -867,7 +912,9 @@ namespace SocialPay.Core.Services.Store
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        _storeLogger.LogRequest($"{"An error occured while confirming payment"}{" "}{model.PaymentReference}{" - "}{model.TransactionReference}{" - "}{ex}{" - "}{DateTime.Now}", true);
+
+                       // _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
@@ -877,7 +924,9 @@ namespace SocialPay.Core.Services.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while confirming payment"}{" "}{model.PaymentReference}{" - "}{model.TransactionReference}{" - "}{ex}{" - "}{DateTime.Now}", true);
+
+                //_log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

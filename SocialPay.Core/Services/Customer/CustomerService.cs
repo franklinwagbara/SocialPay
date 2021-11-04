@@ -686,10 +686,10 @@ namespace SocialPay.Core.Services.Customer
             try
             {
                 var decodeMessage = System.Uri.UnescapeDataString(message);
+
                 if (decodeMessage.Contains(" "))
-                {
                     decodeMessage = decodeMessage.Replace(" ", "+");
-                }
+
                 var decryptResponse = DecryptAlt(decodeMessage);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = decryptResponse };
 

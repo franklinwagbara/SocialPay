@@ -25,8 +25,8 @@ namespace SocialPay.API
                 try
                 {
                     var context = services.GetRequiredService<SocialPayDbContext>();
-                    //context.Database.Migrate(); // apply all migrations
-                   // DataSeeder.Seed(context); // Insert default data
+                    context.Database.Migrate(); // apply all migrations
+                    //DataSeeder.Seed(context); // Insert default data
                 }
                 catch (Exception ex)
                 {
