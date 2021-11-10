@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Merchant
@@ -104,8 +105,9 @@ namespace SocialPay.Core.Services.Merchant
 
             }
             catch (Exception ex)
-
             {
+                _log4net.Error("ProcessCSVFile" + ex + " | " + DateTime.Now);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error" };
             }
         }
@@ -136,22 +138,77 @@ namespace SocialPay.Core.Services.Merchant
                         try
                         {
 
-                            if (await _context.ClientAuthentication.AnyAsync(x => x.Email == rows[0].ToString()))
+                            if (await _context.ClientAuthentication.AnyAsync(x => x.Email == rows[0].ToString().Trim()))
                             {
                                 var getUserInfo = await _context.ClientAuthentication
-                                   .SingleOrDefaultAsync(x => x.Email == rows[0].ToString());
+                                   .SingleOrDefaultAsync(x => x.Email == rows[0].ToString().Trim());
 
 
                                 var model = new MerchantBankInfoRequestDto()
                                 {
-                                    BankName = rows[1].ToString(),
-                                    BankCode = rows[2].ToString(),
-                                    Nuban = rows[3].ToString(),
-                                    Currency = rows[4].ToString(),
-                                    Country = rows[5].ToString(),
+                                    BankName = rows[1].ToString().Trim(),
+                                    BankCode = Regex.Replace(rows[2], @"[^0-9a-zA-Z\._]", string.Empty),
+                                    Nuban = rows[3].ToString().Trim(),
+                                    Currency = rows[4].ToString().Trim(),
+                                    Country = rows[5].ToString().Trim(),
                                     DefaultAccount = true
                                 };
                                 var result = await _merchantRegistrationService.OnboardMerchantBankInfo(model, Convert.ToInt32(getUserInfo.ClientAuthenticationId));
+
+                                if (result.ResponseCode == "00")
+                                {
+                                    string emailaddress = rows[0].ToString().Trim();
+
+                                    var token = $"{DateTime.Now.ToString()}{Guid.NewGuid().ToString()}{DateTime.Now.AddMilliseconds(120)}{Utilities.GeneratePin()}";
+                                    var encryptedToken = token.Encrypt(_appSettings.appKey);
+                                    var newPin = Utilities.GeneratePin();// + DateTime.Now.Day;
+                                    var encryptedPin = newPin.Encrypt(_appSettings.appKey);
+                                    var resetUrl = _appSettings.WebportalUrl + encryptedToken;
+                                    string urlPath = "<a href=\"" + resetUrl + "\">Click to confirm your sign up process</a>";
+
+
+                                    var pinRequestModel = new PinRequest
+                                    {
+                                        ClientAuthenticationId = getUserInfo.ClientAuthenticationId,
+                                        TokenSecret = encryptedToken,
+                                        Status = false,
+                                        LastDateModified = DateTime.Now,
+                                        Pin = encryptedPin
+                                    };
+
+                                    await _context.PinRequest.AddAsync(pinRequestModel);
+                                    await _context.SaveChangesAsync();
+
+
+
+                                    string Password = emailaddress + "@socialpay";
+                                    var emailModal = new EmailRequestDto
+                                    {
+                                        Subject = "Merchant Signed Up",
+                                        DestinationEmail = emailaddress,
+                                        // DestinationEmail = "festypat9@gmail.com",
+                                        //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                                    };
+                                    //
+                                    var mailBuilder = new StringBuilder();
+                                    mailBuilder.AppendLine("Dear" + " " + rows[0].ToString().Trim() + "," + "<br />");
+                                    mailBuilder.AppendLine("<br />");
+                                    mailBuilder.AppendLine("You have successfully sign up and your password is " + Password + " .<br />");
+                                    mailBuilder.AppendLine("<br />");
+                                    mailBuilder.AppendLine("Please confirm your sign up by clicking the link below.<br />");
+                                    mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
+                                    // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                                    mailBuilder.AppendLine("Best Regards,");
+                                    emailModal.EmailBody = mailBuilder.ToString();
+
+                                    //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+
+                                    var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                                    if (sendMail != AppResponseCodes.Success)
+                                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+
+                                }
 
                                 responseCode = result.ResponseCode;
                             }
@@ -165,10 +222,10 @@ namespace SocialPay.Core.Services.Merchant
                         {
                             responseCode = AppResponseCodes.InvalidCSVFormat;
                         }
-
+                        if (String.IsNullOrEmpty(rows[0].ToString().Trim())) continue;
                         res.Add(new BulkSignUpResponseDto
                         {
-                            email = rows[0].ToString(),
+                            email = rows[0].ToString().Trim(),
                             ResponseCode = responseCode
 
                         });
@@ -179,7 +236,7 @@ namespace SocialPay.Core.Services.Merchant
             }
             catch (Exception ex)
             {
-                _log4net.Error("BulkCreateMerchantBankInfo" + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("BulkCreateMerchantBankInfo" + ex + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -218,12 +275,12 @@ namespace SocialPay.Core.Services.Merchant
 
                                 var businessInfoModel = new MerchantOnboardingInfoRequestDto
                                 {
-                                    BusinessEmail = rows[1].ToString(),
-                                    BusinessName = rows[2].ToString(),
-                                    BusinessPhoneNumber = rows[3].ToString(),
-                                    Chargebackemail = rows[4].ToString(),
-                                    Country = rows[5].ToString(),
-                                    Tin = rows[6].ToString(),
+                                    BusinessEmail = rows[1].ToString().Trim(),
+                                    BusinessName = rows[2].ToString().Trim(),
+                                    BusinessPhoneNumber = rows[3].ToString().Trim(),
+                                    Chargebackemail = rows[4].ToString().Trim(),
+                                    Country = rows[5].ToString().Trim(),
+                                    Tin = rows[6].ToString().Trim(),
                                     //Logo = newFileName,
                                     SpectaMerchantID = "",
                                     SpectaMerchantKey = "",
@@ -231,7 +288,7 @@ namespace SocialPay.Core.Services.Merchant
                                 };
 
                                 var result = await _merchantRegistrationService.OnboardMerchantBusinessInfo(businessInfoModel, Convert.ToInt32(getUserInfo.ClientAuthenticationId));
-                                
+
                                 responseCode = result.ResponseCode;
                             }
 
@@ -240,10 +297,10 @@ namespace SocialPay.Core.Services.Merchant
                         {
                             responseCode = AppResponseCodes.InvalidCSVFormat;
                         }
-
+                        if (String.IsNullOrEmpty(rows[0].ToString().Trim())) continue;
                         res.Add(new BulkSignUpResponseDto
                         {
-                            email = rows[0].ToString(),
+                            email = rows[0].ToString().Trim(),
                             ResponseCode = responseCode
                         });
                     }
@@ -310,13 +367,13 @@ namespace SocialPay.Core.Services.Merchant
                         {
                             var item = new BulkSignUpRequestDto()
                             {
-                                Email = rows[0].ToString(),
-                                PhoneNumber = rows[1].ToString(),
-                                Bvn = rows[2].ToString(),
-                                FirstName = rows[3].ToString(),
-                                LastName = rows[4].ToString(),
-                                DateOfBirth = rows[5].ToString(),
-                                Gender = rows[6].ToString()
+                                Email = rows[0].ToString().Trim(),
+                                PhoneNumber = Regex.Replace(rows[1], @"[^0-9a-zA-Z\._]", string.Empty),
+                                Bvn = rows[2].ToString().Trim(),
+                                FirstName = rows[3].ToString().Trim(),
+                                LastName = rows[4].ToString().Trim(),
+                                DateOfBirth = rows[5].ToString().Trim(),
+                                Gender = rows[6].ToString().Trim()
 
                             };
 
@@ -327,11 +384,11 @@ namespace SocialPay.Core.Services.Merchant
                         {
                             responseCode = AppResponseCodes.InvalidCSVFormat;
                         }
-
+                        if (String.IsNullOrEmpty(rows[0].ToString().Trim())) continue;
                         res.Add(new BulkSignUpResponseDto
                         {
-                            email = rows[0].ToString(),
-                            phoneNumber = rows[1].ToString(),
+                            email = rows[0].ToString().Trim(),
+                            phoneNumber = rows[1].ToString().Trim(),
                             ResponseCode = responseCode
 
                         });
@@ -342,7 +399,7 @@ namespace SocialPay.Core.Services.Merchant
             catch (Exception ex)
 
             {
-                _log4net.Error("Create bulk merchant" + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Create bulk merchant" + ex + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -381,7 +438,7 @@ namespace SocialPay.Core.Services.Merchant
                 byte[] passwordHash, passwordSalt;
                 var resetUrl = _appSettings.WebportalUrl + encryptedToken;
 
-                string urlPath = "<a href=\"" + resetUrl + "\">Click to confirm your sign up process</a>";
+                //string urlPath = "<a href=\"" + resetUrl + "\">Click to confirm your sign up process</a>";
                 string Password = signUpRequestDto.Email + "@socialpay";
                 _utilities.CreatePasswordHash(Password.Encrypt(_appSettings.appKey), out passwordHash, out passwordSalt);
 
@@ -436,43 +493,52 @@ namespace SocialPay.Core.Services.Merchant
                         await _context.ClientLoginStatus.AddAsync(loginstatus);
                         await _context.SaveChangesAsync();
 
-                        var pinRequestModel = new PinRequest
-                        {
-                            ClientAuthenticationId = model.ClientAuthenticationId,
-                            TokenSecret = encryptedToken,
-                            Status = false,
-                            LastDateModified = DateTime.Now,
-                            Pin = encryptedPin
-                        };
 
-                        await _context.PinRequest.AddAsync(pinRequestModel);
-                        await _context.SaveChangesAsync();
 
-                        var emailModal = new EmailRequestDto
-                        {
-                            Subject = "Merchant Signed Up",
-                            DestinationEmail = signUpRequestDto.Email,
-                            // DestinationEmail = "festypat9@gmail.com",
-                            //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
-                        };
-                        //
-                        var mailBuilder = new StringBuilder();
-                        mailBuilder.AppendLine("Dear" + " " + signUpRequestDto.Email + "," + "<br />");
-                        mailBuilder.AppendLine("<br />");
-                        mailBuilder.AppendLine("You have successfully sign up and your password is " + Password + " .<br />");
-                        mailBuilder.AppendLine("<br />");
-                        mailBuilder.AppendLine("Please confirm your sign up by clicking the link below.<br />");
-                        mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
-                        // mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
-                        mailBuilder.AppendLine("Best Regards,");
-                        emailModal.EmailBody = mailBuilder.ToString();
 
-                        //var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+                        //var pinRequestModel = new PinRequest
+                        //{
+                        //    ClientAuthenticationId = model.ClientAuthenticationId,
+                        //    TokenSecret = encryptedToken,
+                        //    Status = false,
+                        //    LastDateModified = DateTime.Now,
+                        //    Pin = encryptedPin
+                        //};
 
-                        var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+                        //await _context.PinRequest.AddAsync(pinRequestModel);
+                        //await _context.SaveChangesAsync();
 
-                        if (sendMail != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+
+
+                        //var emailModal = new EmailRequestDto
+                        //{
+                        //    Subject = "Merchant Signed Up",
+                        //    DestinationEmail = signUpRequestDto.Email,
+                        //    // DestinationEmail = "festypat9@gmail.com",
+                        //    //  EmailBody = "Your onboarding was successfully created. Kindly use your email as username and" + "   " + "" + "   " + "as password to login"
+                        //};
+                        ////
+                        //var mailBuilder = new StringBuilder();
+                        //mailBuilder.AppendLine("Dear" + " " + signUpRequestDto.Email + "," + "<br />");
+                        //mailBuilder.AppendLine("<br />");
+                        //mailBuilder.AppendLine("You have successfully sign up and your password is " + Password + " .<br />");
+                        //mailBuilder.AppendLine("<br />");
+                        //mailBuilder.AppendLine("Please confirm your sign up by clicking the link below.<br />");
+                        //mailBuilder.AppendLine("Kindly use this token" + "  " + newPin + "  " + "and" + " " + urlPath + "<br />");
+                        //// mailBuilder.AppendLine("Token will expire in" + "  " + _appSettings.TokenTimeout + "  " + "Minutes" + "<br />");
+                        //mailBuilder.AppendLine("Best Regards,");
+                        //emailModal.EmailBody = mailBuilder.ToString();
+
+                        ////var sendMail = await _sendGridEmailService.SendMail(mailBuilder.ToString(), emailModal.DestinationEmail, emailModal.Subject);
+
+                        //var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+                        //if (sendMail != AppResponseCodes.Success)
+                        //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+
+
+
+
 
                         await transaction.CommitAsync();
 
@@ -482,7 +548,7 @@ namespace SocialPay.Core.Services.Merchant
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | " + ex + " | " + DateTime.Now);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -491,10 +557,11 @@ namespace SocialPay.Core.Services.Merchant
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
     }
+
 }
