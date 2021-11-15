@@ -40,11 +40,11 @@ namespace SocialPay.Core.Services.Products
             {
                 _storeLogger.LogRequest($"{"Task starts to create new product"}{" "}{request.ProductName}{" - "}{userModel.UserID}{" - "}{DateTime.Now}", false);
 
-              //  _log4net.Info("Task starts to create new product" + " | " + request.ProductName + " - "+ userModel.UserID + " | " + DateTime.Now);
+                //  _log4net.Info("Task starts to create new product" + " | " + request.ProductName + " - "+ userModel.UserID + " | " + DateTime.Now);
 
                 // userModel.ClientId = 167;
                 var reference = $"{"So-"}{Guid.NewGuid().ToString("N")}";
-              
+
                 var color = string.Empty;
                 var size = string.Empty;
 
@@ -121,7 +121,7 @@ namespace SocialPay.Core.Services.Products
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", StatusCode= ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
@@ -140,7 +140,7 @@ namespace SocialPay.Core.Services.Products
             {
                 _storeLogger.LogRequest($"{"An error occured while trying to create product"}{" "}{userModel.Email}{" - "}{request.ProductName}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
-               // _log4net.Error("Error occured" + " | " + "Create new product" + " | " + ex + " | " + request.ProductName + " - "+ userModel.UserID + " | " + DateTime.Now);
+                // _log4net.Error("Error occured" + " | " + "Create new product" + " | " + ex + " | " + request.ProductName + " - "+ userModel.UserID + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
@@ -152,7 +152,7 @@ namespace SocialPay.Core.Services.Products
             {
                 _storeLogger.LogRequest($"{"Task starts to product by client Id"}{" "}{clientId}{" - "}{DateTime.Now}", false);
 
-              //  _log4net.Info("Task starts to get product by clientId" + " | " + clientId + " - " +  DateTime.Now);
+                //  _log4net.Info("Task starts to get product by clientId" + " | " + clientId + " - " +  DateTime.Now);
 
                 var productCategory = await _context.ProductCategories.Where(x => x.ClientAuthenticationId == clientId).ToListAsync();
 
@@ -183,7 +183,7 @@ namespace SocialPay.Core.Services.Products
             {
                 _storeLogger.LogRequest($"{"An error occured while trying to product"}{" "}{clientId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
-               // _log4net.Error("Error occured" + " | " + "Getting product" + " - " + ex + " - " +  clientId + " | " + DateTime.Now);
+                // _log4net.Error("Error occured" + " | " + "Getting product" + " - " + ex + " - " +  clientId + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
@@ -191,7 +191,7 @@ namespace SocialPay.Core.Services.Products
 
         public async Task<WebApiResponse> GetProductsByClientIdStoreId(long clientId, long storeId, string azureConnectionString, string containerName)
         {
-            try  
+            try
             {
                 _storeLogger.LogRequest($"{"Task starts to get product by clientId and storeid"}{" "}{clientId}{" - "}{storeId}{" - "}{DateTime.Now}", false);
 
@@ -208,7 +208,7 @@ namespace SocialPay.Core.Services.Products
                              join pi in _context.ProductInventory on pr.ProductId equals pi.ProductId
                              join proItems in _context.ProductItems on pr.ProductId equals proItems.ProductId
                              where pr.MerchantStoreId == storeId
-                             
+
                              select new StoreProductsViewModel
                              {
                                  StoreName = s.StoreName,
@@ -248,7 +248,7 @@ namespace SocialPay.Core.Services.Products
 
                 ////    foreach (var image in getProductsItem)
                 ////    {
-                      
+
                 ////        CloudBlockBlob blob = container.GetBlockBlobReference(image.FileLocation);
 
                 ////        image.Url = blob.Uri.AbsoluteUri;
@@ -268,7 +268,7 @@ namespace SocialPay.Core.Services.Products
             {
                 _storeLogger.LogRequest($"{"An error occured while trying to get product by Id"}{" "}{clientId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
-               // _log4net.Error("Error occured" + " | " + "Get products by client id" + " | " + ex + " | " + clientId + " | " + DateTime.Now);
+                // _log4net.Error("Error occured" + " | " + "Get products by client id" + " | " + ex + " | " + clientId + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
@@ -280,13 +280,14 @@ namespace SocialPay.Core.Services.Products
             {
                 _storeLogger.LogRequest($"{"Task starts to get product by productid"}{" "}{productId}{" - "}{DateTime.Now}", false);
 
-               // _log4net.Info("Task starts to get product by productid" + " | " + productId + " - " + DateTime.Now);
+                // _log4net.Info("Task starts to get product by productid" + " | " + productId + " - " + DateTime.Now);
 
                 var productItems = new List<ProductItemViewModel>();
 
-                var query = (from pro in _context.Products where pro.ProductId == productId
+                var query = (from pro in _context.Products
+                             where pro.ProductId == productId
                              join pc in _context.ProductCategories on pro.ProductCategoryId equals pc.ProductCategoryId
-                             join pi in _context.ProductInventory on pro.ProductId equals pi.ProductId                             
+                             join pi in _context.ProductInventory on pro.ProductId equals pi.ProductId
 
                              select new ProductsDetailsViewModel
                              {
@@ -337,20 +338,20 @@ namespace SocialPay.Core.Services.Products
             {
                 _storeLogger.LogRequest($"{"An error occured while trying to get product by Id"}{" "}{productId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
-               // _log4net.Error("Error occured" + " | " + "Get product by Id" + " | " + ex + " | " + productId + " - " +  DateTime.Now);
+                // _log4net.Error("Error occured" + " | " + "Get product by Id" + " | " + ex + " | " + productId + " - " +  DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
         }
 
-        public async Task<WebApiResponse> GetProductsByStoreId(long storeId, string transactionReference, 
+        public async Task<WebApiResponse> GetProductsByStoreId(long storeId, string transactionReference,
             string azureConnectionString, string containerName)
         {
             try
             {
                 _storeLogger.LogRequest($"{"Task starts to get product by storeId"}{" "}{storeId}{" - "}{DateTime.Now}", false);
 
-               // _log4net.Info("Task starts to get product by storeId" + " | " + storeId + " - " + DateTime.Now);
+                // _log4net.Info("Task starts to get product by storeId" + " | " + storeId + " - " + DateTime.Now);
 
                 var storeDetail = new StoreDetailsViewModel();
 
@@ -367,7 +368,7 @@ namespace SocialPay.Core.Services.Products
                              join pi in _context.ProductInventory on pr.ProductId equals pi.ProductId
                              join proItem in _context.ProductItems on pr.ProductId equals proItem.ProductId
                              where pr.MerchantStoreId == storeId
-                             
+
                              select new StoreProductsDetailsViewModel
                              {
                                  ProductName = pr.ProductName,
@@ -381,13 +382,13 @@ namespace SocialPay.Core.Services.Products
                                  Quantity = pi.Quantity,
                                  Products = new List<ProductItemViewModel>()
                                  {
-                                     new ProductItemViewModel 
+                                     new ProductItemViewModel
                                      {
                                          FileLocation = proItem.FileLocation,
                                          Url = proItem.FileLocation
                                      }
                                  }
-                                
+
                              }).ToList();
 
 
@@ -424,16 +425,16 @@ namespace SocialPay.Core.Services.Products
                 storeDetail.StoreDetails = query;
                 storeDetail.StoreLogoUrl = stores.Select(x => x.FileLocation).FirstOrDefault();
 
-                if (query.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail, StatusCode = ResponseCodes.Success };
+                //  if (query.Count > 0)
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail, StatusCode = ResponseCodes.Success };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
+                // return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", Data = storeDetail, StatusCode = ResponseCodes.RecordNotFound };
             }
             catch (Exception ex)
             {
                 _storeLogger.LogRequest($"{"An error occured while trying to get product by store Id"}{" "}{storeId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
-               // _log4net.Error("Error occured" + " | " + "Get product by store id" + " | " + ex + " | " + storeId + " - " +  DateTime.Now);
+                // _log4net.Error("Error occured" + " | " + "Get product by store id" + " | " + ex + " | " + storeId + " - " +  DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
