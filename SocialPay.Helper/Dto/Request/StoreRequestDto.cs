@@ -17,7 +17,7 @@ namespace SocialPay.Helper.Dto.Request
         [Required(ErrorMessage = "Please select image.")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]
-        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".pdf", ".svg" })]
+        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".svg" })]
         public IFormFile Image { get; set; }
     }
 }
