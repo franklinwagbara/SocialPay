@@ -83,21 +83,30 @@ namespace SocialPay.Core.Services.Customer
 
                 var result = await _customerService.GetTransactionDetails(transactionReference);
 
+                if (result.Message == "Success")
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+
                 if (result == null || result.TransactionReference == null)
                 {
                     var validateInvoice = await _customerService.GetInvoiceTransactionDetails(transactionReference);
 
-                    if(validateInvoice == null)
+                    if (validateInvoice == null)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentLink, Data = "Record not found" };
-                    
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = validateInvoice };
 
                 }
 
-                if (result.TransactionReference == null)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentLink, Data = "Record not found" };
-
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+
+
+                ////if (result.Message == "Success")
+                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+
+                ////if (result.TransactionReference == null)
+                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentLink, Data = "Record not found" };
+
+                ////return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
             {
@@ -507,7 +516,7 @@ namespace SocialPay.Core.Services.Customer
             }
         }
 
-        
+
         public async Task<WebApiResponse> PaymentConfirmation(PaymentValidationRequestDto model)
         {
             try
@@ -590,7 +599,7 @@ namespace SocialPay.Core.Services.Customer
                         var decryptResponse = DecryptAlt(decodeMessage);
 
                         model.Message = decryptResponse;
-                       // model.Message = "success";
+                        // model.Message = "success";
 
                         var newreference = model.Message.Split("^");
 
@@ -662,7 +671,7 @@ namespace SocialPay.Core.Services.Customer
         //{
         //    var result = await _ussdService.PaymentRequery(model.PaymentReference);
         //}
-        
+
         public async Task<WebApiResponse> AcceptOrRejectItem(AcceptRejectRequestDto model, long clientId)
         {
             _log4net.Info("AcceptOrRejectItem" + " | " + clientId + " | " + model.PaymentReference + "" + model.TransactionReference + " | " + DateTime.Now);
@@ -670,7 +679,7 @@ namespace SocialPay.Core.Services.Customer
             try
             {
                 var validateReference = await _customerService.AcceptRejectOrderRequest(model, clientId);
-                
+
                 return validateReference;
             }
             catch (Exception ex)
