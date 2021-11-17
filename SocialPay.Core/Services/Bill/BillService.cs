@@ -106,7 +106,7 @@ namespace SocialPay.Core.Services.Bill
         {
             try
             {
-                //clientId = 98;
+                //clientId = 243;
 
                 var model = new DstvAccountLookupDto
                 {
@@ -132,7 +132,12 @@ namespace SocialPay.Core.Services.Bill
                 await _context.DstvAccountLookup.AddAsync(accountlookdstv);
                 await _context.SaveChangesAsync();
 
+                model.merchantReference = accountlookdstv.merchantReference;
+
                 var postsingledstvbill = await _payWithPayUService.InitiatePayUDstvAccountLookupPayment(model);
+
+                if(postsingledstvbill.resultCode == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = postsingledstvbill.resultMessage, StatusCode = ResponseCodes.Badrequest };
 
                 if (postsingledstvbill.resultCode != AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = postsingledstvbill.resultCode, Message = postsingledstvbill.resultMessage, StatusCode = ResponseCodes.Badrequest };
