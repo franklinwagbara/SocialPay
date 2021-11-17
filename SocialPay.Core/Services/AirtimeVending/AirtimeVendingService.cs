@@ -16,7 +16,6 @@ namespace SocialPay.Core.Services.AirtimeVending
         private readonly AppSettings _appSettings;
         private readonly HttpClient _client;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AirtimeVendingService));
-
         public AirtimeVendingService(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
@@ -67,7 +66,9 @@ namespace SocialPay.Core.Services.AirtimeVending
 
                 var content = await response.Content.ReadAsStringAsync();
 
-                if(!content.Contains("ResponseCode"))
+                _log4net.Info("GetPaymentItem response" + " - " + networkProviderId + " - " + content + " - " + DateTime.Now);
+
+                if (!content.Contains("ResponseCode"))
                    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, StatusCode = ResponseCodes.RecordNotFound };
 
                 if (!response.IsSuccessStatusCode)
@@ -87,7 +88,7 @@ namespace SocialPay.Core.Services.AirtimeVending
         {
             try
             {
-                _log4net.Info("airtimeSubscription request" + DateTime.Now);
+                _log4net.Info("airtimeSubscription request" + " - " + model.nuban + " - "+ model.ReferenceId + " - "+ DateTime.Now);
 
                 var jsonRequest = JsonConvert.SerializeObject(model);
 
@@ -96,6 +97,8 @@ namespace SocialPay.Core.Services.AirtimeVending
 
                 var content = await request.Content.ReadAsStringAsync();
 
+                _log4net.Info("airtimeSubscription respnse" + " - " + model.nuban + " - " + model.ReferenceId + " - " + content + " - "+ DateTime.Now);
+
                 if (!request.IsSuccessStatusCode)
                     new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Subscription failed", StatusCode = ResponseCodes.Badrequest };
 
@@ -103,7 +106,7 @@ namespace SocialPay.Core.Services.AirtimeVending
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + " GetPaymentItem" + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + " GetPaymentItem" + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
