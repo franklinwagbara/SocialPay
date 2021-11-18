@@ -959,15 +959,54 @@ namespace SocialPay.Core.Services.Report
         }
 
 
-        public async Task<WebApiResponse> AdminGetCustomersTransactionCount()
+        public async Task<WebApiResponse> AdminGetCustomersTransactionCount(string category)
         {
+
+            _log4net.Info("AdminGetCustomersTransactionCount" + " | " + DateTime.Now);
+
+            var request = new List<OrdersViewModel>();
             try
             {
-                _log4net.Info("AdminGetCustomersTransactionCount" + " | " + DateTime.Now);
+                var getCustomerOrders = await _context.TransactionLog.ToListAsync();
+                if (getCustomerOrders == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                var result = await _context.TransactionLog.ToListAsync();
-                var transactionCount = result.Count();
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = transactionCount };
+                if (category == MerchantPaymentLinkCategory.InvoiceLink)
+                {
+                    var invoiceResponse = (from c in getCustomerOrders
+                                           join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
+                                           select new OrdersViewModel
+                                           {
+                                               MerchantAmount = m.UnitPrice,
+                                               TotalAmount = c.TotalAmount
+
+                                           })
+                               .OrderByDescending(x => x.CustomerTransactionId).ToList();
+
+                    request = invoiceResponse;
+
+                    _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Count() };
+                }
+
+                var otherLinksresponse = (from c in getCustomerOrders
+                                          join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
+                                          join a in _context.MerchantBusinessInfo on m.ClientAuthenticationId equals a.ClientAuthenticationId
+                                          join b in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals b.PaymentReference
+                                          select new OrdersViewModel
+                                          {
+                                              TotalAmount = c.TotalAmount,
+                                              MerchantAmount = m.MerchantAmount,
+                                          })
+                                .OrderByDescending(x => x.CustomerTransactionId).ToList();
+
+                request = otherLinksresponse;
+
+                // _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Count() };
+
             }
             catch (Exception ex)
             {
@@ -975,27 +1014,71 @@ namespace SocialPay.Core.Services.Report
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
+
+
+
         }
 
 
-        public async Task<WebApiResponse> AdminGetCustomersTransactionValue()
+        public async Task<WebApiResponse> AdminGetCustomersTransactionValue(string category)
         {
+
+
+
+
+            var request = new List<OrdersViewModel>();
             try
             {
-                _log4net.Info("AdminGetCustomersTransactionValue" + " | " + DateTime.Now);
+                var getCustomerOrders = await _context.TransactionLog.ToListAsync();
+                if (getCustomerOrders == null)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                var result = await _context.TransactionLog
-                    // .Where(x => x.ClientAuthenticationId == clientId)
-                    .ToListAsync();
-                var transactionValue = result.Sum(x => x.TotalAmount);
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = transactionValue };
+                if (category == MerchantPaymentLinkCategory.InvoiceLink)
+                {
+                    var invoiceResponse = (from c in getCustomerOrders
+                                           join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
+                                           select new OrdersViewModel
+                                           {
+                                               MerchantAmount = m.UnitPrice,
+                                               TotalAmount = c.TotalAmount
+
+                                           })
+                               .OrderByDescending(x => x.CustomerTransactionId).ToList();
+
+                    request = invoiceResponse;
+
+                    _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
+
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Sum(x => x.TotalAmount) };
+                }
+
+                var otherLinksresponse = (from c in getCustomerOrders
+                                          join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
+                                          join a in _context.MerchantBusinessInfo on m.ClientAuthenticationId equals a.ClientAuthenticationId
+                                          join b in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals b.PaymentReference
+                                          select new OrdersViewModel
+                                          {
+                                              TotalAmount = c.TotalAmount,
+                                              MerchantAmount = m.MerchantAmount,
+                                          })
+                                .OrderByDescending(x => x.CustomerTransactionId).ToList();
+
+                request = otherLinksresponse;
+
+                _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Sum(x => x.TotalAmount) };
+
             }
+
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "AdminGetCustomersTransactionValue" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "AdminGetCustomersTransactionCount" + " | " + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
+
+
         }
 
 

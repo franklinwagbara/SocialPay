@@ -263,17 +263,14 @@ namespace SocialPay.API.Controllers
 
         [HttpGet]
         [Route("admin-get-customers-transaction-count")]
-        public async Task<IActionResult> AdminGetCustomersTransactionCount()
+        public async Task<IActionResult> AdminGetCustomersTransactionCount([FromQuery] string category)
         {
             var response = new WebApiResponse { };
             try
             {
                 if (ModelState.IsValid)
-                {
+                    return Ok(await _merchantReportService.AdminGetCustomersTransactionCount(category));
 
-                    return Ok(await _merchantReportService.AdminGetCustomersTransactionCount());
-
-                }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                   .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
@@ -291,17 +288,14 @@ namespace SocialPay.API.Controllers
 
         [HttpGet]
         [Route("admin-get-customers-transaction-value")]
-        public async Task<IActionResult> AdminGetCustomersTransactionValue()
+        public async Task<IActionResult> AdminGetCustomersTransactionValue([FromQuery] string category)
         {
             var response = new WebApiResponse { };
             try
             {
                 if (ModelState.IsValid)
-                {
+                    return Ok(await _merchantReportService.AdminGetCustomersTransactionValue(category));
 
-                    return Ok(await _merchantReportService.AdminGetCustomersTransactionValue());
-
-                }
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                   .Select(e => e.ErrorMessage));
                 response.ResponseCode = AppResponseCodes.Failed;
@@ -316,6 +310,7 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
+
 
 
         [HttpGet]
