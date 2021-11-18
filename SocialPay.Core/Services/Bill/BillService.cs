@@ -71,7 +71,7 @@ namespace SocialPay.Core.Services.Bill
 
                 var generator = new Random();
 
-                var referenceId = generator.Next(100000, 1000000).ToString() + "" + generator.Next(100000, 1000000).ToString();
+                var referenceId = generator.Next(100000, 1000000).ToString() + " - " + generator.Next(100000, 1000000).ToString();
 
                 var model = new VendAirtimeViewModel
                 {
