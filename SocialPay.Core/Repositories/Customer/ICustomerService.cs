@@ -300,12 +300,12 @@ namespace SocialPay.Core.Repositories.Customer
                 var validateReference = await GetPaymentLinkByCustomUrl(customUrl);
 
                 if (validateReference == null)
-                    return new PaymentLinkViewModel { };
+                    return new PaymentLinkViewModel { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 var validateLink = await GetLinkCategorybyTranref(validateReference.TransactionReference);
 
                 if (validateLink == null)
-                    return new PaymentLinkViewModel { };
+                    return new PaymentLinkViewModel { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 if (validateLink.Channel == MerchantPaymentLinkCategory.InvoiceLink)
                     return await GetInvoiceTransactionDetails(validateReference.TransactionReference);
@@ -318,7 +318,7 @@ namespace SocialPay.Core.Repositories.Customer
                     .Include(x => x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateLink.ClientAuthenticationId);
 
                 if (getMerchantInfo == null)
-                    return new PaymentLinkViewModel { };
+                    return new PaymentLinkViewModel { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 var config = new MapperConfiguration(cfg => cfg.CreateMap<MerchantPaymentSetup, PaymentLinkViewModel>());
                 var mapper = config.CreateMapper();

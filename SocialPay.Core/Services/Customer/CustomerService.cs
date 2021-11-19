@@ -83,6 +83,9 @@ namespace SocialPay.Core.Services.Customer
 
                 var result = await _customerService.GetTransactionDetails(transactionReference);
 
+                if (result.ResponseCode == AppResponseCodes.RecordNotFound)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = result };
+
                 if (result.ResponseCode == AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
              
