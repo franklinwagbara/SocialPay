@@ -419,12 +419,12 @@ namespace SocialPay.Core.Services.Merchant
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateMerchantDetails };
 
 
-                var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn,
-                    signUpRequestDto.DateOfBirth, signUpRequestDto.FirstName,
-                    signUpRequestDto.LastName, signUpRequestDto.Email);
+                ////var validateUser = await _bankServiceRepository.BvnValidation(signUpRequestDto.Bvn,
+                ////    signUpRequestDto.DateOfBirth, signUpRequestDto.FirstName,
+                ////    signUpRequestDto.LastName, signUpRequestDto.Email);
 
-                if (validateUser.ResponseCode != AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode };
+                ////if (validateUser.ResponseCode != AppResponseCodes.Success)
+                ////    return new WebApiResponse { ResponseCode = validateUser.ResponseCode };
 
                 var token = $"{DateTime.Now.ToString()}{Guid.NewGuid().ToString()}{DateTime.Now.AddMilliseconds(120)}{Utilities.GeneratePin()}";
                 var encryptedToken = token.Encrypt(_appSettings.appKey);
@@ -540,10 +540,6 @@ namespace SocialPay.Core.Services.Merchant
 
                         //if (sendMail != AppResponseCodes.Success)
                         //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
-
-
-
-
 
                         await transaction.CommitAsync();
 

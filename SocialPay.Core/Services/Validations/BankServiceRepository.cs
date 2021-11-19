@@ -96,44 +96,44 @@ namespace SocialPay.Core.Services.Validations
 
                // var banksServices = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
 
-                //////////var banksServices = new banksSoapClient(_basicHttpBinding, endpointAddress);
-                //////////var validatebvn = await banksServices.GetBvnAsync(bvn);
-                //////////var validateNode = validatebvn.Nodes[1];
-                //////////var bvnDetails = validateNode.Descendants("Customer")
+                var banksServices = new banksSoapClient(_basicHttpBinding, endpointAddress);
+                var validatebvn = await banksServices.GetBvnAsync(bvn);
+                var validateNode = validatebvn.Nodes[1];
+                var bvnDetails = validateNode.Descendants("Customer")
 
-                //////////    .Select(b => new BvnViewModel
-                //////////    {
-                //////////        Bvn = b.Element("Bvn")?.Value,
-                //////////        FirstName = b.Element("FirstName")?.Value.ToLower(),
-                //////////        LastName = b.Element("LastName")?.Value.ToLower(),
-                //////////        PhoneNumber = b.Element("PhoneNumber")?.Value,
-                //////////        DateOfBirth = b.Element("DateOfBirth")?.Value,
-                //////////        MiddleName = b.Element("MiddleName")?.Value,
+                    .Select(b => new BvnViewModel
+                    {
+                        Bvn = b.Element("Bvn")?.Value,
+                        FirstName = b.Element("FirstName")?.Value.ToLower(),
+                        LastName = b.Element("LastName")?.Value.ToLower(),
+                        PhoneNumber = b.Element("PhoneNumber")?.Value,
+                        DateOfBirth = b.Element("DateOfBirth")?.Value,
+                        MiddleName = b.Element("MiddleName")?.Value,
 
-                //////////    }).FirstOrDefault();
+                    }).FirstOrDefault();
 
-                //////////if (bvnDetails == null)
-                //////////    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
+                if (bvnDetails == null)
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
 
-                //////////if (bvnDetails.Bvn.Contains("exit"))
-                //////////    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
+                if (bvnDetails.Bvn.Contains("exit"))
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
 
-                //////////if (!bvnDetails.DateOfBirth.Equals(currentDob))
-                //////////    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth };
+                if (!bvnDetails.DateOfBirth.Equals(currentDob))
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth };
 
-                //////////var dob = Convert.ToDateTime(bvnDetails.DateOfBirth);
+                var dob = Convert.ToDateTime(bvnDetails.DateOfBirth);
 
-                //////////int ageLimit = Convert.ToInt32(_appSettings.ageLimit);
+                int ageLimit = Convert.ToInt32(_appSettings.ageLimit);
 
-                //////////var currentAge = CalculateAge(dob);
+                var currentAge = CalculateAge(dob);
 
-                //////////if (!firstname.Equals($"{bvnDetails.FirstName.ToLower()}") || !lastname.Equals($"{bvnDetails.LastName.ToLower()}"))
-                //////////    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetailsFirstNameOrLastName };
+                if (!firstname.Equals($"{bvnDetails.FirstName.ToLower()}") || !lastname.Equals($"{bvnDetails.LastName.ToLower()}"))
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetailsFirstNameOrLastName };
 
-                //////////if (currentAge.Year >= ageLimit)
-                //////////    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };              
+                if (currentAge.Year >= ageLimit)
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };              
 
-                //////////return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange };
+                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange };
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
             }
