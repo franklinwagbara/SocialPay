@@ -64,6 +64,7 @@ namespace SocialPay.Core.Services.Validations
         {
            
             try
+
             {
                 _log4net.Info("Initiating BvnValidation request" + " | " + bvn + " | " + dateOfbirth + " | " + DateTime.Now);
 

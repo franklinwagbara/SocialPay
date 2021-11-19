@@ -23,6 +23,8 @@ namespace SocialPay.Helper.ViewModel
         public string PaymentMethod { get; set; }
         public string MerchantDocument { get; set; }
         public string AdditionalDetails { get; set; }
+        public string ResponseCode { get; set; }
+
     }
 
     public class CustomerPaymentViewModel

@@ -351,7 +351,7 @@ namespace SocialPay.Core.Repositories.Customer
                     ResponseCode = AppResponseCodes.Success
                     //  Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
                 };
-
+                paymentview.ResponseCode = AppResponseCodes.Success;
                 return paymentview;
             }
             catch (Exception ex)
