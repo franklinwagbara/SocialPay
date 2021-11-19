@@ -341,7 +341,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
+      //  [AllowAnonymous]
         [HttpPost]
         [Route("create-multiple-merchant")]
         public async Task<IActionResult> CreateMultipleMerchant(IFormFile doc)

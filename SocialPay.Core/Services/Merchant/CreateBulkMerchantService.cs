@@ -320,6 +320,11 @@ namespace SocialPay.Core.Services.Merchant
             _log4net.Info("BulkCreateMerchant" + " | " + DateTime.Now);
             try
             {
+
+                ////var validateUser = await _bankServiceRepository.BvnValidation("22156670025",
+                ////   "1990-10-10", "",
+                ////   "", "");
+
                 string responseCode;
                 if (doc == null || doc.Length == 0)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidCSVFormat };
