@@ -7,6 +7,7 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.Validations
@@ -16,11 +17,25 @@ namespace SocialPay.Core.Services.Validations
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(BankServiceRepository));
         private readonly EventLogService _eventLogService;
-
+        public readonly BasicHttpBinding _basicHttpBinding;
+        public readonly EndpointAddress endpointAddress;
         public BankServiceRepository(IOptions<AppSettings> appSettings, EventLogService eventLogService)
         {
             _appSettings = appSettings.Value;
             _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
+
+            endpointAddress = new EndpointAddress(_appSettings.BankServiceUrl);
+
+            _basicHttpBinding = new BasicHttpBinding(endpointAddress.Uri.Scheme.ToLower() == "http" ?
+                           BasicHttpSecurityMode.None : BasicHttpSecurityMode.Transport);
+
+            _basicHttpBinding.OpenTimeout = TimeSpan.FromMinutes(Convert.ToInt32(_appSettings.OpenTimeout));
+            _basicHttpBinding.CloseTimeout = TimeSpan.FromMinutes(Convert.ToInt32(_appSettings.CloseTimeout));
+            _basicHttpBinding.ReceiveTimeout = TimeSpan.FromMinutes(Convert.ToInt32(_appSettings.ReceiveTimeout));
+            _basicHttpBinding.SendTimeout = TimeSpan.FromMinutes(Convert.ToInt32(_appSettings.SendTimeout));
+            _basicHttpBinding.MaxReceivedMessageSize = Convert.ToInt32(_appSettings.MaxReceivedMessageSize);
+            _basicHttpBinding.MaxBufferSize = Convert.ToInt32(_appSettings.MaxBufferSize);
+            _basicHttpBinding.MaxBufferPoolSize = Convert.ToInt32(_appSettings.MaxBufferPoolSize);
         }
 
         private AgeCalculatorViewModel CalculateAge(DateTime Dob)
@@ -79,7 +94,9 @@ namespace SocialPay.Core.Services.Validations
 
                 var currentDob = DateTime.Parse(dateOfbirth).ToString("dd-MMM-yy");
 
-                var banksServices = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
+               // var banksServices = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
+
+                var banksServices = new banksSoapClient(_basicHttpBinding, endpointAddress);
                 var validatebvn = await banksServices.GetBvnAsync(bvn);
                 var validateNode = validatebvn.Nodes[1];
                 var bvnDetails = validateNode.Descendants("Customer")

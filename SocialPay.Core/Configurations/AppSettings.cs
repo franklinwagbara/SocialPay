@@ -141,6 +141,13 @@
         public string SpectaRegistrationTenantId { get; set; }
         public string SpectaRegistrationCustomerUrlExtension { get; set; }
         public string SpectaRegistrationAuthenticaUrlExtension { get; set; }
+        public string OpenTimeout { get; set; }
+        public string CloseTimeout { get; set; }
+        public string ReceiveTimeout { get; set; }
+        public string SendTimeout { get; set; }
+        public string MaxReceivedMessageSize { get; set; }
+        public string MaxBufferSize { get; set; }
+        public string MaxBufferPoolSize { get; set; }
 
     }
 }
