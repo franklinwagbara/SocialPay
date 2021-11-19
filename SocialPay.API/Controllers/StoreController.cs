@@ -26,6 +26,7 @@ namespace SocialPay.API.Controllers
         [Route("create-store")]
         public async Task<IActionResult> CreateStore([FromForm] StoreRequestDto request) => Response(await _storeRepository.CreateNewStoreAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
 
+        //[AllowAnonymous]
         [HttpGet]
         [Route("get-store")]
         public async Task<IActionResult> GetStores() => Response(await _storeRepository.GetStoreInfoAsync(User.GetSessionDetails()).ConfigureAwait(false));

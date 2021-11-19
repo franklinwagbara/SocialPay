@@ -32,7 +32,7 @@ namespace SocialPay.Core.Store
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(StoreRepository));
 
         public IConfiguration Configuration { get; }
-      
+
         public StoreRepository(IStoreService storeService, IProductCategoryService productCategoryService,
             IProductsService productsService, StoreBaseRepository storeBaseRepository,
             IHostingEnvironment environment, IOptions<AppSettings> appSettings,
@@ -61,7 +61,7 @@ namespace SocialPay.Core.Store
 
             try
             {
-                //userModel.ClientId = 209;
+                //userModel.ClientId = 238;
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
@@ -80,18 +80,21 @@ namespace SocialPay.Core.Store
                 {
 
                     var linkName = await _merchantPaymentSetupService.GetPaymentLinksId(item.MerchantStoreId);
-                  
-                   // CloudBlockBlob blob = container.GetBlockBlobReference(item.FileLocation);
+
+                    if (linkName != null)
+                    {
+                        item.StoreLink = linkName.PaymentLinkUrl;
+                    }
+                    // CloudBlockBlob blob = container.GetBlockBlobReference(item.FileLocation);
 
                     //item.Image = blob.Uri.AbsoluteUri;
-                    item.StoreLink = linkName.PaymentLinkUrl;
                 }
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = store, StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | "+ DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
@@ -148,7 +151,7 @@ namespace SocialPay.Core.Store
         {
             try
             {
-                _log4net.Info("Task starts to create store product category" + " | " + request.CategoryName + " | " + userModel.ClientId + " | "  + DateTime.Now);
+                _log4net.Info("Task starts to create store product category" + " | " + request.CategoryName + " | " + userModel.ClientId + " | " + DateTime.Now);
 
                 var category = await _productCategoryService.GetCategoryByNameAndClientId(request.CategoryName, userModel.ClientId);
 
@@ -188,7 +191,7 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured while trying to get product" + " | " +  userModel.ClientId + " | " + ex + " | " + DateTime.Now);
+                _log4net.Error("An error occured while trying to get product" + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
@@ -199,7 +202,7 @@ namespace SocialPay.Core.Store
 
             try
             {
-                _log4net.Info("Task starts to create product" + " | " + request.ProductName + " | " + userModel.ClientId + " | " +  DateTime.Now);
+                _log4net.Info("Task starts to create product" + " | " + request.ProductName + " | " + userModel.ClientId + " | " + DateTime.Now);
 
                 var blobRequest = new BlobProductsRequest();
 
@@ -225,7 +228,7 @@ namespace SocialPay.Core.Store
                 if (validatProductDetails != null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateProductName, Message = "Duplicate Product Name", StatusCode = ResponseCodes.RecordNotFound };
 
-                return await _productsRepository.CreateNewProduct(request, userModel);            
+                return await _productsRepository.CreateNewProduct(request, userModel);
             }
             catch (Exception ex)
             {
@@ -233,7 +236,8 @@ namespace SocialPay.Core.Store
 
                 return new WebApiResponse
                 {
-                    ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError
+                    ResponseCode = AppResponseCodes.InternalError,
+                    StatusCode = ResponseCodes.InternalError
                 };
             }
         }
@@ -246,8 +250,8 @@ namespace SocialPay.Core.Store
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
-                return  await _productsRepository.GetProductsByClientIdStoreId(userModel.ClientId, storeId, options.blobConnectionstring, options.containerName);
-               
+                return await _productsRepository.GetProductsByClientIdStoreId(userModel.ClientId, storeId, options.blobConnectionstring, options.containerName);
+
             }
             catch (Exception ex)
             {
@@ -264,9 +268,9 @@ namespace SocialPay.Core.Store
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
-                return await _productsRepository.GetProductsByClientIdProductId(productId, 
+                return await _productsRepository.GetProductsByClientIdProductId(productId,
                     options.blobConnectionstring, options.containerName);
-               
+
             }
             catch (Exception ex)
             {
@@ -282,12 +286,12 @@ namespace SocialPay.Core.Store
         {
             try
             {
-                 //userModel.ClientId = 167;
+                //userModel.ClientId = 167;
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
-                return await _productsRepository.GetProductsByStoreId(storeId, transactionReference, 
-                    options.blobConnectionstring, options.containerName);              
+                return await _productsRepository.GetProductsByStoreId(storeId, transactionReference,
+                    options.blobConnectionstring, options.containerName);
             }
             catch (Exception ex)
             {
