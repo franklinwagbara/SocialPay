@@ -110,7 +110,7 @@ namespace SocialPay.Core.Services.Validations
 
                 var currentAge = CalculateAge(dob);
 
-                if (!firstname.Equals($"{bvnDetails.FirstName}") || !lastname.Equals($"{bvnDetails.LastName}"))
+                if (!firstname.Equals($"{bvnDetails.FirstName.ToLower()}") || !lastname.Equals($"{bvnDetails.LastName.ToLower()}"))
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetailsFirstNameOrLastName };
 
                 if (currentAge.Year >= ageLimit)

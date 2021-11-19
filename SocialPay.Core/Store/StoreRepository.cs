@@ -61,7 +61,7 @@ namespace SocialPay.Core.Store
 
             try
             {
-                //userModel.ClientId = 238;
+               // userModel.ClientId = 238;
 
                 var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
 
