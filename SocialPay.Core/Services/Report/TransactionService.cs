@@ -118,6 +118,8 @@ namespace SocialPay.Core.Services.Report
                                     PhoneNumber = c.PhoneNumber,
                                     FullName = c.FullName,
                                     DateEntered = c.DateEntered,
+                                    ReferCode = c.ReferCode,
+                                    ReferalCode = c.ReferralCode,
                                     LastDateModified = c.LastDateModified
                                 }).ToList();
 

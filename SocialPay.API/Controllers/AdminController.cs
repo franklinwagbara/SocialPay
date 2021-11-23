@@ -240,16 +240,17 @@ namespace SocialPay.API.Controllers
             var response = new WebApiResponse { };
             try
             {
-                if (ModelState.IsValid)
-                {
-                    var result = await _transactionService.GetOnboardingJourney();
-                    return Ok(result);
-                }
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                response.ResponseCode = AppResponseCodes.Failed;
-                response.Data = message;
-                return BadRequest(response);
+                return Ok(await _transactionService.GetOnboardingJourney());
+                //if (ModelState.IsValid)
+                //{
+                //    var result = await _transactionService.GetOnboardingJourney();
+                //    return Ok(result);
+                //}
+                //var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                //    .Select(e => e.ErrorMessage));
+                //response.ResponseCode = AppResponseCodes.Failed;
+                //response.Data = message;
+                //return BadRequest(response);
 
             }
             catch (Exception ex)
