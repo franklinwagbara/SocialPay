@@ -18,7 +18,7 @@ namespace SocialPay.Helper.Dto.Request
         [Required(ErrorMessage = "Please select image.")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1518592)]
-        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".pdf", ".svg" })]
+        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".svg" })]
         public List<IFormFile> Image { get; set; }
     }
     public class ProductImageDto
@@ -39,5 +39,8 @@ namespace SocialPay.Helper.Dto.Request
         public decimal Price { get; set; }
         public List<int> Size { get; set; }
         public List<string> Color { get; set; }
+        [MaxFileSize(1518592)]
+        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".svg" })]
+        public List<IFormFile> Image { get; set; }
     }
 }
