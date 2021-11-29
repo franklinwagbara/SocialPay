@@ -756,7 +756,7 @@ namespace SocialPay.Core.Services.Report
             var sql = "UPDATE transactionLog SET TransactionJourney = @TransactionJourney where PaymentReference = @PaymentReference";
             try
             {
-                using (var connection = new SqlConnection("--------"))
+                using (var connection = new SqlConnection("----------"))
                 {
                     using (var command = new SqlCommand(sql, connection))
                     {
@@ -766,6 +766,7 @@ namespace SocialPay.Core.Services.Report
                         // repeat for all variables....
                         connection.Open();
                         command.ExecuteNonQuery();
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
 
                     }
@@ -775,9 +776,7 @@ namespace SocialPay.Core.Services.Report
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
 
-            }
-         
-            return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }         
         }
 
 

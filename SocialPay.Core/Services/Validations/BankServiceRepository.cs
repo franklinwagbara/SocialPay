@@ -135,7 +135,7 @@ namespace SocialPay.Core.Services.Validations
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange };
 
-                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
+               // return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {

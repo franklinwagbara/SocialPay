@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Extensions.Common;
+using SocialPay.Core.Services.Products;
 using SocialPay.Core.Store;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Notification;
@@ -16,10 +17,13 @@ namespace SocialPay.API.Controllers
     public class StoreController : BaseController
     {
         private readonly StoreRepository _storeRepository;
+        private readonly ProductsRepository _productsRepository;
 
-        public StoreController(StoreRepository storeRepository, INotification notification) : base(notification)
+        public StoreController(StoreRepository storeRepository, ProductsRepository productsRepository,
+            INotification notification) : base(notification)
         {
             _storeRepository = storeRepository ?? throw new ArgumentNullException(nameof(storeRepository));
+            _productsRepository = productsRepository ?? throw new ArgumentNullException(nameof(productsRepository));
         }
 
         [HttpPost]
@@ -42,6 +46,14 @@ namespace SocialPay.API.Controllers
         [HttpPost]
         [Route("create-product")]
         public async Task<IActionResult> CreateProducts([FromForm] ProductRequestDto request) => Response(await _storeRepository.CreateNewProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
+
+        [HttpPut]
+        [Route("update-product")]
+        public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDto request) => Response(await _productsRepository.UpdateProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
+
+        [HttpPut]
+        [Route("update-product-inventory")]
+        public async Task<IActionResult> UpdateProductInventory([FromBody] ProductInventoryDto request) => Response(await _productsRepository.UpdateProductInventoryAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
 
         [HttpGet]
         [Route("get-products")]

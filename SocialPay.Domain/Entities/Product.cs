@@ -28,6 +28,7 @@ namespace SocialPay.Domain.Entities
         public ProductCategory ProductCategory { get; set; }
         public virtual ICollection<ProductItems> ProductItems { get; set; }
         public virtual ICollection<ProductInventory> ProductInventory { get; set; }
+        public virtual ICollection<ProductInventoryHistory> ProductInventoryHistory { get; set; }
         //public Store Store { get; set; }
     }
 }

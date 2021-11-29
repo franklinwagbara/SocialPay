@@ -58,6 +58,8 @@ namespace SocialPay.Domain
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductItems> ProductItems { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
+        public DbSet<ProductInventory> ProductInventory { get; set; }
+        public DbSet<ProductInventoryHistory> productInventoryHistories { get; set; }
         public DbSet<QrPaymentRequest> QrPaymentRequest { get; set; }
         public DbSet<QrPaymentResponse> QrPaymentResponse { get; set; }
         public DbSet<SingleDstvPayment> SingleDstvPayment { get; set; }
@@ -66,7 +68,6 @@ namespace SocialPay.Domain
         public DbSet<DstvAccountLookupResponse> DstvAccountLookupResponse { get; set; }
         public DbSet<FioranoBillsRequest> FioranoBillsRequest { get; set; }
         public DbSet<FioranoBillsPaymentResponse> FioranoBillsPaymentResponse { get; set; }
-        public DbSet<ProductInventory> ProductInventory { get; set; }
         public DbSet<WebHookRequest> WebHookRequest { get; set; }
         public DbSet<WebHookTransactionRequestLog> WebHookTransactionRequestLog { get; set; }
         public DbSet<StoreTransactionLog> StoreTransactionLog { get; set; }

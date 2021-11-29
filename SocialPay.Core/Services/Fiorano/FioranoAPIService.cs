@@ -63,7 +63,7 @@ namespace SocialPay.Core.Services.Fiorano
             {
                 _log4net.Error("Job Service: An error occured while initiating fiorano transactions" + " | " + ex + " - "+ DateTime.Now);
 
-                return new FTResponseDto { ResponseCode = AppResponseCodes.InternalError };
+                return new FTResponseDto { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured" };
             }
         }
 

@@ -107,21 +107,36 @@ namespace SocialPay.Core.Services.Products
                             blobRequest.ImageDetail.Clear();
                         }
 
-                        var inventory = new ProductInventory
+                        var productInventory = new ProductInventory
                         {
                             ProductId = model.ProductId,
                             Quantity = request.Quantity,
                             LastDateModified = DateTime.Now
                         };
 
-                        await _context.ProductInventory.AddAsync(inventory);
+                        await _context.ProductInventory.AddAsync(productInventory);
+                        await _context.SaveChangesAsync();
+
+                        var inventoryHistory = new ProductInventoryHistory
+                        {
+                            ProdId = model.ProductId,
+                            ClientAuthenticationId = userModel.ClientId,
+                            Quantity = request.Quantity,
+                            IsAdded = true,
+                            Amount = request.Price,
+                            IsUpdated = false,
+                            ProductInventoryId = productInventory.ProductInventoryId,
+                            LastDateModified = DateTime.Now
+                        };
+
+                        await _context.productInventoryHistories.AddAsync(inventoryHistory);
                         await _context.SaveChangesAsync();
 
                         await _context.ProductItems.AddRangeAsync(proDetails);
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product "}{request.ProductName}{" was successfully saved"}", StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
@@ -130,10 +145,9 @@ namespace SocialPay.Core.Services.Products
                         //_log4net.Error("Error occured" + " | " + "Create new product" + " | " + ex + " | " + request.ProductName + " - " + userModel.UserID + " | " + DateTime.Now);
 
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while creating product", StatusCode = ResponseCodes.InternalError };
                     }
                 }
-
 
             }
             catch (Exception ex)
@@ -142,10 +156,124 @@ namespace SocialPay.Core.Services.Products
 
                 // _log4net.Error("Error occured" + " | " + "Create new product" + " | " + ex + " | " + request.ProductName + " - "+ userModel.UserID + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while creating new product", StatusCode = ResponseCodes.InternalError };
             }
         }
 
+        public async Task<WebApiResponse> UpdateProductAsync(ProductUpdateDto productUpdateDto, UserDetailsViewModel userModel)
+        {
+            try
+            {
+                var product = await _context.Products
+                    .Include(x=>x.ProductInventory)
+                    .SingleOrDefaultAsync(p => p.ProductId == productUpdateDto.ProductId);
+
+                if (product == default)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product not found"}", StatusCode = ResponseCodes.RecordNotFound };
+
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var color = string.Empty;
+                        var size = string.Empty;
+
+                        color = productUpdateDto.Color.Aggregate((a, b) => a + ", " + b);
+
+                        size = string.Join(",", productUpdateDto.Size.ToArray());
+
+                        product.Description = productUpdateDto.Description;
+                        product.Color = color;
+                        product.Size = size;
+                        product.ProductName = productUpdateDto.ProductName;
+                        product.LastDateModified = DateTime.Now;
+
+                        _context.Update(product);
+                        await _context.SaveChangesAsync();
+
+                        var productHistory = new ProductInventoryHistory
+                        {
+                            ProdId = productUpdateDto.ProductId,
+                            LastDateModified = DateTime.Now,
+                            ClientAuthenticationId = userModel.ClientId,
+                            IsUpdated = true,
+                            IsAdded = false,
+                            ProductInventoryId = product.ProductInventory.Select(x=>x.ProductInventoryId).FirstOrDefault(),
+                        };
+
+                        await _context.productInventoryHistories.AddAsync(productHistory);
+                        await _context.SaveChangesAsync();
+
+                        await transaction.CommitAsync();
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product "} {productUpdateDto.ProductName}{" was successfully updated"}", StatusCode = ResponseCodes.Success };
+
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
+            }
+        }
+
+        public async Task<WebApiResponse> UpdateProductInventoryAsync(ProductInventoryDto productInventoryDto, UserDetailsViewModel userModel)
+        {
+            try
+            {
+                var productInventory = await _context.ProductInventory.SingleOrDefaultAsync(p => p.ProductId == productInventoryDto.ProductId);
+
+                if(productInventory == default)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product not found"}", StatusCode = ResponseCodes.RecordNotFound };
+
+                using(var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        productInventory.Quantity = productInventory.Quantity + productInventoryDto.Quantity;
+                        productInventory.LastDateModified = DateTime.Now;
+
+                        _context.Update(productInventory);
+                        await _context.SaveChangesAsync();
+
+                        var productHistory = new ProductInventoryHistory
+                        {
+                            ProdId = productInventoryDto.ProductId,
+                            Quantity = productInventoryDto.Quantity,
+                            LastDateModified = DateTime.Now,
+                            ClientAuthenticationId = userModel.ClientId,
+                            IsUpdated = true,
+                            IsAdded = false,
+                            ProductInventoryId = productInventory.ProductInventoryId,
+                        };
+
+                        await _context.productInventoryHistories.AddAsync(productHistory);
+                        await _context.SaveChangesAsync();
+
+                        await transaction.CommitAsync();
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product inventory was successfully updated"}", StatusCode = ResponseCodes.Success };
+
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
+                    }
+                }
+              
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
+            }
+        }
         public async Task<WebApiResponse> GetProductsByClientId(long clientId)
         {
             try

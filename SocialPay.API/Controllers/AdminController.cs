@@ -353,10 +353,8 @@ namespace SocialPay.API.Controllers
             try
             {
 
-
                 if (ModelState.IsValid)
                     return Ok(await _createBulkMerchantService.BulkCreateMerchant(doc));
-
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
@@ -1112,62 +1110,62 @@ namespace SocialPay.API.Controllers
 
 
 
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("get-updated-trans")]
-        ////public async Task<IActionResult> UpdateTransLasync([FromQuery] string reference, string paymentRef, string code)
-        ////{
-        ////    var response = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        if (reference != "4345d")
-        ////            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-updated-trans")]
+        public async Task<IActionResult> UpdateTransLasync([FromQuery] string reference, string paymentRef, string code)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "4345d")
+                    return BadRequest();
 
-        ////        if (ModelState.IsValid)
-        ////            return Ok(await _merchantReportService.UpdateTransLog(paymentRef, code));
+                if (ModelState.IsValid)
+                    return Ok(await _merchantReportService.UpdateTransLog(paymentRef, code));
 
-        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        ////            .Select(e => e.ErrorMessage));
-        ////        response.ResponseCode = AppResponseCodes.Failed;
-        ////        response.Data = message;
-        ////        return BadRequest(response);
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        response.ResponseCode = AppResponseCodes.InternalError;
-        ////        return BadRequest(response);
-        ////    }
-        ////}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("get-updated-trans-local")]
-        ////public async Task<IActionResult> UpdateTransLocalAync([FromQuery] string reference, string paymentRef, string code)
-        ////{
-        ////    var response = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        if (reference != "4345d")
-        ////            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-updated-trans-local")]
+        public async Task<IActionResult> UpdateTransLocalAync([FromQuery] string reference, string paymentRef, string code)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "435g2")
+                    return BadRequest();
 
-        ////        if (ModelState.IsValid)
-        ////            return Ok(await _merchantReportService.UpdateCustomerInfo2(paymentRef, code));
+                if (ModelState.IsValid)
+                    return Ok(await _merchantReportService.UpdateCustomerInfo2(paymentRef, code));
 
-        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        ////            .Select(e => e.ErrorMessage));
-        ////        response.ResponseCode = AppResponseCodes.Failed;
-        ////        response.Data = message;
-        ////        return BadRequest(response);
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        response.ResponseCode = AppResponseCodes.InternalError;
-        ////        return BadRequest(response);
-        ////    }
-        ////}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
         ////[AllowAnonymous]
