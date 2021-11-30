@@ -49,6 +49,7 @@ namespace SocialPay.Helper.ViewModel
 
     public class ProductItemViewModel
     {
+        public long ImageId { get; set; }
         public string FileLocation { get; set; }
         public string Url { get; set; }
     }
