@@ -51,6 +51,10 @@ namespace SocialPay.API.Controllers
         [Route("update-product")]
         public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDto request) => Response(await _productsRepository.UpdateProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
 
+        [HttpDelete]
+        [Route("delete-product-Image")]
+        public async Task<IActionResult> DeleteProductImage([FromQuery] long imageId) => Response(await _productsRepository.DeleteProductImageAsync(imageId, User.GetSessionDetails()).ConfigureAwait(false));
+
         [HttpPut]
         [Route("update-product-inventory")]
         public async Task<IActionResult> UpdateProductInventory([FromBody] ProductInventoryDto request) => Response(await _productsRepository.UpdateProductInventoryAsync(request, User.GetSessionDetails()).ConfigureAwait(false));

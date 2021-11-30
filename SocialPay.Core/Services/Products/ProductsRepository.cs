@@ -223,6 +223,29 @@ namespace SocialPay.Core.Services.Products
             }
         }
 
+        public async Task<WebApiResponse> DeleteProductImageAsync(long imageId, UserDetailsViewModel userModel)
+        {
+            try
+            {
+                var product = await _context.ProductItems
+                    .SingleOrDefaultAsync(p => p.ProductId == imageId);
+
+                if (product == default)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product image not found"}", StatusCode = ResponseCodes.RecordNotFound };
+
+                 _context.Remove(product);
+                await _context.SaveChangesAsync();
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product images was successfully removed"}", StatusCode = ResponseCodes.Success };
+
+            }
+            catch (Exception ex)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
+            }
+        }
+
+
         public async Task<WebApiResponse> UpdateProductInventoryAsync(ProductInventoryDto productInventoryDto, UserDetailsViewModel userModel)
         {
             try
