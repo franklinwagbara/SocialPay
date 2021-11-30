@@ -99,7 +99,7 @@ namespace SocialPay.Core.Services.Products
 
                             blobRequest.ImageDetail = productImages;
 
-                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId });
+                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
 
                             await _blobService.UploadProducts(blobRequest);
 
@@ -165,7 +165,7 @@ namespace SocialPay.Core.Services.Products
             try
             {
                 var product = await _context.Products
-                    .Include(x=>x.ProductInventory)
+                    .Include(x => x.ProductInventory)
                     .SingleOrDefaultAsync(p => p.ProductId == productUpdateDto.ProductId);
 
                 if (product == default)
@@ -198,7 +198,7 @@ namespace SocialPay.Core.Services.Products
                             ClientAuthenticationId = userModel.ClientId,
                             IsUpdated = true,
                             IsAdded = false,
-                            ProductInventoryId = product.ProductInventory.Select(x=>x.ProductInventoryId).FirstOrDefault(),
+                            ProductInventoryId = product.ProductInventory.Select(x => x.ProductInventoryId).FirstOrDefault(),
                         };
 
                         await _context.productInventoryHistories.AddAsync(productHistory);
@@ -233,7 +233,9 @@ namespace SocialPay.Core.Services.Products
                 if (product == default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product image not found"}", StatusCode = ResponseCodes.RecordNotFound };
 
-                 _context.Remove(product);
+                product.IsDeleted = true;
+                product.LastDateModified = DateTime.Now;
+                _context.Update(product);
                 await _context.SaveChangesAsync();
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product images was successfully removed"}", StatusCode = ResponseCodes.Success };
@@ -252,10 +254,10 @@ namespace SocialPay.Core.Services.Products
             {
                 var productInventory = await _context.ProductInventory.SingleOrDefaultAsync(p => p.ProductId == productInventoryDto.ProductId);
 
-                if(productInventory == default)
+                if (productInventory == default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product not found"}", StatusCode = ResponseCodes.RecordNotFound };
 
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
@@ -290,7 +292,7 @@ namespace SocialPay.Core.Services.Products
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
                     }
                 }
-              
+
             }
             catch (Exception ex)
             {
@@ -372,7 +374,7 @@ namespace SocialPay.Core.Services.Products
                                  Quantity = pi.Quantity
                              }).ToList();
 
-               // query.Select(x => x.merchantStoreViewModel = new MerchantStoreViewModel { StoreName = stores.StoreName });
+                // query.Select(x => x.merchantStoreViewModel = new MerchantStoreViewModel { StoreName = stores.StoreName });
                 var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
                 var blobClient = storageAccount.CreateCloudBlobClient();
 
@@ -381,7 +383,7 @@ namespace SocialPay.Core.Services.Products
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems
-                                           .Where(x => x.ProductId == item.ProductId)
+                                           .Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
                                                  select new ProductItemViewModel
                                                  {
                                                      FileLocation = p.FileLocation,
@@ -597,7 +599,7 @@ namespace SocialPay.Core.Services.Products
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems
-                                           .Where(x => x.ProductId == item.ProductId)
+                                           .Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
                                                  select new ProductItemViewModel
                                                  {
                                                      FileLocation = p.FileLocation
