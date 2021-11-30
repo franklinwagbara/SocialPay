@@ -41,6 +41,12 @@ namespace SocialPay.Helper.Dto.Request
         public List<string> Color { get; set; }
         [MaxFileSize(1518592)]
         [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".svg" })]
-        public List<IFormFile> Image { get; set; }
+        public List<ProductImage> ImageDetails { get; set; }
+    }
+
+    public class ProductImage
+    {
+        public string ImageUrl { get; set; }
+        public long ImageId { get; set; }
     }
 }
