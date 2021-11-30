@@ -348,7 +348,8 @@ namespace SocialPay.Core.Services.Products
                                  Options = pr.Options,
                                  StoreDescription = s.Description,
                                  ProductDescription = pr.Description,
-                                 ProductId = pr.ProductId,
+                                 ProductId = proItems.ProductItemsId,
+                                 //ProductId = pr.ProductId,
                                  Quantity = pi.Quantity,
                                  ProductItemsViewModel = new List<ProductItemViewModel>()
                                  {
