@@ -26,7 +26,11 @@ namespace SocialPay.Helper.ViewModel
         public List<ProductItemViewModel> Products { get; set; }
     }
 
+    public class MerchantStoreViewModel
+    {
+        public string StoreName { get; set; }
 
+    }
     public class StoreProductsViewModel
     {
         public string StoreName { get; set; }
@@ -51,6 +55,7 @@ namespace SocialPay.Helper.ViewModel
 
     public class ProductsDetailsViewModel
     {
+        public string StoreName { get; set; }
         public string ProductName { get; set; }
         public long ProductId { get; set; }
         public int Quantity { get; set; }
@@ -61,5 +66,8 @@ namespace SocialPay.Helper.ViewModel
         public string Category { get; set; }
         public bool Options { get; set; }
         public List<ProductItemViewModel> ProductItemsViewModel { get; set; }
+      //  public MerchantStoreViewModel merchantStoreViewModel { get; set; }
     }
+
+   
 }
