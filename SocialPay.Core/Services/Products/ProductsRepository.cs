@@ -165,6 +165,7 @@ namespace SocialPay.Core.Services.Products
             try
             {
                 var product = await _context.Products
+                    .Include(x=>x.ProductInventory)
                     .SingleOrDefaultAsync(p => p.ProductId == productUpdateDto.ProductId);
 
                 if (product == default)
@@ -199,7 +200,7 @@ namespace SocialPay.Core.Services.Products
 
                         var proDetails = new List<ProductItems>();
 
-                        foreach (var item in productUpdateDto.ImageDetails.Where(x=>x.ImageId == default))
+                        foreach (var item in productUpdateDto.Image)
                         {
                             var filePath = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
 
@@ -207,7 +208,7 @@ namespace SocialPay.Core.Services.Products
 
                             productImages.Add(new DefaultDocumentRequest
                             {
-                                Image = item.Image,
+                                Image = item,
                                 ImageGuidId = filePath,
                                 FileLocation = fileLocation
                             });
