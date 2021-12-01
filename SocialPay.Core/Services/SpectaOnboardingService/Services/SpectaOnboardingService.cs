@@ -47,10 +47,20 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));
-                var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
-                apiResponse.Data = Response;
+
                 apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+
+                if (response.IsSuccessful)
+                {
+                    var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
+                    apiResponse.Data = Response;                    
+
+                    return apiResponse;
+                }
+
+                apiResponse.Data = response.Content;
                 return apiResponse;
+
             }
             catch (Exception ex)
             {
