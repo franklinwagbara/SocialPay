@@ -80,5 +80,13 @@ namespace SocialPay.Domain
         public DbSet<MerchantTransactionSetup> MerchantTransactionSetup { get; set; }
         public DbSet<SpectaRegisterCustomerRequest> SpectaRegisterCustomerRequest { get; set; }
         public DbSet<SpectaRegisterCustomerResponse> SpectaRegisterCustomerResponse { get; set; }
+        public DbSet<LoanDailyDeductionLog> LoanDailyDeductionLog { get; set; }
+        public DbSet<ApplyForLoan> ApplyForLoan { get; set; }
+        public DbSet<LoanDisbursement> LoanDisbursement { get; set; }
+        public DbSet<LoanMonthlyDeductionLog> loanMonthlyDeductionLog { get; set; }
+        public DbSet<LoanRepaymentPlan> LoanRepaymentPlan { get; set; }
+        public DbSet<LoginAttemptHistory> LoginAttemptHistories { get; set; }
+        public DbSet<CardTokenization> CardTokenization { get; set; }
+        public DbSet<MerchantBureauSearch> MerchantBureauSearch { get; set; }
     }
 }

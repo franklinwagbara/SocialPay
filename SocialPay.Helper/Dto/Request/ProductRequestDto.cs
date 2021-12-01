@@ -33,6 +33,7 @@ namespace SocialPay.Helper.Dto.Request
 
     public class ProductUpdateDto
     {
+        public long ProductCategoryId { get; set; }
         public long ProductId { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
@@ -41,12 +42,7 @@ namespace SocialPay.Helper.Dto.Request
         public List<string> Color { get; set; }
         [MaxFileSize(1518592)]
         [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg", ".svg" })]
-        public List<ProductImage> ImageDetails { get; set; }
+        public List<IFormFile> Image { get; set; }
     }
-
-    public class ProductImage
-    {
-        public string ImageUrl { get; set; }
-        public long ImageId { get; set; }
-    }
+  
 }

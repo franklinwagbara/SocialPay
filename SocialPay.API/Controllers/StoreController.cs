@@ -49,7 +49,7 @@ namespace SocialPay.API.Controllers
 
         [HttpPut]
         [Route("update-product")]
-        public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDto request) => Response(await _productsRepository.UpdateProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
+        public async Task<IActionResult> UpdateProduct([FromForm] ProductUpdateDto request) => Response(await _productsRepository.UpdateProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
 
         [HttpDelete]
         [Route("delete-product-Image")]
