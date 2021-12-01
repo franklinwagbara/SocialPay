@@ -199,7 +199,7 @@ namespace SocialPay.Core.Services.Products
 
                         var proDetails = new List<ProductItems>();
 
-                        foreach (var item in productUpdateDto.ImageDetails.Where(x=>x.ImageId > 0))
+                        foreach (var item in productUpdateDto.ImageDetails.Where(x=>x.ImageId == default))
                         {
                             var filePath = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
 
@@ -219,6 +219,7 @@ namespace SocialPay.Core.Services.Products
                             await _blobService.UploadProducts(blobRequest);
 
                             productImages.Clear();
+
                             blobRequest.ImageDetail.Clear();
                         }
 
@@ -233,6 +234,9 @@ namespace SocialPay.Core.Services.Products
                         };
 
                         await _context.productInventoryHistories.AddAsync(productHistory);
+                        await _context.SaveChangesAsync();
+
+                        await _context.ProductItems.AddRangeAsync(proDetails);
                         await _context.SaveChangesAsync();
 
                         await transaction.CommitAsync();
