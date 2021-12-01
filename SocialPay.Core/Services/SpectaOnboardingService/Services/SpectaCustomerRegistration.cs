@@ -69,11 +69,11 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         await _context.SaveChangesAsync();
 
                         if (request.ResponseCode != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data, StatusCode = ResponseCodes.Badrequest };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", StatusCode = ResponseCodes.Badrequest };
                        
                         await transaction.CommitAsync();
                         
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.RegisterCustomer, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.RegisterCustomer, Message = "Success", StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
