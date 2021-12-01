@@ -684,41 +684,103 @@ namespace SocialPay.Core.Services.Products
 
                 var storeDetail = new StoreDetailsViewModel();
 
+                var productItems = new List<ProductItemViewModel>();
+
                 var stores = await _context.MerchantStore
-                    .Where(x => x.MerchantStoreId == storeId).ToListAsync();
+                    .SingleOrDefaultAsync(x => x.MerchantStoreId == storeId);
 
-                storeDetail.StoreName = stores.Select(x => x.StoreName).FirstOrDefault();
-                storeDetail.StoreDescription = stores.Select(x => x.Description).FirstOrDefault();
-                storeDetail.TransactionReference = transactionReference;
-
-                var query = (from s in stores
-                             join pc in _context.ProductCategories on s.ClientAuthenticationId equals pc.ClientAuthenticationId
-                             join pr in _context.Products on pc.ProductCategoryId equals pr.ProductCategoryId
-                             join pi in _context.ProductInventory on pr.ProductId equals pi.ProductId
-                             join proItem in _context.ProductItems on pr.ProductId equals proItem.ProductId
-                             where pr.MerchantStoreId == storeId
+                var query = (from pro in _context.Products
+                            // where pro.MerchantStoreId == stores.MerchantStoreId
+                             join pc in _context.ProductCategories on pro.ProductCategoryId equals pc.ProductCategoryId
+                             join pi in _context.ProductInventory on pro.ProductId equals pi.ProductId
+                             join proItem in _context.ProductItems on pro.ProductId equals proItem.ProductId
+                             where pro.MerchantStoreId == storeId && proItem.IsDeleted == false
 
                              select new StoreProductsDetailsViewModel
                              {
-                                 ProductName = pr.ProductName,
-                                 Price = pr.Price,
-                                 Size = pr.Size,
+                                 ProductName = pro.ProductName,
+                                 Price = pro.Price,
+                                 Size = pro.Size,
                                  Category = pc.CategoryName,
-                                 Color = pr.Color,
-                                 Options = pr.Options,
-                                 ProductDescription = pr.Description,
-                                 ProductId = pr.ProductId,
+                                 Color = pro.Color,
+                                 Options = pro.Options,
+                                 ProductDescription = pro.Description,
+                                 ProductId = pro.ProductId,
                                  Quantity = pi.Quantity,
-                                 Products = new List<ProductItemViewModel>()
-                                 {
-                                     new ProductItemViewModel
-                                     {
-                                         FileLocation = proItem.FileLocation,
-                                         Url = proItem.FileLocation
-                                     }
-                                 }
+                                 //Products = new List<ProductItemViewModel>()
+                                 //{
+                                 //    new ProductItemViewModel
+                                 //    {
+                                 //        FileLocation = proItem.FileLocation,
+                                 //        Url = proItem.FileLocation
+                                 //    }
+                                 //}
 
                              }).ToList();
+
+                // query.Select(x => x.merchantStoreViewModel = new MerchantStoreViewModel { StoreName = stores.StoreName });
+                var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
+                var blobClient = storageAccount.CreateCloudBlobClient();
+
+                CloudBlobContainer container = blobClient.GetContainerReference(containerName);
+
+                foreach (var item in query)
+                {
+                    var getProductsItem = await (from p in _context.ProductItems
+                                           .Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
+                                                 select new ProductItemViewModel
+                                                 {
+                                                     FileLocation = p.FileLocation,
+                                                     ImageId = p.ProductItemsId
+                                                 }).ToListAsync();
+
+                    foreach (var image in getProductsItem)
+                    {
+                        CloudBlockBlob blob = container.GetBlockBlobReference(image.FileLocation);
+
+                        image.Url = blob.Uri.AbsoluteUri;
+
+                        item.Products = getProductsItem;
+                    }
+                }
+
+
+
+                ////var stores = await _context.MerchantStore
+                ////    .Where(x => x.MerchantStoreId == storeId).ToListAsync();
+
+                ////storeDetail.StoreName = stores.Select(x => x.StoreName).FirstOrDefault();
+                ////storeDetail.StoreDescription = stores.Select(x => x.Description).FirstOrDefault();
+                ////storeDetail.TransactionReference = transactionReference;
+
+                ////var query = (from s in stores
+                ////             join pc in _context.ProductCategories on s.ClientAuthenticationId equals pc.ClientAuthenticationId
+                ////             join pr in _context.Products on pc.ProductCategoryId equals pr.ProductCategoryId
+                ////             join pi in _context.ProductInventory on pr.ProductId equals pi.ProductId
+                ////             join proItem in _context.ProductItems on pr.ProductId equals proItem.ProductId
+                ////             where pr.MerchantStoreId == storeId && proItem.IsDeleted == false
+
+                ////             select new StoreProductsDetailsViewModel
+                ////             {
+                ////                 ProductName = pr.ProductName,
+                ////                 Price = pr.Price,
+                ////                 Size = pr.Size,
+                ////                 Category = pc.CategoryName,
+                ////                 Color = pr.Color,
+                ////                 Options = pr.Options,
+                ////                 ProductDescription = pr.Description,
+                ////                 ProductId = pr.ProductId,
+                ////                 Quantity = pi.Quantity,
+                ////                 Products = new List<ProductItemViewModel>()
+                ////                 {
+                ////                     new ProductItemViewModel
+                ////                     {
+                ////                         FileLocation = proItem.FileLocation,
+                ////                         Url = proItem.FileLocation
+                ////                     }
+                ////                 }
+
+                ////             }).ToList();
 
 
                 ////var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
@@ -733,11 +795,12 @@ namespace SocialPay.Core.Services.Products
                 ////                           .Where(x => x.ProductId == item.ProductId)
                 ////                                 select new ProductItemViewModel
                 ////                                 {
-                ////                                     FileLocation = p.FileLocation
+                ////                                     FileLocation = p.FileLocation,
+                ////                                     ImageId = p.ProductItemsId
                 ////                                 }).ToListAsync();
 
                 ////    foreach (var image in getProductsItem)
-                ////    {                      
+                ////    {
                 ////        CloudBlockBlob blob = container.GetBlockBlobReference(image.FileLocation);
 
                 ////        image.Url = blob.Uri.AbsoluteUri;
@@ -746,13 +809,13 @@ namespace SocialPay.Core.Services.Products
                 ////    }
                 ////}
 
-                ////storeDetail.StoreDetails = query;
+                storeDetail.StoreDetails = query;
 
                 ////CloudBlockBlob storeblob = container.GetBlockBlobReference(stores.Select(x=>x.FileLocation).FirstOrDefault());
 
                 //storeDetail.StoreLogoUrl = storeblob.Uri.AbsoluteUri;
                 storeDetail.StoreDetails = query;
-                storeDetail.StoreLogoUrl = stores.Select(x => x.FileLocation).FirstOrDefault();
+                storeDetail.StoreLogoUrl = stores.FileLocation;
 
                 //  if (query.Count > 0)
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail, StatusCode = ResponseCodes.Success };
