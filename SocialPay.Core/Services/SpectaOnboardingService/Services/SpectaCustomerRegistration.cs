@@ -54,6 +54,10 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         await _context.SaveChangesAsync();
 
                         var request = await _spectaOnboardingService.RegisterCustomer(model);
+
+                        if (request.ResponseCode != AppResponseCodes.Success)
+                            return request;
+
                         var response = (SpectaResponseWithObjectResultMessage.SpectaResponseDto)request.Data;
 
                         var customerregresponse = new SpectaRegisterCustomerResponse();
@@ -87,7 +91,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     {
                         await transaction.RollbackAsync();
                         _log4net.Error("Error occured" + " | " + "CustomerRegistration" + " | " + ex + " | " + DateTime.Now);
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed", StatusCode = ResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Request failed", StatusCode = ResponseCodes.InternalError };
                     }
                 }
             }
