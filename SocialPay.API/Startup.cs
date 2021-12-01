@@ -33,6 +33,7 @@ using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.EventLogs;
 using SocialPay.Core.Services.Fiorano;
 using SocialPay.Core.Services.IBS;
+using SocialPay.Core.Services.Loan;
 using SocialPay.Core.Services.Merchant;
 using SocialPay.Core.Services.PayU;
 using SocialPay.Core.Services.Products;
@@ -238,6 +239,12 @@ namespace SocialPay.API
             services.AddSingleton<EncryptDecryptJob>();
             services.AddSingleton<EncryptDecrypt>();
             services.AddSingleton<StoreLogger>();
+
+            ///Loan Services
+            
+            services.AddScoped<LoanEligibiltyService>();
+            services.AddScoped<LoanRepaymentService>();
+            services.AddScoped<ApplyForLoanService>();
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IAsyncRepository<>), typeof(Repository<>));

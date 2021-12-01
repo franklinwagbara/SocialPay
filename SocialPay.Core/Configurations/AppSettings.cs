@@ -148,6 +148,11 @@
         public string MaxReceivedMessageSize { get; set; }
         public string MaxBufferSize { get; set; }
         public string MaxBufferPoolSize { get; set; }
+        public string CreditBureauSearchBaseURL { get; set; }
+        public string TokenizationBaseURL { get; set; }
+        public string CardTokenizationAuthorizationToken { get; set; }
+        public string CreditBureauSearch_Crc { get; set; }
+        public string TokenizationURL { get; set; }
 
     }
 }

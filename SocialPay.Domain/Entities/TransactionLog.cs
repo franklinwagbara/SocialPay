@@ -49,6 +49,8 @@ namespace SocialPay.Domain.Entities
         public string TransactionType { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal ActualAmount { get; set; }
         public DateTime DeliveryDate { get; set; }
         public DateTime DeliveryFinalDate { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
