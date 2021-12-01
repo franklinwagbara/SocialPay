@@ -259,7 +259,7 @@ namespace SocialPay.Core.Services.Products
             try
             {
                 var product = await _context.ProductItems
-                    .SingleOrDefaultAsync(p => p.ProductId == imageId);
+                    .SingleOrDefaultAsync(p => p.ProductItemsId == imageId);
 
                 if (product == default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product image not found"}", StatusCode = ResponseCodes.RecordNotFound };
