@@ -33,6 +33,7 @@ namespace SocialPay.Helper.Dto.Request
 
     public class ProductUpdateDto
     {
+        public long ProductCategoryId { get; set; }
         public long ProductId { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }

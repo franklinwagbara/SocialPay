@@ -186,6 +186,7 @@ namespace SocialPay.Core.Services.Products
                         product.Color = color;
                         product.Size = size;
                         product.ProductName = productUpdateDto.ProductName;
+                        product.ProductCategoryId = productUpdateDto.ProductCategoryId;
                         product.LastDateModified = DateTime.Now;
 
                         _context.Update(product);
