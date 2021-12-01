@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SocialPay.Core.Configurations;
+using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Services.Specta;
 using SocialPay.Core.Services.SpectaOnboardingService.Interface;
 using SocialPay.Domain;
@@ -15,12 +18,14 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
     public class SpectaCustomerRegistration : ISpectaCustomerRegistration
     {
         private readonly SocialPayDbContext _context;
+        private readonly AppSettings _appSettings;
         private readonly ISpectaOnBoarding _spectaOnboardingService;
         private readonly IMapper _mapper;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(PayWithSpectaService));
 
-        public SpectaCustomerRegistration(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
+        public SpectaCustomerRegistration(IOptions<AppSettings> appSettings,SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
         {
+            _appSettings = appSettings.Value;
             _context = context;
             _mapper = mapper;
             _spectaOnboardingService = spectaOnboardingService;
@@ -41,6 +46,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 
                         var requestmodel = _mapper.Map<SpectaRegisterCustomerRequest>(model);
                         requestmodel.RegistrationStatus = SpectaProcessCodes.RegisterCustomer;
+                        var password = requestmodel.password;
+                        requestmodel.password = password.Encrypt(_appSettings.appKey);
+
 
                         await _context.SpectaRegisterCustomerRequest.AddAsync(requestmodel);
                         await _context.SaveChangesAsync();
@@ -69,11 +77,11 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         await _context.SaveChangesAsync();
 
                         if (request.ResponseCode != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data, StatusCode = ResponseCodes.Badrequest };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", StatusCode = ResponseCodes.Badrequest };
                        
                         await transaction.CommitAsync();
                         
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.RegisterCustomer, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.RegisterCustomer, Message = "Success", StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {

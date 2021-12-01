@@ -43,7 +43,8 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 var client = new RestClient($"{_client.BaseAddress}{_appSettings.SpectaRegistrationCustomerUrlExtension}");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-                request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
+                //request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
+                //request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.emailAddress));
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));
