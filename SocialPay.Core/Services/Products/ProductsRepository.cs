@@ -200,6 +200,10 @@ namespace SocialPay.Core.Services.Products
 
                         var proDetails = new List<ProductItems>();
 
+                        blobRequest.ClientId = userModel.ClientId;
+                        blobRequest.RequestType = "Product";
+                        blobRequest.ProductName = productUpdateDto.ProductName;
+
                         foreach (var item in productUpdateDto.Image)
                         {
                             var filePath = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";

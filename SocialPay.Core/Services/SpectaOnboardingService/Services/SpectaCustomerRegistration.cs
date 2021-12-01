@@ -78,14 +78,14 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _log4net.Error("Error occured" + " | " + "CustomerRegistration" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        _log4net.Error("Error occured" + " | " + "CustomerRegistration" + " | " + ex + " | " + DateTime.Now);
                         return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed", StatusCode = ResponseCodes.InternalError };
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "CustomerRegistration" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "CustomerRegistration" + " | " + ex + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed ", StatusCode = ResponseCodes.InternalError };
 
             }
