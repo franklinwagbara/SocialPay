@@ -638,7 +638,8 @@ namespace SocialPay.Core.Services.Products
                                            .Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
                                                  select new ProductItemViewModel
                                                  {
-                                                     FileLocation = p.FileLocation
+                                                     FileLocation = p.FileLocation,
+                                                     ImageId = p.ProductItemsId
                                                  }).ToListAsync();
 
                     foreach (var image in getProductsItem)
