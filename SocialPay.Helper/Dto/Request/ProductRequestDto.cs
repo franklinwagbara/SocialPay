@@ -46,7 +46,7 @@ namespace SocialPay.Helper.Dto.Request
 
     public class ProductImage
     {
-        public string ImageUrl { get; set; }
+        public IFormFile Image { get; set; }
         public long ImageId { get; set; }
     }
 }

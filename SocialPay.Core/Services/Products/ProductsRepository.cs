@@ -191,6 +191,37 @@ namespace SocialPay.Core.Services.Products
                         _context.Update(product);
                         await _context.SaveChangesAsync();
 
+                        var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
+
+                        var blobRequest = new BlobProductsRequest();
+
+                        var productImages = new List<DefaultDocumentRequest>();
+
+                        var proDetails = new List<ProductItems>();
+
+                        foreach (var item in productUpdateDto.ImageDetails.Where(x=>x.ImageId > 0))
+                        {
+                            var filePath = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
+
+                            var fileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{filePath}";
+
+                            productImages.Add(new DefaultDocumentRequest
+                            {
+                                Image = item.Image,
+                                ImageGuidId = filePath,
+                                FileLocation = fileLocation
+                            });
+
+                            blobRequest.ImageDetail = productImages;
+
+                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
+
+                            await _blobService.UploadProducts(blobRequest);
+
+                            productImages.Clear();
+                            blobRequest.ImageDetail.Clear();
+                        }
+
                         var productHistory = new ProductInventoryHistory
                         {
                             ProdId = productUpdateDto.ProductId,
