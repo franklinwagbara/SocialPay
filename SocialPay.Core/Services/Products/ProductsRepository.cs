@@ -165,7 +165,6 @@ namespace SocialPay.Core.Services.Products
             try
             {
                 var product = await _context.Products
-                    .Include(x => x.ProductInventory)
                     .SingleOrDefaultAsync(p => p.ProductId == productUpdateDto.ProductId);
 
                 if (product == default)
