@@ -889,7 +889,7 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
-               // clientId = 238;
+              //  clientId = 238;
                 _log4net.Info("GetCustomersTransactionCount" + " | " + clientId + " | " + DateTime.Now);
 
                 var result = await _context.TransactionLog
