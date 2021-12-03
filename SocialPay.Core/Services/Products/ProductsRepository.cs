@@ -810,7 +810,7 @@ namespace SocialPay.Core.Services.Products
                 ////}
 
                 storeDetail.StoreDetails = query;
-
+                storeDetail.StoreName = stores.StoreName;
                 ////CloudBlockBlob storeblob = container.GetBlockBlobReference(stores.Select(x=>x.FileLocation).FirstOrDefault());
 
                 //storeDetail.StoreLogoUrl = storeblob.Uri.AbsoluteUri;
