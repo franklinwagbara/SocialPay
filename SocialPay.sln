@@ -37,13 +37,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain Layer", "Domain Laye
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helper Layer", "Helper Layer", "{5EC0A5D1-84BA-4DCA-8A32-9C173C77A70A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialPay.ApplicationCore", "SocialPay.ApplicationCore\SocialPay.ApplicationCore.csproj", "{5A3C0086-BE75-4AB7-BCD0-1B53ABAD5D68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialPay.ApplicationCore", "SocialPay.ApplicationCore\SocialPay.ApplicationCore.csproj", "{5A3C0086-BE75-4AB7-BCD0-1B53ABAD5D68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialPay.Persistance", "SocialPay.Persistance\SocialPay.Persistance.csproj", "{6BF48A57-806F-4CF2-BE36-425ECF053375}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialPay.Persistance", "SocialPay.Persistance\SocialPay.Persistance.csproj", "{6BF48A57-806F-4CF2-BE36-425ECF053375}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialPay.DomainLayer", "SocialPay.DomainLayer\SocialPay.DomainLayer.csproj", "{1C4D1401-0E9E-4F3E-84AC-B22845D73D2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialPay.DomainLayer", "SocialPay.DomainLayer\SocialPay.DomainLayer.csproj", "{1C4D1401-0E9E-4F3E-84AC-B22845D73D2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialPay.HelperLayer", "SocialPay.HelperLayer\SocialPay.HelperLayer.csproj", "{5ADDCCB6-6ACD-47CC-994D-E2BD33AD43A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialPay.HelperLayer", "SocialPay.HelperLayer\SocialPay.HelperLayer.csproj", "{5ADDCCB6-6ACD-47CC-994D-E2BD33AD43A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
