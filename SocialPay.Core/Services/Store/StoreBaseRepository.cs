@@ -761,6 +761,7 @@ namespace SocialPay.Core.Services.Store
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = getCustomerInfo.Amount;
+                    logconfirmation.ActualAmount = 0;
                     logconfirmation.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
                     logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Approved;
