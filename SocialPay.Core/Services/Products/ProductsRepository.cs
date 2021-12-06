@@ -117,20 +117,20 @@ namespace SocialPay.Core.Services.Products
                         await _context.ProductInventory.AddAsync(productInventory);
                         await _context.SaveChangesAsync();
 
-                        var inventoryHistory = new ProductInventoryHistory
-                        {
-                            ProdId = model.ProductId,
-                            ClientAuthenticationId = userModel.ClientId,
-                            Quantity = request.Quantity,
-                            IsAdded = true,
-                            Amount = request.Price,
-                            IsUpdated = false,
-                            ProductInventoryId = productInventory.ProductInventoryId,
-                            LastDateModified = DateTime.Now
-                        };
+                        ////var inventoryHistory = new ProductInventoryHistory
+                        ////{
+                        ////    ProdId = model.ProductId,
+                        ////    ClientAuthenticationId = userModel.ClientId,
+                        ////    Quantity = request.Quantity,
+                        ////    IsAdded = true,
+                        ////    Amount = request.Price,
+                        ////    IsUpdated = false,
+                        ////    ProductInventoryId = productInventory.ProductInventoryId,
+                        ////    LastDateModified = DateTime.Now
+                        ////};
 
-                        await _context.productInventoryHistories.AddAsync(inventoryHistory);
-                        await _context.SaveChangesAsync();
+                        ////await _context.productInventoryHistories.AddAsync(inventoryHistory);
+                        ////await _context.SaveChangesAsync();
 
                         await _context.ProductItems.AddRangeAsync(proDetails);
                         await _context.SaveChangesAsync();

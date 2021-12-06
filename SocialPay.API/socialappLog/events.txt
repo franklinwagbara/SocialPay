@@ -3147,3 +3147,187 @@ INFO  2021-10-15 00:46:27,583 39777ms AuthRepoService        ?                  
 INFO  2021-10-15 00:46:32,107 44301ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 09039300506 | 10/15/2021 12:46:32 AM
 INFO  2021-10-15 00:46:33,548 45743ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 10/15/2021 12:46:33 AM
 INFO  2021-10-15 00:46:33,736 45930ms AuthRepoService        ?                  - Authenticate for login was successful | tfunmii@gmail.com | 10/15/2021 12:46:33 AM
+INFO  2021-11-15 14:47:45,199 70682ms CustomerRepoService    ?                  - GetLinkDetails | onyinye | 15/11/2021 14:47:45
+INFO  2021-11-15 14:48:20,975 106458ms StoreRepository        ?                  - Task starts to get stores | 59 | 15/11/2021 14:48:20
+INFO  2021-11-15 14:48:20,975 106458ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 15/11/2021 14:48:20
+INFO  2021-11-15 14:48:20,975 106458ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 15/11/2021 14:48:20
+INFO  2021-11-15 14:48:20,975 106458ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 15/11/2021 14:48:20
+INFO  2021-11-15 14:48:23,398 108881ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 15/11/2021 14:48:23
+INFO  2021-11-15 14:48:24,553 110036ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 15/11/2021 14:48:24
+INFO  2021-11-15 14:48:24,691 110174ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 15/11/2021 14:48:24
+ERROR 2021-11-15 14:48:46,169 131651ms CustomerRepoService    ?                  - Error occured | GetLinkDetails | onyinye | 'SocialPay.Helper.Dto.Response.WebApiResponse' does not contain a definition for 'TransactionReference' | 15/11/2021 14:48:46
+INFO  2021-11-15 14:48:52,461 137944ms CustomerRepoService    ?                  - GetLinkDetails | onyinye | 15/11/2021 14:48:52
+INFO  2021-11-15 14:49:04,983 150466ms StoreRepository        ?                  - Task starts to get stores | 59 | 15/11/2021 14:49:04
+INFO  2021-11-15 14:53:54,417 53653ms CustomerRepoService    ?                  - GetLinkDetails | onyinye | 15/11/2021 14:53:54
+INFO  2021-11-15 14:53:57,307 56543ms StoreRepository        ?                  - Task starts to get stores | 59 | 15/11/2021 14:53:57
+INFO  2021-11-15 14:54:00,810 60046ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 15/11/2021 14:54:00
+INFO  2021-11-15 14:54:00,810 60046ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 15/11/2021 14:54:00
+INFO  2021-11-15 14:54:00,948 60185ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 15/11/2021 14:54:00
+INFO  2021-11-15 14:54:01,195 60431ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 15/11/2021 14:54:01
+ERROR 2021-11-15 14:54:26,355 85591ms CustomerRepoService    ?                  - Error occured | GetLinkDetails | onyinye | 'SocialPay.Helper.Dto.Response.WebApiResponse' does not contain a definition for 'TransactionReference' | 15/11/2021 14:54:26
+INFO  2021-11-15 14:54:31,924 91160ms CustomerRepoService    ?                  - GetLinkDetails | onyinye | 15/11/2021 14:54:31
+INFO  2021-11-15 14:54:44,753 103989ms StoreRepository        ?                  - Task starts to get stores | 59 | 15/11/2021 14:54:44
+INFO  2021-11-15 14:56:41,028 29600ms CustomerRepoService    ?                  - GetLinkDetails | onyinye | 15/11/2021 14:56:41
+INFO  2021-11-15 14:56:43,742 32315ms StoreRepository        ?                  - Task starts to get stores | 59 | 15/11/2021 14:56:43
+INFO  2021-11-15 15:07:42,541 32944ms CustomerRepoService    ?                  - GetLinkDetails | onyinye | 15/11/2021 15:07:42
+INFO  2021-11-15 15:07:44,892 35295ms StoreRepository        ?                  - Task starts to get stores | 59 | 15/11/2021 15:07:44
+INFO  2021-11-15 17:23:45,341 94223ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 15/11/2021 17:23:45
+INFO  2021-11-15 17:23:54,901 103783ms StoreRepository        ?                  - Task starts to get stores | 60 | 15/11/2021 17:23:54
+INFO  2021-11-15 17:24:03,792 112674ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 15/11/2021 17:24:03
+INFO  2021-11-15 17:24:03,792 112674ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 15/11/2021 17:24:03
+INFO  2021-11-15 17:24:03,792 112674ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 15/11/2021 17:24:03
+INFO  2021-11-15 17:24:04,054 112936ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 15/11/2021 17:24:04
+INFO  2021-11-15 17:24:07,779 116661ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 15/11/2021 17:24:07
+INFO  2021-11-15 17:24:07,780 116661ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 15/11/2021 17:24:07
+INFO  2021-11-15 17:27:00,076 18209ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 15/11/2021 17:27:00
+INFO  2021-11-15 17:27:00,076 18209ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 15/11/2021 17:27:00
+INFO  2021-11-15 17:27:00,529 18661ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 15/11/2021 17:27:00
+INFO  2021-11-15 17:27:01,144 19277ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 15/11/2021 17:27:01
+INFO  2021-11-15 17:27:36,808 54940ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 15/11/2021 17:27:36
+INFO  2021-11-15 17:27:41,060 59192ms StoreRepository        ?                  - Task starts to get stores | 60 | 15/11/2021 17:27:41
+INFO  2021-11-15 17:28:00,022 78155ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 15/11/2021 17:28:00
+INFO  2021-11-15 17:28:00,204 78336ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 15/11/2021 17:28:00
+INFO  2021-11-15 17:28:04,064 82196ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 15/11/2021 17:28:04
+INFO  2021-11-15 17:28:12,107 90239ms StoreRepository        ?                  - Task starts to get stores | 60 | 15/11/2021 17:28:12
+INFO  2021-11-15 17:30:33,105 231237ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 15/11/2021 17:30:33
+INFO  2021-11-15 17:30:33,105 231237ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 15/11/2021 17:30:33
+INFO  2021-11-15 17:30:33,144 231276ms wCardWalletTransaction ?                  - Job Service-to fetch awaiting transactions for Non Escrow Card Wallet Transaction | 15/11/2021 17:30:33
+INFO  2021-11-15 17:30:33,144 231277ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 15/11/2021 17:30:33
+INFO  2021-11-15 17:30:33,301 231434ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 15/11/2021 17:30:33
+INFO  2021-11-15 17:30:33,913 232046ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 15/11/2021 17:30:33
+INFO  2021-11-15 17:30:33,943 232075ms wCardWalletTransaction ?                  - Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions | 1 | 15/11/2021 17:30:33
+INFO  2021-11-15 17:30:34,510 232643ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 0 | 15/11/2021 17:30:34
+INFO  2021-11-15 17:30:38,912 237045ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 15/11/2021 17:30:38
+INFO  2021-11-15 17:30:41,840 239972ms StoreRepository        ?                  - Task starts to get stores | 60 | 15/11/2021 17:30:41
+INFO  2021-11-15 17:33:38,196 44727ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 15/11/2021 17:33:38
+INFO  2021-11-15 17:33:44,368 50899ms StoreRepository        ?                  - Task starts to get stores | 60 | 15/11/2021 17:33:44
+INFO  2021-11-17 18:35:01,271 125389ms DstvPaymentService     ?                  - InitiatePayment request | NG | MCA_ACCOUNT_SQ_NG |  | ACCOUNT_LOOKUP | 10172232596 | 17/11/2021 18:35:01
+INFO  2021-11-17 18:35:01,354 125472ms DstvPaymentService     ?                  - InitiatePayment pay with specta request |  | {"merchantReference":null,"transactionType":"ACCOUNT_LOOKUP","vasId":"MCA_ACCOUNT_SQ_NG","countryCode":"NG","customerId":"10172232596"} | 17/11/2021 18:35:01
+INFO  2021-11-17 18:35:35,525 159642ms DstvPaymentService     ?                  - Account lookup API response | {"status":null,"message":"An error occured please try again"} |  | 17/11/2021 18:35:35
+INFO  2021-11-17 18:36:26,920 211038ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 17/11/2021 18:36:26
+INFO  2021-11-17 18:36:26,920 211038ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 17/11/2021 18:36:26
+INFO  2021-11-17 18:36:26,920 211038ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 17/11/2021 18:36:26
+INFO  2021-11-17 18:39:00,078 36697ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 17/11/2021 18:39:00
+INFO  2021-11-17 18:39:00,078 36697ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 17/11/2021 18:39:00
+INFO  2021-11-17 18:39:00,451 37071ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 17/11/2021 18:39:00
+INFO  2021-11-17 18:39:01,045 37665ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 17/11/2021 18:39:01
+INFO  2021-11-17 18:40:12,223 108843ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 17/11/2021 18:40:12
+INFO  2021-11-17 18:40:12,332 108952ms DstvPaymentService     ?                  - InitiatePayment request | NG | MCA_ACCOUNT_SQ_NG |  | ACCOUNT_LOOKUP | 10172232596 | 17/11/2021 18:40:12
+INFO  2021-11-17 18:43:33,005 33006ms DstvPaymentService     ?                  - InitiatePayment request | NG | MCA_ACCOUNT_SQ_NG | SP-B-13b03646-bc20-4a46-a5fe-1f313c08f225 | ACCOUNT_LOOKUP | 10172232596 | 17/11/2021 18:43:33
+INFO  2021-11-17 18:43:33,103 33104ms DstvPaymentService     ?                  - InitiatePayment pay with specta request | SP-B-13b03646-bc20-4a46-a5fe-1f313c08f225 | {"merchantReference":"SP-B-13b03646-bc20-4a46-a5fe-1f313c08f225","transactionType":"ACCOUNT_LOOKUP","vasId":"MCA_ACCOUNT_SQ_NG","countryCode":"NG","customerId":"10172232596"} | 17/11/2021 18:43:33
+INFO  2021-11-17 18:44:00,033 60033ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 17/11/2021 18:44:00
+INFO  2021-11-17 18:44:00,249 60250ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 17/11/2021 18:44:00
+INFO  2021-11-17 18:44:05,257 65257ms DstvPaymentService     ?                  - Account lookup API response | {"merchantReference":"f8bf9878f9ba4a598c71b2d4c4af1650","payUVasReference":"108703","resultCode":"00","resultMessage":"Success","vasProvider":"MCA_ACCOUNT_SQ_NG","vasProviderReference":"f8bf9878f9ba4a598c71b2d4c4af1650","dataFields":{"dataField":[{"key":"BASKET_ID","value":"749493"},{"key":"FIRSTNAME","value":""},{"key":"SURNAME","value":"AKINTAYO"},{"key":"ACCOUNT_NUMBER","value":"56811578"},{"key":"DSTV_CUSTOMER_NUMBER","value":"300115673"},{"key":"ACCOUNT_STATUS","value":"Open"},{"key":"BOX_OFFICE","value":"false"},{"key":"INVOICE_PERIOD","value":"1"},{"key":"QUOTE_TOTAL_AMOUNT","value":"14613.00"},{"key":"QUOTE_DUE_DATE","value":"2021-11-17T00:00:00"},{"key":"QUOTE_BALANCE_DUE","value":"4013.00"},{"key":"PRIMARY_PRODUCT_CODE_0","value":"NNJ2E36 "},{"key":"PRIMARY_PRODUCT_DESC_0","value":"DStv Confam Bouquet"},{"key":"PRIMARY_PRODUCT_PRICE_0","value":"5300.00"},{"key":"PRIMARY_PRODUCT_CUREENCY_0","value":"NGN"},{"key":"PRIMARY_PRODUCT_ACTIVE_ON_ACCOUNT_0","value":"false"},{"key":"PRIMARY_IS_PRODUCTONREQUEST_0","value":"true"}]}} | SP-B-13b03646-bc20-4a46-a5fe-1f313c08f225 | 17/11/2021 18:44:05
+INFO  2021-11-18 12:04:00,186 66115ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 18/11/2021 12:04:00
+INFO  2021-11-18 12:04:00,703 66633ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 18/11/2021 12:04:00
+INFO  2021-11-18 12:06:00,057 82635ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 18/11/2021 12:06:00
+INFO  2021-11-18 12:06:00,057 82635ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 18/11/2021 12:06:00
+INFO  2021-11-18 12:06:00,380 82957ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 18/11/2021 12:06:00
+INFO  2021-11-18 12:06:00,946 83524ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 18/11/2021 12:06:00
+INFO  2021-11-18 12:06:07,720 90297ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 18/11/2021 12:06:07
+INFO  2021-11-18 12:06:13,444 96022ms StoreRepository        ?                  - Task starts to get stores | 60 | 18/11/2021 12:06:13
+INFO  2021-11-18 12:08:00,022 202600ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 18/11/2021 12:08:00
+INFO  2021-11-18 12:08:00,198 202775ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 18/11/2021 12:08:00
+INFO  2021-11-18 12:09:00,032 262609ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 18/11/2021 12:09:00
+INFO  2021-11-18 12:09:00,041 262618ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 18/11/2021 12:09:00
+INFO  2021-11-18 12:09:00,250 262828ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 18/11/2021 12:09:00
+INFO  2021-11-18 12:09:00,259 262837ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 18/11/2021 12:09:00
+INFO  2021-11-18 12:12:00,023 442600ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 18/11/2021 12:12:00
+INFO  2021-11-18 12:12:00,027 442604ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 18/11/2021 12:12:00
+INFO  2021-11-18 12:12:00,542 443120ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 18/11/2021 12:12:00
+ERROR 2021-11-18 12:12:15,260 457837ms nEscrowBankTransaction ?                  - Job Service: An error occured while fetching transactions | Timeout expired.  The timeout period elapsed prior to obtaining a connection from the pool.  This may have occurred because all pooled connections were in use and max pool size was reached. | 18/11/2021 12:12:15
+ERROR 2021-11-18 12:12:15,628 458205ms OtherWalletTransaction ?                  - Job Service. NonEscrowWalletTransactionError occured | Timeout expired.  The timeout period elapsed prior to obtaining a connection from the pool.  This may have occurred because all pooled connections were in use and max pool size was reached. | 18/11/2021 12:12:15
+ERROR 2021-11-18 12:12:47,899 490477ms tMerchantWalletService ?                  - Job Service-Error occured | A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server) | 18/11/2021 12:12:47
+INFO  2021-11-18 15:04:53,625 10816203ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 18/11/2021 15:04:53
+INFO  2021-11-18 15:04:53,625 10816203ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 18/11/2021 15:04:53
+ERROR 2021-11-18 15:05:41,480 10864058ms nEscrowBankTransaction ?                  - Job Service: An error occured while fetching transactions | A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server) | 18/11/2021 15:05:41
+ERROR 2021-11-18 15:05:41,480 10864058ms tMerchantWalletService ?                  - Job Service-Error occured | A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server) | 18/11/2021 15:05:41
+INFO  2021-11-18 15:05:53,643 10876220ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 18/11/2021 15:05:53
+INFO  2021-11-18 15:06:00,018 10882595ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 18/11/2021 15:06:00
+INFO  2021-11-18 15:06:00,018 10882595ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 18/11/2021 15:06:00
+ERROR 2021-11-18 15:06:41,468 10924046ms tMerchantWalletService ?                  - Job Service-Error occured | A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server) | 18/11/2021 15:06:41
+ERROR 2021-11-18 15:06:41,468 10924046ms OtherWalletTransaction ?                  - Job Service. NonEscrowWalletTransactionError occured | A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server) | 18/11/2021 15:06:41
+ERROR 2021-11-18 15:06:41,488 10924065ms nEscrowBankTransaction ?                  - Job Service: An error occured while fetching transactions | A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server) | 18/11/2021 15:06:41
+INFO  2021-11-18 15:08:00,010 11002588ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 18/11/2021 15:08:00
+ERROR 2021-11-18 15:08:47,799 11050376ms OtherWalletTransaction ?                  - Job Service. NonEscrowWalletTransactionError occured | A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server) | 18/11/2021 15:08:47
+INFO  2021-11-18 15:09:00,014 11062591ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 18/11/2021 15:09:00
+INFO  2021-11-18 15:09:00,015 11062593ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 18/11/2021 15:09:00
+INFO  2021-11-18 15:09:00,340 11062918ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 18/11/2021 15:09:00
+INFO  2021-11-18 15:09:00,518 11063095ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 18/11/2021 15:09:00
+INFO  2021-11-18 15:09:17,450 11080028ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 18/11/2021 15:09:17
+INFO  2021-11-18 15:09:21,188 11083766ms StoreRepository        ?                  - Task starts to get stores | 60 | 18/11/2021 15:09:21
+INFO  2021-11-19 11:32:46,439 52690ms CustomerRepoService    ?                  - GetLinkDetails | testing-pro | 19/11/2021 11:32:46
+INFO  2021-11-19 11:33:06,852 73103ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 19/11/2021 11:33:06
+INFO  2021-11-19 11:33:06,852 73103ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 19/11/2021 11:33:06
+INFO  2021-11-19 11:33:06,930 73181ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 19/11/2021 11:33:06
+INFO  2021-11-19 11:33:07,077 73328ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 19/11/2021 11:33:07
+ERROR 2021-11-19 11:34:14,945 141197ms CustomerRepoService    ?                  - Error occured | GetLinkDetails | testing-pro | 'SocialPay.Helper.ViewModel.PaymentLinkViewModel' does not contain a definition for 'ResponseCode' | 19/11/2021 11:34:14
+INFO  2021-11-19 11:34:21,933 148184ms CustomerRepoService    ?                  - GetLinkDetails | testing-pro | 19/11/2021 11:34:21
+ERROR 2021-11-19 11:34:31,120 157372ms CustomerRepoService    ?                  - Error occured | GetLinkDetails | testing-pro | 'SocialPay.Helper.ViewModel.PaymentLinkViewModel' does not contain a definition for 'ResponseCode' | 19/11/2021 11:34:31
+INFO  2021-11-19 11:34:36,840 163091ms CustomerRepoService    ?                  - GetLinkDetails | testing-pro | 19/11/2021 11:34:36
+ERROR 2021-11-19 11:34:52,618 178869ms CustomerRepoService    ?                  - Error occured | GetLinkDetails | testing-pro | 'SocialPay.Helper.ViewModel.PaymentLinkViewModel' does not contain a definition for 'ResponseCode' | 19/11/2021 11:34:52
+INFO  2021-11-19 11:34:58,550 184801ms CustomerRepoService    ?                  - GetLinkDetails | testing-pro | 19/11/2021 11:34:58
+INFO  2021-11-19 11:39:00,037 57976ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 19/11/2021 11:39:00
+INFO  2021-11-19 11:39:00,037 57976ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 19/11/2021 11:39:00
+INFO  2021-11-19 11:39:00,355 58295ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 19/11/2021 11:39:00
+INFO  2021-11-19 11:39:00,446 58385ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 19/11/2021 11:39:00
+INFO  2021-11-19 11:39:03,840 61780ms CustomerRepoService    ?                  - GetLinkDetails | testing-pro | 19/11/2021 11:39:03
+INFO  2021-11-19 12:01:18,242 29768ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 19/11/2021 12:01:18
+INFO  2021-11-19 12:01:49,359 60884ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 19/11/2021 12:01:49
+INFO  2021-11-19 12:02:12,558 84084ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 19/11/2021 12:02:12
+INFO  2021-11-19 12:10:31,461 55022ms StoreRepository        ?                  - Task starts to get stores |  | 19/11/2021 12:10:31
+INFO  2021-11-19 12:13:55,722 42453ms StoreRepository        ?                  - Task starts to get stores |  | 19/11/2021 12:13:55
+INFO  2021-11-19 12:14:13,582 60314ms StoreRepository        ?                  - Task starts to get stores |  | 19/11/2021 12:14:13
+INFO  2021-11-19 12:14:23,698 70430ms StoreRepository        ?                  - Task starts to get stores |  | 19/11/2021 12:14:23
+INFO  2021-11-19 12:23:30,485 31151ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 19/11/2021 12:23:30
+INFO  2021-11-19 12:27:01,895 32187ms CustomerRepoService    ?                  - GetLinkDetails | stan-store | 19/11/2021 12:27:01
+INFO  2021-11-19 12:27:01,895 32187ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 19/11/2021 12:27:01
+INFO  2021-11-19 12:27:01,895 32187ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 19/11/2021 12:27:01
+INFO  2021-11-19 12:27:03,357 33650ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 19/11/2021 12:27:03
+INFO  2021-11-19 12:27:03,486 33778ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 19/11/2021 12:27:03
+INFO  2021-11-19 12:50:25,075 28226ms StoreRepository        ?                  - Task starts to get stores |  | 19/11/2021 12:50:25
+INFO  2021-11-19 12:51:00,028 63179ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 19/11/2021 12:51:00
+INFO  2021-11-19 12:51:00,028 63179ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 19/11/2021 12:51:00
+INFO  2021-11-19 12:51:00,095 63246ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 19/11/2021 12:51:00
+INFO  2021-11-19 12:51:00,239 63390ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 19/11/2021 12:51:00
+INFO  2021-11-19 12:52:00,015 123166ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 19/11/2021 12:52:00
+INFO  2021-11-19 12:52:00,065 123216ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 19/11/2021 12:52:00
+INFO  2021-11-19 12:54:00,032 243183ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 19/11/2021 12:54:00
+INFO  2021-11-19 12:54:00,072 243223ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 19/11/2021 12:54:00
+INFO  2021-11-19 12:54:00,112 243263ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 19/11/2021 12:54:00
+INFO  2021-11-19 12:54:00,112 243263ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 19/11/2021 12:54:00
+INFO  2021-11-19 14:27:55,594 27384ms ateBulkMerchantService ?                  - BulkCreateMerchant | 19/11/2021 14:27:55
+INFO  2021-11-19 14:28:05,381 37171ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 |  | 19/11/2021 14:28:05
+INFO  2021-11-19 14:28:20,206 51996ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 19/11/2021 14:28:20
+INFO  2021-11-19 14:28:26,512 58302ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 19/11/2021 14:28:26
+ERROR 2021-11-19 14:28:27,173 58963ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Apps\STApps\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 19/11/2021 14:28:27
+INFO  2021-11-19 14:30:00,074 19813ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 19/11/2021 14:30:00
+INFO  2021-11-19 14:30:00,074 19813ms wCardWalletTransaction ?                  - Job Service-to fetch awaiting transactions for Non Escrow Card Wallet Transaction | 19/11/2021 14:30:00
+INFO  2021-11-19 14:30:00,074 19813ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 19/11/2021 14:30:00
+INFO  2021-11-19 14:30:00,074 19813ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 19/11/2021 14:30:00
+INFO  2021-11-19 14:30:00,434 20174ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 19/11/2021 14:30:00
+INFO  2021-11-19 14:30:00,569 20308ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 0 | 19/11/2021 14:30:00
+INFO  2021-11-19 14:30:00,650 20389ms wCardWalletTransaction ?                  - Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions | 1 | 19/11/2021 14:30:00
+INFO  2021-11-19 14:30:00,723 20462ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 19/11/2021 14:30:00
+INFO  2021-11-19 14:30:02,605 22345ms ateBulkMerchantService ?                  - BulkCreateMerchant | 19/11/2021 14:30:02
+INFO  2021-11-19 14:30:04,596 24335ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 1990-10-10 | 19/11/2021 14:30:04
+INFO  2021-11-19 14:32:00,056 31542ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 19/11/2021 14:32:00
+INFO  2021-11-19 14:32:00,387 31873ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 19/11/2021 14:32:00
+INFO  2021-11-19 14:32:29,340 60826ms ateBulkMerchantService ?                  - BulkCreateMerchant | 19/11/2021 14:32:29
+INFO  2021-11-19 14:32:43,162 74648ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 1990-10-10 | 19/11/2021 14:32:43
+INFO  2021-12-01 15:50:17,040 411611ms CustomerRepoService    ?                  - GetLinkDetails | stans | 01/12/2021 15:50:17
+INFO  2021-12-01 15:50:26,211 420782ms StoreRepository        ?                  - Task starts to get stores | 64 | 01/12/2021 15:50:26
+INFO  2021-12-01 15:51:31,541 486113ms CustomerRepoService    ?                  - GetLinkDetails | stans | 01/12/2021 15:51:31
+INFO  2021-12-01 15:51:33,857 488428ms StoreRepository        ?                  - Task starts to get stores | 64 | 01/12/2021 15:51:33
+INFO  2021-12-01 15:53:00,689 575260ms CustomerRepoService    ?                  - GetLinkDetails | storetest | 01/12/2021 15:53:00
+INFO  2021-12-01 15:53:05,359 579931ms StoreRepository        ?                  - Task starts to get stores | 65 | 01/12/2021 15:53:05
+ERROR 2021-12-01 19:11:13,346 104312ms pectaOnboardingService ?                  - Error occured | RegisterCustomerInfo | 22247100121 | ray.idengeli@gmail.com | Felix | Unexpected character encountered while parsing value: [. Path 'error.validationErrors', line 1, position 286. | 01/12/2021 19:11:13
+ERROR 2021-12-01 19:11:28,958 119924ms PayWithSpectaService   ?                  - Error occured | CustomerRegistration | System.NullReferenceException: Object reference not set to an instance of an object.
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaCustomerRegistration.RegisterCustomer(RegisterCustomerRequestDto model) in C:\Apps\STApps\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaCustomerRegistration.cs:line 54 | 01/12/2021 19:11:28
+ERROR 2021-12-01 19:14:00,793 271759ms pectaOnboardingService ?                  - Error occured | RegisterCustomerInfo | 22247100121 | ray.idengeli@gmail.com | Felix | Unexpected character encountered while parsing value: [. Path 'error.validationErrors', line 1, position 286. | 01/12/2021 19:14:00
+INFO  2021-12-03 12:41:56,432 54203ms MerchantReportService  ?                  - GetCustomersTransactionCount | 238 | 03/12/2021 12:41:56
+INFO  2021-12-03 12:52:02,651 90477ms MerchantReportService  ?                  - GetCustomersTransactionCount | 238 | 03/12/2021 12:52:02
+INFO  2021-12-03 12:55:50,426 32696ms MerchantReportService  ?                  - GetCustomersTransactionCount | 238 | 03/12/2021 12:55:50
