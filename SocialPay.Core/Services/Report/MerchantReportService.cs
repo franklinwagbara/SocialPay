@@ -889,6 +889,7 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
+              //  clientId = 238;
                 _log4net.Info("GetCustomersTransactionCount" + " | " + clientId + " | " + DateTime.Now);
 
                 var result = await _context.TransactionLog
@@ -901,7 +902,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetCustomersTransactionCount" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "GetCustomersTransactionCount" + " | " + clientId + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

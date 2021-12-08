@@ -7,9 +7,9 @@ namespace SocialPay.Domain.Entities
         public long ProductItemsId { get; set; }
         public long ProductId { get; set; }
         public string FileLocation { get; set; }
-        public bool IsDeleted { get; set; }
+       // public bool IsDeleted { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
-        public DateTime LastDateModified { get; set; }
+       // public DateTime LastDateModified { get; set; }
         public Product Product { get; set; }
     }
 }

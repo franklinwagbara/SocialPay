@@ -26,8 +26,8 @@ namespace SocialPay.API.Controllers
 
         }
 
-        [HttpPost]
-        [Route("register-customer")]
-        public async Task<IActionResult> CreateRegisterCustomerAsync([FromBody] RegisterCustomerRequestDto model) => Response(await _spectaCustomerRegistration.RegisterCustomer(model).ConfigureAwait(false));
+        //[HttpPost]
+        //[Route("register-customer")]
+        //public async Task<IActionResult> CreateRegisterCustomerAsync([FromBody] RegisterCustomerRequestDto model) => Response(await _spectaCustomerRegistration.RegisterCustomer(model).ConfigureAwait(false));
     }
 }

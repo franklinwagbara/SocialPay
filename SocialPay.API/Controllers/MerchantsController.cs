@@ -615,7 +615,6 @@ namespace SocialPay.API.Controllers
             }
         }
 
-
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [Route("get-customers-transaction-count")]

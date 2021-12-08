@@ -74,10 +74,10 @@ namespace SocialPay.Core.Services.Store
                 _storeLogger.LogRequest($"{"Creating merchant store"}{" "}{userModel.Email}{" - "}{request.StoreName}{"  - "}", false);
 
                 if (await _context.MerchantStore.AnyAsync(x => x.StoreName == request.StoreName && x.ClientAuthenticationId == userModel.ClientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateStoreName, Message = "Duplicate Store Name", StatusCode = ResponseCodes.Duplicate };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateStoreName, Message = "Duplicate Store Name", Data = "Duplicate Store Name", StatusCode = ResponseCodes.Duplicate };
 
                 if (await _context.MerchantStore.AnyAsync(x => x.StoreLink == request.StoreLink && x.ClientAuthenticationId == userModel.ClientId))
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Message = "Duplicate Link Name", StatusCode = ResponseCodes.Duplicate };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Message = "Duplicate Link Name", Data = "Duplicate Store Name", StatusCode = ResponseCodes.Duplicate };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -127,7 +127,7 @@ namespace SocialPay.Core.Services.Store
                         var encryptedToken = token.Encrypt(_appSettings.appKey);
 
                         if (await _context.MerchantPaymentSetup.AnyAsync(x => x.CustomUrl == request.StoreName || x.PaymentLinkName == request.StoreName))
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name", StatusCode = ResponseCodes.Duplicate };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateLinkName, Data = "Duplicate link name", Message = "Duplicate link name", StatusCode = ResponseCodes.Duplicate };
 
                         if (await _context.MerchantPaymentSetup.AnyAsync(x => x.TransactionReference == newGuid))
                         {
@@ -175,14 +175,14 @@ namespace SocialPay.Core.Services.Store
 
                         await _eventLogService.ActivityRequestLog(eventLog);
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store was successfully saved", StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Store was successfully saved", Data = "Store was successfully saved", StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         _storeLogger.LogRequest($"{"An error occured while trying to create store"}{" "}{userModel.Email}{" - "}{request.StoreName}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError, Data = "Internal error" };
                     }
                 }
 
@@ -194,7 +194,7 @@ namespace SocialPay.Core.Services.Store
 
                 //_log4net.Error("An error occured while trying to create store" + " | " + request.StoreName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError, Data = "Internal error" };
             }
         }
 
@@ -761,6 +761,7 @@ namespace SocialPay.Core.Services.Store
                     logconfirmation.Message = model.Message;
                     logconfirmation.LastDateModified = DateTime.Now;
                     logconfirmation.TotalAmount = getCustomerInfo.Amount;
+                    logconfirmation.ActualAmount = 0;
                     logconfirmation.DeliveryDayTransferStatus = TransactionJourneyStatusCodes.Pending;
                     logconfirmation.PaymentReference = model.PaymentReference;
                     logconfirmation.TransactionStatus = TransactionJourneyStatusCodes.Approved;
@@ -786,36 +787,36 @@ namespace SocialPay.Core.Services.Store
                             //Send mail
 
 
-                            var LogPurchasedInventory = (from s in _context.StoreTransactionLog
-                                                         join st in _context.StoreTransactionLogDetails on s.StoreTransactionLogId
-                                                         equals st.StoreTransactionLogId
-                                                         where s.PaymentReference == model.PaymentReference
-                                                         select st).FirstOrDefault();
+                            //////var LogPurchasedInventory = (from s in _context.StoreTransactionLog
+                            //////                             join st in _context.StoreTransactionLogDetails on s.StoreTransactionLogId
+                            //////                             equals st.StoreTransactionLogId
+                            //////                             where s.PaymentReference == model.PaymentReference
+                            //////                             select st).FirstOrDefault();
 
-                            if (LogPurchasedInventory != null)
-                            {
-                                var productInventory = await _context.ProductInventory.SingleOrDefaultAsync(x => x.ProductId == LogPurchasedInventory.ProductId);
+                            //////if (LogPurchasedInventory != null)
+                            //////{
+                            //////    var productInventory = await _context.ProductInventory.SingleOrDefaultAsync(x => x.ProductId == LogPurchasedInventory.ProductId);
                                
-                                if (productInventory != null)
-                                {
-                                    productInventory.Quantity = productInventory.Quantity - LogPurchasedInventory.Quantity;
-                                    await _context.SaveChangesAsync();
-                                }
-                                var purchasedHistory = new ProductInventoryHistory()
-                                {
-                                    ProdId = LogPurchasedInventory.ProductId,
-                                    ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId,
-                                    Quantity = LogPurchasedInventory.Quantity,
-                                    Amount = LogPurchasedInventory.TotalAmount,
-                                    LastDateModified = DateTime.Now,
-                                    ProductInventoryId = productInventory.ProductInventoryId,
-                                    IsAdded = true,
-                                    IsUpdated = false,
-                                };
+                            //////    if (productInventory != null)
+                            //////    {
+                            //////        productInventory.Quantity = productInventory.Quantity - LogPurchasedInventory.Quantity;
+                            //////        await _context.SaveChangesAsync();
+                            //////    }
+                            //////    var purchasedHistory = new ProductInventoryHistory()
+                            //////    {
+                            //////        ProdId = LogPurchasedInventory.ProductId,
+                            //////        ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId,
+                            //////        Quantity = LogPurchasedInventory.Quantity,
+                            //////        Amount = LogPurchasedInventory.TotalAmount,
+                            //////        LastDateModified = DateTime.Now,
+                            //////        ProductInventoryId = productInventory.ProductInventoryId,
+                            //////        IsAdded = true,
+                            //////        IsUpdated = false,
+                            //////    };
 
-                                await _context.productInventoryHistories.AddAsync(purchasedHistory);
-                                await _context.SaveChangesAsync();
-                            }
+                            //////    await _context.productInventoryHistories.AddAsync(purchasedHistory);
+                            //////    await _context.SaveChangesAsync();
+                            //////}
 
 
                             await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,

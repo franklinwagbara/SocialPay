@@ -1252,7 +1252,7 @@ namespace SocialPay.API.Controllers
                 response.Data = message;
                 return BadRequest(response);
 
-            }
+            } 
             catch (Exception ex)
             {
                 response.ResponseCode = AppResponseCodes.InternalError;
