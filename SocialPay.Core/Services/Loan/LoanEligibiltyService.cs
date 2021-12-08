@@ -28,14 +28,14 @@ namespace SocialPay.Core.Services.Loan
         {
             try
             {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 5000, Message = "Success", StatusCode = ResponseCodes.Success };
+                //if (await MerchantDuration(clientId) < 90) return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 0, Message = "Merchant is not eligible for loan", StatusCode = ResponseCodes.Success };
+                //if (await MerchantTransactionCount(clientId) < 15) return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 0, Message = "Merchant is not eligible for loan becuase of last 7 days  transaction count", StatusCode = ResponseCodes.Success };
+                //if (await MerchantTransactionVolume(clientId) < 500000) return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 0, Message = "Merchant is not eligible for loan becuase of last 30 days  transaction volume", StatusCode = ResponseCodes.Success };
+                //var calculateLoanWithThisMonth = await MerchantDuration(clientId);
+                //var calculatedMonthlyTransactions = await MerchantTransactionVolume(clientId, calculateLoanWithThisMonth);
 
-                if (await MerchantDuration(clientId) < 90) return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 0, Message = "Merchant is not eligible for loan", StatusCode = ResponseCodes.Success };
-                if (await MerchantTransactionCount(clientId) < 15) return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 0, Message = "Merchant is not eligible for loan becuase of last 7 days  transaction count", StatusCode = ResponseCodes.Success };
-                if (await MerchantTransactionVolume(clientId) < 500000) return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 0, Message = "Merchant is not eligible for loan becuase of last 30 days  transaction volume", StatusCode = ResponseCodes.Success };
-                var calculateLoanWithThisMonth = await MerchantDuration(clientId);
-                var calculatedMonthlyTransactions = await MerchantTransactionVolume(clientId, calculateLoanWithThisMonth);
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = await CalculateMaximumEligibleLoan(calculatedMonthlyTransactions, calculateLoanWithThisMonth), Message = "Success" };
+                //return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = await CalculateMaximumEligibleLoan(calculatedMonthlyTransactions, calculateLoanWithThisMonth), Message = "Success", StatusCode = ResponseCodes.Success };
             }
             catch (Exception e)
             {

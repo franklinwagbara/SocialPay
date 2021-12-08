@@ -822,6 +822,7 @@ namespace SocialPay.Core.Services.Products
                 //storeDetail.StoreLogoUrl = storeblob.Uri.AbsoluteUri;
                 storeDetail.StoreDetails = query;
                 storeDetail.StoreLogoUrl = stores.FileLocation;
+                storeDetail.TransactionReference = transactionReference;
 
                 //  if (query.Count > 0)
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail, StatusCode = ResponseCodes.Success };
