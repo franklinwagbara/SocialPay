@@ -83,29 +83,20 @@ namespace SocialPay.Core.Services.Customer
 
                 var result = await _customerService.GetTransactionDetails(transactionReference);
 
-                if (result.ResponseCode == AppResponseCodes.RecordNotFound)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = result };
+                //if (result.ResponseCode == AppResponseCodes.RecordNotFound)
+                //    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = result };
 
                 if (result.ResponseCode == AppResponseCodes.Success)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
              
                     var validateInvoice = await _customerService.GetInvoiceTransactionDetails(transactionReference);
 
-                    if (validateInvoice == null)
+                    if (validateInvoice.ResponseCode != AppResponseCodes.Success)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentLink, Data = "Record not found" };
 
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = validateInvoice };
 
-                //return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
-
-
-                ////if (result.Message == "Success")
-                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
-
-                ////if (result.TransactionReference == null)
-               //  return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidPaymentLink, Data = "Record not found" };
-
-                ////return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
+            
             }
             catch (Exception ex)
             {

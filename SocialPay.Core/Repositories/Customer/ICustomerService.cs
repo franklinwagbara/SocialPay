@@ -290,7 +290,7 @@ namespace SocialPay.Core.Repositories.Customer
 
         }
 
-   
+
         public async Task<dynamic> GetTransactionDetails(string customUrl)
         {
             try
@@ -313,7 +313,6 @@ namespace SocialPay.Core.Repositories.Customer
                 if (validateReference.MerchantStoreId > 0)
                     return await _storeRepository.GetStoreInfobyStoreIdAsync(validateReference.MerchantStoreId, validateReference.TransactionReference);
 
-                // var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
                 var getMerchantInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBusinessInfo).SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateLink.ClientAuthenticationId);
 
@@ -371,9 +370,8 @@ namespace SocialPay.Core.Repositories.Customer
                 var validateLink = await GetLinkCategorybyTranref(refId);
 
                 if (validateLink == null)
-                    return new InvoiceViewModel { };
+                    return new InvoiceViewModel { ResponseCode = AppResponseCodes.RecordNotFound};
 
-                // var getMerchantInfo = await GetMerchantInfo(validateLink.ClientAuthenticationId);
                 var getMerchantInfo = await _context.ClientAuthentication
                     .Include(x => x.MerchantBankInfo)
                     .SingleOrDefaultAsync(x => x.ClientAuthenticationId == validateLink.ClientAuthenticationId);
@@ -381,25 +379,16 @@ namespace SocialPay.Core.Repositories.Customer
                 var validateReference = await GetInvoicePaymentAsync(refId);
 
                 if (validateReference == null)
-                    return new InvoiceViewModel { };
+                    return new InvoiceViewModel { ResponseCode = AppResponseCodes.RecordNotFound };
 
                 var config = new MapperConfiguration(cfg => cfg.CreateMap<InvoicePaymentLink, InvoiceViewModel>());
                 var mapper = config.CreateMapper();
 
-                paymentview = mapper.Map<InvoiceViewModel>(validateReference);
-
-                ////paymentview.MerchantInfo = new MerchantInfoViewModel
-                ////{
-                ////    BusinessEmail = getMerchantInfo.BusinessEmail,
-                ////    BusinessPhoneNumber = getMerchantInfo.BusinessPhoneNumber,
-                ////    BusinessName = getMerchantInfo.BusinessName,
-                ////    Chargebackemail = getMerchantInfo.Chargebackemail,
-                ////    Country = getMerchantInfo.Country,
-                ////    Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
-                ////};
+                paymentview = mapper.Map<InvoiceViewModel>(validateReference);          
 
                 paymentview.MerchantInfo = new MerchantInfoViewModel
                 {
+                    ResponseCode = AppResponseCodes.Success,
                     BusinessEmail = getMerchantInfo == null ? "Invalid Email" : getMerchantInfo.MerchantBusinessInfo == null ? getMerchantInfo.Email : getMerchantInfo.MerchantBusinessInfo.Select(x => x.BusinessEmail).FirstOrDefault(),
                     BusinessPhoneNumber = getMerchantInfo == null ? "Invalid Phone number" : getMerchantInfo.MerchantBusinessInfo == null ? getMerchantInfo.PhoneNumber : getMerchantInfo.MerchantBusinessInfo.Select(x => x.BusinessPhoneNumber).FirstOrDefault(),
                     BusinessName = getMerchantInfo == null ? "Invalid business email" : getMerchantInfo.MerchantBusinessInfo == null ? getMerchantInfo.FullName : getMerchantInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault(),
@@ -410,14 +399,16 @@ namespace SocialPay.Core.Repositories.Customer
                     //  Logo = getMerchantInfo == null ? string.Empty : _appSettings.BaseApiUrl + getMerchantInfo.FileLocation + "/" + getMerchantInfo.Logo
                 };
 
+                paymentview.ResponseCode = AppResponseCodes.Success;
+
                 return paymentview;
 
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetInvoiceTransactionDetails" + " | " + refId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "GetInvoiceTransactionDetails" + " | " + refId + " | " + ex + " | " + DateTime.Now);
 
-                return null;
+                return new InvoiceViewModel { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
