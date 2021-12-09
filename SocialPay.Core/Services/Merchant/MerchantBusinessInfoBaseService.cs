@@ -27,6 +27,9 @@ namespace SocialPay.Core.Services.Merchant
             {
                 var request = await _merchantBusinessInfoService.GetMerchantBusinessInfo(clientId);
 
+                if (request == default)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Data = "Record not found", Message= "Record not found" };
+                
                 request.Logo = request.Logo == string.Empty ? string.Empty : _appSettings.BaseApiUrl + request.FileLocation + "/" + request.Logo;
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request };
