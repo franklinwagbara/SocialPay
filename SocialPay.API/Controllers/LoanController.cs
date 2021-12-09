@@ -31,24 +31,24 @@ namespace SocialPay.API.Controllers
         }
 
 
-        [HttpGet]
-        [Route("available-loan-for-merchant")]
-        public async Task<IActionResult> AvailableLoanForMerchant() => Response(await _loanEligibiltyService.MerchantEligibilty(User.GetSessionDetails().ClientId).ConfigureAwait(false));
+        //[HttpGet]
+        //[Route("available-loan-for-merchant")]
+        //public async Task<IActionResult> AvailableLoanForMerchant() => Response(await _loanEligibiltyService.MerchantEligibilty(User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
-        [HttpGet]
-        [Route("loan-repayment-model")]
-        public async Task<IActionResult> LoanRepaymentModel() => Response(await _loanRepaymentService.GetRepaymentModel().ConfigureAwait(false));
+        //[HttpGet]
+        //[Route("loan-repayment-model")]
+        //public async Task<IActionResult> LoanRepaymentModel() => Response(await _loanRepaymentService.GetRepaymentModel().ConfigureAwait(false));
 
-        [HttpPost]
-        [Route("apply-for-loan")]
-        public async Task<IActionResult> CreateStore([FromBody] ApplyForloanRequestDTO request) => Response(await _applyForLoanService.ApplyForLoan(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
+        //[HttpPost]
+        //[Route("apply-for-loan")]
+        //public async Task<IActionResult> CreateStore([FromBody] ApplyForloanRequestDTO request) => Response(await _applyForLoanService.ApplyForLoan(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
-        [HttpGet]
-        [Route("loan-status")]
-        public async Task<IActionResult> LoanStatus([FromQuery] long loanId) => Response(await _applyForLoanService.LoanStatus(loanId, User.GetSessionDetails().ClientId).ConfigureAwait(false));
+        //[HttpGet]
+        //[Route("loan-status")]
+        //public async Task<IActionResult> LoanStatus([FromQuery] long loanId) => Response(await _applyForLoanService.LoanStatus(loanId, User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
-        [HttpPost]
-        [Route("confirm-card-tokenization")]
-        public async Task<IActionResult> ConfirmTokenization([FromBody] ConfirmTokenizationRequestDTO request) => Response(await _applyForLoanService.ConfirmTokenization(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
+        //[HttpPost]
+        //[Route("confirm-card-tokenization")]
+        //public async Task<IActionResult> ConfirmTokenization([FromBody] ConfirmTokenizationRequestDTO request) => Response(await _applyForLoanService.ConfirmTokenization(request, User.GetSessionDetails().ClientId).ConfigureAwait(false));
     }
 }
