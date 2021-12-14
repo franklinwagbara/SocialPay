@@ -81,7 +81,7 @@ namespace SocialPay.Core.Services.Report
                                         ReferCode = c.ReferCode,
                                         Date = c.DateEntered,
                                         HasRegisteredCompany = c.HasRegisteredCompany,
-                                        AccountStatus = c.IsLocked == true ? "Locked/Disabled" : "Active"
+                                        //AccountStatus = c.IsLocked == true ? "Locked/Disabled" : "Active"
                                     }).OrderByDescending(x => x.Date).ToList();
 
 
@@ -113,7 +113,7 @@ namespace SocialPay.Core.Services.Report
                                         ReferCode = c.ReferCode,
                                         HasRegisteredCompany = c.HasRegisteredCompany,
                                         Logo = $"{_appSettings.BaseApiUrl}{"MerchantLogo/defaultLogo.jpg"}",
-                                        AccountStatus = c.IsLocked == true ? "Locked/Disabled" : "Active"
+                                        //AccountStatus = c.IsLocked == true ? "Locked/Disabled" : "Active"
                                     }).OrderByDescending(x => x.Date).ToList();
 
 

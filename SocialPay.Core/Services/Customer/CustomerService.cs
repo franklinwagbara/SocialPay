@@ -196,6 +196,7 @@ namespace SocialPay.Core.Services.Customer
 
                         paymentResponse.InvoiceReference = paymentRef;
                         paymentResponse.PaymentLink = Convert.ToString(generateToken.Data);
+
                         await _context.InvoicePaymentInfo.AddAsync(invoicePayment);
                         await _context.SaveChangesAsync();
 
