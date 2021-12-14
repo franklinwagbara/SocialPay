@@ -57,6 +57,7 @@ namespace SocialPay.Helper.ViewModel
         public string Logo { get; set; }
         public DateTime Date { get; set; }
         public bool HasRegisteredCompany { get; set; }
+        public string AccountStatus { get; set; }
         public BankInfoViewModel BankInfo { get; set; }
     }
 
