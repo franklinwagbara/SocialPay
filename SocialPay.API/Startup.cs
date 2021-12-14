@@ -203,6 +203,8 @@ namespace SocialPay.API
             services.AddScoped<IQrPaymentRequestService, QrPaymentRequestService>();
             services.AddScoped<IQrPaymentResponseService, QrPaymentResponseService>();
             services.AddScoped<ISpectaCustomerRegistration, SpectaCustomerRegistration>();
+            services.AddScoped<ISpectaSendEmailVerificationCode, SpectaSendEmailVerificationCode>();
+            services.AddScoped<ISpectaVerifyEmailConfirmationCode, SpectaVerifyEmailConfirmationCode>();
             services.AddScoped<ISpectaOnBoarding, SpectaOnboardingService>();
             services.AddScoped<IAuthentication, AuthenticationService>();
             // services.AddScoped<SpectaOnboardingService>();

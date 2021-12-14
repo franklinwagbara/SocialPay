@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211214122135_included-specta-verification-email")]
+    partial class includedspectaverificationemail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3720,66 +3722,6 @@ namespace SocialPay.Domain.Migrations
                     b.HasIndex("ClientAuthenticationId");
 
                     b.ToTable("VendAirtimeRequestLog");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.VerifyEmailConfirmationCodeRequest", b =>
-                {
-                    b.Property<long>("VerifyEmailConfirmationCodeRequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("VerifyEmailConfirmationCodeRequestId");
-
-                    b.ToTable("VerifyEmailConfirmationCodeRequest");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.VerifyEmailConfirmationCodeResponse", b =>
-                {
-                    b.Property<long>("VerifyEmailConfirmationCodeResponseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("__abp")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("code")
-                        .HasColumnType("int");
-
-                    b.Property<string>("details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("result")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("success")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("unAuthorizedRequest")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("validationErrors")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("VerifyEmailConfirmationCodeResponseId");
-
-                    b.ToTable("VerifyEmailConfirmationCodeResponse");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.WalletTransferRequestLog", b =>

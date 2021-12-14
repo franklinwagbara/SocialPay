@@ -26,9 +26,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
         public SpectaCustomerRegistration(IOptions<AppSettings> appSettings,SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
         {
             _appSettings = appSettings.Value;
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper;
-            _spectaOnboardingService = spectaOnboardingService;
+            _spectaOnboardingService = spectaOnboardingService ?? throw new ArgumentNullException(nameof(spectaOnboardingService));
         }
 
         public async Task<WebApiResponse> RegisterCustomer(RegisterCustomerRequestDto model)
@@ -48,7 +48,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         requestmodel.RegistrationStatus = SpectaProcessCodes.RegisterCustomer;
                         var password = requestmodel.password;
                         requestmodel.password = password.Encrypt(_appSettings.appKey);
-
 
                         await _context.SpectaRegisterCustomerRequest.AddAsync(requestmodel);
                         await _context.SaveChangesAsync();

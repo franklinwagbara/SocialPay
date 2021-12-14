@@ -55,11 +55,13 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 {
                     var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
                     apiResponse.Data = Response;                    
+                    apiResponse.StatusCode = ResponseCodes.Success;                    
 
                     return apiResponse;
                 }
 
                 apiResponse.Data = response.Content;
+                apiResponse.StatusCode = ResponseCodes.InternalError;
                 return apiResponse;
 
             }
@@ -71,91 +73,115 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
 
         }
+        public async Task<WebApiResponse> SendEmailVerificationCode(SendEmailVerificationCodeRequestDto model)
+        {
+            var apiResponse = new WebApiResponse { };
+            try
+            {
+                var requestobj = JsonConvert.SerializeObject(model);
+                var client = new RestClient($"{_client.BaseAddress}{_appSettings.SendEmailVerificationCodeUrlExtension}");
+                client.Timeout = -1;
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
+                request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+                IRestResponse response = await Task.FromResult(client.Execute(request));
+
+                apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+
+                if (response.IsSuccessful)
+                {
+                    var Response = JsonConvert.DeserializeObject<SpectaResponseWithBoolResultMessage.SpectaResponseDto>(response.Content);
+                    apiResponse.Data = Response;
+                    apiResponse.StatusCode = ResponseCodes.Success;
+
+                    return apiResponse;
+                }
+
+                apiResponse.Data = response.Content;
+                apiResponse.StatusCode = ResponseCodes.InternalError;
+
+                return apiResponse;
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "SendEmailVerificationCodeInfo" + " | " + model.email + " | " + model.clientBaseUrl + " | " + model.verificationCodeParameterName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
 
 
-        ////public async Task<WebApiResponse> SendEmailVerificationCode(SendEmailVerificationCodeRequestDto model)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.SendEmailVerificationCodeUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<SpectaResponseWithBoolResultMessage.SpectaResponseDto>(response.Content);
-        ////        apiResponse.Data = Response;
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        return apiResponse;
+         }
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "SendEmailVerificationCodeInfo" + " | " + model.email + " | " + model.clientBaseUrl + " | " + model.verificationCodeParameterName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        public async Task<WebApiResponse> VerifyEmailConfirmationCode(VerifyEmailConfirmationCodeRequestDto model)
+        {
+            var apiResponse = new WebApiResponse { };
+            try
+            {
+                var requestobj = JsonConvert.SerializeObject(model);
+                var client = new RestClient($"{_client.BaseAddress}{_appSettings.VerifyEmailConfirmationCodeUrlExtension}");
+                client.Timeout = -1;
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
+                request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+                IRestResponse response = await Task.FromResult(client.Execute(request));              
 
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+                apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+
+                if (response.IsSuccessful)
+                {
+                    var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
+                    apiResponse.Data = Response;
+                    apiResponse.StatusCode = ResponseCodes.Success;
+
+                    return apiResponse;
+                }
+
+                apiResponse.Data = response.Content;
+                apiResponse.StatusCode = ResponseCodes.InternalError;
+
+                return apiResponse;
 
 
-        ////}
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "VerifyEmailConfirmationCodeInfo" + " | " + model.email + " | " + model.token + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-        ////public async Task<WebApiResponse> VerifyEmailConfirmationCode(VerifyEmailConfirmationCodeRequestDto model)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.VerifyEmailConfirmationCodeUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
-        ////        apiResponse.Data = Response;
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "VerifyEmailConfirmationCodeInfo" + " | " + model.email + " | " + model.token + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+        }
 
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
-        ////}
+        //public async Task<WebApiResponse> SendBvnPhoneVerificationCode(string emailaddress)
+        //{
+        //    var apiResponse = new WebApiResponse { };
+        //    try
+        //    {
 
-        ////public async Task<WebApiResponse> SendBvnPhoneVerificationCode(string emailaddress)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
+        //        var client = new RestClient(_client.BaseAddress + _appSettings.SendBvnPhoneVerificationCodeUrlExtension + emailaddress);
+        //        client.Timeout = -1;
+        //        var request = new RestRequest(Method.POST);
+        //        request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(emailaddress));
+        //        request.AlwaysMultipartFormData = true;
+        //        request.AddParameter("emailAddress", emailaddress);
+        //        IRestResponse response = await Task.FromResult(client.Execute(request));
+        //        var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
+        //        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+        //        apiResponse.Data = Response;
+        //        return apiResponse;
 
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.SendBvnPhoneVerificationCodeUrlExtension + emailaddress);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(emailaddress));
-        ////        request.AlwaysMultipartFormData = true;
-        ////        request.AddParameter("emailAddress", emailaddress);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _log4net.Error("Error occured" + " | " + "SendBvnPhoneVerificationCodeInfo" + " | " + emailaddress + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "SendBvnPhoneVerificationCodeInfo" + " | " + emailaddress + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
-        ////}
+        //        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+        //    }
+        //}
         ////public async Task<WebApiResponse> VerifyBvnPhoneConfirmationCode(VerifyBvnPhoneConfirmationCodeRequestDto model)
         ////{
         ////    var apiResponse = new WebApiResponse { };
