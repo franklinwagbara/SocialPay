@@ -92,5 +92,6 @@ namespace SocialPay.Domain
         public DbSet<SendEmailVerificationCodeResponse> SendEmailVerificationCodeResponse { get; set; }
         public DbSet<VerifyEmailConfirmationCodeRequest> VerifyEmailConfirmationCodeRequest { get; set; }
         public DbSet<VerifyEmailConfirmationCodeResponse> VerifyEmailConfirmationCodeResponse { get; set; }
+        public DbSet<OnboardingNotiification> OnboardingNotiification { get; set; }
     }
 }

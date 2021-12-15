@@ -64,6 +64,7 @@ using SocialPay.Job.Repository.NonEscrowBankTransactions;
 using SocialPay.Job.Repository.NonEscrowCardWalletTransaction;
 using SocialPay.Job.Repository.NonEscrowOtherWalletTransaction;
 using SocialPay.Job.Repository.NotificationService;
+using SocialPay.Job.Repository.OnboardingNotification;
 using SocialPay.Job.Repository.PayWithCard;
 using SocialPay.Job.Services;
 using SocialPay.Job.TaskSchedules;
@@ -278,6 +279,8 @@ namespace SocialPay.API
             services.AddSingleton<ICreateNibbsMerchantService, CreateNibbsMerchantService>();
             services.AddSingleton<IBindMerchantService, BindMerchantService>();
             services.AddSingleton<ProcessMerchantWalletTransactions>();
+            services.AddSingleton<IOnboardingNotificationService, OnboardingNotificationService>();
+            services.AddSingleton<OnboardingNotificationRepository>();
 
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
 
@@ -313,35 +316,42 @@ namespace SocialPay.API
             //    c.CronExpression = options.CreateNibbsMerchantTask;
             //});
 
-            services.AddCronJob<CardPaymentTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.CardPaymentTask;
-            });
+            //////services.AddCronJob<CardPaymentTask>(c =>
+            //////{
+            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //////    c.CronExpression = options.CardPaymentTask;
+            //////});
 
-            services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            });
+            //////services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            //////{
+            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //////    c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            //////});
 
-            services.AddCronJob<NonEscrowBankTransactionTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.NonEscrowBankTransactionTask;
-            });
+            //////services.AddCronJob<NonEscrowBankTransactionTask>(c =>
+            //////{
+            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //////    c.CronExpression = options.NonEscrowBankTransactionTask;
+            //////});
 
-            services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
-            });
+            //////services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
+            //////{
+            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //////    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
+            //////});
 
-            services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.NonEscrowWalletTransactionTask;
-            });
+            //////services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            //////{
+            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //////    c.CronExpression = options.NonEscrowWalletTransactionTask;
+            //////});
+
+            //////services.AddCronJob<OnboardingNotificationTask>(c =>
+            //////{
+            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //////    c.CronExpression = options.OnboardingNotificationTask;
+            //////});
+
 
             //////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
             //////{

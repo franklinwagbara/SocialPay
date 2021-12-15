@@ -184,7 +184,7 @@ namespace SocialPay.Core.Store
 
                 var categories = await _productCategoryService.GetAllByClientId(userModel.ClientId);
 
-                if (categories == null)
+                if (categories == default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = categories, StatusCode = ResponseCodes.Success };
@@ -214,12 +214,12 @@ namespace SocialPay.Core.Store
 
                 var validateCategory = await _productCategoryService.GetCategoryByIdAndCatId(request.ProductCategoryId, userModel.ClientId);
 
-                if (validateCategory == null)
+                if (validateCategory == default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
 
                 var validateStore = await _storeService.GetStoreById(request.StoreId, userModel.ClientId);
 
-                if (validateStore == null)
+                if (validateStore == default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
 
                 var validatProductDetails = await _productsService
