@@ -15,6 +15,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.Extensions.Configuration;
 using SocialPay.Core.Services.Products;
+using SocialPay.Helper.SerilogService.Store;
 
 namespace SocialPay.Core.Store
 {
@@ -29,6 +30,7 @@ namespace SocialPay.Core.Store
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AppSettings _appSettings;
         private readonly BlobService _blobService;
+        private readonly StoreLogger _storeLogger;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(StoreRepository));
 
         public IConfiguration Configuration { get; }
@@ -37,7 +39,8 @@ namespace SocialPay.Core.Store
             IProductsService productsService, StoreBaseRepository storeBaseRepository,
             IHostingEnvironment environment, IOptions<AppSettings> appSettings,
             BlobService blobService, IConfiguration configuration,
-            ProductsRepository productsRepository, IMerchantPaymentSetupService merchantPaymentSetupService)
+            ProductsRepository productsRepository, IMerchantPaymentSetupService merchantPaymentSetupService,
+            StoreLogger storeLogger)
         {
             _storeService = storeService ?? throw new ArgumentNullException(nameof(storeService));
             _productCategoryService = productCategoryService ?? throw new ArgumentNullException(nameof(productCategoryService));
@@ -48,6 +51,7 @@ namespace SocialPay.Core.Store
             _blobService = blobService ?? throw new ArgumentNullException(nameof(blobService));
             Configuration = configuration;
             _productsRepository = productsRepository ?? throw new ArgumentNullException(nameof(productsRepository));
+            _storeLogger = storeLogger ?? throw new ArgumentNullException(nameof(storeLogger));
             _merchantPaymentSetupService = merchantPaymentSetupService ?? throw new ArgumentNullException(nameof(merchantPaymentSetupService));
         }
         public async Task<WebApiResponse> CreateNewStoreAsync(StoreRequestDto request, UserDetailsViewModel userModel)
@@ -57,7 +61,8 @@ namespace SocialPay.Core.Store
 
         public async Task<WebApiResponse> GetStoreInfoAsync(UserDetailsViewModel userModel)
         {
-            _log4net.Info("Task starts to get stores" + " | " + userModel.UserID + " | " + DateTime.Now);
+           // _log4net.Info("Task starts to get stores" + " | " + userModel.UserID + " | " + DateTime.Now);
+            _storeLogger.LogRequest($"{"Task starts to get stores"}{" "}{userModel.ClientId}{" - "}{" - "}{DateTime.Now}", false);
 
             try
             {
@@ -94,7 +99,8 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+                //_log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to get store"}{" "}{userModel.UserID}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
@@ -102,7 +108,8 @@ namespace SocialPay.Core.Store
 
         public async Task<WebApiResponse> GetStoreInfobyStoreIdAsync(long storeId, string transactionReference)
         {
-            _log4net.Info("Task starts to get stores" + " | " + storeId + " | " + DateTime.Now);
+           // _log4net.Info("Task starts to get stores" + " | " + storeId + " | " + DateTime.Now);
+            _storeLogger.LogRequest($"{"Task starts to get stores by Id"}{" "}{storeId}{" - "}{" - "}{DateTime.Now}", false);
 
             try
             {
@@ -113,7 +120,8 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + storeId + " | " + DateTime.Now);
+               // _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + storeId + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to get store"}{" "}{storeId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -141,7 +149,8 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured while trying to update store" + " | " + request.StoreName + " | " + clientId + " | " + ex + " | " + DateTime.Now);
+               // _log4net.Error("An error occured while trying to update store" + " | " + request.StoreName + " | " + clientId + " | " + ex + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to update store"}{" "}{request.ClientAuthenticationId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -171,7 +180,8 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured while trying to create store product category" + " | " + request.CategoryName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
+                //_log4net.Error("An error occured while trying to create store product category" + " | " + request.CategoryName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to create store product category"}{" "}{userModel.ClientId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
@@ -191,7 +201,8 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured while trying to get product" + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
+               // _log4net.Error("An error occured while trying to get product" + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to get products"}{" "}{userModel.ClientId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
@@ -202,7 +213,8 @@ namespace SocialPay.Core.Store
 
             try
             {
-                _log4net.Info("Task starts to create product" + " | " + request.ProductName + " | " + userModel.ClientId + " | " + DateTime.Now);
+               // _log4net.Info("Task starts to create product" + " | " + request.ProductName + " | " + userModel.ClientId + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"Task starts to create product"}{" "}{request.ProductName}{" - "}{request.ProductName}{" - "}{DateTime.Now}", false);
 
                 var blobRequest = new BlobProductsRequest();
 
@@ -232,7 +244,9 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured while trying to create new product" + " | " + request.ProductName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to create product"}{" "}{request.ProductName}{" - "}{userModel.ClientId}{" - "}{ex}{" - "}{DateTime.Now}", true);
+
+                //_log4net.Error("An error occured while trying to create new product" + " | " + request.ProductName + " | " + userModel.ClientId + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse
                 {
@@ -256,7 +270,8 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+               // _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to get products"}{" "}{userModel.ClientId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -275,13 +290,13 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+               // _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to get store"}{" "}{userModel.ClientId}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
 
         }
-
 
         public async Task<WebApiResponse> GetProductsByStoreIdAsync(long storeId, string transactionReference)
         {
@@ -296,7 +311,8 @@ namespace SocialPay.Core.Store
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + storeId + " | " + DateTime.Now);
+              //  _log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + storeId + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to get store by storeId"}{" "}{transactionReference}{" - "}{ex}{" - "}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

@@ -99,8 +99,8 @@ namespace SocialPay.Core.Services.Products
 
                             blobRequest.ImageDetail = productImages;
 
-                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
-                           // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId });
+                           // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
+                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId });
 
                             await _blobService.UploadProducts(blobRequest);
 
@@ -118,24 +118,26 @@ namespace SocialPay.Core.Services.Products
                         await _context.ProductInventory.AddAsync(productInventory);
                         await _context.SaveChangesAsync();
 
-                        var inventoryHistory = new ProductInventoryHistory
-                        {
-                            ProdId = model.ProductId,
-                            ClientAuthenticationId = userModel.ClientId,
-                            Quantity = request.Quantity,
-                            IsAdded = true,
-                            Amount = request.Price,
-                            IsUpdated = false,
-                            ProductInventoryId = productInventory.ProductInventoryId,
-                            LastDateModified = DateTime.Now
-                        };
+                        ////var inventoryHistory = new ProductInventoryHistory
+                        ////{
+                        ////    ProdId = model.ProductId,
+                        ////    ClientAuthenticationId = userModel.ClientId,
+                        ////    Quantity = request.Quantity,
+                        ////    IsAdded = true,
+                        ////    Amount = request.Price,
+                        ////    IsUpdated = false,
+                        ////    ProductInventoryId = productInventory.ProductInventoryId,
+                        ////    LastDateModified = DateTime.Now
+                        ////};
 
-                        await _context.productInventoryHistories.AddAsync(inventoryHistory);
-                        await _context.SaveChangesAsync();
+                        ////await _context.productInventoryHistories.AddAsync(inventoryHistory);
+                        ////await _context.SaveChangesAsync();
 
                         await _context.ProductItems.AddRangeAsync(proDetails);
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
+
+                        _storeLogger.LogRequest($"{"Product was successfully created"}{" "}{userModel.Email}{" - "}{request.ProductName}{" - "}{DateTime.Now}", false);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product "}{request.ProductName}{" was successfully saved"}", StatusCode = ResponseCodes.Success };
                     }
@@ -289,7 +291,6 @@ namespace SocialPay.Core.Services.Products
             }
         }
 
-
         public async Task<WebApiResponse> UpdateProductInventoryAsync(ProductInventoryDto productInventoryDto, UserDetailsViewModel userModel)
         {
             try
@@ -441,10 +442,7 @@ namespace SocialPay.Core.Services.Products
 
                         item.ProductItemsViewModel = getProductsItem;
                     }
-
-
                 }
-
 
 
                 //var query = (from s in stores
@@ -658,8 +656,6 @@ namespace SocialPay.Core.Services.Products
 
                         item.ProductItemsViewModel = getProductsItem;
                     }
-
-
                 }
 
                 if (query.Count > 0)
@@ -698,8 +694,8 @@ namespace SocialPay.Core.Services.Products
                              join pc in _context.ProductCategories on pro.ProductCategoryId equals pc.ProductCategoryId
                              join pi in _context.ProductInventory on pro.ProductId equals pi.ProductId
                              join proItem in _context.ProductItems on pro.ProductId equals proItem.ProductId
-                             //where pro.MerchantStoreId == storeId
-                             where pro.MerchantStoreId == storeId && proItem.IsDeleted == false
+                             where pro.MerchantStoreId == storeId
+                            // where pro.MerchantStoreId == storeId && proItem.IsDeleted == false
 
                              select new StoreProductsDetailsViewModel
                              {
@@ -732,8 +728,8 @@ namespace SocialPay.Core.Services.Products
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems
-                                           .Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
-                                           //.Where(x => x.ProductId == item.ProductId)
+                                           //.Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
+                                           .Where(x => x.ProductId == item.ProductId)
                                                  select new ProductItemViewModel
                                                  {
                                                      FileLocation = p.FileLocation,
@@ -749,8 +745,6 @@ namespace SocialPay.Core.Services.Products
                         item.Products = getProductsItem;
                     }
                 }
-
-
 
                 ////var stores = await _context.MerchantStore
                 ////    .Where(x => x.MerchantStoreId == storeId).ToListAsync();
@@ -874,7 +868,6 @@ namespace SocialPay.Core.Services.Products
                                  Quantity = pi.Quantity
 
                              }).ToList();
-
 
                 var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
 
