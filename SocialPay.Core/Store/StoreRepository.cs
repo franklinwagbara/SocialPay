@@ -106,6 +106,45 @@ namespace SocialPay.Core.Store
             }
         }
 
+        public async Task<WebApiResponse> GetStoreByMerchantInfoAsync(UserDetailsViewModel userModel)
+        {
+            // _log4net.Info("Task starts to get stores" + " | " + userModel.UserID + " | " + DateTime.Now);
+            _storeLogger.LogRequest($"{"Task starts to get stores"}{" "}{userModel.ClientId}{" - "}{" - "}{DateTime.Now}", false);
+
+            try
+            {
+                // userModel.ClientId = 238;
+
+                var options = Configuration.GetSection(nameof(AzureBlobConfiguration)).Get<AzureBlobConfiguration>();
+
+                var store = await _storeService.GetStoresByClientId(userModel.ClientId);
+
+                if (store == default)
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
+
+                foreach (var item in store)
+                {
+
+                    var linkName = await _merchantPaymentSetupService.GetPaymentLinksId(item.MerchantStoreId);
+
+                    if (linkName != null)
+                    {
+                        item.StoreLink = linkName.PaymentLinkUrl;
+                    }
+                   
+                }
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = store, StatusCode = ResponseCodes.Success };
+            }
+            catch (Exception ex)
+            {
+                //_log4net.Error("Error occured" + " | " + "Getting store" + " | " + ex + " | " + userModel.UserID + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"An error occured while trying to get store"}{" "}{userModel.UserID}{" - "}{ex}{" - "}{DateTime.Now}", true);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
+            }
+        }
+
         public async Task<WebApiResponse> GetStoreInfobyStoreIdAsync(long storeId, string transactionReference)
         {
            // _log4net.Info("Task starts to get stores" + " | " + storeId + " | " + DateTime.Now);

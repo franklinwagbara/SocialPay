@@ -32,4 +32,15 @@ namespace SocialPay.Helper.ViewModel
         public string TransactionStatus { get; set; }
         public DateTime DateEntered { get; set; }
     }
+
+    public class MerchantStoreUsersViewModel
+    {
+        public string Fullname { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string StoreName { get; set; }
+        public string StoreLink { get; set; }
+        public string Description { get; set; }
+        public DateTime DateEntered { get; set; }
+    }
 }
