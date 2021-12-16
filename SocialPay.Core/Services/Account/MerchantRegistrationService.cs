@@ -101,7 +101,7 @@ namespace SocialPay.Core.Services.Account
                     signUpRequestDto.LastName.ToLower(), signUpRequestDto.Email);
 
                 if (validateUser.ResponseCode != AppResponseCodes.Success)
-                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode, Message = ResponseMessage.BvnValidation };
+                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode, Message = validateUser.Message };
 
                 var token = $"{DateTime.Now.ToString()}{Guid.NewGuid().ToString()}{DateTime.Now.AddMilliseconds(120)}{Utilities.GeneratePin()}";
                 var encryptedToken = token.Encrypt(_appSettings.appKey);

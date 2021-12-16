@@ -112,14 +112,14 @@ namespace SocialPay.Core.Services.Validations
 
                     }).FirstOrDefault();
 
-                if (bvnDetails == null)
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
+                if (bvnDetails == default)
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN, Message = "Invalid BVN" };
 
                 if (bvnDetails.Bvn.Contains("exit"))
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN };
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN, Message = "BVN does not exist" };
 
                 if (!bvnDetails.DateOfBirth.Equals(currentDob))
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth };
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth, Message = "Invalid Date of birth" };
 
                 var dob = Convert.ToDateTime(bvnDetails.DateOfBirth);
 
@@ -128,12 +128,12 @@ namespace SocialPay.Core.Services.Validations
                 var currentAge = CalculateAge(dob);
 
                 if (!firstname.Equals($"{bvnDetails.FirstName.ToLower()}") || !lastname.Equals($"{bvnDetails.LastName.ToLower()}"))
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetailsFirstNameOrLastName };
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetailsFirstNameOrLastName, Message = "Invalid firstname or lastname" };
 
                 if (currentAge.Year >= ageLimit)
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };              
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success, Message = "Success" };              
 
-                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange };
+                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange, Message = "Age specified not supported" };
 
                // return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
             }
@@ -141,7 +141,7 @@ namespace SocialPay.Core.Services.Validations
             {
                 _log4net.Error("Error occured" + " | " + "Bvn Validation" + " | " + bvn + " | "+ ex + " | " + DateTime.Now);
 
-                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.BvnValidationError };
+                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.BvnValidationError, Message = "Error occured while validating BVN" };
             }
         }
 
