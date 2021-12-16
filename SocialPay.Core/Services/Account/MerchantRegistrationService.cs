@@ -104,7 +104,7 @@ namespace SocialPay.Core.Services.Account
                 {
                     _log4net.Info("BVN validation response" + " | " + signUpRequestDto.Email + " | " + signUpRequestDto.Bvn + " - "+ validateUser.Message + " - "+ DateTime.Now);
 
-                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode, Message = ResponseMessage.BvnValidation };
+                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode, Data = ResponseMessage.BvnValidation, Message = ResponseMessage.BvnValidation };
                 }
 
                 var token = $"{DateTime.Now.ToString()}{Guid.NewGuid().ToString()}{DateTime.Now.AddMilliseconds(120)}{Utilities.GeneratePin()}";
