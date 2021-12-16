@@ -9,7 +9,11 @@ namespace SocialPay.Helper.Dto.Request
     {
         public long ProductCategoryId { get; set; }
         public long StoreId { get; set; }
+        [Required(ErrorMessage = "Please enter product.")]
+        [StringLength(30, ErrorMessage = "Cannot exceed 30 characters. ")]
         public string ProductName { get; set; }
+        [Required(ErrorMessage = "Please enter product.")]
+        [StringLength(150, ErrorMessage = "Cannot exceed 150 characters. ")]
         public string Description { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
