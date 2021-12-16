@@ -148,8 +148,8 @@ namespace SocialPay.Core.Services.Authentication
 
                     var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
 
-                    ////if (validateUserAD.ResponseCode != AppResponseCodes.Success)
-                    ////    return validateUserAD;
+                    if (validateUserAD.ResponseCode != AppResponseCodes.Success)
+                        return validateUserAD;
 
                     tokenDescriptor = new SecurityTokenDescriptor
                     {
