@@ -49,5 +49,6 @@ namespace SocialPay.Helper.Dto.Response
         public string QRStatus { get; set; }
         public string Message { get; set; }
         public double MerchantWalletBalance { get; set; }
+        public bool HasBusinessInfo { get; set; }
     }
 }
