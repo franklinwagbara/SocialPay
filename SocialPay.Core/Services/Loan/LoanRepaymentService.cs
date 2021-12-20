@@ -24,21 +24,19 @@ namespace SocialPay.Core.Services.Loan
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _appSettings = appSettings.Value;
-
         }
-
 
         public async Task<WebApiResponse> GetRepaymentModel()
         {
 
             try
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = await _context.LoanRepaymentPlan.Where(x => x.IsDeleted == false).ToListAsync(), StatusCode = ResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = await _context.LoanRepaymentPlan.Where(x => x.IsDeleted == false).ToListAsync(), StatusCode = ResponseCodes.Success };
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "An error occured. Please try again.", Message = "An error occured. Please try again.", StatusCode = ResponseCodes.InternalError };
             }
 
         }
@@ -58,12 +56,13 @@ namespace SocialPay.Core.Services.Loan
 
                 await _context.LoanRepaymentPlan.AddAsync(payload);
                 await _context.SaveChangesAsync();
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Repayment added successfully", StatusCode = ResponseCodes.Success };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Repayment added successfully", Data = "Repayment added successfully", StatusCode = ResponseCodes.Success };
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "An error occured. Please try again.", Message = "An error occured. Please try again.", StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -75,12 +74,14 @@ namespace SocialPay.Core.Services.Loan
                 var GetLoanRepaymentDetails = await _context.LoanRepaymentPlan.SingleOrDefaultAsync(x => x.LoanRepaymentPlanId == model.LoanRepaymentPlanId);
                 GetLoanRepaymentDetails.IsDeleted = true;
                 _context.LoanRepaymentPlan.Update(GetLoanRepaymentDetails);
+
                 await _context.SaveChangesAsync();
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Loan repayment plan deleted", StatusCode = ResponseCodes.Success };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Loan repayment plan deleted successfully", Message = "Loan repayment plan deleted successfully", StatusCode = ResponseCodes.Success };
             }
             catch (Exception e)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "An error occured. Please try again.", Message = "An error occured. Please try again.", StatusCode = ResponseCodes.InternalError };
             }
         }
 
