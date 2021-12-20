@@ -157,6 +157,7 @@ namespace SocialPay.Core.Services.Loan
                 GetLoanDetails.TokenizationReference = successfulResponse.data.CardDetails.TokenizationReference;
                 GetLoanDetails.TokenizationEmail = successfulResponse.data.EmailAddress;
                 GetLoanDetails.ConfirmTokenizationResponse = result;
+
                 _context.ApplyForLoan.Update(GetLoanDetails);
                 await _context.SaveChangesAsync();
 
@@ -202,7 +203,8 @@ namespace SocialPay.Core.Services.Loan
 
                         //Call the api to send the loan
                         var bankInfo = await _context.MerchantBankInfo.SingleOrDefaultAsync(x => x.ClientAuthenticationId == GetLoanDetails.ClientAuthenticationId);
-                        if (bankInfo == null)
+                      
+                        if (bankInfo == default)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found", StatusCode = ResponseCodes.RecordNotFound };
 
                         if (bankInfo.BankCode != _appSettings.SterlingBankCode)
@@ -291,7 +293,6 @@ namespace SocialPay.Core.Services.Loan
             }
         }
 
-
         public async Task<WebApiResponse> LoanStatus(long ApplyForLoanId, long clientId)
         {
 
@@ -301,7 +302,9 @@ namespace SocialPay.Core.Services.Loan
                 var appliedLoan = await _context.ApplyForLoan.
                     Where(x => x.ClientAuthenticationId == clientId).
                     SingleOrDefaultAsync(x => x.ApplyForLoanId == ApplyForLoanId);
+               
                 if (appliedLoan == null) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid ApplyForLoanId", StatusCode = ResponseCodes.Badrequest };
+              
                 var payloadLoanStatus = new AppliedLoanStatus
                 {
                     Amount = appliedLoan.Amount,
@@ -311,6 +314,7 @@ namespace SocialPay.Core.Services.Loan
                     isCustomerClean = appliedLoan.isCustomerClean,
                     IsCardTokenized = appliedLoan.IsCardTokenized
                 };
+              
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = payloadLoanStatus, StatusCode = ResponseCodes.Success };
             }
             catch (Exception e)
@@ -344,8 +348,8 @@ namespace SocialPay.Core.Services.Loan
                         x.DateEntered,
                         x.LoanRepaymentPlan.DailySalesPercentage
 
-                    })
-                    .ToListAsync();
+                    }).ToListAsync();
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = appliedLoan, StatusCode = ResponseCodes.Success };
             }
             catch (Exception e)
@@ -401,7 +405,6 @@ namespace SocialPay.Core.Services.Loan
                 return false;
             }
         }
-
 
         private async Task<CradTokenizationInClassResponse> CardTokenization(string fullname, string bvn, string dateOfBirth, string phoneNumber, string email, long clientId, string redirectUrl)
         {
