@@ -43,6 +43,7 @@ namespace SocialPay.Helper.Dto.Response
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
         public string BankName { get; set; }
+        public string BankCode { get; set; }
         public string Nuban { get; set; }
         public string AccountName { get; set; }
         public string Refcode { get; set; }
