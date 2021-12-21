@@ -157,7 +157,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             {
                 _log4net.Error("Error occured" + " | " + "VerifyEmailConfirmationCodeInfo" + " | " + model.email + " | " + model.token + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
         }
 

@@ -40,10 +40,11 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.email);
 
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.SendEmailVerificationCode)
-                            return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Send Email Confirmation Code" };
+                            return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Send Email Confirmation Code", StatusCode = ResponseCodes.Duplicate };
                        
                         var requestmodel = _mapper.Map<VerifyEmailConfirmationCodeRequest>(model);
                         await _context.VerifyEmailConfirmationCodeRequest.AddAsync(requestmodel);
+
                         var request = await _spectaOnboardingService.VerifyEmailConfirmationCode(model);
                         
                         if (request.ResponseCode != AppResponseCodes.Success)
@@ -51,6 +52,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         
                         var response = (SpectaResponseWithObjectResultMessage.SpectaResponseDto)request.Data;
                         var verifyemailconfirmationcoderesponse = new VerifyEmailConfirmationCodeResponse();
+
                         verifyemailconfirmationcoderesponse.success = Convert.ToBoolean(response?.success);
                         verifyemailconfirmationcoderesponse.unAuthorizedRequest = response.unAuthorizedRequest;
                         verifyemailconfirmationcoderesponse.__abp = Convert.ToBoolean(response?.__abp);
@@ -68,24 +70,24 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         await _context.SaveChangesAsync();
                       
                         if (request.ResponseCode != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data, StatusCode = ResponseCodes.InternalError };
                         
                         await transaction.CommitAsync();
                         
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.VerifyEmailConfirmationCode, Message = "Success", Data = request.Data };
+                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.VerifyEmailConfirmationCode, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _log4net.Error("Error occured" + " | " + "Verify Email Confirmation Code" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex.Message };
+                        _log4net.Error("Error occured" + " | " + "Verify Email Confirmation Code" + " | " + ex + " | " + DateTime.Now);
+                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " };
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Verify Email Confirmation Code" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex.Message };
+                _log4net.Error("Error occured" + " | " + "Verify Email Confirmation Code" + " | " + ex + " | " + DateTime.Now);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Request failed "};
             }
         }
 
