@@ -19,13 +19,15 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
     public class SpectaOnboardingService : ISpectaOnBoarding
     {
         private readonly AppSettings _appSettings;
+        private readonly SpectaOnboardingSettings _spectaOnboardingSettings;
         private readonly IAuthentication _authentication;
         private readonly HttpClient _client;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaOnboardingService));
 
-        public SpectaOnboardingService(IOptions<AppSettings> appSettings, IAuthentication authentication)
+        public SpectaOnboardingService(IOptions<AppSettings> appSettings, IOptions<SpectaOnboardingSettings> spectaOnboardingSettings, IAuthentication authentication)
         {
             _appSettings = appSettings.Value;
+            _spectaOnboardingSettings = spectaOnboardingSettings.Value;
             _authentication = authentication;
             _client = new HttpClient
             {
@@ -40,7 +42,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             try
             {
                 var requestobj = JsonConvert.SerializeObject(model);
-                var client = new RestClient($"{_client.BaseAddress}{_appSettings.SpectaRegistrationCustomerUrlExtension}");
+                var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.SpectaRegistrationCustomerUrlExtension}");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
                 //request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
@@ -55,7 +57,8 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 {
                     var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
                     apiResponse.Data = Response;                    
-                    apiResponse.StatusCode = ResponseCodes.Success;                    
+                    apiResponse.StatusCode = ResponseCodes.Success;
+                    apiResponse.Message = "Success";
 
                     return apiResponse;
                 }
@@ -67,7 +70,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "RegisterCustomerInfo" + " | " + model.bvn + " | " + model.emailAddress + " | " + model.name + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "RegisterCustomerInfo" + " | " + model.bvn + " | " + model.emailAddress + " | " + model.name + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -79,11 +82,11 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             try
             {
                 var requestobj = JsonConvert.SerializeObject(model);
-                var client = new RestClient($"{_client.BaseAddress}{_appSettings.SendEmailVerificationCodeUrlExtension}");
+                var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.SendEmailVerificationCodeUrlExtension}");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-                request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
-                request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
+                //request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
+                //request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));
@@ -95,6 +98,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     var Response = JsonConvert.DeserializeObject<SpectaResponseWithBoolResultMessage.SpectaResponseDto>(response.Content);
                     apiResponse.Data = Response;
                     apiResponse.StatusCode = ResponseCodes.Success;
+                    apiResponse.Message = "Success";
 
                     return apiResponse;
                 }
@@ -107,9 +111,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "SendEmailVerificationCodeInfo" + " | " + model.email + " | " + model.clientBaseUrl + " | " + model.verificationCodeParameterName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "SendEmailVerificationCodeInfo" + " | " + model.email + " | " + model.clientBaseUrl + " | " + model.verificationCodeParameterName + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
 
 
@@ -121,11 +125,11 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             try
             {
                 var requestobj = JsonConvert.SerializeObject(model);
-                var client = new RestClient($"{_client.BaseAddress}{_appSettings.VerifyEmailConfirmationCodeUrlExtension}");
+                var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.VerifyEmailConfirmationCodeUrlExtension}");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-                request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
-                request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
+               // request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
+                //request.AddHeader("Authorization", "Bearer Token " + await _authentication.AccessTokenTesting(model.email));
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));              
@@ -137,6 +141,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
                     apiResponse.Data = Response;
                     apiResponse.StatusCode = ResponseCodes.Success;
+                    apiResponse.Message = "Success";
 
                     return apiResponse;
                 }
@@ -150,7 +155,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "VerifyEmailConfirmationCodeInfo" + " | " + model.email + " | " + model.token + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "VerifyEmailConfirmationCodeInfo" + " | " + model.email + " | " + model.token + " | " + ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

@@ -37,7 +37,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.email);
 
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.RegisterCustomer)
-                            return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Send Email Verification Code" };
+                            return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Send Email Verification Code", StatusCode = ResponseCodes.InternalError };
                        
                         var requestmodel = _mapper.Map<SendEmailVerificationCodeRequest>(model);
                         await _context.SendEmailVerificationCodeRequest.AddAsync(requestmodel);
@@ -71,17 +71,18 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         await _context.SaveChangesAsync();
 
                         if (request.ResponseCode != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data, StatusCode = ResponseCodes.InternalError };
                         
                         await transaction.CommitAsync();
-
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.SendEmailVerificationCode, Message = "Success", Data = request.Data };
+                     
+                       return new WebApiResponse { ResponseCode = SpectaProcessCodes.SendEmailVerificationCode, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _log4net.Error("Error occured" + " | " + "SendEmailVerificationCode" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex.Message };
+                        _log4net.Error("Error occured" + " | " + "SendEmailVerificationCode" + " | " + ex + " | " + DateTime.Now);
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", StatusCode = ResponseCodes.InternalError };
 
                     }
                 }

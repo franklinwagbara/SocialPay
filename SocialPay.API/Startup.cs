@@ -126,10 +126,17 @@ namespace SocialPay.API
             });
 
             services.AddAutoMapper(typeof(MappingProfiles));
-            var appSettingsSection = Configuration.GetSection("AppSettings");
+
+            var appSettingsSection = Configuration.GetSection(nameof(AppSettings));
             services.Configure<AppSettings>(appSettingsSection);
+
+            var spectaOnboardingSettingsSection = Configuration.GetSection(nameof(SpectaOnboardingSettings));
+            services.Configure<SpectaOnboardingSettings>(spectaOnboardingSettingsSection);
+
             var appSettings = appSettingsSection.Get<AppSettings>();
+
             var key = Encoding.ASCII.GetBytes(appSettings.SecretKey);
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
