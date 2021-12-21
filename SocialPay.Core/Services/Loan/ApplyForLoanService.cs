@@ -481,7 +481,7 @@ namespace SocialPay.Core.Services.Loan
                 return new CradTokenizationInClassResponse
                 {
                     status = successfulResponse.status,
-                    redirectUrl = successfulResponse.data.url
+                    redirectUrl = result
                 };
             }
             catch (Exception e)
@@ -489,7 +489,7 @@ namespace SocialPay.Core.Services.Loan
                 return new CradTokenizationInClassResponse
                 {
                     status = false,
-                    redirectUrl = ""
+                    redirectUrl = "failed"
                 };
             }
         }
