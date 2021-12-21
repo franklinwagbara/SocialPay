@@ -484,12 +484,13 @@ namespace SocialPay.Core.Services.Loan
                     redirectUrl = result
                 };
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                //var error = ex;
                 return new CradTokenizationInClassResponse
                 {
                     status = false,
-                    redirectUrl = "failed"
+                    redirectUrl = ex.ToString()
                 };
             }
         }
