@@ -74,13 +74,13 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         
                         await transaction.CommitAsync();
                         
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.VerifyEmailConfirmationCode, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
                         _log4net.Error("Error occured" + " | " + "Verify Email Confirmation Code" + " | " + ex + " | " + DateTime.Now);
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " };
                     }
                 }
             }

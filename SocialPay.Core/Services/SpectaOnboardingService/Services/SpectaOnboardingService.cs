@@ -116,7 +116,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }
 
-
          }
 
         public async Task<WebApiResponse> VerifyEmailConfirmationCode(VerifyEmailConfirmationCodeRequestDto model)

@@ -38,7 +38,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.email);
 
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.SendBvnPhoneVerificationCode)
-                            return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Verify Bvn Phone Confirmation Code", StatusCode = ResponseCodes.InternalError };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Your specta registration is incomplete. Kindly complete the process", StatusCode = ResponseCodes.InternalError };
                        
                         var requestmodel = _mapper.Map<VerifyBvnPhoneConfirmationCodeRequest>(model);
                        
@@ -75,14 +75,14 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         
                         await transaction.CommitAsync();
                         
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.VerifyBvnPhoneConfirmationCode, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
                         _log4net.Error("Error occured" + " | " + "Verify Bvn Phone Confirmation Code" + " | " + ex + " | " + DateTime.Now);
 
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex };
                     }
                 }
             }
@@ -90,7 +90,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             {
                 _log4net.Error("Error occured" + " | " + "Verify Bvn Phone Confirmation Code" + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex };
             }
         }
 
