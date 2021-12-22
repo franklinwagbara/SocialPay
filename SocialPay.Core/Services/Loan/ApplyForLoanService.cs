@@ -423,13 +423,20 @@ namespace SocialPay.Core.Services.Loan
                 // DateTime sDate = DateTime.Parse(dateOfBirth);
                 // var dob = Convert.ToDateTime(dateOfBirth).ToString("yyyy-MM-dd");
 
-               // var pDate = DateTime.ParseExact("05/28/2013 12:00:00 AM", "MM/dd/yyyy hh:mm:ss", CultureInfo.InvariantCulture);
-                var dob = DateTime.ParseExact(dateOfBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+               // var dCon = Convert.ToDateTime(dateOfBirth);
+
+               // DateTime DateObject = Convert.ToDateTime(dateOfBirth);
+
+                var Culture = new CultureInfo("en-US");
+                //Use of Convert.ToDateTime() 
+                DateTime DateObject = Convert.ToDateTime(dateOfBirth, Culture);
+                // var pDate = DateTime.ParseExact("05/28/2013 12:00:00 AM", "MM/dd/yyyy hh:mm:ss", CultureInfo.InvariantCulture);
+                //var dob = DateTime.ParseExact(dateOfBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 //var dob = Convert.ToDateTime(dateOfBirth);
 
-                var date = DateTime.ParseExact(dateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                // var date = DateTime.ParseExact(dateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-                var dd = dob.ToString("yyyy-MM-dd");
+                // var dd = dob.ToString("yyyy-MM-dd");
 
                 var successfulResponse = new CradTokenizationResponseDTO();
 
@@ -438,8 +445,8 @@ namespace SocialPay.Core.Services.Loan
                     fullName = fullname,
                     email = email,
                     phone = phoneNumber,
-                    dob = dd,
-                   // dob = "1992-12-14",
+                   // dob = dateOfBirth,
+                    dob = "1992-12-14",
                    // dob = DateTime.ParseExact(dateOfBirth, "yyyy/M/dd", null).ToString("yyyy-MM-dd"),
                     // dob = DateTime.Parse(dateOfBirth).ToString("yyyy-MM-dd"),
                     tokenType = "",
