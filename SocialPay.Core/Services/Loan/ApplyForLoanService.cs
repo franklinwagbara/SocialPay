@@ -420,7 +420,9 @@ namespace SocialPay.Core.Services.Loan
             try
             {
                // DateTime sDate = DateTime.Parse(dateOfBirth);
-                var dob = Convert.ToDateTime(dateOfBirth);
+               // var dob = Convert.ToDateTime(dateOfBirth).ToString("yyyy-MM-dd");
+
+                var dob = Convert.ToDateTime("1992-12-14");
 
                 var dd = dob.ToString("yyyy-MM-dd");
 
