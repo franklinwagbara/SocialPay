@@ -467,8 +467,8 @@ namespace SocialPay.Core.Services.Loan
                         responseUrl = successfulResponse.data.url
                     };
 
-                    await _context.CardTokenization.AddAsync(dbPayload);
-                    await _context.SaveChangesAsync();
+                    //await _context.CardTokenization.AddAsync(dbPayload);
+                    //await _context.SaveChangesAsync();
 
                     return new CradTokenizationInClassResponse
                     {
