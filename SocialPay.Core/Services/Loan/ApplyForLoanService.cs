@@ -423,13 +423,15 @@ namespace SocialPay.Core.Services.Loan
                 // DateTime sDate = DateTime.Parse(dateOfBirth);
                 // var dob = Convert.ToDateTime(dateOfBirth).ToString("yyyy-MM-dd");
 
-               // var dCon = Convert.ToDateTime(dateOfBirth);
+                // var dCon = Convert.ToDateTime(dateOfBirth);
 
-               // DateTime DateObject = Convert.ToDateTime(dateOfBirth);
+                // DateTime DateObject = Convert.ToDateTime(dateOfBirth);
 
-                var Culture = new CultureInfo("en-US");
+               // var DateObject1 = DateTime.ParseExact(dateOfBirth, "dd/MM/yyyy", null);
+
+                //var Culture = new CultureInfo("en-US");
                 //Use of Convert.ToDateTime() 
-                DateTime DateObject = Convert.ToDateTime("12-12-1992", Culture);
+               // DateTime DateObject = Convert.ToDateTime("12-12-1992", Culture);
                 // var pDate = DateTime.ParseExact("05/28/2013 12:00:00 AM", "MM/dd/yyyy hh:mm:ss", CultureInfo.InvariantCulture);
                 //var dob = DateTime.ParseExact(dateOfBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 //var dob = Convert.ToDateTime(dateOfBirth);
@@ -446,7 +448,7 @@ namespace SocialPay.Core.Services.Loan
                     email = email,
                     phone = phoneNumber,
                    // dob = dateOfBirth,
-                    dob = "1992-12-14",
+                    dob = DateTime.ParseExact(dateOfBirth, "dd/MM/yyyy", null).ToString(),
                    // dob = DateTime.ParseExact(dateOfBirth, "yyyy/M/dd", null).ToString("yyyy-MM-dd"),
                     // dob = DateTime.Parse(dateOfBirth).ToString("yyyy-MM-dd"),
                     tokenType = "",
