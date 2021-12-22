@@ -429,7 +429,7 @@ namespace SocialPay.Core.Services.Loan
 
                 var Culture = new CultureInfo("en-US");
                 //Use of Convert.ToDateTime() 
-                DateTime DateObject = Convert.ToDateTime(dateOfBirth, Culture);
+                DateTime DateObject = Convert.ToDateTime("12-12-1992", Culture);
                 // var pDate = DateTime.ParseExact("05/28/2013 12:00:00 AM", "MM/dd/yyyy hh:mm:ss", CultureInfo.InvariantCulture);
                 //var dob = DateTime.ParseExact(dateOfBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 //var dob = Convert.ToDateTime(dateOfBirth);
