@@ -11,6 +11,7 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -419,10 +420,14 @@ namespace SocialPay.Core.Services.Loan
         {
             try
             {
-               // DateTime sDate = DateTime.Parse(dateOfBirth);
-               // var dob = Convert.ToDateTime(dateOfBirth).ToString("yyyy-MM-dd");
+                // DateTime sDate = DateTime.Parse(dateOfBirth);
+                // var dob = Convert.ToDateTime(dateOfBirth).ToString("yyyy-MM-dd");
 
-                var dob = Convert.ToDateTime(dateOfBirth);
+               // var pDate = DateTime.ParseExact("05/28/2013 12:00:00 AM", "MM/dd/yyyy hh:mm:ss", CultureInfo.InvariantCulture);
+                var dob = DateTime.ParseExact(dateOfBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                //var dob = Convert.ToDateTime(dateOfBirth);
+
+                var date = DateTime.ParseExact(dateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
                 var dd = dob.ToString("yyyy-MM-dd");
 
