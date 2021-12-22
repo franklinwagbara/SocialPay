@@ -170,7 +170,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 client.Timeout = -1;
                 
                 var request = new RestRequest(Method.POST);
-                request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(emailaddress));
+               // request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(emailaddress));
                 request.AlwaysMultipartFormData = true;
                 request.AddParameter("emailAddress", emailaddress);
                 
