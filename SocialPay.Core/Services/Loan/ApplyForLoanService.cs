@@ -422,7 +422,7 @@ namespace SocialPay.Core.Services.Loan
                // DateTime sDate = DateTime.Parse(dateOfBirth);
                // var dob = Convert.ToDateTime(dateOfBirth).ToString("yyyy-MM-dd");
 
-                var dob = Convert.ToDateTime("1992-12-14");
+                var dob = Convert.ToDateTime(dateOfBirth);
 
                 var dd = dob.ToString("yyyy-MM-dd");
 
