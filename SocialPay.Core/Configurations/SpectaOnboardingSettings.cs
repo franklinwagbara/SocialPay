@@ -10,6 +10,8 @@ namespace SocialPay.Core.Configurations
         public string SpectaRegistrationAuthenticaUrlExtension { get; set; }
         public string SendEmailVerificationCodeUrlExtension { get; set; }
         public string VerifyEmailConfirmationCodeUrlExtension { get; set; }
+        public string SendBvnPhoneVerificationCodeUrlExtension { get; set; }
+        public string VerifyBvnPhoneConfirmationCodeUrlExtension { get; set; }
         public string RegisterCustomerUrlExtension { get; set; }
         public string LoggedInCustomerProfileUrlExtension { get; set; }
         public string AddOrrInformationUrlExtension { get; set; }
