@@ -425,7 +425,7 @@ namespace SocialPay.Core.Services.Loan
 
                 // var dCon = Convert.ToDateTime(dateOfBirth);
 
-                var currentDob = DateTime.Parse(dateOfBirth).ToString("dd-MMM-yy");
+                var currentDob = DateTime.Parse(dateOfBirth).ToString("dd-MM-yyyy");
 
                 //var DateObject2 = Convert.ToDateTime(dateOfBirth);
 
