@@ -99,8 +99,8 @@ namespace SocialPay.Core.Services.Products
 
                             blobRequest.ImageDetail = productImages;
 
-                           // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
-                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId });
+                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
+                           // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = model.ProductId });
 
                             await _blobService.UploadProducts(blobRequest);
 
@@ -118,20 +118,20 @@ namespace SocialPay.Core.Services.Products
                         await _context.ProductInventory.AddAsync(productInventory);
                         await _context.SaveChangesAsync();
 
-                        ////var inventoryHistory = new ProductInventoryHistory
-                        ////{
-                        ////    ProdId = model.ProductId,
-                        ////    ClientAuthenticationId = userModel.ClientId,
-                        ////    Quantity = request.Quantity,
-                        ////    IsAdded = true,
-                        ////    Amount = request.Price,
-                        ////    IsUpdated = false,
-                        ////    ProductInventoryId = productInventory.ProductInventoryId,
-                        ////    LastDateModified = DateTime.Now
-                        ////};
+                        var inventoryHistory = new ProductInventoryHistory
+                        {
+                            ProdId = model.ProductId,
+                            ClientAuthenticationId = userModel.ClientId,
+                            Quantity = request.Quantity,
+                            IsAdded = true,
+                            Amount = request.Price,
+                            IsUpdated = false,
+                            ProductInventoryId = productInventory.ProductInventoryId,
+                            LastDateModified = DateTime.Now
+                        };
 
-                        ////await _context.productInventoryHistories.AddAsync(inventoryHistory);
-                        ////await _context.SaveChangesAsync();
+                        await _context.productInventoryHistories.AddAsync(inventoryHistory);
+                        await _context.SaveChangesAsync();
 
                         await _context.ProductItems.AddRangeAsync(proDetails);
                         await _context.SaveChangesAsync();
@@ -426,8 +426,8 @@ namespace SocialPay.Core.Services.Products
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems
-                                           .Where(x => x.ProductId == item.ProductId)
-                                           //.Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
+                                           //.Where(x => x.ProductId == item.ProductId)
+                                           .Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
                                                  select new ProductItemViewModel
                                                  {
                                                      FileLocation = p.FileLocation,
@@ -640,8 +640,8 @@ namespace SocialPay.Core.Services.Products
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems
-                                           .Where(x => x.ProductId == item.ProductId)
-                                          // .Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
+                                          // .Where(x => x.ProductId == item.ProductId)
+                                           .Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
                                                  select new ProductItemViewModel
                                                  {
                                                      FileLocation = p.FileLocation,
@@ -694,8 +694,8 @@ namespace SocialPay.Core.Services.Products
                              join pc in _context.ProductCategories on pro.ProductCategoryId equals pc.ProductCategoryId
                              join pi in _context.ProductInventory on pro.ProductId equals pi.ProductId
                              join proItem in _context.ProductItems on pro.ProductId equals proItem.ProductId
-                             where pro.MerchantStoreId == storeId
-                            // where pro.MerchantStoreId == storeId && proItem.IsDeleted == false
+                            // where pro.MerchantStoreId == storeId
+                             where pro.MerchantStoreId == storeId && proItem.IsDeleted == false
 
                              select new StoreProductsDetailsViewModel
                              {
@@ -728,8 +728,8 @@ namespace SocialPay.Core.Services.Products
                 foreach (var item in query)
                 {
                     var getProductsItem = await (from p in _context.ProductItems
-                                           //.Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
-                                           .Where(x => x.ProductId == item.ProductId)
+                                           .Where(x => x.ProductId == item.ProductId && x.IsDeleted == false)
+                                           //.Where(x => x.ProductId == item.ProductId)
                                                  select new ProductItemViewModel
                                                  {
                                                      FileLocation = p.FileLocation,
