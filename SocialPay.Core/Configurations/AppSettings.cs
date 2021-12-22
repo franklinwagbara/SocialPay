@@ -138,9 +138,7 @@
         public string createTenantUrl { get; set; }
         public string PayUClientId { get; set; }
         public string PayUClientSecret { get; set; }
-        public string SpectaRegistrationTenantId { get; set; }
-        public string SpectaRegistrationCustomerUrlExtension { get; set; }
-        public string SpectaRegistrationAuthenticaUrlExtension { get; set; }
+        public string SpectaRegistrationTenantId { get; set; }        
         public string OpenTimeout { get; set; }
         public string CloseTimeout { get; set; }
         public string ReceiveTimeout { get; set; }
@@ -152,7 +150,6 @@
         public string TokenizationBaseURL { get; set; }
         public string CardTokenizationAuthorizationToken { get; set; }
         public string CreditBureauSearch_Crc { get; set; }
-        public string TokenizationURL { get; set; }
-
+        public string TokenizationURL { get; set; }     
     }
 }

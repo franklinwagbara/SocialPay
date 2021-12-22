@@ -2583,6 +2583,29 @@ namespace SocialPay.Domain.Migrations
                     b.ToTable("NonEscrowFioranoT24Request");
                 });
 
+            modelBuilder.Entity("SocialPay.Domain.Entities.OnboardingNotiification", b =>
+                {
+                    b.Property<long>("OnboardingNotiificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<long>("ClientAuthenticationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("notificationType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OnboardingNotiificationId");
+
+                    b.HasIndex("ClientAuthenticationId");
+
+                    b.ToTable("OnboardingNotiification");
+                });
+
             modelBuilder.Entity("SocialPay.Domain.Entities.OtherMerchantBankInfo", b =>
                 {
                     b.Property<long>("MerchantOtherBankInfoId")
@@ -2845,9 +2868,6 @@ namespace SocialPay.Domain.Migrations
                     b.Property<long>("ProdId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("ProductId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("ProductInventoryId")
                         .HasColumnType("bigint");
 
@@ -2855,8 +2875,6 @@ namespace SocialPay.Domain.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("ProductInventoryHistoryId");
-
-                    b.HasIndex("ProductId");
 
                     b.HasIndex("ProductInventoryId");
 
@@ -2994,6 +3012,111 @@ namespace SocialPay.Domain.Migrations
                     b.HasIndex("QrPaymentRequestId");
 
                     b.ToTable("QrPaymentResponse");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.SendBvnPhoneVerificationCodeResponse", b =>
+                {
+                    b.Property<long>("SendBvnPhoneVerificationCodeResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("__abp")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("result")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("success")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("unAuthorizedRequest")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("validationErrors")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SendBvnPhoneVerificationCodeResponseId");
+
+                    b.ToTable("SendBvnPhoneVerificationCodeResponse");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.SendEmailVerificationCodeRequest", b =>
+                {
+                    b.Property<long>("SendEmailVerificationCodeRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("clientBaseUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("emailParameterName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("verificationCodeParameterName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SendEmailVerificationCodeRequestId");
+
+                    b.ToTable("SendEmailVerificationCodeRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.SendEmailVerificationCodeResponse", b =>
+                {
+                    b.Property<long>("SendEmailVerificationCodeResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("__abp")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("result")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("success")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("unAuthorizedRequest")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("validationErrors")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SendEmailVerificationCodeResponseId");
+
+                    b.ToTable("SendEmailVerificationCodeResponse");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.SingleDstvPayment", b =>
@@ -3667,6 +3790,126 @@ namespace SocialPay.Domain.Migrations
                     b.ToTable("VendAirtimeRequestLog");
                 });
 
+            modelBuilder.Entity("SocialPay.Domain.Entities.VerifyBvnPhoneConfirmationCodeRequest", b =>
+                {
+                    b.Property<long>("VerifyBvnPhoneConfirmationCodeRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VerifyBvnPhoneConfirmationCodeRequestId");
+
+                    b.ToTable("VerifyBvnPhoneConfirmationCodeRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.VerifyBvnPhoneConfirmationCodeResponse", b =>
+                {
+                    b.Property<long>("VerifyBvnPhoneConfirmationCodeResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("__abp")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("result")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("success")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("unAuthorizedRequest")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("validationErrors")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VerifyBvnPhoneConfirmationCodeResponseId");
+
+                    b.ToTable("VerifyBvnPhoneConfirmationCodeResponse");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.VerifyEmailConfirmationCodeRequest", b =>
+                {
+                    b.Property<long>("VerifyEmailConfirmationCodeRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VerifyEmailConfirmationCodeRequestId");
+
+                    b.ToTable("VerifyEmailConfirmationCodeRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.VerifyEmailConfirmationCodeResponse", b =>
+                {
+                    b.Property<long>("VerifyEmailConfirmationCodeResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("__abp")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("result")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("success")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("unAuthorizedRequest")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("validationErrors")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VerifyEmailConfirmationCodeResponseId");
+
+                    b.ToTable("VerifyEmailConfirmationCodeResponse");
+                });
+
             modelBuilder.Entity("SocialPay.Domain.Entities.WalletTransferRequestLog", b =>
                 {
                     b.Property<string>("PaymentReference")
@@ -4263,6 +4506,15 @@ namespace SocialPay.Domain.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SocialPay.Domain.Entities.OnboardingNotiification", b =>
+                {
+                    b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
+                        .WithMany()
+                        .HasForeignKey("ClientAuthenticationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SocialPay.Domain.Entities.OtherMerchantBankInfo", b =>
                 {
                     b.HasOne("SocialPay.Domain.Entities.ClientAuthentication", "ClientAuthentication")
@@ -4314,12 +4566,8 @@ namespace SocialPay.Domain.Migrations
 
             modelBuilder.Entity("SocialPay.Domain.Entities.ProductInventoryHistory", b =>
                 {
-                    b.HasOne("SocialPay.Domain.Entities.Product", null)
-                        .WithMany("ProductInventoryHistory")
-                        .HasForeignKey("ProductId");
-
                     b.HasOne("SocialPay.Domain.Entities.ProductInventory", "ProductInventory")
-                        .WithMany("ProductInventoryHistory")
+                        .WithMany()
                         .HasForeignKey("ProductInventoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

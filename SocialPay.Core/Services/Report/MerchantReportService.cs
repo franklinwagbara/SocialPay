@@ -80,7 +80,8 @@ namespace SocialPay.Core.Services.Report
                                         ReferralCode = c.ReferralCode,
                                         ReferCode = c.ReferCode,
                                         Date = c.DateEntered,
-                                        HasRegisteredCompany = c.HasRegisteredCompany
+                                        HasRegisteredCompany = c.HasRegisteredCompany,
+                                        AccountStatus = c.IsLocked == true ? "Locked/Disabled" : "Active"
                                     }).OrderByDescending(x => x.Date).ToList();
 
 
@@ -112,7 +113,8 @@ namespace SocialPay.Core.Services.Report
                                         ReferCode = c.ReferCode,
                                         HasRegisteredCompany = c.HasRegisteredCompany,
                                         Logo = $"{_appSettings.BaseApiUrl}{"MerchantLogo/defaultLogo.jpg"}",
-                                    }).OrderByDescending(x=>x.Date).ToList();
+                                        AccountStatus = c.IsLocked == true ? "Locked/Disabled" : "Active"
+                                    }).OrderByDescending(x => x.Date).ToList();
 
 
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
@@ -762,7 +764,7 @@ namespace SocialPay.Core.Services.Report
                     {
                         command.Parameters.AddWithValue("@TransactionJourney", SqlDbType.NVarChar).Value = code;
                         command.Parameters.AddWithValue("@PaymentReference", SqlDbType.NVarChar).Value = paymentReference;
-                      //  command.Parameters.Add("@PaymentReference", SqlDbType.NVarChar).Value = Fnamestring;
+                        //  command.Parameters.Add("@PaymentReference", SqlDbType.NVarChar).Value = Fnamestring;
                         // repeat for all variables....
                         connection.Open();
                         command.ExecuteNonQuery();
@@ -776,7 +778,7 @@ namespace SocialPay.Core.Services.Report
             {
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
 
-            }         
+            }
         }
 
 
@@ -889,7 +891,7 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
-              //  clientId = 238;
+                //  clientId = 238;
                 _log4net.Info("GetCustomersTransactionCount" + " | " + clientId + " | " + DateTime.Now);
 
                 var result = await _context.TransactionLog

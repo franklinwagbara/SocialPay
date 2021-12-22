@@ -13,7 +13,7 @@ namespace SocialPay.Helper
         public const string SendMailFailed = "Error occured wheile sending email. Please try again";
         public const string DuplicateRecord = "Duplicate records. Records exist.";
         public const string BusinessInfoRequired = "Request failed. Seems you have not completed your business info profile.";
-        public const string BvnValidation = "BVN validation failed. Please ensure you enter your valid BVN details";
+        public const string BvnValidation = "BVN validation failed. Please ensure you entered valid BVN details. e,g Firstname, lastname, age";
         public const string InterBankNameEnquiryFailed = "Interbank Name Enquiry Failed";
         public const string TINValidationError = "Error occured validating TIN";
         public const string IncompleteMerchantProfile = "Incomplete profile. Please complete your sign up process";

@@ -73,7 +73,6 @@ namespace SocialPay.API
             });
         }
 
-
         protected new IActionResult Response(WebApiResponse response)
         {
 

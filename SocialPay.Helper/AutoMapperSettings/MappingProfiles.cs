@@ -12,7 +12,14 @@ namespace SocialPay.Helper.AutoMapperSettings
         public MappingProfiles()
         {
             CreateMap<SpectaRegisterCustomerRequest, RegisterCustomerRequestDto>();           
-            CreateMap<RegisterCustomerRequestDto, SpectaRegisterCustomerRequest>();           
+            CreateMap<RegisterCustomerRequestDto, SpectaRegisterCustomerRequest>();
+
+            CreateMap<SendEmailVerificationCodeRequest, SendEmailVerificationCodeRequestDto>();
+            CreateMap<SendEmailVerificationCodeRequestDto, SendEmailVerificationCodeRequest>();
+            CreateMap<VerifyEmailConfirmationCodeRequest, VerifyEmailConfirmationCodeRequestDto>();
+            CreateMap<VerifyEmailConfirmationCodeRequestDto, VerifyEmailConfirmationCodeRequest>();
+            CreateMap<ProductInventory, ProductInventoryDto>();
+            CreateMap<ProductInventoryDto, ProductInventory>();
         }
     }
 }

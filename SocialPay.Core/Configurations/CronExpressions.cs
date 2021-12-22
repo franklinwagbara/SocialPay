@@ -17,5 +17,6 @@
         public string CreateNibbsMerchantTask { get; set; }
         public string CreateNibbsSubMerchantTask { get; set; }
         public string BindMerchantTask { get; set; }
+        public string OnboardingNotificationTask { get; set; }
     }
 }

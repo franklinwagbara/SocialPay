@@ -88,5 +88,13 @@ namespace SocialPay.Domain
         public DbSet<LoginAttemptHistory> LoginAttemptHistories { get; set; }
         public DbSet<CardTokenization> CardTokenization { get; set; }
         public DbSet<MerchantBureauSearch> MerchantBureauSearch { get; set; }
+        public DbSet<SendEmailVerificationCodeRequest> SendEmailVerificationCodeRequest { get; set; }
+        public DbSet<SendEmailVerificationCodeResponse> SendEmailVerificationCodeResponse { get; set; }
+        public DbSet<VerifyEmailConfirmationCodeRequest> VerifyEmailConfirmationCodeRequest { get; set; }
+        public DbSet<VerifyEmailConfirmationCodeResponse> VerifyEmailConfirmationCodeResponse { get; set; }
+        public DbSet<OnboardingNotiification> OnboardingNotiification { get; set; }
+        public DbSet<SendBvnPhoneVerificationCodeResponse> SendBvnPhoneVerificationCodeResponse { get; set; }
+        public DbSet<VerifyBvnPhoneConfirmationCodeRequest> VerifyBvnPhoneConfirmationCodeRequest { get; set; }
+        public DbSet<VerifyBvnPhoneConfirmationCodeResponse> VerifyBvnPhoneConfirmationCodeResponse { get; set; }
     }
 }

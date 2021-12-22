@@ -18,16 +18,43 @@ namespace SocialPay.API.Controllers
     public class SpectaController : BaseController
     {
         private readonly ISpectaCustomerRegistration _spectaCustomerRegistration;
+        private readonly ISpectaSendEmailVerificationCode _spectaSendEmailVerificationCode;
+        private readonly ISpectaVerifyEmailConfirmationCode _spectaVerifyEmailConfirmationCode;
+        private readonly ISpectaSendBvnPhoneVerificationCode _spectaSendBvnPhoneVerificationCode;
+        private readonly ISpectaVerifyBvnPhoneConfirmationCode _spectaVerifyBvnPhoneConfirmationCode;
 
         public SpectaController(ISpectaCustomerRegistration spectaCustomerRegistration,
+            ISpectaSendEmailVerificationCode spectaSendEmailVerificationCode,
+            ISpectaVerifyEmailConfirmationCode spectaVerifyEmailConfirmationCode,
+            ISpectaSendBvnPhoneVerificationCode spectaSendBvnPhoneVerificationCode,
+            ISpectaVerifyBvnPhoneConfirmationCode spectaVerifyBvnPhoneConfirmationCode,
             INotification notification) : base(notification)
         {
             _spectaCustomerRegistration = spectaCustomerRegistration ?? throw new ArgumentNullException(nameof(spectaCustomerRegistration));
-
+            _spectaSendEmailVerificationCode = spectaSendEmailVerificationCode ?? throw new ArgumentNullException(nameof(spectaSendEmailVerificationCode));
+            _spectaVerifyEmailConfirmationCode = spectaVerifyEmailConfirmationCode ?? throw new ArgumentNullException(nameof(spectaVerifyEmailConfirmationCode));
+            _spectaSendBvnPhoneVerificationCode = spectaSendBvnPhoneVerificationCode ?? throw new ArgumentNullException(nameof(spectaSendBvnPhoneVerificationCode));
+            _spectaVerifyBvnPhoneConfirmationCode = spectaVerifyBvnPhoneConfirmationCode ?? throw new ArgumentNullException(nameof(spectaVerifyBvnPhoneConfirmationCode));
         }
 
-        //[HttpPost]
-        //[Route("register-customer")]
-        //public async Task<IActionResult> CreateRegisterCustomerAsync([FromBody] RegisterCustomerRequestDto model) => Response(await _spectaCustomerRegistration.RegisterCustomer(model).ConfigureAwait(false));
+        [HttpPost]
+        [Route("register-customer")]
+        public async Task<IActionResult> CreateRegisterCustomerAsync([FromBody] RegisterCustomerRequestDto model) => Response(await _spectaCustomerRegistration.RegisterCustomer(model).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("send-email-verification-code")]
+        public async Task<IActionResult> SendEmailVerificationCodeAsync([FromBody] SendEmailVerificationCodeRequestDto model) => Response(await _spectaSendEmailVerificationCode.SendEmailVerificationCode(model).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("verify-email-confirmation-code")]
+        public async Task<IActionResult> VerifyEmailConfirmationCodeAsync([FromBody] VerifyEmailConfirmationCodeRequestDto model) => Response(await _spectaVerifyEmailConfirmationCode.VerifyEmailConfirmationCode(model).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("send-bvn-phone-verification-code")]
+        public async Task<IActionResult> SendBvnPhoneVerificationCodeAsync([FromForm] SendBvnPhoneVerificationCodeRequestDto model) => Response(await _spectaSendBvnPhoneVerificationCode.SendBvnPhoneVerificationCode(model).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("verify-bvn-phone-confirmation-code")]
+        public async Task<IActionResult> VerifyBvnPhoneConfirmationCodeAsync([FromBody] VerifyBvnPhoneConfirmationCodeRequestDto model) => Response(await _spectaVerifyBvnPhoneConfirmationCode.VerifyBvnPhoneConfirmationCode(model).ConfigureAwait(false));
     }
 }

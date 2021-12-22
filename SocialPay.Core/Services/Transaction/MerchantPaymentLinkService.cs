@@ -342,7 +342,8 @@ namespace SocialPay.Core.Services.Transaction
 
                 if (await _context.InvoicePaymentLink.AnyAsync(x => x.InvoiceName == invoiceRequestDto.InvoiceName))
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateInvoiceName };
-                var transactionReference = Guid.NewGuid().ToString();
+
+                var transactionReference = $"{"So-Pay-Inv-"}{Guid.NewGuid().ToString("N")}";
 
                 var calculatedDiscount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice * (invoiceRequestDto.discount / 100);
                 var calculatedVAT = _appSettings.vat * (invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice);

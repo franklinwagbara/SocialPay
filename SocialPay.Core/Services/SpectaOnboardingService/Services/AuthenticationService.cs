@@ -19,13 +19,15 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
     public class AuthenticationService : IAuthentication
     {
         private readonly AppSettings _appSettings;
+        private readonly SpectaOnboardingSettings _spectaOnboardingSettings;
         private readonly SocialPayDbContext _context;
 
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaOnboardingService));
         private readonly HttpClient _client;
-        public AuthenticationService(IOptions<AppSettings> appSettings, SocialPayDbContext context)
+        public AuthenticationService(IOptions<AppSettings> appSettings, IOptions<SpectaOnboardingSettings> spectaOnboardingSettings, SocialPayDbContext context)
         {
             _appSettings = appSettings.Value;
+            _spectaOnboardingSettings = spectaOnboardingSettings.Value;
             _context = context;
             _client = new HttpClient
             {
@@ -39,7 +41,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             try
             {
                 var requestobj = JsonConvert.SerializeObject(model);
-                var client = new RestClient($"{_client.BaseAddress}{_appSettings.SpectaRegistrationAuthenticaUrlExtension}");
+                var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.SpectaRegistrationAuthenticaUrlExtension}");
                 client.Timeout = -1;
 
                 var request = new RestRequest(Method.POST);

@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SocialPay.Core.Configurations;
+using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Services.Specta;
 using SocialPay.Core.Services.SpectaOnboardingService.Interface;
 using SocialPay.Domain;
@@ -15,15 +18,17 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
     public class SpectaCustomerRegistration : ISpectaCustomerRegistration
     {
         private readonly SocialPayDbContext _context;
+        private readonly AppSettings _appSettings;
         private readonly ISpectaOnBoarding _spectaOnboardingService;
         private readonly IMapper _mapper;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(PayWithSpectaService));
 
-        public SpectaCustomerRegistration(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
+        public SpectaCustomerRegistration(IOptions<AppSettings> appSettings,SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
         {
-            _context = context;
+            _appSettings = appSettings.Value;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper;
-            _spectaOnboardingService = spectaOnboardingService;
+            _spectaOnboardingService = spectaOnboardingService ?? throw new ArgumentNullException(nameof(spectaOnboardingService));
         }
 
         public async Task<WebApiResponse> RegisterCustomer(RegisterCustomerRequestDto model)
@@ -41,6 +46,8 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 
                         var requestmodel = _mapper.Map<SpectaRegisterCustomerRequest>(model);
                         requestmodel.RegistrationStatus = SpectaProcessCodes.RegisterCustomer;
+                        var password = requestmodel.password;
+                        requestmodel.password = password.Encrypt(_appSettings.appKey);
 
                         await _context.SpectaRegisterCustomerRequest.AddAsync(requestmodel);
                         await _context.SaveChangesAsync();

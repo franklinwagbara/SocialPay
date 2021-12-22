@@ -355,11 +355,13 @@ namespace SocialPay.Core.Services.Authentication
                 tokenResult.UserStatus = validateuserInfo.StatusCode;
                 tokenResult.ResponseCode = AppResponseCodes.Success;
                 tokenResult.BusinessName = validateuserInfo.MerchantBusinessInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBusinessInfo.Select(x => x.BusinessName).FirstOrDefault();
+                tokenResult.HasBusinessInfo = validateuserInfo.MerchantBusinessInfo.Count == 0 ? false : true;
                 tokenResult.FirstName = validateuserInfo.MerchantWallet.Count == 0 ? string.Empty : validateuserInfo.MerchantWallet.Select(x => x.Firstname).FirstOrDefault();
                 tokenResult.LastName = validateuserInfo.MerchantWallet.Count == 0 ? string.Empty : validateuserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault();
                 tokenResult.LastName = validateuserInfo.MerchantWallet.Count == 0 ? string.Empty : validateuserInfo.MerchantWallet.Select(x => x.Lastname).FirstOrDefault();
                 tokenResult.BankName = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.BankName).FirstOrDefault();
                 tokenResult.Nuban = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.Nuban).FirstOrDefault();
+                tokenResult.BankCode = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.BankCode).FirstOrDefault();
                 tokenResult.AccountName = validateuserInfo.MerchantBankInfo.Count == 0 ? string.Empty : validateuserInfo.MerchantBankInfo.Select(x => x.AccountName).FirstOrDefault();
                 tokenResult.Refcode = refCode;
                 tokenResult.PhoneNumber = validateuserInfo.PhoneNumber;

@@ -787,36 +787,36 @@ namespace SocialPay.Core.Services.Store
                             //Send mail
 
 
-                            //////var LogPurchasedInventory = (from s in _context.StoreTransactionLog
-                            //////                             join st in _context.StoreTransactionLogDetails on s.StoreTransactionLogId
-                            //////                             equals st.StoreTransactionLogId
-                            //////                             where s.PaymentReference == model.PaymentReference
-                            //////                             select st).FirstOrDefault();
+                            ////var LogPurchasedInventory = (from s in _context.StoreTransactionLog
+                            ////                             join st in _context.StoreTransactionLogDetails on s.StoreTransactionLogId
+                            ////                             equals st.StoreTransactionLogId
+                            ////                             where s.PaymentReference == model.PaymentReference
+                            ////                             select st).FirstOrDefault();
 
-                            //////if (LogPurchasedInventory != null)
-                            //////{
-                            //////    var productInventory = await _context.ProductInventory.SingleOrDefaultAsync(x => x.ProductId == LogPurchasedInventory.ProductId);
-                               
-                            //////    if (productInventory != null)
-                            //////    {
-                            //////        productInventory.Quantity = productInventory.Quantity - LogPurchasedInventory.Quantity;
-                            //////        await _context.SaveChangesAsync();
-                            //////    }
-                            //////    var purchasedHistory = new ProductInventoryHistory()
-                            //////    {
-                            //////        ProdId = LogPurchasedInventory.ProductId,
-                            //////        ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId,
-                            //////        Quantity = LogPurchasedInventory.Quantity,
-                            //////        Amount = LogPurchasedInventory.TotalAmount,
-                            //////        LastDateModified = DateTime.Now,
-                            //////        ProductInventoryId = productInventory.ProductInventoryId,
-                            //////        IsAdded = true,
-                            //////        IsUpdated = false,
-                            //////    };
+                            ////if (LogPurchasedInventory != null)
+                            ////{
+                            ////    var productInventory = await _context.ProductInventory.SingleOrDefaultAsync(x => x.ProductId == LogPurchasedInventory.ProductId);
 
-                            //////    await _context.productInventoryHistories.AddAsync(purchasedHistory);
-                            //////    await _context.SaveChangesAsync();
-                            //////}
+                            ////    if (productInventory != null)
+                            ////    {
+                            ////        productInventory.Quantity = productInventory.Quantity - LogPurchasedInventory.Quantity;
+                            ////        await _context.SaveChangesAsync();
+                            ////    }
+                            ////    var purchasedHistory = new ProductInventoryHistory()
+                            ////    {
+                            ////        ProdId = LogPurchasedInventory.ProductId,
+                            ////        ClientAuthenticationId = paymentSetupInfo.ClientAuthenticationId,
+                            ////        Quantity = LogPurchasedInventory.Quantity,
+                            ////        Amount = LogPurchasedInventory.TotalAmount,
+                            ////        LastDateModified = DateTime.Now,
+                            ////        ProductInventoryId = productInventory.ProductInventoryId,
+                            ////        IsAdded = true,
+                            ////        IsUpdated = false,
+                            ////    };
+
+                            ////    await _context.productInventoryHistories.AddAsync(purchasedHistory);
+                            ////    await _context.SaveChangesAsync();
+                            ////}
 
 
                             await _transactionReceipt.ReceiptTemplate(logconfirmation.CustomerEmail, paymentSetupInfo.TotalAmount,

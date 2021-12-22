@@ -57,6 +57,7 @@
         public string RowOrder { get; set; }
         public string HasChanges { get; set; }
         public string ResponseCode { get; set; }
+        public string Message { get; set; }
     }
 
     public class ADUserViewModel

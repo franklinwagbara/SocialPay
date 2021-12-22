@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SocialPay.Core.Extensions.Common;
 using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
@@ -13,6 +14,7 @@ using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Merchant;
 using SocialPay.Core.Services.Report;
+using SocialPay.Core.Services.Store;
 using SocialPay.Core.Services.Wallet;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
@@ -34,13 +36,15 @@ namespace SocialPay.API.Controllers
         private readonly CreateMerchantWalletService _createMerchantWalletService;
         private readonly SendGridEmailService _sendGridEmailService;
         private readonly CreateBulkMerchantService _createBulkMerchantService;
+        private readonly StoreReportRepository _storeReportRepository;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AdminController));
 
         public AdminController(ADRepoService aDRepoService, MerchantReportService merchantReportService,
             TransactionService transactionService, AuthRepoService authRepoService,
             CreateMerchantWalletService createMerchantWalletService,
             UserRepoService userRepoService, CustomerRepoService customerRepoService,
-            SendGridEmailService sendGridEmailService, CreateBulkMerchantService createBulkMerchantService)
+            SendGridEmailService sendGridEmailService, CreateBulkMerchantService createBulkMerchantService,
+            StoreReportRepository storeReportRepository)
         {
             _aDRepoService = aDRepoService;
             _merchantReportService = merchantReportService;
@@ -51,6 +55,7 @@ namespace SocialPay.API.Controllers
             _customerRepoService = customerRepoService;
             _sendGridEmailService = sendGridEmailService;
             _createBulkMerchantService = createBulkMerchantService ?? throw new ArgumentNullException(nameof(createBulkMerchantService));
+            _storeReportRepository = storeReportRepository ?? throw new ArgumentNullException(nameof(storeReportRepository));
         }
 
         [HttpPost]
@@ -200,6 +205,26 @@ namespace SocialPay.API.Controllers
             }
         }
 
+        //[AllowAnonymous]
+        [HttpGet]
+        [Route("get-store-merchants")]
+        public async Task<IActionResult> GetMerchantsWithStore()
+        {
+            // _log4net.Info("Tasks starts to create account" + " | " + model.Username + " | " + DateTime.Now);
+
+            var response = new WebApiResponse { };
+            try
+            {
+                return Ok(await _storeReportRepository.GetMerchantWithStoreInfoAsync(User.GetSessionDetails()));
+            }
+            catch (Exception)
+            {
+                // _log4net.Error("Error occured" + " | " + model.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return BadRequest(response);
+            }
+        }
 
         //[AllowAnonymous]
         [HttpGet]
@@ -430,38 +455,38 @@ namespace SocialPay.API.Controllers
         }
 
 
-        //[AllowAnonymous]
-        //[HttpPost]
-        //[Route("clear-user-account")]
-        //public async Task<IActionResult> ClearUserDetails(string email, string reference)
-        //{
-        //    _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
+        ////[AllowAnonymous]
+        ////[HttpGet]
+        ////[Route("clear-user-account")]
+        ////public async Task<IActionResult> ClearUserDetails(string email, string reference)
+        ////{
+        ////    _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
 
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "54dha")
-        //            return BadRequest();
+        ////    var response = new WebApiResponse { };
+        ////    try
+        ////    {
+        ////        if (reference != "7467r")
+        ////            return BadRequest();
 
-        //        if (ModelState.IsValid)
-        //        {
-        //            var result = await _transactionService.ClearUserAccount(email);
-        //            return Ok(result);
-        //        }
-        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage));
-        //        response.ResponseCode = AppResponseCodes.Failed;
-        //        response.Data = message;
-        //        return BadRequest(response);
+        ////        if (ModelState.IsValid)
+        ////        {
+        ////            var result = await _transactionService.ClearUserAccount(email);
+        ////            return Ok(result);
+        ////        }
+        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+        ////            .Select(e => e.ErrorMessage));
+        ////        response.ResponseCode = AppResponseCodes.Failed;
+        ////        response.Data = message;
+        ////        return BadRequest(response);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        ////        response.ResponseCode = AppResponseCodes.InternalError;
+        ////        return BadRequest(response);
+        ////    }
+        ////}
 
 
 

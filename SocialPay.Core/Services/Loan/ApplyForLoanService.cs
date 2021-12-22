@@ -60,7 +60,7 @@ namespace SocialPay.Core.Services.Loan
 
         public async Task<WebApiResponse> ApplyForLoan(ApplyForloanRequestDTO model, long clientId)
         {
-
+            clientId = 172;
 
             try
             {
@@ -73,56 +73,65 @@ namespace SocialPay.Core.Services.Loan
                 .Where(x => x.ClientAuthenticationId == clientId)
                 .AnyAsync(x => x.IsAttended == false);
 
-                if (cheeckForOpenloan) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "User has an oustanding loan" };
+                //////if (cheeckForOpenloan) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "User has an oustanding loan" };
 
-                if (!await _context.LoanRepaymentPlan.Where(x => x.IsDeleted == false).AnyAsync(x => x.LoanRepaymentPlanId == model.LoanRepaymentPlanId)) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid LoanRepaymentPlanId ", StatusCode = ResponseCodes.Badrequest };
+                //////if (!await _context.LoanRepaymentPlan.Where(x => x.IsDeleted == false).AnyAsync(x => x.LoanRepaymentPlanId == model.LoanRepaymentPlanId)) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid LoanRepaymentPlanId ", StatusCode = ResponseCodes.Badrequest };
 
-                var getUser = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
-                var getclient = await _context.ClientAuthentication.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                //var getUser = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                var getclient = await _context.ClientAuthentication
+                    .Include(m => m.MerchantWallet).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
                 //Verification of credibility
-                var MerchantCredibility = await creditworthiness(getUser.Firstname, getUser.Lastname, getclient.Bvn, getUser.DoB, getUser.Mobile, getclient.Email, clientId);
+                var MerchantCredibility = await creditworthiness(getclient.MerchantWallet.Select(x=>x.Firstname).FirstOrDefault(),
+                    getclient.MerchantWallet.Select(x => x.Lastname).FirstOrDefault(), getclient.Bvn,
+                    getclient.MerchantWallet.Select(x => x.DoB).FirstOrDefault(),
+                    getclient.MerchantWallet.Select(x => x.Mobile).FirstOrDefault(), 
+                    getclient.Email, clientId);
 
                 //card tokenization
-                var tokenizeCard = await CardTokenization(getclient.FullName, getclient.Bvn, getUser.DoB, getUser.Mobile, getclient.Email, clientId, model.redirectUrl);
+                var tokenizeCard = await CardTokenization(getclient.FullName, getclient.Bvn,
+                    getclient.MerchantWallet.Select(x => x.DoB).FirstOrDefault(),
+                   getclient.MerchantWallet.Select(x => x.Mobile).FirstOrDefault(), 
+                   getclient.Email, clientId, model.redirectUrl);
 
                 //check if merchant have a sterling bank account
 
-                var merchantBankDetails = await _context.MerchantBankInfo.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                //////////////var merchantBankDetails = await _context.MerchantBankInfo.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-                if (merchantBankDetails != null)
-                {
-                    if (merchantBankDetails.BankCode == _appSettings.SterlingBankCode) IsSterlingAccountNumber = true;
-                }
+                //////////////if (merchantBankDetails != null)
+                //////////////{
+                //////////////    if (merchantBankDetails.BankCode == _appSettings.SterlingBankCode) IsSterlingAccountNumber = true;
+                //////////////}
 
 
-                //Check if merchant have a sterling bank business account
+                ////////////////Check if merchant have a sterling bank business account
 
-                var dbPayload = new ApplyForLoan
-                {
-                    ClientAuthenticationId = clientId,
-                    LoanRepaymentPlanId = model.LoanRepaymentPlanId,
-                    Amount = model.Amount,
-                    IsAttended = false,
-                    IsApproved = false,
-                    IsBadDebt = false,
-                    isCustomerClean = MerchantCredibility,
-                    IsCardTokenized = false,
-                    HaveSterlingBankAccount = IsSterlingAccountNumber,
-                    HaveSterlingBankBusinessAccount = false
+                //////////////var dbPayload = new ApplyForLoan
+                //////////////{
+                //////////////    ClientAuthenticationId = clientId,
+                //////////////    LoanRepaymentPlanId = model.LoanRepaymentPlanId,
+                //////////////    Amount = model.Amount,
+                //////////////    IsAttended = false,
+                //////////////    IsApproved = false,
+                //////////////    IsBadDebt = false,
+                //////////////    isCustomerClean = MerchantCredibility,
+                //////////////    IsCardTokenized = false,
+                //////////////    HaveSterlingBankAccount = IsSterlingAccountNumber,
+                //////////////    HaveSterlingBankBusinessAccount = false
 
-                };
+                //////////////};
 
-                await _context.ApplyForLoan.AddAsync(dbPayload);
-                await _context.SaveChangesAsync();
+                //////////////await _context.ApplyForLoan.AddAsync(dbPayload);
+                //////////////await _context.SaveChangesAsync();
 
-                var responsePayload = new ApplyForLoanResponseDTO
-                {
-                    ApplyForLoanId = dbPayload.ApplyForLoanId,
-                    RedirectUrl = tokenizeCard.redirectUrl
-                };
+                //////////////var responsePayload = new ApplyForLoanResponseDTO
+                //////////////{
+                //////////////    ApplyForLoanId = dbPayload.ApplyForLoanId,
+                //////////////    RedirectUrl = tokenizeCard.redirectUrl
+                //////////////};
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = responsePayload, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
+               //// return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = responsePayload, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = tokenizeCard, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
             }
             catch (Exception e)
             {
@@ -157,6 +166,7 @@ namespace SocialPay.Core.Services.Loan
                 GetLoanDetails.TokenizationReference = successfulResponse.data.CardDetails.TokenizationReference;
                 GetLoanDetails.TokenizationEmail = successfulResponse.data.EmailAddress;
                 GetLoanDetails.ConfirmTokenizationResponse = result;
+
                 _context.ApplyForLoan.Update(GetLoanDetails);
                 await _context.SaveChangesAsync();
 
@@ -202,7 +212,8 @@ namespace SocialPay.Core.Services.Loan
 
                         //Call the api to send the loan
                         var bankInfo = await _context.MerchantBankInfo.SingleOrDefaultAsync(x => x.ClientAuthenticationId == GetLoanDetails.ClientAuthenticationId);
-                        if (bankInfo == null)
+                      
+                        if (bankInfo == default)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Banking info not found", StatusCode = ResponseCodes.RecordNotFound };
 
                         if (bankInfo.BankCode != _appSettings.SterlingBankCode)
@@ -291,7 +302,6 @@ namespace SocialPay.Core.Services.Loan
             }
         }
 
-
         public async Task<WebApiResponse> LoanStatus(long ApplyForLoanId, long clientId)
         {
 
@@ -301,7 +311,9 @@ namespace SocialPay.Core.Services.Loan
                 var appliedLoan = await _context.ApplyForLoan.
                     Where(x => x.ClientAuthenticationId == clientId).
                     SingleOrDefaultAsync(x => x.ApplyForLoanId == ApplyForLoanId);
+               
                 if (appliedLoan == null) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid ApplyForLoanId", StatusCode = ResponseCodes.Badrequest };
+              
                 var payloadLoanStatus = new AppliedLoanStatus
                 {
                     Amount = appliedLoan.Amount,
@@ -311,6 +323,7 @@ namespace SocialPay.Core.Services.Loan
                     isCustomerClean = appliedLoan.isCustomerClean,
                     IsCardTokenized = appliedLoan.IsCardTokenized
                 };
+              
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = payloadLoanStatus, StatusCode = ResponseCodes.Success };
             }
             catch (Exception e)
@@ -344,8 +357,8 @@ namespace SocialPay.Core.Services.Loan
                         x.DateEntered,
                         x.LoanRepaymentPlan.DailySalesPercentage
 
-                    })
-                    .ToListAsync();
+                    }).ToListAsync();
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = appliedLoan, StatusCode = ResponseCodes.Success };
             }
             catch (Exception e)
@@ -365,7 +378,7 @@ namespace SocialPay.Core.Services.Loan
                     firstName = firstName,
                     lastName = lastName,
                     bvn = bvn,
-                    dateOfBirth = dateOfBirth,
+                    dateOfBirth = DateTime.Parse(dateOfBirth).ToString("yyyy-MM-dd"),
                     email = email,
                     address = "",
                     phoneNumber = phoneNumber,
@@ -402,18 +415,20 @@ namespace SocialPay.Core.Services.Loan
             }
         }
 
-
         private async Task<CradTokenizationInClassResponse> CardTokenization(string fullname, string bvn, string dateOfBirth, string phoneNumber, string email, long clientId, string redirectUrl)
         {
             try
             {
+
+                var successfulResponse = new CradTokenizationResponseDTO();
 
                 var payload = new CardTokenizationRequestDTO
                 {
                     fullName = fullname,
                     email = email,
                     phone = phoneNumber,
-                    dob = dateOfBirth,
+                    dob = "1992-12-14",
+                   // dob = DateTime.Parse(dateOfBirth).ToString("yyyy-MM-dd"),
                     tokenType = "",
                     channel = "",
                     cardMinExpiryInMonths = "8",
@@ -427,46 +442,56 @@ namespace SocialPay.Core.Services.Loan
                    new StringContent(request, Encoding.UTF8, "application/json"));
 
                 var result = await response.Content.ReadAsStringAsync();
-                var successfulResponse = JsonConvert.DeserializeObject<CradTokenizationResponseDTO>(result);
 
 
-                //Save to db
-
-                var dbPayload = new CardTokenization
+                if (response.IsSuccessStatusCode)
                 {
-                    ClientAuthenticationId = clientId,
-                    fullName = payload.fullName,
-                    email = payload.email,
-                    phone = payload.phone,
-                    dob = payload.dob,
-                    tokenType = payload.tokenType,
-                    channel = payload.channel,
-                    cardMinExpiryInMonths = payload.cardMinExpiryInMonths,
-                    redirectUrl = payload.redirectUrl,
-                    bvn = payload.bvn,
-                    reference = successfulResponse.data.reference,
-                    message = successfulResponse.message,
-                    status = successfulResponse.status,
-                    responseUrl = successfulResponse.data.url
-                };
+                    successfulResponse = JsonConvert.DeserializeObject<CradTokenizationResponseDTO>(result);
 
-                await _context.CardTokenization.AddAsync(dbPayload);
-                await _context.SaveChangesAsync();
-                //End save to db
+                    //Save to db
 
+                    var dbPayload = new CardTokenization
+                    {
+                        ClientAuthenticationId = clientId,
+                        fullName = payload.fullName,
+                        email = payload.email,
+                        phone = payload.phone,
+                        dob = payload.dob,
+                        tokenType = payload.tokenType,
+                        channel = payload.channel,
+                        cardMinExpiryInMonths = payload.cardMinExpiryInMonths,
+                        redirectUrl = payload.redirectUrl,
+                        bvn = payload.bvn,
+                        reference = successfulResponse.data.reference,
+                        message = successfulResponse.message,
+                        status = successfulResponse.status,
+                        responseUrl = successfulResponse.data.url
+                    };
+
+                    //await _context.CardTokenization.AddAsync(dbPayload);
+                    //await _context.SaveChangesAsync();
+
+                    return new CradTokenizationInClassResponse
+                    {
+                        status = successfulResponse.status,
+                        redirectUrl = successfulResponse.data.url
+                    };
+                    //End save to db
+                }
 
                 return new CradTokenizationInClassResponse
                 {
                     status = successfulResponse.status,
-                    redirectUrl = successfulResponse.data.url
+                    redirectUrl = result
                 };
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                //var error = ex;
                 return new CradTokenizationInClassResponse
                 {
                     status = false,
-                    redirectUrl = ""
+                    redirectUrl = ex.ToString()
                 };
             }
         }

@@ -10,10 +10,10 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
     public interface ISpectaOnBoarding
     {
         Task<WebApiResponse> RegisterCustomer(RegisterCustomerRequestDto model);
-        //Task<WebApiResponse> SendEmailVerificationCode(SendEmailVerificationCodeRequestDto model);
-        //Task<WebApiResponse> VerifyEmailConfirmationCode(VerifyEmailConfirmationCodeRequestDto model);
-        //Task<WebApiResponse> SendBvnPhoneVerificationCode(string emailaddress);
-        //Task<WebApiResponse> VerifyBvnPhoneConfirmationCode(VerifyBvnPhoneConfirmationCodeRequestDto model);
+        Task<WebApiResponse> SendEmailVerificationCode(SendEmailVerificationCodeRequestDto model);
+        Task<WebApiResponse> VerifyEmailConfirmationCode(VerifyEmailConfirmationCodeRequestDto model);
+        Task<WebApiResponse> SendBvnPhoneVerificationCode(string emailaddress);
+        Task<WebApiResponse> VerifyBvnPhoneConfirmationCode(VerifyBvnPhoneConfirmationCodeRequestDto model);
         //Task<WebApiResponse> LoggedInCustomerProfile(string email);
         //Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model, string email);
         //Task<WebApiResponse> Authenticate(AuthenticateRequestDto model);

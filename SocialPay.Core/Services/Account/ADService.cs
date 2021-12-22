@@ -75,13 +75,13 @@ namespace SocialPay.Core.Services.Account
                 await _context.SaveChangesAsync();
                 _log4net.Info("RegisterUser was successful" + " | " + createUserRequestDto.Username + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = "Success" };
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "RegisterUser" + " | " + createUserRequestDto.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured. Please try again", Data = "Internal error occured. Please try again" };
             }
         }
 
@@ -93,14 +93,19 @@ namespace SocialPay.Core.Services.Account
                 bool validateADUser = await banksLdap.loginAsync(username, password);
                
                 if(!validateADUser)
-                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin };
+                {
+                    _log4net.Info("AD login failed" + " | " + username + " | " + DateTime.Now);
 
-                return new LoginAPIResponse { ResponseCode = AppResponseCodes.Success };
+                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin, Message = "Login failed on AD" };
+                }
+
+                return new LoginAPIResponse { ResponseCode = AppResponseCodes.Success, Message = "Login was successful" };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _log4net.Error("Error occured" + " | " + "while tryinh to login via AD" + " | " + username + " | " + ex + " | " + DateTime.Now);
 
-                return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal server error. Please try again" };
             }
         }
     }
