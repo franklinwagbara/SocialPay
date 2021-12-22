@@ -419,6 +419,10 @@ namespace SocialPay.Core.Services.Loan
         {
             try
             {
+               // DateTime sDate = DateTime.Parse(dateOfBirth);
+                var dob = Convert.ToDateTime(dateOfBirth);
+
+                var dd = dob.ToString("yyyy-MM-dd");
 
                 var successfulResponse = new CradTokenizationResponseDTO();
 
@@ -427,8 +431,9 @@ namespace SocialPay.Core.Services.Loan
                     fullName = fullname,
                     email = email,
                     phone = phoneNumber,
+                    dob = dd,
                    // dob = "1992-12-14",
-                    dob = DateTime.ParseExact(dateOfBirth, "yyyy/M/dd", null).ToString("yyyy-MM-dd"),
+                   // dob = DateTime.ParseExact(dateOfBirth, "yyyy/M/dd", null).ToString("yyyy-MM-dd"),
                     // dob = DateTime.Parse(dateOfBirth).ToString("yyyy-MM-dd"),
                     tokenType = "",
                     channel = "",

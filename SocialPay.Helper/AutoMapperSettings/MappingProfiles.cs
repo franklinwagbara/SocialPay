@@ -18,6 +18,9 @@ namespace SocialPay.Helper.AutoMapperSettings
             CreateMap<SendEmailVerificationCodeRequestDto, SendEmailVerificationCodeRequest>();
             CreateMap<VerifyEmailConfirmationCodeRequest, VerifyEmailConfirmationCodeRequestDto>();
             CreateMap<VerifyEmailConfirmationCodeRequestDto, VerifyEmailConfirmationCodeRequest>();
+            CreateMap<VerifyBvnPhoneConfirmationCodeRequest, VerifyBvnPhoneConfirmationCodeRequestDto>();
+            CreateMap<VerifyBvnPhoneConfirmationCodeRequestDto, VerifyBvnPhoneConfirmationCodeRequest>();
+
             CreateMap<ProductInventory, ProductInventoryDto>();
             CreateMap<ProductInventoryDto, ProductInventory>();
         }
