@@ -63,6 +63,8 @@ namespace SocialPay.Core.Services.Loan
         {
             clientId = 172;
 
+            var currentDob = DateTime.Parse("14-12-1992").ToString("dd-MM-yyyy");
+
             try
             {
                 bool IsSterlingAccountNumber = false;
@@ -134,9 +136,9 @@ namespace SocialPay.Core.Services.Loan
                //// return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = responsePayload, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = tokenizeCard, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ex.ToString(), StatusCode = ResponseCodes.InternalError };
             }
         }
 
