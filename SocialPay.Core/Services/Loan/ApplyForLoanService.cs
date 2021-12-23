@@ -63,10 +63,11 @@ namespace SocialPay.Core.Services.Loan
         {
             clientId = 172;
 
-            var currentDob = DateTime.Parse("14-12-1992").ToString("dd-MM-yyyy");
-
             try
             {
+                var currentDob = DateTime.Parse("14-12-1992").ToString("dd-MM-yyyy");
+
+
                 bool IsSterlingAccountNumber = false;
                 //Verification of eligibility
                 var getCustomerEligibility = await _loanEligibiltyService.MerchantEligibilty(clientId);
