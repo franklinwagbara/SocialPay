@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
 {
-  //  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Merchant")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Merchant")]
     [ApiController]
     [Route("api/socialpay/loan")]
     public class LoanController : BaseController

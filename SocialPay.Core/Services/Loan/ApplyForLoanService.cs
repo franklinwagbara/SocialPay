@@ -61,11 +61,11 @@ namespace SocialPay.Core.Services.Loan
 
         public async Task<WebApiResponse> ApplyForLoan(ApplyForloanRequestDTO model, long clientId)
         {
-            clientId = 172;
+          //  clientId = 172;
 
             try
             {
-                var currentDob = DateTime.Parse("14-12-1992").ToString("dd-MM-yyyy");
+               // var currentDob = DateTime.Parse("14-12-1992").ToString("dd-MM-yyyy");
 
 
                 bool IsSterlingAccountNumber = false;
@@ -77,9 +77,9 @@ namespace SocialPay.Core.Services.Loan
                 .Where(x => x.ClientAuthenticationId == clientId)
                 .AnyAsync(x => x.IsAttended == false);
 
-                //////if (cheeckForOpenloan) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "User has an oustanding loan" };
+                if (cheeckForOpenloan) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "User has an oustanding loan" };
 
-                //////if (!await _context.LoanRepaymentPlan.Where(x => x.IsDeleted == false).AnyAsync(x => x.LoanRepaymentPlanId == model.LoanRepaymentPlanId)) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid LoanRepaymentPlanId ", StatusCode = ResponseCodes.Badrequest };
+                if (!await _context.LoanRepaymentPlan.Where(x => x.IsDeleted == false).AnyAsync(x => x.LoanRepaymentPlanId == model.LoanRepaymentPlanId)) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid LoanRepaymentPlanId ", StatusCode = ResponseCodes.Badrequest };
 
                 //var getUser = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
                 var getclient = await _context.ClientAuthentication
@@ -100,41 +100,41 @@ namespace SocialPay.Core.Services.Loan
 
                 //check if merchant have a sterling bank account
 
-                //////////////var merchantBankDetails = await _context.MerchantBankInfo.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                var merchantBankDetails = await _context.MerchantBankInfo.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-                //////////////if (merchantBankDetails != null)
-                //////////////{
-                //////////////    if (merchantBankDetails.BankCode == _appSettings.SterlingBankCode) IsSterlingAccountNumber = true;
-                //////////////}
+                if (merchantBankDetails != null)
+                {
+                    if (merchantBankDetails.BankCode == _appSettings.SterlingBankCode) IsSterlingAccountNumber = true;
+                }
 
 
-                ////////////////Check if merchant have a sterling bank business account
+                //Check if merchant have a sterling bank business account
 
-                //////////////var dbPayload = new ApplyForLoan
-                //////////////{
-                //////////////    ClientAuthenticationId = clientId,
-                //////////////    LoanRepaymentPlanId = model.LoanRepaymentPlanId,
-                //////////////    Amount = model.Amount,
-                //////////////    IsAttended = false,
-                //////////////    IsApproved = false,
-                //////////////    IsBadDebt = false,
-                //////////////    isCustomerClean = MerchantCredibility,
-                //////////////    IsCardTokenized = false,
-                //////////////    HaveSterlingBankAccount = IsSterlingAccountNumber,
-                //////////////    HaveSterlingBankBusinessAccount = false
+                var dbPayload = new ApplyForLoan
+                {
+                    ClientAuthenticationId = clientId,
+                    LoanRepaymentPlanId = model.LoanRepaymentPlanId,
+                    Amount = model.Amount,
+                    IsAttended = false,
+                    IsApproved = false,
+                    IsBadDebt = false,
+                    isCustomerClean = MerchantCredibility,
+                    IsCardTokenized = false,
+                    HaveSterlingBankAccount = IsSterlingAccountNumber,
+                    HaveSterlingBankBusinessAccount = false
 
-                //////////////};
+                };
 
-                //////////////await _context.ApplyForLoan.AddAsync(dbPayload);
-                //////////////await _context.SaveChangesAsync();
+                await _context.ApplyForLoan.AddAsync(dbPayload);
+                await _context.SaveChangesAsync();
 
-                //////////////var responsePayload = new ApplyForLoanResponseDTO
-                //////////////{
-                //////////////    ApplyForLoanId = dbPayload.ApplyForLoanId,
-                //////////////    RedirectUrl = tokenizeCard.redirectUrl
-                //////////////};
+                var responsePayload = new ApplyForLoanResponseDTO
+                {
+                    ApplyForLoanId = dbPayload.ApplyForLoanId,
+                    RedirectUrl = tokenizeCard.redirectUrl
+                };
 
-               //// return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = responsePayload, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
+                //// return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = responsePayload, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = tokenizeCard, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
@@ -376,41 +376,41 @@ namespace SocialPay.Core.Services.Loan
 
             try
             {
-                // return true;
-                var payload = new CreditBureauSearchDTO
-                {
-                    firstName = firstName,
-                    lastName = lastName,
-                    bvn = bvn,
-                    dateOfBirth = DateTime.Parse(dateOfBirth).ToString("yyyy-MM-dd"),
-                    email = email,
-                    address = "",
-                    phoneNumber = phoneNumber,
-                    gender = 0
+                 return true;
+                ////var payload = new CreditBureauSearchDTO
+                ////{
+                ////    firstName = firstName,
+                ////    lastName = lastName,
+                ////    bvn = bvn,
+                ////    dateOfBirth = DateTime.Parse(dateOfBirth).ToString("yyyy-MM-dd"),
+                ////    email = email,
+                ////    address = "",
+                ////    phoneNumber = phoneNumber,
+                ////    gender = 0
 
-                };
+                ////};
 
-                var request = JsonConvert.SerializeObject(payload);
-                //  _log4net.Info("GatewayRequery" + " | " + payload.TransactionID + " | " + clientId + " | " + request + " | " + DateTime.Now);
-                var response = await _client.PostAsync(_appSettings.CreditBureauSearch_Crc,
-                    new StringContent(request, Encoding.UTF8, "application/json"));
+                ////var request = JsonConvert.SerializeObject(payload);
+                //////  _log4net.Info("GatewayRequery" + " | " + payload.TransactionID + " | " + clientId + " | " + request + " | " + DateTime.Now);
+                ////var response = await _client.PostAsync(_appSettings.CreditBureauSearch_Crc,
+                ////    new StringContent(request, Encoding.UTF8, "application/json"));
 
-                var result = await response.Content.ReadAsStringAsync();
-                //_log4net.Info("Initiate GatewayRequery response" + " | " + model.TransactionID + " | " + payload.amount + " | " + result + " | " + clientId + " | " + DateTime.Now);
-                var successfulResponse = JsonConvert.DeserializeObject<CreditBureauSearchResponseDTO>(result);
+                ////var result = await response.Content.ReadAsStringAsync();
+                //////_log4net.Info("Initiate GatewayRequery response" + " | " + model.TransactionID + " | " + payload.amount + " | " + result + " | " + clientId + " | " + DateTime.Now);
+                ////var successfulResponse = JsonConvert.DeserializeObject<CreditBureauSearchResponseDTO>(result);
 
 
-                var payloadCreditBureauSearch = new MerchantBureauSearch
-                {
-                    ClientAuthenticationId = clientId,
-                    isCustomerClean = successfulResponse.creditSearchResponse.isCustomerClean,
-                    response = result
-                };
+                ////var payloadCreditBureauSearch = new MerchantBureauSearch
+                ////{
+                ////    ClientAuthenticationId = clientId,
+                ////    isCustomerClean = successfulResponse.creditSearchResponse.isCustomerClean,
+                ////    response = result
+                ////};
 
-                await _context.MerchantBureauSearch.AddAsync(payloadCreditBureauSearch);
-                await _context.SaveChangesAsync();
+                ////await _context.MerchantBureauSearch.AddAsync(payloadCreditBureauSearch);
+                ////await _context.SaveChangesAsync();
 
-                return successfulResponse.creditSearchResponse.isCustomerClean;
+                ////return successfulResponse.creditSearchResponse.isCustomerClean;
 
             }
             catch (Exception e)
