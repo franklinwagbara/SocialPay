@@ -44,6 +44,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                        
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;
+
                         var response = (SpectaResponseWithObjectResultMessage.SpectaResponseDto)request.Data;
 
                         var sendBvnPhoneVerificationresponse = new SendBvnPhoneVerificationCodeResponse();
@@ -70,20 +71,20 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                        
                         await transaction.CommitAsync();
                        
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.SendBvnPhoneVerificationCode, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
                         _log4net.Error("Error occured" + " | " + "SendBvnPhoneVerificationCode" + " | " + ex + " | " + DateTime.Now);
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex };
                     }
                 }
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "SendBvnPhoneVerificationCode" + " | " + ex + " | " + DateTime.Now);
-                return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex };
             }
         }
 
