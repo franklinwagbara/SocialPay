@@ -249,29 +249,31 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
-        ////public async Task<WebApiResponse> LoggedInCustomerProfile(string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        //var requestobj = JsonConvert.SerializeObject(model);
+        //public async Task<WebApiResponse> LoggedInCustomerProfile(string email)
+        //{
+        //    var apiResponse = new WebApiResponse { };
+        //    try
+        //    {
+        //        //var requestobj = JsonConvert.SerializeObject(model);
 
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.LoggedInCustomerProfileUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.GET);
-        ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<LoggedInCustomerProfileResponseDto.LoggedInCustomerProfileResponse>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception)
-        ////    {
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
-        ////}
+        //       // var client = new RestClient(_client.BaseAddress + _appSettings.LoggedInCustomerProfileUrlExtension);
+        //        var client = new RestClient(_client.BaseAddress + _spectaOnboardingSettings.LoggedInCustomerProfileUrlExtension);
+
+        //        client.Timeout = -1;
+        //        var request = new RestRequest(Method.GET);
+        //        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+        //        request.AddHeader("Content-Type", "application/json");
+        //        IRestResponse response = await Task.FromResult(client.Execute(request));
+        //        var Response = JsonConvert.DeserializeObject<LoggedInCustomerProfileResponseDto.LoggedInCustomerProfileResponse>(response.Content);
+        //        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+        //        apiResponse.Data = Response;
+        //        return apiResponse;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+        //    }
+        //}
         ////public async Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model, string email)
         ////{
         ////    var apiResponse = new WebApiResponse { };
@@ -304,33 +306,54 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
         ////}
 
 
-        ////public async Task<WebApiResponse> Authenticate(AuthenticateRequestDto model)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.AuthenticaUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
+        public async Task<WebApiResponse> Authenticate(AuthenticateRequestDto model)
+        {
+            var apiResponse = new WebApiResponse { };
+            try
+            {
+                var requestobj = JsonConvert.SerializeObject(model);
+                var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.AuthenticaUrlExtensionUrl}");
 
-        ////        var Response = JsonConvert.DeserializeObject<AuthenticateResponseDto.AuthenticateResponse>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response.result;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "AuthenticateInfo" + " | " + model.password + " | " + model.userNameOrEmailAddress + " | " + model.rememberClient + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+               // var client = new RestClient(_client.BaseAddress + _appSettings.AuthenticaUrlExtension);
+                client.Timeout = -1;
+                var request = new RestRequest(Method.POST);
+               // request.AddHeader("Abp.TenantId", _appSettings.TenantId);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+                IRestResponse response = await Task.FromResult(client.Execute(request));
 
-        ////        return apiResponse;
-        ////    }
+                //var Response = JsonConvert.DeserializeObject<AuthenticateResponseDto.AuthenticateResponse>(response.Content);
+                //apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+                //apiResponse.Data = Response.result;
+                //apiResponse.StatusCode = ResponseCodes.Success;
 
-        ////}
+
+
+                apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+
+                if (response.IsSuccessful)
+                {
+                    var Response = JsonConvert.DeserializeObject<AuthenticateResponseDto.AuthenticateResponse>(response.Content);
+                    apiResponse.Data = Response;
+                    apiResponse.StatusCode = ResponseCodes.Success;
+                    apiResponse.Message = "Success";
+
+                    return apiResponse;
+                }
+
+                apiResponse.Data = response.Content;
+                apiResponse.StatusCode = ResponseCodes.InternalError;
+
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "AuthenticateInfo" + " | " + model.password + " | " + model.userNameOrEmailAddress + " | " + model.rememberClient + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return apiResponse;
+            }
+
+        }
 
 
 

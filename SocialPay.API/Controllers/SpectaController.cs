@@ -22,12 +22,15 @@ namespace SocialPay.API.Controllers
         private readonly ISpectaVerifyEmailConfirmationCode _spectaVerifyEmailConfirmationCode;
         private readonly ISpectaSendBvnPhoneVerificationCode _spectaSendBvnPhoneVerificationCode;
         private readonly ISpectaVerifyBvnPhoneConfirmationCode _spectaVerifyBvnPhoneConfirmationCode;
-
+        private readonly ISpectaAuthentication _spectaAuthentication;
+       // private readonly ISpectaLoggedInCustomerProfile _spectaLoggedInCustomerProfile;
         public SpectaController(ISpectaCustomerRegistration spectaCustomerRegistration,
             ISpectaSendEmailVerificationCode spectaSendEmailVerificationCode,
             ISpectaVerifyEmailConfirmationCode spectaVerifyEmailConfirmationCode,
             ISpectaSendBvnPhoneVerificationCode spectaSendBvnPhoneVerificationCode,
             ISpectaVerifyBvnPhoneConfirmationCode spectaVerifyBvnPhoneConfirmationCode,
+            ISpectaAuthentication spectaAuthentication,
+            //ISpectaLoggedInCustomerProfile spectaLoggedInCustomerProfile,
             INotification notification) : base(notification)
         {
             _spectaCustomerRegistration = spectaCustomerRegistration ?? throw new ArgumentNullException(nameof(spectaCustomerRegistration));
@@ -35,6 +38,8 @@ namespace SocialPay.API.Controllers
             _spectaVerifyEmailConfirmationCode = spectaVerifyEmailConfirmationCode ?? throw new ArgumentNullException(nameof(spectaVerifyEmailConfirmationCode));
             _spectaSendBvnPhoneVerificationCode = spectaSendBvnPhoneVerificationCode ?? throw new ArgumentNullException(nameof(spectaSendBvnPhoneVerificationCode));
             _spectaVerifyBvnPhoneConfirmationCode = spectaVerifyBvnPhoneConfirmationCode ?? throw new ArgumentNullException(nameof(spectaVerifyBvnPhoneConfirmationCode));
+            _spectaAuthentication = spectaAuthentication ?? throw new ArgumentNullException(nameof(spectaAuthentication));
+           // _spectaLoggedInCustomerProfile = spectaLoggedInCustomerProfile ?? throw new ArgumentNullException(nameof(spectaLoggedInCustomerProfile));
         }
 
         [HttpPost]
@@ -56,5 +61,13 @@ namespace SocialPay.API.Controllers
         [HttpPost]
         [Route("verify-bvn-phone-confirmation-code")]
         public async Task<IActionResult> VerifyBvnPhoneConfirmationCodeAsync([FromBody] VerifyBvnPhoneConfirmationCodeRequestDto model) => Response(await _spectaVerifyBvnPhoneConfirmationCode.VerifyBvnPhoneConfirmationCode(model).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("authenticate-user")]
+        public async Task<IActionResult> AuthenticateAsync([FromBody] AuthenticateRequestDto model) => Response(await _spectaAuthentication.Authenticate(model).ConfigureAwait(false));
+
+        //[HttpGet]
+        //[Route("logged-in-customer-profile")]
+        //public async Task<IActionResult> LoggedInCustomerProfileAsync() => Response(await _spectaLoggedInCustomerProfile.LoggedInCustomerProfile(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
     }
 }
