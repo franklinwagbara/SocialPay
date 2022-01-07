@@ -47,6 +47,7 @@ namespace SocialPay.Helper.ViewModel
 
     public class MerchantBusinessInfoViewModel
     {
+        public long ClientAuthenticationId { get; set; }
         public string BusinessName { get; set; }
         public string BusinessPhoneNumber { get; set; }
         public string BusinessEmail { get; set; }
