@@ -12,6 +12,7 @@ using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
+using SocialPay.Core.Services.Loan;
 using SocialPay.Core.Services.Merchant;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Store;
@@ -19,13 +20,14 @@ using SocialPay.Core.Services.Wallet;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.Notification;
 
 namespace SocialPay.API.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Administrator")]
     [Route("api/socialpay/admin")]
     [ApiController]
-    public class AdminController : ControllerBase
+    public class AdminController : BaseController
     {
         private readonly ADRepoService _aDRepoService;
         private readonly AuthRepoService _authRepoService;
@@ -37,6 +39,9 @@ namespace SocialPay.API.Controllers
         private readonly SendGridEmailService _sendGridEmailService;
         private readonly CreateBulkMerchantService _createBulkMerchantService;
         private readonly StoreReportRepository _storeReportRepository;
+        private readonly ApplyForLoanService _applyForLoanService;
+        private readonly LoanEligibiltyService _loanEligibiltyService;
+        private readonly LoanRepaymentService _loanRepaymentService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AdminController));
 
         public AdminController(ADRepoService aDRepoService, MerchantReportService merchantReportService,
@@ -44,7 +49,9 @@ namespace SocialPay.API.Controllers
             CreateMerchantWalletService createMerchantWalletService,
             UserRepoService userRepoService, CustomerRepoService customerRepoService,
             SendGridEmailService sendGridEmailService, CreateBulkMerchantService createBulkMerchantService,
-            StoreReportRepository storeReportRepository)
+            StoreReportRepository storeReportRepository, ApplyForLoanService applyForLoanService,
+            LoanEligibiltyService loanEligibiltyService, LoanRepaymentService loanRepaymentService,
+             INotification notification) : base(notification)
         {
             _aDRepoService = aDRepoService;
             _merchantReportService = merchantReportService;
@@ -56,6 +63,9 @@ namespace SocialPay.API.Controllers
             _sendGridEmailService = sendGridEmailService;
             _createBulkMerchantService = createBulkMerchantService ?? throw new ArgumentNullException(nameof(createBulkMerchantService));
             _storeReportRepository = storeReportRepository ?? throw new ArgumentNullException(nameof(storeReportRepository));
+            _applyForLoanService = applyForLoanService ?? throw new ArgumentNullException(nameof(applyForLoanService));
+            _loanEligibiltyService = loanEligibiltyService ?? throw new ArgumentNullException(nameof(loanEligibiltyService));
+            _loanRepaymentService = loanRepaymentService ?? throw new ArgumentNullException(nameof(loanRepaymentService));
         }
 
         [HttpPost]
@@ -150,7 +160,25 @@ namespace SocialPay.API.Controllers
         //    }
         //}
 
+        [HttpGet]
+        [Route("get-all-applied-loan")]
+        public async Task<IActionResult> GetAppliedLoans() => Response(await _applyForLoanService.GetAllAppliedLoan(User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
+        [HttpGet]
+        [Route("get-merchant-loan-eligibility")]
+        public async Task<IActionResult> GetMerchantLoanEligibility([FromQuery] long clientId) => Response(await _loanEligibiltyService.MerchantEligibilty(clientId).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("approve-loan")]
+        public async Task<IActionResult> ApproveLoan([FromBody] AdminLoanApproverRequestDTO model) => Response(await _applyForLoanService.ApproveLoan(model, User.GetSessionDetails().ClientId, User.GetSessionDetails().Email).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("create-loan-repayment-model")]
+        public async Task<IActionResult> LoanRepaymentPlan([FromBody] LoanRepaymentRequestDto model) => Response(await _loanRepaymentService.CreateRepaymentModel(model, User.GetSessionDetails().ClientId, User.GetSessionDetails().Email).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("Delete-loan-repayment-model")]
+        public async Task<IActionResult> DeleteLoanRepayment([FromBody] DeleteLoanRepaymentRequestDto model) => Response(await _loanRepaymentService.DeleteRepaymentModel(model, User.GetSessionDetails().ClientId, User.GetSessionDetails().Email).ConfigureAwait(false));
 
         [HttpPost]
         [Route("unlock-user-account")]

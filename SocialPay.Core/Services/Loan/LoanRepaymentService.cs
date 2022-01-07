@@ -41,7 +41,7 @@ namespace SocialPay.Core.Services.Loan
 
         }
 
-        public async Task<WebApiResponse> CreateRepaymentModel(LoanRepaymentRequestDto model)
+        public async Task<WebApiResponse> CreateRepaymentModel(LoanRepaymentRequestDto model, long clientId, string email)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace SocialPay.Core.Services.Loan
             }
         }
 
-        public async Task<WebApiResponse> DeleteRepaymentModel(DeleteLoanRepaymentRequestDto model)
+        public async Task<WebApiResponse> DeleteRepaymentModel(DeleteLoanRepaymentRequestDto model, long clientId, string email)
         {
             try
             {

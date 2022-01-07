@@ -182,7 +182,7 @@ namespace SocialPay.Core.Services.Loan
             }
         }
 
-        public async Task<WebApiResponse> ApproveLoan(AdminLoanApproverRequestDTO model)
+        public async Task<WebApiResponse> ApproveLoan(AdminLoanApproverRequestDTO model, long clientId, string email)
         {
 
             try
@@ -335,7 +335,7 @@ namespace SocialPay.Core.Services.Loan
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
         }
-        public async Task<WebApiResponse> GetAllAppliedLoan()
+        public async Task<WebApiResponse> GetAllAppliedLoan(long clientId)
         {
 
             try
