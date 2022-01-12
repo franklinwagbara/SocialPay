@@ -78,7 +78,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                             TransferType = 1,
                             frmacct = getWalletInfo.Mobile,
                             paymentRef = item.PaymentReference,
-                            remarks = "Social-Pay wallet transfer" + " - " + item.TransactionReference + " - " + item.Category
+                            remarks = $"{"Social-Pay wallet transfer"}{" - " }{item.PaymentReference}{" - "}{item.TransactionReference}{" - " + item.Category}"
                         };
 
                         var walletRequestModel = new DebitMerchantWalletTransferRequestLog
