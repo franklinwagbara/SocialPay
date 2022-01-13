@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Domain;
 using SocialPay.Helper;
+using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.Collections.Generic;
@@ -26,24 +27,50 @@ namespace SocialPay.Core.Services.Loan
 
         public async Task<WebApiResponse> MerchantEligibilty(long clientId)
         {
+            var resData = new MerchantEligibilty { };
+
             try
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 500000, Message = "Success", StatusCode = ResponseCodes.Success };
-                //if (await MerchantDuration(clientId) < 90) return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 0, Message = "Merchant is not eligible for loan", StatusCode = ResponseCodes.Success };
-                //if (await MerchantTransactionCount(clientId) < 15) return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 0, Message = "Merchant is not eligible for loan becuase of last 7 days  transaction count", StatusCode = ResponseCodes.Success };
-                //if (await MerchantTransactionVolume(clientId) < 500000) return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 0, Message = "Merchant is not eligible for loan becuase of last 30 days  transaction volume", StatusCode = ResponseCodes.Success };
+
+                resData.IsExitingLoan = false;
+                resData.Amount = 2000000000;
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = resData, Message = "Merchant is eligible for loan", StatusCode = ResponseCodes.Success };
+
+                //var cheeckForOpenloan = await _context.ApplyForLoan
+                //.Where(x => x.ClientAuthenticationId == clientId)
+                //.SingleOrDefaultAsync(x => x.IsAttended == false && x.IsCardTokenized == true);
+
+                //if (cheeckForOpenloan != null)
+                //{
+                //    resData.Amount = cheeckForOpenloan.Amount;
+                //    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = resData, Message = "User has an oustanding loan" };
+                //}
+                //if (await MerchantDuration(clientId) < 90) {
+
+                //     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = resData, Message = "Merchant is not eligible for loan" };
+                //}
+
+                //if (await MerchantTransactionCount(clientId) < 15) {
+                //     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = resData, Message = "Merchant is not eligible for loan becuase of last 7 days  transaction count" };
+
+                //}
+                //if (await MerchantTransactionVolume(clientId) < 500000) { 
+                //     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = resData, Message = "Merchant is not eligible for loan becuase of last 30 days  transaction volume" };
+
+                //}
                 //var calculateLoanWithThisMonth = await MerchantDuration(clientId);
                 //var calculatedMonthlyTransactions = await MerchantTransactionVolume(clientId, calculateLoanWithThisMonth);
+                //resData.Amount = await CalculateMaximumEligibleLoan(calculatedMonthlyTransactions, calculateLoanWithThisMonth);
 
-                //return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = await CalculateMaximumEligibleLoan(calculatedMonthlyTransactions, calculateLoanWithThisMonth), Message = "Success", StatusCode = ResponseCodes.Success };
+
+                //return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data=resData, Message = "Merchant is eligible for loan" };
             }
             catch (Exception e)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured", Data = 0, StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured", Data = resData, StatusCode = ResponseCodes.InternalError };
             }
 
         }
-
 
         private async Task<int> MerchantDuration(long clientId)
         {
