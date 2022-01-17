@@ -25,6 +25,11 @@ namespace SocialPay.Core.Services.Loan
 
         }
 
+        public async Task<WebApiResponse> EligibiltyAmount(long clientId)
+        {
+            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = 2000000000, Message = "Merchant is eligible for loan" };
+
+        }
         public async Task<WebApiResponse> MerchantEligibilty(long clientId)
         {
             var resData = new MerchantEligibilty { };

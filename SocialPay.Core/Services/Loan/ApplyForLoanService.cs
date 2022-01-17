@@ -61,13 +61,12 @@ namespace SocialPay.Core.Services.Loan
 
         public async Task<WebApiResponse> ApplyForLoan(ApplyForloanRequestDTO model, long clientId)
         {
-
-
             try
             {
                 bool IsSterlingAccountNumber = false;
                 //Verification of eligibility
-                var getCustomerEligibility = await _loanEligibiltyService.MerchantEligibilty(clientId);
+
+                var getCustomerEligibility = await _loanEligibiltyService.EligibiltyAmount(clientId);
                 if (Convert.ToDecimal(getCustomerEligibility.Data) < model.Amount) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "User is eligible to this amount of loan (N " + getCustomerEligibility.Data + ") as Maximum.", StatusCode = ResponseCodes.Badrequest };
 
                 bool cheeckForOpenloan = await _context.ApplyForLoan
@@ -78,14 +77,16 @@ namespace SocialPay.Core.Services.Loan
 
                 if (!await _context.LoanRepaymentPlan.Where(x => x.IsDeleted == false).AnyAsync(x => x.LoanRepaymentPlanId == model.LoanRepaymentPlanId)) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid LoanRepaymentPlanId " };
 
-                var getUser = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
-                var getclient = await _context.ClientAuthentication.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                //var getUser = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                var getclient = await _context.ClientAuthentication
+                    .Include(x=> x.MerchantWallet)
+                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
                 //Verification of credibility
-                var MerchantCredibility = await creditworthiness(getUser.Firstname, getUser.Lastname, getclient.Bvn, getUser.DoB, getUser.Mobile, getclient.Email, clientId);
+                var MerchantCredibility = await creditworthiness(getclient.MerchantWallet.FirstOrDefault().Firstname, getclient.MerchantWallet.FirstOrDefault().Lastname, getclient.Bvn, getclient.MerchantWallet.FirstOrDefault().DoB, getclient.MerchantWallet.FirstOrDefault().Mobile, getclient.Email, clientId);
 
                 //card tokenization
-                var tokenizeCard = await CardTokenization(getclient.FullName, getclient.Bvn, getUser.DoB, getUser.Mobile, getclient.Email, clientId, model.redirectUrl);
+                var tokenizeCard = await CardTokenization(getclient.FullName, getclient.Bvn, getclient.MerchantWallet.FirstOrDefault().DoB, getclient.MerchantWallet.FirstOrDefault().Mobile, getclient.Email, clientId, model.redirectUrl);
 
                 //check if merchant have a sterling bank account
 
@@ -221,7 +222,7 @@ namespace SocialPay.Core.Services.Loan
                         var dbDisbursementPayload = new LoanDisbursement
                         {
                             TransactionReference = transactionId,
-                            ClientAuthenticationId = GetLoanDetails.ClientAuthenticationId,
+                            //ClientAuthenticationId = GetLoanDetails.ClientAuthenticationId,
                             ApplyForLoanId = model.ApplyForLoanId,
                             disbusedAmount = model.ApprovedAmount,
                             BankCode = bankInfo.BankCode,
