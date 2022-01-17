@@ -10,7 +10,7 @@ namespace SocialPay.Domain.Entities
         public long LoanDailyDeductionLogId { get; set; }
         public string TransactionId { get; set; }
         public long LoanDisbursementId { get; set; }
-        public long ApplyForLoanId { get; set; }
+       // public long ApplyForLoanId { get; set; }
         public decimal RepaymentAmount { get; set; }
         public decimal AmountDeducted { get; set; }
         public decimal OutstandingBalance { get; set; }
@@ -45,7 +45,7 @@ namespace SocialPay.Domain.Entities
         public string message { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
         public DateTime LastDateModified { get; set; } = DateTime.Now;
-        public virtual ApplyForLoan ApplyForLoan { get; set; }
+        //public virtual ApplyForLoan ApplyForLoan { get; set; }
      //   public virtual LoanDisbursement LoanDisbursement { get; set; }
 
     }

@@ -8,7 +8,7 @@ namespace SocialPay.Domain.Entities
     public class LoanDisbursement : BaseEntity
     {
         public long LoanDisbursementId { get; set; }
-        public long ClientAuthenticationId { get; set; }
+      //  public long ClientAuthenticationId { get; set; }
         public string TransactionReference { get; set; }
         public long ApplyForLoanId { get; set; }
         public decimal disbusedAmount { get; set; }

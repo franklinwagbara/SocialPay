@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220117171640_updated-loan-table")]
+    partial class updatedloantable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -279,84 +281,6 @@ namespace SocialPay.Domain.Migrations
                     b.HasIndex("ClientAuthenticationId");
 
                     b.ToTable("AccountResetRequest");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.AddOrrInformationRequest", b =>
-                {
-                    b.Property<long>("AddOrrInformationRequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("accommodationType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("incomeSource")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("incomeSourceBusinessSegmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("jobChanges")
-                        .HasColumnType("int");
-
-                    b.Property<int>("maritalStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("monthlyIncome")
-                        .HasColumnType("int");
-
-                    b.Property<int>("natureOfIncome")
-                        .HasColumnType("int");
-
-                    b.Property<int>("numberOfDependants")
-                        .HasColumnType("int");
-
-                    b.Property<int>("yearsInCurrentResidence")
-                        .HasColumnType("int");
-
-                    b.HasKey("AddOrrInformationRequestId");
-
-                    b.ToTable("AddOrrInformationRequest");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.AddOrrInformationResponse", b =>
-                {
-                    b.Property<long>("AddOrrInformationResponseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("__abp")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("code")
-                        .HasColumnType("int");
-
-                    b.Property<string>("details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("success")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("unAuthorizedRequest")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("validationErrors")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AddOrrInformationResponseId");
-
-                    b.ToTable("AddOrrInformationResponse");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.ApplyForLoan", b =>

@@ -584,7 +584,7 @@ namespace SocialPay.Core.Services.Store
                 var validateLinkType = await _context.LinkCategory
                     .SingleOrDefaultAsync(x => x.TransactionReference == model.TransactionReference);
 
-                if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank || model.Channel == PaymentChannel.PayWithSpecta)
+                if (model.Channel == PaymentChannel.Card || model.Channel == PaymentChannel.OneBank || model.Channel == PaymentChannel.PayWithSpecta || model.Channel == PaymentChannel.NibbsQR)
                 {
                     if (model.Channel == PaymentChannel.Card)
                     {
@@ -634,6 +634,10 @@ namespace SocialPay.Core.Services.Store
                         return await LogPaymentResponse(model, string.Empty, validateLinkType.Channel);
                     }
 
+                    if (model.Channel == PaymentChannel.NibbsQR)
+                    {
+                        return await LogPaymentResponse(model, otherPaymentReference, validateLinkType.Channel);
+                    }
                     return await LogPaymentResponse(model, string.Empty, validateLinkType.Channel);
                     // _log4net.Info("PaymentConfirmation response was successful" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
 

@@ -28,4 +28,10 @@ namespace SocialPay.Helper.Dto.Request
         public long ApplyForLoanId { get; set; }
 
     }
+    public class MerchantEligibilty
+    {
+
+        public bool IsExitingLoan { get; set; }
+        public decimal Amount { get; set; }
+    }
 }

@@ -71,6 +71,7 @@ namespace SocialPay.Core.Services.Report
                                             Currency = m.Currency,
                                             Nuban = m.Nuban
                                         },
+                                        ClientAuthenticationId = c.ClientAuthenticationId,
                                         BusinessEmail = b.BusinessEmail,
                                         Country = b.Country,
                                         BusinessPhoneNumber = b.BusinessPhoneNumber,
@@ -105,6 +106,7 @@ namespace SocialPay.Core.Services.Report
                                             Currency = m.Currency,
                                             Nuban = m.Nuban
                                         },
+                                        ClientAuthenticationId = c.ClientAuthenticationId,
                                         BusinessEmail = c.Email,
                                         BusinessPhoneNumber = c.PhoneNumber,
                                         BusinessName = c.FullName,
@@ -123,7 +125,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetMerchants" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "GetMerchants" + " | " + ex + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = result };
             }
         }
@@ -758,7 +760,7 @@ namespace SocialPay.Core.Services.Report
             var sql = "UPDATE transactionLog SET TransactionJourney = @TransactionJourney where PaymentReference = @PaymentReference";
             try
             {
-                using (var connection = new SqlConnection("----------"))
+                using (var connection = new SqlConnection("------"))
                 {
                     using (var command = new SqlCommand(sql, connection))
                     {

@@ -24,5 +24,7 @@ namespace SocialPay.Core.Configurations
         public string SendPhoneUrlExtension { get; set; }
         public string ValidateChargeUrlExtension { get; set; }
         public string SendOtpUrlExtension { get; set; }
+        public string AuthenticaUrlExtensionUrl { get; set; }
+        public string SpectaRegistrationTenantId { get; set; }
     }
 }

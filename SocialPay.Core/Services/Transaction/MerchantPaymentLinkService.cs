@@ -348,7 +348,9 @@ namespace SocialPay.Core.Services.Transaction
                 var calculatedDiscount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice * (invoiceRequestDto.discount / 100);
                 var calculatedVAT = _appSettings.vat * (invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice);
                 var calculatedTotalAmount = invoiceRequestDto.Qty * invoiceRequestDto.UnitPrice + invoiceRequestDto.ShippingFee + calculatedVAT - calculatedDiscount;
-                
+
+                if (Convert.ToDateTime(invoiceRequestDto.DueDate) < DateTime.Now.AddMinutes(-1)) return new WebApiResponse { ResponseCode = AppResponseCodes.InvalidInvoiceDate, Message = "Invalid due date " };
+
                 var model = new InvoicePaymentLink
                 {
                     TransactionStatus = false,

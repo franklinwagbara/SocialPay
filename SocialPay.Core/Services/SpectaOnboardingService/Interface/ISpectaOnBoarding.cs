@@ -14,10 +14,10 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
         Task<WebApiResponse> VerifyEmailConfirmationCode(VerifyEmailConfirmationCodeRequestDto model);
         Task<WebApiResponse> SendBvnPhoneVerificationCode(string emailaddress);
         Task<WebApiResponse> VerifyBvnPhoneConfirmationCode(VerifyBvnPhoneConfirmationCodeRequestDto model);
-        //Task<WebApiResponse> LoggedInCustomerProfile(string email);
-        //Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model, string email);
-        //Task<WebApiResponse> Authenticate(AuthenticateRequestDto model);
-        //Task<WebApiResponse> BusinessSegmentAllList(string email);
+        Task<WebApiResponse> LoggedInCustomerProfile(string email);
+        Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model, string email);
+        Task<WebApiResponse> Authenticate(AuthenticateRequestDto model);
+        Task<WebApiResponse> BusinessSegmentAllList(string email);
         //Task<WebApiResponse> RequestTicket(RequestTicketDto model, string email);
         //Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model, string email);
         //Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model, string email);

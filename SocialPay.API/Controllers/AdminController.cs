@@ -12,6 +12,7 @@ using SocialPay.Core.Repositories.UserService;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
+using SocialPay.Core.Services.Loan;
 using SocialPay.Core.Services.Merchant;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Store;
@@ -19,13 +20,14 @@ using SocialPay.Core.Services.Wallet;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.Notification;
 
 namespace SocialPay.API.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Administrator")]
     [Route("api/socialpay/admin")]
     [ApiController]
-    public class AdminController : ControllerBase
+    public class AdminController : BaseController
     {
         private readonly ADRepoService _aDRepoService;
         private readonly AuthRepoService _authRepoService;
@@ -37,6 +39,9 @@ namespace SocialPay.API.Controllers
         private readonly SendGridEmailService _sendGridEmailService;
         private readonly CreateBulkMerchantService _createBulkMerchantService;
         private readonly StoreReportRepository _storeReportRepository;
+        private readonly ApplyForLoanService _applyForLoanService;
+        private readonly LoanEligibiltyService _loanEligibiltyService;
+        private readonly LoanRepaymentService _loanRepaymentService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AdminController));
 
         public AdminController(ADRepoService aDRepoService, MerchantReportService merchantReportService,
@@ -44,7 +49,9 @@ namespace SocialPay.API.Controllers
             CreateMerchantWalletService createMerchantWalletService,
             UserRepoService userRepoService, CustomerRepoService customerRepoService,
             SendGridEmailService sendGridEmailService, CreateBulkMerchantService createBulkMerchantService,
-            StoreReportRepository storeReportRepository)
+            StoreReportRepository storeReportRepository, ApplyForLoanService applyForLoanService,
+            LoanEligibiltyService loanEligibiltyService, LoanRepaymentService loanRepaymentService,
+             INotification notification) : base(notification)
         {
             _aDRepoService = aDRepoService;
             _merchantReportService = merchantReportService;
@@ -56,6 +63,9 @@ namespace SocialPay.API.Controllers
             _sendGridEmailService = sendGridEmailService;
             _createBulkMerchantService = createBulkMerchantService ?? throw new ArgumentNullException(nameof(createBulkMerchantService));
             _storeReportRepository = storeReportRepository ?? throw new ArgumentNullException(nameof(storeReportRepository));
+            _applyForLoanService = applyForLoanService ?? throw new ArgumentNullException(nameof(applyForLoanService));
+            _loanEligibiltyService = loanEligibiltyService ?? throw new ArgumentNullException(nameof(loanEligibiltyService));
+            _loanRepaymentService = loanRepaymentService ?? throw new ArgumentNullException(nameof(loanRepaymentService));
         }
 
         [HttpPost]
@@ -150,7 +160,25 @@ namespace SocialPay.API.Controllers
         //    }
         //}
 
+        [HttpGet]
+        [Route("get-all-applied-loan")]
+        public async Task<IActionResult> GetAppliedLoans() => Response(await _applyForLoanService.GetAllAppliedLoan(User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
+        [HttpGet]
+        [Route("get-merchant-loan-eligibility")]
+        public async Task<IActionResult> GetMerchantLoanEligibility([FromQuery] long clientId) => Response(await _loanEligibiltyService.MerchantEligibilty(clientId).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("approve-loan")]
+        public async Task<IActionResult> ApproveLoan([FromBody] AdminLoanApproverRequestDTO model) => Response(await _applyForLoanService.ApproveLoan(model, User.GetSessionDetails().ClientId, User.GetSessionDetails().Email).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("create-loan-repayment-model")]
+        public async Task<IActionResult> LoanRepaymentPlan([FromBody] LoanRepaymentRequestDto model) => Response(await _loanRepaymentService.CreateRepaymentModel(model, User.GetSessionDetails().ClientId, User.GetSessionDetails().Email).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("Delete-loan-repayment-model")]
+        public async Task<IActionResult> DeleteLoanRepayment([FromBody] DeleteLoanRepaymentRequestDto model) => Response(await _loanRepaymentService.DeleteRepaymentModel(model, User.GetSessionDetails().ClientId, User.GetSessionDetails().Email).ConfigureAwait(false));
 
         [HttpPost]
         [Route("unlock-user-account")]
@@ -861,64 +889,64 @@ namespace SocialPay.API.Controllers
         //}
 
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-all-merchant-business-info")]
-        //public async Task<IActionResult> GetMerchantBusinessInfo([FromQuery] string reference)
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "sterling2vxytq@k1")
-        //            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-merchant-business-info")]
+        public async Task<IActionResult> GetMerchantBusinessInfo([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "73jf5")
+                    return BadRequest();
 
-        //        if (ModelState.IsValid)
-        //        {
-        //            return Ok(await _merchantReportService.GetMerchantBusinessInfoAsync());
-        //        }
-        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage));
-        //        response.ResponseCode = AppResponseCodes.Failed;
-        //        response.Data = message;
-        //        return BadRequest(response);
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.GetMerchantBusinessInfoAsync());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-all-interbank-default-info")]
-        //public async Task<IActionResult> GetInterBankRequest([FromQuery] string reference)
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "73hf")
-        //            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-interbank-default-info")]
+        public async Task<IActionResult> GetInterBankRequest([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "73hf")
+                    return BadRequest();
 
-        //        if (ModelState.IsValid)
-        //            return Ok(await _merchantReportService.GetInterBankRequestAsync());
+                if (ModelState.IsValid)
+                    return Ok(await _merchantReportService.GetInterBankRequestAsync());
 
-        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage));
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
 
-        //        response.ResponseCode = AppResponseCodes.Failed;
-        //        response.Data = message;
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
 
-        //        return BadRequest(response);
+                return BadRequest(response);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
         [AllowAnonymous]
@@ -943,46 +971,46 @@ namespace SocialPay.API.Controllers
         }
 
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-bank-non-escrow-trans")]
-        //public async Task<IActionResult> GetInterbankRequest([FromQuery] string reference, string paymentRefernce)
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "07gr")
-        //            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-bank-non-escrow-trans")]
+        public async Task<IActionResult> GetInterbankRequest([FromQuery] string reference, string paymentRefernce)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "07gr")
+                    return BadRequest();
 
-        //        return Ok(await _merchantReportService.ModifyFioranoRequestInfo(paymentRefernce));
+                return Ok(await _merchantReportService.ModifyFioranoRequestInfo(paymentRefernce));
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("get-user-trans")]
-        ////public async Task<IActionResult> GetFioranoTransactions([FromQuery] string reference)
-        ////{
-        ////    var response = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        if (reference != "334fds2")
-        ////            return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-user-trans")]
+        public async Task<IActionResult> GetFioranoTransactions([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "334fds2")
+                    return BadRequest();
 
-        ////        return Ok(await _merchantReportService.GetFioranoTransactions());
+                return Ok(await _merchantReportService.GetFioranoTransactions());
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        response.ResponseCode = AppResponseCodes.InternalError;
-        ////        return BadRequest(response);
-        ////    }
-        ////}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
 
@@ -1009,65 +1037,65 @@ namespace SocialPay.API.Controllers
 
 
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("get-interbank-lnterBankRequest")]
-        //public async Task<IActionResult> InterbankRequest([FromQuery] string reference, string merchant)
-        //{
-        //    var response = new WebApiResponse { };
-        //    try
-        //    {
-        //        if (reference != "4g82")
-        //            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-interbank-lnterBankRequest")]
+        public async Task<IActionResult> InterbankRequest([FromQuery] string reference, string merchant)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "4g82")
+                    return BadRequest();
 
-        //        if (ModelState.IsValid)
-        //        {
-        //            return Ok(await _merchantReportService.RemoveInterbankRequestInfo(merchant));
-        //        }
-        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage));
-        //        response.ResponseCode = AppResponseCodes.Failed;
-        //        response.Data = message;
-        //        return BadRequest(response);
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.RemoveInterbankRequestInfo(merchant));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.ResponseCode = AppResponseCodes.InternalError;
-        //        return BadRequest(response);
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
 
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("get-Customer-OtherPayment")]
-        ////public async Task<IActionResult> GetCustomerOtherPayment([FromQuery] string reference)
-        ////{
-        ////    var response = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        if (reference != "sterling2rk11")
-        ////            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-Customer-OtherPayment")]
+        public async Task<IActionResult> GetCustomerOtherPayment([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "jur673")
+                    return BadRequest();
 
-        ////        if (ModelState.IsValid)
-        ////        {
-        ////            return Ok(await _merchantReportService.GetCustomerOtherTransactionInfo());
-        ////        }
-        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        ////            .Select(e => e.ErrorMessage));
-        ////        response.ResponseCode = AppResponseCodes.Failed;
-        ////        response.Data = message;
-        ////        return BadRequest(response);
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.GetCustomerOtherTransactionInfo());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        response.ResponseCode = AppResponseCodes.InternalError;
-        ////        return BadRequest(response);
-        ////    }
-        ////}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
 
@@ -1104,34 +1132,34 @@ namespace SocialPay.API.Controllers
 
 
 
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("get-latest-OtherPayment")]
-        ////public async Task<IActionResult> GetMerchantDetails([FromQuery] string reference, string merchant)
-        ////{
-        ////    var response = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        if (reference != "t562")
-        ////            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-latest-OtherPayment")]
+        public async Task<IActionResult> GetMerchantDetails([FromQuery] string reference, string merchant)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "t562")
+                    return BadRequest();
 
-        ////        if (ModelState.IsValid)
-        ////        {
-        ////            return Ok(await _merchantReportService.ValidateMerchantInfo(merchant));
-        ////        }
-        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        ////            .Select(e => e.ErrorMessage));
-        ////        response.ResponseCode = AppResponseCodes.Failed;
-        ////        response.Data = message;
-        ////        return BadRequest(response);
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.ValidateMerchantInfo(merchant));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        response.ResponseCode = AppResponseCodes.InternalError;
-        ////        return BadRequest(response);
-        ////    }
-        ////}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
 
@@ -1193,66 +1221,66 @@ namespace SocialPay.API.Controllers
         }
 
 
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("get-payment-details")]
-        //////public async Task<IActionResult> ValidatePayment([FromQuery] string reference, string merchant)
-        //////{
-        //////    var response = new WebApiResponse { };
-        //////    try
-        //////    {
-        //////        if (reference != "3dd22")
-        //////            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-payment-details")]
+        public async Task<IActionResult> ValidatePayment([FromQuery] string reference, string merchant)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "3dd22")
+                    return BadRequest();
 
-        //////        if (ModelState.IsValid)
-        //////        {
-        //////            return Ok(await _merchantReportService.ValidateInfo(merchant));
-        //////        }
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.ValidateInfo(merchant));
+                }
 
-        //////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //////            .Select(e => e.ErrorMessage));
-        //////        response.ResponseCode = AppResponseCodes.Failed;
-        //////        response.Data = message;
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
 
-        //////        return BadRequest(response);
+                return BadRequest(response);
 
-        //////    }
-        //////    catch (Exception ex)
-        //////    {
-        //////        response.ResponseCode = AppResponseCodes.InternalError;
-        //////        return BadRequest(response);
-        //////    }
-        //////}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("get-user-wallet-info")]
-        //////public async Task<IActionResult> ValidateuserWallet([FromQuery] string reference, string merchant)
-        //////{
-        //////    var response = new WebApiResponse { };
-        //////    try
-        //////    {
-        //////        if (reference != "gh3219")
-        //////            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-user-wallet-info")]
+        public async Task<IActionResult> ValidateuserWallet([FromQuery] string reference, string merchant)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "gh3219")
+                    return BadRequest();
 
-        //////        if (ModelState.IsValid)
-        //////        {
-        //////            return Ok(await _merchantReportService.ValidateWalletInfo(merchant));
-        //////        }
-        //////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        //////            .Select(e => e.ErrorMessage));
-        //////        response.ResponseCode = AppResponseCodes.Failed;
-        //////        response.Data = message;
-        //////        return BadRequest(response);
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.ValidateWalletInfo(merchant));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        //////    }
-        //////    catch (Exception ex)
-        //////    {
-        //////        response.ResponseCode = AppResponseCodes.InternalError;
-        //////        return BadRequest(response);
-        //////    }
-        //////}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
 

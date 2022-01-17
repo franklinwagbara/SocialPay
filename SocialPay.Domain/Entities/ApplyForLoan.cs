@@ -30,8 +30,8 @@ namespace SocialPay.Domain.Entities
         public virtual ClientAuthentication ClientAuthentication { get; set; }
         public virtual LoanRepaymentPlan LoanRepaymentPlan { get; set; }
         public virtual ICollection<LoanDisbursement> LoanDisbursement { get; set; }
-        public virtual ICollection<LoanDailyDeductionLog> LoanDailyDeductionLog { get; set; }
-        public virtual ICollection<LoanMonthlyDeductionLog> LoanMonthlyDeductionLog { get; set; }
+        //public virtual ICollection<LoanDailyDeductionLog> LoanDailyDeductionLog { get; set; }
+        //public virtual ICollection<LoanMonthlyDeductionLog> LoanMonthlyDeductionLog { get; set; }
     }
 
 }

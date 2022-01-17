@@ -61,42 +61,32 @@ namespace SocialPay.Core.Services.Loan
 
         public async Task<WebApiResponse> ApplyForLoan(ApplyForloanRequestDTO model, long clientId)
         {
-          //  clientId = 172;
-
             try
             {
-               // var currentDob = DateTime.Parse("14-12-1992").ToString("dd-MM-yyyy");
-
-
                 bool IsSterlingAccountNumber = false;
                 //Verification of eligibility
-                var getCustomerEligibility = await _loanEligibiltyService.MerchantEligibilty(clientId);
-                if (Convert.ToDecimal(getCustomerEligibility.Data) < model.Amount) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "User is eligible to this amount of loan (N " + getCustomerEligibility.Data + ") as Maximum." , StatusCode = ResponseCodes.Badrequest };
+
+                var getCustomerEligibility = await _loanEligibiltyService.EligibiltyAmount(clientId);
+                if (Convert.ToDecimal(getCustomerEligibility.Data) < model.Amount) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "User is eligible to this amount of loan (N " + getCustomerEligibility.Data + ") as Maximum.", StatusCode = ResponseCodes.Badrequest };
 
                 bool cheeckForOpenloan = await _context.ApplyForLoan
                 .Where(x => x.ClientAuthenticationId == clientId)
-                .AnyAsync(x => x.IsAttended == false);
+                .AnyAsync(x => x.IsAttended == false && x.IsCardTokenized == true);
 
-                if (cheeckForOpenloan) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "User has an oustanding loan" };
+                if (cheeckForOpenloan) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "User has an oustanding loan", StatusCode = ResponseCodes.Badrequest };
 
-                if (!await _context.LoanRepaymentPlan.Where(x => x.IsDeleted == false).AnyAsync(x => x.LoanRepaymentPlanId == model.LoanRepaymentPlanId)) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid LoanRepaymentPlanId ", StatusCode = ResponseCodes.Badrequest };
+                if (!await _context.LoanRepaymentPlan.Where(x => x.IsDeleted == false).AnyAsync(x => x.LoanRepaymentPlanId == model.LoanRepaymentPlanId)) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid LoanRepaymentPlanId " };
 
                 //var getUser = await _context.MerchantWallet.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
                 var getclient = await _context.ClientAuthentication
-                    .Include(m => m.MerchantWallet).SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                    .Include(x=> x.MerchantWallet)
+                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
                 //Verification of credibility
-                var MerchantCredibility = await creditworthiness(getclient.MerchantWallet.Select(x=>x.Firstname).FirstOrDefault(),
-                    getclient.MerchantWallet.Select(x => x.Lastname).FirstOrDefault(), getclient.Bvn,
-                    getclient.MerchantWallet.Select(x => x.DoB).FirstOrDefault(),
-                    getclient.MerchantWallet.Select(x => x.Mobile).FirstOrDefault(), 
-                    getclient.Email, clientId);
+                var MerchantCredibility = await creditworthiness(getclient.MerchantWallet.FirstOrDefault().Firstname, getclient.MerchantWallet.FirstOrDefault().Lastname, getclient.Bvn, getclient.MerchantWallet.FirstOrDefault().DoB, getclient.MerchantWallet.FirstOrDefault().Mobile, getclient.Email, clientId);
 
                 //card tokenization
-                var tokenizeCard = await CardTokenization(getclient.FullName, getclient.Bvn,
-                    getclient.MerchantWallet.Select(x => x.DoB).FirstOrDefault(),
-                   getclient.MerchantWallet.Select(x => x.Mobile).FirstOrDefault(), 
-                   getclient.Email, clientId, model.redirectUrl);
+                var tokenizeCard = await CardTokenization(getclient.FullName, getclient.Bvn, getclient.MerchantWallet.FirstOrDefault().DoB, getclient.MerchantWallet.FirstOrDefault().Mobile, getclient.Email, clientId, model.redirectUrl);
 
                 //check if merchant have a sterling bank account
 
@@ -134,13 +124,14 @@ namespace SocialPay.Core.Services.Loan
                     RedirectUrl = tokenizeCard.redirectUrl
                 };
 
-                //// return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = responsePayload, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = tokenizeCard, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = responsePayload, Message = "Complete the process by tokenizing your card", StatusCode = ResponseCodes.Success };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ex.ToString(), StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
+
         }
 
         public async Task<WebApiResponse> ConfirmTokenization(ConfirmTokenizationRequestDTO model, long clientId)
@@ -182,7 +173,7 @@ namespace SocialPay.Core.Services.Loan
             }
         }
 
-        public async Task<WebApiResponse> ApproveLoan(AdminLoanApproverRequestDTO model)
+        public async Task<WebApiResponse> ApproveLoan(AdminLoanApproverRequestDTO model, long clientId, string email)
         {
 
             try
@@ -231,7 +222,7 @@ namespace SocialPay.Core.Services.Loan
                         var dbDisbursementPayload = new LoanDisbursement
                         {
                             TransactionReference = transactionId,
-                            ClientAuthenticationId = GetLoanDetails.ClientAuthenticationId,
+                            //ClientAuthenticationId = GetLoanDetails.ClientAuthenticationId,
                             ApplyForLoanId = model.ApplyForLoanId,
                             disbusedAmount = model.ApprovedAmount,
                             BankCode = bankInfo.BankCode,
@@ -335,7 +326,7 @@ namespace SocialPay.Core.Services.Loan
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
         }
-        public async Task<WebApiResponse> GetAllAppliedLoan()
+        public async Task<WebApiResponse> GetAllAppliedLoan(long clientId)
         {
 
             try
