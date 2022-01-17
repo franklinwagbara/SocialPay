@@ -62,6 +62,7 @@
         public const string DuplicatePinSetup = "58";
         public const string TransactionPinDoesNotExit = "59";
         public const string InvalidInvoiceDate = "60";
+        public const string AddOrrInformation = "61";
     }
 
     public class SpectaProcessCodes

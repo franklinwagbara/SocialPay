@@ -96,5 +96,7 @@ namespace SocialPay.Domain
         public DbSet<SendBvnPhoneVerificationCodeResponse> SendBvnPhoneVerificationCodeResponse { get; set; }
         public DbSet<VerifyBvnPhoneConfirmationCodeRequest> VerifyBvnPhoneConfirmationCodeRequest { get; set; }
         public DbSet<VerifyBvnPhoneConfirmationCodeResponse> VerifyBvnPhoneConfirmationCodeResponse { get; set; }
+        public DbSet<AddOrrInformationRequest> AddOrrInformationRequest { get; set; }
+        public DbSet<AddOrrInformationResponse> AddOrrInformationResponse { get; set; }
     }
 }

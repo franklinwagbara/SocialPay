@@ -7,20 +7,19 @@ using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 {
-    public class SpectaLoggedInCustomerProfile : ISpectaLoggedInCustomerProfile
+    public class SpectaBusinessSegmentAllListService : ISpectaBusinessSegmentAllList
     {
         private readonly ISpectaOnBoarding _spectaOnboardingService;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaLoggedInCustomerProfile));
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaBusinessSegmentAllListService));
 
-        public SpectaLoggedInCustomerProfile(ISpectaOnBoarding spectaOnboardingService)
+        public SpectaBusinessSegmentAllListService(ISpectaOnBoarding spectaOnboardingService)
         {
             _spectaOnboardingService = spectaOnboardingService;
         }
 
-        public async Task<WebApiResponse> LoggedInCustomerProfile(string email)
+        public async Task<WebApiResponse> BusinessSegmentAllList(string email)
         {
-
-            var response = await _spectaOnboardingService.LoggedInCustomerProfile(email);
+            var response = await _spectaOnboardingService.BusinessSegmentAllList(email);
 
             try
             {
@@ -29,11 +28,12 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "LoggedIn Customer Profile" + " | " + ex + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "BusinessSegmentAllList" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return response;
+
             }
+
         }
     }
-
 }

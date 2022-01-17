@@ -9,6 +9,7 @@ using SocialPay.Helper.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SocialPay.API.Controllers
@@ -23,14 +24,18 @@ namespace SocialPay.API.Controllers
         private readonly ISpectaSendBvnPhoneVerificationCode _spectaSendBvnPhoneVerificationCode;
         private readonly ISpectaVerifyBvnPhoneConfirmationCode _spectaVerifyBvnPhoneConfirmationCode;
         private readonly ISpectaAuthentication _spectaAuthentication;
-       // private readonly ISpectaLoggedInCustomerProfile _spectaLoggedInCustomerProfile;
+        private readonly ISpectaLoggedInCustomerProfile _spectaLoggedInCustomerProfile;
+        private readonly ISpectaAddOrrInformation _spectaAddOrrInformation;
+        private readonly ISpectaBusinessSegmentAllList _spectaBusinessSegmentAllList;
         public SpectaController(ISpectaCustomerRegistration spectaCustomerRegistration,
             ISpectaSendEmailVerificationCode spectaSendEmailVerificationCode,
             ISpectaVerifyEmailConfirmationCode spectaVerifyEmailConfirmationCode,
             ISpectaSendBvnPhoneVerificationCode spectaSendBvnPhoneVerificationCode,
             ISpectaVerifyBvnPhoneConfirmationCode spectaVerifyBvnPhoneConfirmationCode,
             ISpectaAuthentication spectaAuthentication,
-            //ISpectaLoggedInCustomerProfile spectaLoggedInCustomerProfile,
+            ISpectaLoggedInCustomerProfile spectaLoggedInCustomerProfile,
+            ISpectaAddOrrInformation spectaAddOrrInformation,
+            ISpectaBusinessSegmentAllList spectaBusinessSegmentAllList,
             INotification notification) : base(notification)
         {
             _spectaCustomerRegistration = spectaCustomerRegistration ?? throw new ArgumentNullException(nameof(spectaCustomerRegistration));
@@ -39,7 +44,9 @@ namespace SocialPay.API.Controllers
             _spectaSendBvnPhoneVerificationCode = spectaSendBvnPhoneVerificationCode ?? throw new ArgumentNullException(nameof(spectaSendBvnPhoneVerificationCode));
             _spectaVerifyBvnPhoneConfirmationCode = spectaVerifyBvnPhoneConfirmationCode ?? throw new ArgumentNullException(nameof(spectaVerifyBvnPhoneConfirmationCode));
             _spectaAuthentication = spectaAuthentication ?? throw new ArgumentNullException(nameof(spectaAuthentication));
-           // _spectaLoggedInCustomerProfile = spectaLoggedInCustomerProfile ?? throw new ArgumentNullException(nameof(spectaLoggedInCustomerProfile));
+            _spectaLoggedInCustomerProfile = spectaLoggedInCustomerProfile ?? throw new ArgumentNullException(nameof(spectaLoggedInCustomerProfile));
+            _spectaAddOrrInformation = spectaAddOrrInformation ?? throw new ArgumentNullException(nameof(spectaAddOrrInformation));
+            _spectaBusinessSegmentAllList = spectaBusinessSegmentAllList ?? throw new ArgumentNullException(nameof(spectaBusinessSegmentAllList));
         }
 
         [HttpPost]
@@ -66,8 +73,15 @@ namespace SocialPay.API.Controllers
         [Route("authenticate-user")]
         public async Task<IActionResult> AuthenticateAsync([FromBody] AuthenticateRequestDto model) => Response(await _spectaAuthentication.Authenticate(model).ConfigureAwait(false));
 
-        //[HttpGet]
-        //[Route("logged-in-customer-profile")]
-        //public async Task<IActionResult> LoggedInCustomerProfileAsync() => Response(await _spectaLoggedInCustomerProfile.LoggedInCustomerProfile(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+        [HttpGet]
+        [Route("logged-in-customer-profile")]
+        public async Task<IActionResult> LoggedInCustomerProfileAsync() => Response(await _spectaLoggedInCustomerProfile.LoggedInCustomerProfile(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+        [HttpPost]
+        [Route("add-orr-information")]
+        public async Task<IActionResult> AddOrrInformationAsync([FromBody] AddOrrInformationRequestDto model) => Response(await _spectaAddOrrInformation.AddOrrInformation(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpGet]
+        [Route("business-segment-all-list")]
+        public async Task<IActionResult> BusinessSegmentAllListAsync() => Response(await _spectaBusinessSegmentAllList.BusinessSegmentAllList(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
     }
 }
