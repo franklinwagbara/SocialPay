@@ -32,6 +32,9 @@ namespace SocialPay.Helper.AutoMapperSettings
 
             CreateMap<RequestTicketRequest, RequestTicketDto>();
             CreateMap<RequestTicketDto, RequestTicketRequest>();
+
+            CreateMap<SetDisbursementAccountRequest, SetDisbursementAccountRequestDto>();
+            CreateMap<SetDisbursementAccountRequestDto, SetDisbursementAccountRequest>();
         }
     }
 }

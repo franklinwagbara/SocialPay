@@ -102,5 +102,9 @@ namespace SocialPay.Domain
         public DbSet<RequestTicketResponse> RequestTicketResponse { get; set; }
         public DbSet<ConfirmTicketRequest> ConfirmTicketRequest { get; set; }
         public DbSet<ConfirmTicketResponse> ConfirmTicketResponse { get; set; }
+        public DbSet<CreateIndividualCurrentAccountRequest> CreateIndividualCurrentAccountRequest { get; set; }
+        public DbSet<CreateIndividualCurrentAccountResponse> CreateIndividualCurrentAccountResponse { get; set; }
+        public DbSet<SetDisbursementAccountRequest> SetDisbursementAccountRequest { get; set; }
+        public DbSet<SetDisbursementAccountResponse> SetDisbursementAccountResponse { get; set; }
     }
 }

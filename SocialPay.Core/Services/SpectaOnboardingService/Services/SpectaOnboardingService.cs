@@ -499,235 +499,257 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
 
         }
-        ////public async Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model, string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
+        public async Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model, string email)
+        {
+            var apiResponse = new WebApiResponse { };
+            try
+            {
 
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+                    client.DefaultRequestHeaders.Add("Abp.TenantId", "1");
+                    HttpResponseMessage result;
+                    using (var formContent = new MultipartFormDataContent())
+                    {
 
-        ////        using (var client = new HttpClient())
-        ////        {
-        ////            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////            client.DefaultRequestHeaders.Add("Abp.TenantId", "1");
-        ////            HttpResponseMessage result;
-        ////            using (var formContent = new MultipartFormDataContent())
-        ////            {
+                        formContent.Add(new StringContent(model.BranchCode), "BranchCode");
+                        formContent.Add(new StringContent(model.TaxId), "TaxId");
+                        formContent.Add(new StringContent(model.CountryOfBirth), "CountryOfBirth");
+                        formContent.Add(new StringContent(model.OtherNationality), "OtherNationality");
 
-        ////                formContent.Add(new StringContent(model.BranchCode), "BranchCode");
-        ////                formContent.Add(new StringContent(model.TaxId), "TaxId");
-        ////                formContent.Add(new StringContent(model.CountryOfBirth), "CountryOfBirth");
-        ////                formContent.Add(new StringContent(model.OtherNationality), "OtherNationality");
+                        using (var ms = new MemoryStream())
+                        {
+                            model.IdentityCard.CopyTo(ms);
+                            var data = new ByteArrayContent(ms.ToArray());
+                            data.Headers.ContentType = new MediaTypeHeaderValue(model.IdentityCard.ContentType);
+                            formContent.Add(data, nameof(model.IdentityCard), nameof(model.IdentityCard));
+                        }
+                        using (var ms = new MemoryStream())
+                        {
+                            model.Passport.CopyTo(ms);
+                            var data = new ByteArrayContent(ms.ToArray());
+                            data.Headers.ContentType = new MediaTypeHeaderValue(model.Passport.ContentType);
+                            formContent.Add(data, nameof(model.Passport), nameof(model.Passport));
+                        }
+                        using (var ms = new MemoryStream())
+                        {
+                            model.Signature.CopyTo(ms);
+                            var data = new ByteArrayContent(ms.ToArray());
+                            data.Headers.ContentType = new MediaTypeHeaderValue(model.Signature.ContentType);
+                            formContent.Add(data, nameof(model.Signature), nameof(model.Signature));
+                        }
+                        using (var ms = new MemoryStream())
+                        {
+                            model.UtilityBill.CopyTo(ms);
+                            var data = new ByteArrayContent(ms.ToArray());
+                            data.Headers.ContentType = new MediaTypeHeaderValue(model.UtilityBill.ContentType);
+                            formContent.Add(data, nameof(model.UtilityBill), nameof(model.UtilityBill));
+                        }
 
-        ////                using (var ms = new MemoryStream())
-        ////                {
-        ////                    model.IdentityCard.CopyTo(ms);
-        ////                    var data = new ByteArrayContent(ms.ToArray());
-        ////                    data.Headers.ContentType = new MediaTypeHeaderValue(model.IdentityCard.ContentType);
-        ////                    formContent.Add(data, nameof(model.IdentityCard), nameof(model.IdentityCard));
-        ////                }
-        ////                using (var ms = new MemoryStream())
-        ////                {
-        ////                    model.Passport.CopyTo(ms);
-        ////                    var data = new ByteArrayContent(ms.ToArray());
-        ////                    data.Headers.ContentType = new MediaTypeHeaderValue(model.Passport.ContentType);
-        ////                    formContent.Add(data, nameof(model.Passport), nameof(model.Passport));
-        ////                }
-        ////                using (var ms = new MemoryStream())
-        ////                {
-        ////                    model.Signature.CopyTo(ms);
-        ////                    var data = new ByteArrayContent(ms.ToArray());
-        ////                    data.Headers.ContentType = new MediaTypeHeaderValue(model.Signature.ContentType);
-        ////                    formContent.Add(data, nameof(model.Signature), nameof(model.Signature));
-        ////                }
-        ////                using (var ms = new MemoryStream())
-        ////                {
-        ////                    model.UtilityBill.CopyTo(ms);
-        ////                    var data = new ByteArrayContent(ms.ToArray());
-        ////                    data.Headers.ContentType = new MediaTypeHeaderValue(model.UtilityBill.ContentType);
-        ////                    formContent.Add(data, nameof(model.UtilityBill), nameof(model.UtilityBill));
-        ////                }
+                        result = await client.PostAsync($"{_client.BaseAddress}{_spectaOnboardingSettings.CreateIndividualCurrentAccountUrlExtension}", formContent);
+                    }
 
-        ////                result = await client.PostAsync(_client.BaseAddress + _appSettings.CreateIndividualCurrentAccountUrlExtension, formContent);
-        ////            }
+                    var res1 = await result.Content.ReadAsStringAsync();
 
-        ////            var res1 = await result.Content.ReadAsStringAsync();
-        ////            var Response = JsonConvert.DeserializeObject<CreateIndividualCurrentAccountResponseDto.CreateIndividualCurrentAccountResponse>(res1);
-        ////            apiResponse.ResponseCode = Response.success == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////            apiResponse.Data = Response;
-        ////        }
+                    apiResponse.ResponseCode = result.IsSuccessStatusCode == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
 
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "CreateIndividualCurrentAccountInfo" + " | " + model.BranchCode + " | " + model.CountryOfBirth + " | " + model.Passport + " | " + model.Signature + " | " + model.TaxId + " | " + model.UtilityBill + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var Response = JsonConvert.DeserializeObject<CreateIndividualCurrentAccountResponseDto.CreateIndividualCurrentAccountResponse>(res1);
+                        apiResponse.Data = Response;
+                        apiResponse.StatusCode = ResponseCodes.Success;
+                        apiResponse.Message = "Success";
 
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+                        return apiResponse;
+                    }
 
-        ////}
-        ////public async Task<WebApiResponse> DisbursementAccount(SetDisbursementAccountRequestDto model, string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.DisbursementAccountUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
+                    apiResponse.Data = res1;
+                    apiResponse.StatusCode = ResponseCodes.InternalError;
+                }
 
-        ////        var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "DisbursementAccountInfo" + " | " + model.disbAccountNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "CreateIndividualCurrentAccountInfo" + " | " + model.BranchCode + " | " + model.CountryOfBirth + " | " + model.Passport + " | " + model.Signature + " | " + model.TaxId + " | " + model.UtilityBill + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
 
-        ////}
-        ////public async Task<WebApiResponse> ChargeCard(ChargeCardRequestDto model, string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.ChargeCardUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
-        ////        Response.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "ChargeCardInfo" + " | " + model.cvv + " | " + " | " + model.expiryMonth + " | " + " | " + model.expiryYear + " | " + " | " + model.pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+          }
+        public async Task<WebApiResponse> DisbursementAccount(SetDisbursementAccountRequestDto model, string email)
+        {
+            var apiResponse = new WebApiResponse { };
+            try
+            {
+                var requestobj = JsonConvert.SerializeObject(model);
+                var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.DisbursementAccountUrlExtension}");
+                client.Timeout = -1;
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+                request.AddHeader("Abp.TenantId", _spectaOnboardingSettings.SpectaRegistrationTenantId);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+                IRestResponse response = await Task.FromResult(client.Execute(request));             
 
-        ////}
-        ////public async Task<WebApiResponse> SendPhone(SendPhoneRequestDto model, string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.SendPhoneUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "SendPhoneInfo" + " | " + model.cardId + " | " + " | " + model.phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
 
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+                if (response.IsSuccessful)
+                {
+                    var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content); apiResponse.Data = Response;
+                    apiResponse.StatusCode = ResponseCodes.Success;
+                    apiResponse.Message = "Success";
 
-        ////}
-        ////public async Task<WebApiResponse> SendOtp(SendOtpRequestDto model, string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
+                    return apiResponse;
+                }
 
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.SendOtpUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "SendOtpInfo" + " | " + model.cardId + " | " + model.otp + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+                apiResponse.Data = response.Content;
+                apiResponse.StatusCode = ResponseCodes.InternalError;
 
-        ////}
-        ////public async Task<WebApiResponse> SendPin(SendPinRequestDto model, string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.SendPinUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "SendPinInfo" + " | " + model.cardId + " | " + model.pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "DisbursementAccountInfo" + " | " + model.disbAccountNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-        ////}
-        ////public async Task<WebApiResponse> ValidateCharge(ValidateChargeRequestDto model, string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.ValidateChargeUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "ValidateChargeInfo" + " | " + model.cardId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
 
-        ////}
+           }
+            ////public async Task<WebApiResponse> ChargeCard(ChargeCardRequestDto model, string email)
+            ////{
+            ////    var apiResponse = new WebApiResponse { };
+            ////    try
+            ////    {
+            ////        var requestobj = JsonConvert.SerializeObject(model);
+            ////        var client = new RestClient(_client.BaseAddress + _appSettings.ChargeCardUrlExtension);
+            ////        client.Timeout = -1;
+            ////        var request = new RestRequest(Method.POST);
+            ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+            ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
+            ////        request.AddHeader("Content-Type", "application/json");
+            ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+            ////        IRestResponse response = await Task.FromResult(client.Execute(request));
+            ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
+            ////        Response.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+            ////        apiResponse.Data = Response;
+            ////        return apiResponse;
+            ////    }
+            ////    catch (Exception ex)
+            ////    {
+            ////        _log4net.Error("Error occured" + " | " + "ChargeCardInfo" + " | " + model.cvv + " | " + " | " + model.expiryMonth + " | " + " | " + model.expiryYear + " | " + " | " + model.pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+            ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            ////    }
 
-    }
+            ////}
+            ////public async Task<WebApiResponse> SendPhone(SendPhoneRequestDto model, string email)
+            ////{
+            ////    var apiResponse = new WebApiResponse { };
+            ////    try
+            ////    {
+            ////        var requestobj = JsonConvert.SerializeObject(model);
+            ////        var client = new RestClient(_client.BaseAddress + _appSettings.SendPhoneUrlExtension);
+            ////        client.Timeout = -1;
+            ////        var request = new RestRequest(Method.POST);
+            ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+            ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
+            ////        request.AddHeader("Content-Type", "application/json");
+            ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+            ////        IRestResponse response = await Task.FromResult(client.Execute(request));
+            ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
+            ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+            ////        apiResponse.Data = Response;
+            ////        return apiResponse;
+            ////    }
+            ////    catch (Exception ex)
+            ////    {
+            ////        _log4net.Error("Error occured" + " | " + "SendPhoneInfo" + " | " + model.cardId + " | " + " | " + model.phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+            ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            ////    }
+
+            ////}
+            ////public async Task<WebApiResponse> SendOtp(SendOtpRequestDto model, string email)
+            ////{
+            ////    var apiResponse = new WebApiResponse { };
+
+            ////    try
+            ////    {
+            ////        var requestobj = JsonConvert.SerializeObject(model);
+            ////        var client = new RestClient(_client.BaseAddress + _appSettings.SendOtpUrlExtension);
+            ////        client.Timeout = -1;
+            ////        var request = new RestRequest(Method.POST);
+            ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+            ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
+            ////        request.AddHeader("Content-Type", "application/json");
+            ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+            ////        IRestResponse response = await Task.FromResult(client.Execute(request));
+            ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
+            ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+            ////        apiResponse.Data = Response;
+            ////        return apiResponse;
+            ////    }
+            ////    catch (Exception ex)
+            ////    {
+            ////        _log4net.Error("Error occured" + " | " + "SendOtpInfo" + " | " + model.cardId + " | " + model.otp + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+            ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            ////    }
+
+            ////}
+            ////public async Task<WebApiResponse> SendPin(SendPinRequestDto model, string email)
+            ////{
+            ////    var apiResponse = new WebApiResponse { };
+            ////    try
+            ////    {
+            ////        var requestobj = JsonConvert.SerializeObject(model);
+            ////        var client = new RestClient(_client.BaseAddress + _appSettings.SendPinUrlExtension);
+            ////        client.Timeout = -1;
+            ////        var request = new RestRequest(Method.POST);
+            ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+            ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
+            ////        request.AddHeader("Content-Type", "application/json");
+            ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+            ////        IRestResponse response = await Task.FromResult(client.Execute(request));
+            ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
+            ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+            ////        apiResponse.Data = Response;
+            ////        return apiResponse;
+            ////    }
+            ////    catch (Exception ex)
+            ////    {
+            ////        _log4net.Error("Error occured" + " | " + "SendPinInfo" + " | " + model.cardId + " | " + model.pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+            ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            ////    }
+
+            ////}
+            ////public async Task<WebApiResponse> ValidateCharge(ValidateChargeRequestDto model, string email)
+            ////{
+            ////    var apiResponse = new WebApiResponse { };
+            ////    try
+            ////    {
+            ////        var requestobj = JsonConvert.SerializeObject(model);
+            ////        var client = new RestClient(_client.BaseAddress + _appSettings.ValidateChargeUrlExtension);
+            ////        client.Timeout = -1;
+            ////        var request = new RestRequest(Method.POST);
+            ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+            ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
+            ////        request.AddHeader("Content-Type", "application/json");
+            ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+            ////        IRestResponse response = await Task.FromResult(client.Execute(request));
+            ////        var Response = JsonConvert.DeserializeObject<PaystackTokennizationResponseDto.PaystackTokennizationResponse>(response.Content);
+            ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+            ////        apiResponse.Data = Response;
+            ////        return apiResponse;
+            ////    }
+            ////    catch (Exception ex)
+            ////    {
+            ////        _log4net.Error("Error occured" + " | " + "ValidateChargeInfo" + " | " + model.cardId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+            ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            ////    }
+
+            ////}
+
+        }
 
 }

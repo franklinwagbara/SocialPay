@@ -30,6 +30,8 @@ namespace SocialPay.API.Controllers
         private readonly ISpectaRequestTicket _spectaRequestTicket;
         private readonly ISpectaConfirmTicket _spectaConfirmTicket;
         private readonly ISpectaOnboardingStages _spectaOnboardingStages;
+        private readonly ISpectaCreateIndividualCurrentAccount _spectaCreateIndividualCurrentAccount;
+        private readonly ISpectaSetDisbursementAccount _spectaSetDisbursementAccount;
         public SpectaController(ISpectaCustomerRegistration spectaCustomerRegistration,
             ISpectaSendEmailVerificationCode spectaSendEmailVerificationCode,
             ISpectaVerifyEmailConfirmationCode spectaVerifyEmailConfirmationCode,
@@ -42,6 +44,8 @@ namespace SocialPay.API.Controllers
             ISpectaRequestTicket spectaRequestTicket,
             ISpectaConfirmTicket spectaConfirmTicket,
             ISpectaOnboardingStages spectaOnboardingStages,
+            ISpectaCreateIndividualCurrentAccount spectaCreateIndividualCurrentAccount,
+            ISpectaSetDisbursementAccount spectaSetDisbursementAccount,
             INotification notification) : base(notification)
         {
             _spectaCustomerRegistration = spectaCustomerRegistration ?? throw new ArgumentNullException(nameof(spectaCustomerRegistration));
@@ -56,6 +60,8 @@ namespace SocialPay.API.Controllers
             _spectaConfirmTicket = spectaConfirmTicket ?? throw new ArgumentNullException(nameof(spectaConfirmTicket));
             _spectaRequestTicket = spectaRequestTicket ?? throw new ArgumentNullException(nameof(spectaRequestTicket));
             _spectaOnboardingStages = spectaOnboardingStages ?? throw new ArgumentNullException(nameof(spectaOnboardingStages));
+            _spectaCreateIndividualCurrentAccount = spectaCreateIndividualCurrentAccount ?? throw new ArgumentNullException(nameof(spectaCreateIndividualCurrentAccount));
+            _spectaSetDisbursementAccount = spectaSetDisbursementAccount ?? throw new ArgumentNullException(nameof(spectaSetDisbursementAccount));
         }
 
         [HttpPost]
@@ -100,6 +106,14 @@ namespace SocialPay.API.Controllers
         [HttpPost]
         [Route("confirm-ticket")]
         public async Task<IActionResult> ConfirmTicketAsyn([FromBody] ConfirmTicketRequestDto model) => Response(await _spectaConfirmTicket.ConfirmTicket(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("create-individual-current-account")]
+        public async Task<IActionResult> CreateIndividualCurrentAccountAsync([FromForm] CreateIndividualCurrentAccountRequestDto model) => Response(await _spectaCreateIndividualCurrentAccount.CreateIndividualCurrentAccount(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("set-disbursement-account")]
+        public async Task<IActionResult> DisbursementAccountAsync([FromBody] SetDisbursementAccountRequestDto model) => Response(await _spectaSetDisbursementAccount.SetDisbursementAccount(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
 
         [HttpPost]
         [Route("specta-onboarding-stages")]

@@ -20,8 +20,8 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
         Task<WebApiResponse> BusinessSegmentAllList(string email);
         Task<WebApiResponse> RequestTicket(RequestTicketDto model, string email);
         Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model, string email);
-        //Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model, string email);
-        //Task<WebApiResponse> DisbursementAccount(SetDisbursementAccountRequestDto model, string email);
+        Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model, string email);
+        Task<WebApiResponse> DisbursementAccount(SetDisbursementAccountRequestDto model, string email);
         //Task<WebApiResponse> ChargeCard(ChargeCardRequestDto model, string email);
         //Task<WebApiResponse> SendPhone(SendPhoneRequestDto model, string email);
         //Task<WebApiResponse> SendOtp(SendOtpRequestDto model, string email);

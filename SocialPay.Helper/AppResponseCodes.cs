@@ -64,6 +64,7 @@
         public const string InvalidInvoiceDate = "60";
         public const string AddOrrInformation = "61";
         public const string RequestTicket = "62";
+        public const string ConfirmTicket = "63";
     }
 
     public class SpectaProcessCodes
