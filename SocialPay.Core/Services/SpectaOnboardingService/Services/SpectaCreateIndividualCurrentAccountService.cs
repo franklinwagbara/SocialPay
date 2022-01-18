@@ -88,8 +88,8 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "CreateIndividualCurrentAccount" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
+                _log4net.Error("Error occured" + " | " + "CreateIndividualCurrentAccount" + " | " + ex + " | " + DateTime.Now);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed ", StatusCode = ResponseCodes.InternalError };
             }
         }
     }

@@ -63,27 +63,28 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         await _context.SetDisbursementAccountResponse.AddAsync(disbursementaccountresponse);
                        
                         if (checkregistered != null) { checkregistered.RegistrationStatus = SpectaProcessCodes.SetDisbursementAccount; }
+                       
                         await _context.SaveChangesAsync();
                        
                         if (request.ResponseCode != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data, StatusCode = ResponseCodes.Success };
                        
                         await transaction.CommitAsync();
                         
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.SetDisbursementAccount, Message = "Success", Data = request.Data };
+                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.SetDisbursementAccount, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _log4net.Error("Error occured" + " | " + "SetDisbursementAccount" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex.Message };
+                        _log4net.Error("Error occured" + " | " + "SetDisbursementAccount" + " | " + ex + " | " + DateTime.Now);
+                        return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "SetDisbursementAccount" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex.Message };
+                _log4net.Error("Error occured" + " | " + "SetDisbursementAccount" + " | " + ex + " | " + DateTime.Now);
+                return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
             }
         }
     }

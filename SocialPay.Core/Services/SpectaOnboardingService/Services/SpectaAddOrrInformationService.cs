@@ -38,7 +38,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == email);
 
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.VerifyBvnPhoneConfirmationCode)
-                            return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Add-Orr-Information" };
+                            return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Add-Orr-Information", StatusCode = ResponseCodes.Badrequest};
                       
                         var requestmodel = _mapper.Map<AddOrrInformationRequest>(model);
                         await _context.AddOrrInformationRequest.AddAsync(requestmodel);
@@ -47,6 +47,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;
+
                         var response = (SpectaResponseWithObjectResultMessage.SpectaResponseDto)request.Data;
 
                         var addorrinforesponse = new AddOrrInformationResponse();
@@ -68,17 +69,17 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         await _context.SaveChangesAsync();
                        
                         if (request.ResponseCode != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data, StatusCode = ResponseCodes.Badrequest };
                         
                         await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.AddOrrInformation, Message = "Success", Data = request.Data };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.AddOrrInformation, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
                         _log4net.Error("Error occured" + " | " + "AddOrrInformation" + " | " + ex + " | " + DateTime.Now);
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex.Message };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed ", Data = "Request failed", StatusCode = ResponseCodes.InternalError };
 
                     }
                 }
@@ -86,7 +87,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "AddOrrInformation" + " | " + ex + " | " + DateTime.Now);
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex.Message };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed ", Data = "Request failed", StatusCode = ResponseCodes.InternalError };
 
             }
         }

@@ -71,7 +71,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         }
                        
                         await _context.ConfirmTicketResponse.AddAsync(confirmticketresponse);
+                       
                         if (checkregistered != null) { checkregistered.RegistrationStatus = SpectaProcessCodes.ConfirmTicket; }
+                        
                         await _context.SaveChangesAsync();
                        
                         if (request.ResponseCode != AppResponseCodes.Success)
@@ -85,14 +87,16 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     {
                         await transaction.RollbackAsync();
                         _log4net.Error("Error occured" + " | " + "ConfirmTicket" + " | " + ex + " | " + DateTime.Now);
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed ", StatusCode = ResponseCodes.InternalError };
                     }
                 }
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "ConfirmTicket" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex.Message, StatusCode = ResponseCodes.InternalError };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
             }
         }
     }

@@ -413,7 +413,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured. Please try again", Data = "Internal error occured. Please try again", StatusCode = ResponseCodes.InternalError };
             }
 
         }

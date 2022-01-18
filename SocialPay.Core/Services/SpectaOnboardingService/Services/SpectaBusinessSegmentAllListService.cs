@@ -19,21 +19,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 
         public async Task<WebApiResponse> BusinessSegmentAllList(string email)
         {
-            var response = await _spectaOnboardingService.BusinessSegmentAllList(email);
-
-            try
-            {
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                _log4net.Error("Error occured" + " | " + "BusinessSegmentAllList" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
-                return response;
-
-            }
-
+            return await _spectaOnboardingService.BusinessSegmentAllList(email);
         }
     }
 }

@@ -60,24 +60,30 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                             requestticketresponse.message = response.error.message;
                             requestticketresponse.validationErrors = response.error.validationErrors;
                         }
+                       
                         if (response.result != null)
                         {
                             requestticketresponse.shortDescription = response.result.shortDescription;
                             requestticketresponse.requestId = response.result.requestId;
                         }
                         await _context.RequestTicketResponse.AddAsync(requestticketresponse);
+                       
                         if (checkregistered != null) { checkregistered.RegistrationStatus = SpectaProcessCodes.RequestTicket; }
                         await _context.SaveChangesAsync();
+                       
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", Data = request.Data, StatusCode = ResponseCodes.InternalError };
+                       
                         await transaction.CommitAsync();
+                        
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
                         _log4net.Error("Error occured" + " | " + "RequestTicket" + " | " + ex + " | " + DateTime.Now);
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", StatusCode = ResponseCodes.InternalError };
                     }
                 }
             }
