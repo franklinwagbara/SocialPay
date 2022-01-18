@@ -23,6 +23,15 @@ namespace SocialPay.Helper.AutoMapperSettings
 
             CreateMap<ProductInventory, ProductInventoryDto>();
             CreateMap<ProductInventoryDto, ProductInventory>();
+
+            CreateMap<AddOrrInformationRequest, AddOrrInformationRequestDto>();
+            CreateMap<AddOrrInformationRequestDto, AddOrrInformationRequest>();
+
+            CreateMap<ConfirmTicketRequest, ConfirmTicketRequestDto>();
+            CreateMap<ConfirmTicketRequestDto, ConfirmTicketRequest>();
+
+            CreateMap<RequestTicketRequest, RequestTicketDto>();
+            CreateMap<RequestTicketDto, RequestTicketRequest>();
         }
     }
 }

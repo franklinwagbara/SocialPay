@@ -63,6 +63,7 @@
         public const string TransactionPinDoesNotExit = "59";
         public const string InvalidInvoiceDate = "60";
         public const string AddOrrInformation = "61";
+        public const string RequestTicket = "62";
     }
 
     public class SpectaProcessCodes

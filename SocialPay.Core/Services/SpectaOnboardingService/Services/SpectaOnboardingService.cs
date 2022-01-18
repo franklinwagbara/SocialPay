@@ -391,7 +391,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
                 request.AddHeader("Abp.TenantId", _spectaOnboardingSettings.SpectaRegistrationTenantId);
                 request.AddHeader("Content-Type", "application/json");
-                IRestResponse response = await Task.FromResult(client.Execute(request));              
+                IRestResponse response = await Task.FromResult(client.Execute(request));
+
+                apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
 
                 if (response.IsSuccessful)
                 {
@@ -416,60 +418,87 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 
         }
 
-        ////public async Task<WebApiResponse> RequestTicket(RequestTicketDto model, string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.RequestTicketUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<RequestTicketResponseDto.RequestTicketResponse>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "RequestTicketInfo" + " | " + model.accountNumber + " | " + model.bankId + " | " + model.customerId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+        public async Task<WebApiResponse> RequestTicket(RequestTicketDto model, string email)
+        {
+            var apiResponse = new WebApiResponse { };
+            try
+            {
+                var requestobj = JsonConvert.SerializeObject(model);
+                var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.RequestTicketUrlExtension}");
+                client.Timeout = -1;
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+                request.AddHeader("Abp.TenantId", _spectaOnboardingSettings.SpectaRegistrationTenantId);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+                IRestResponse response = await Task.FromResult(client.Execute(request));               
 
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+                apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
 
-        ////}
-        ////public async Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model, string email)
-        ////{
-        ////    var apiResponse = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        var requestobj = JsonConvert.SerializeObject(model);
-        ////        var client = new RestClient(_client.BaseAddress + _appSettings.ConfirmTicketUrlExtension);
-        ////        client.Timeout = -1;
-        ////        var request = new RestRequest(Method.POST);
-        ////        request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
-        ////        request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-        ////        request.AddHeader("Content-Type", "application/json");
-        ////        request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
-        ////        IRestResponse response = await Task.FromResult(client.Execute(request));
-        ////        var Response = JsonConvert.DeserializeObject<ConfirmTicketResponseDto.ConfirmTicketResponse>(response.Content);
-        ////        apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-        ////        apiResponse.Data = Response;
-        ////        return apiResponse;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + "ConfirmTicketInfo" + " | " + model.accountNumber + " | " + model.bankId + " | " + model.customerId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                if (response.IsSuccessful)
+                {
+                    var Response = JsonConvert.DeserializeObject<RequestTicketResponseDto.RequestTicketResponse>(response.Content);
+                    apiResponse.Data = Response;
+                    apiResponse.StatusCode = ResponseCodes.Success;
+                    apiResponse.Message = "Success";
 
-        ////        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
-        ////    }
+                    return apiResponse;
+                }
 
-        ////}
+                apiResponse.Data = response.Content;
+                apiResponse.StatusCode = ResponseCodes.InternalError;
+
+                return apiResponse;
+
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "RequestTicketInfo" + " | " + model.accountNumber + " | " + model.bankId + " | " + model.customerId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
+          }
+        public async Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model, string email)
+        {
+            var apiResponse = new WebApiResponse { };
+            try
+            {
+                var requestobj = JsonConvert.SerializeObject(model);
+                var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.ConfirmTicketUrlExtension}");
+                client.Timeout = -1;
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+                request.AddHeader("Abp.TenantId", _spectaOnboardingSettings.SpectaRegistrationTenantId);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
+                IRestResponse response = await Task.FromResult(client.Execute(request));              
+
+                apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
+
+                if (response.IsSuccessful)
+                {
+                    var Response = JsonConvert.DeserializeObject<ConfirmTicketResponseDto.ConfirmTicketResponse>(response.Content);
+                    apiResponse.Data = Response;
+                    apiResponse.StatusCode = ResponseCodes.Success;
+                    apiResponse.Message = "Success";
+
+                    return apiResponse;
+                }
+
+                apiResponse.Data = response.Content;
+                apiResponse.StatusCode = ResponseCodes.InternalError;
+
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + "ConfirmTicketInfo" + " | " + model.accountNumber + " | " + model.bankId + " | " + model.customerId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+            }
+
+        }
         ////public async Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model, string email)
         ////{
         ////    var apiResponse = new WebApiResponse { };

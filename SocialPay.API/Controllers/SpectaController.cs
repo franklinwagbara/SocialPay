@@ -27,6 +27,9 @@ namespace SocialPay.API.Controllers
         private readonly ISpectaLoggedInCustomerProfile _spectaLoggedInCustomerProfile;
         private readonly ISpectaAddOrrInformation _spectaAddOrrInformation;
         private readonly ISpectaBusinessSegmentAllList _spectaBusinessSegmentAllList;
+        private readonly ISpectaRequestTicket _spectaRequestTicket;
+        private readonly ISpectaConfirmTicket _spectaConfirmTicket;
+        private readonly ISpectaOnboardingStages _spectaOnboardingStages;
         public SpectaController(ISpectaCustomerRegistration spectaCustomerRegistration,
             ISpectaSendEmailVerificationCode spectaSendEmailVerificationCode,
             ISpectaVerifyEmailConfirmationCode spectaVerifyEmailConfirmationCode,
@@ -36,6 +39,9 @@ namespace SocialPay.API.Controllers
             ISpectaLoggedInCustomerProfile spectaLoggedInCustomerProfile,
             ISpectaAddOrrInformation spectaAddOrrInformation,
             ISpectaBusinessSegmentAllList spectaBusinessSegmentAllList,
+            ISpectaRequestTicket spectaRequestTicket,
+            ISpectaConfirmTicket spectaConfirmTicket,
+            ISpectaOnboardingStages spectaOnboardingStages,
             INotification notification) : base(notification)
         {
             _spectaCustomerRegistration = spectaCustomerRegistration ?? throw new ArgumentNullException(nameof(spectaCustomerRegistration));
@@ -47,6 +53,9 @@ namespace SocialPay.API.Controllers
             _spectaLoggedInCustomerProfile = spectaLoggedInCustomerProfile ?? throw new ArgumentNullException(nameof(spectaLoggedInCustomerProfile));
             _spectaAddOrrInformation = spectaAddOrrInformation ?? throw new ArgumentNullException(nameof(spectaAddOrrInformation));
             _spectaBusinessSegmentAllList = spectaBusinessSegmentAllList ?? throw new ArgumentNullException(nameof(spectaBusinessSegmentAllList));
+            _spectaConfirmTicket = spectaConfirmTicket ?? throw new ArgumentNullException(nameof(spectaConfirmTicket));
+            _spectaRequestTicket = spectaRequestTicket ?? throw new ArgumentNullException(nameof(spectaRequestTicket));
+            _spectaOnboardingStages = spectaOnboardingStages ?? throw new ArgumentNullException(nameof(spectaOnboardingStages));
         }
 
         [HttpPost]
@@ -83,5 +92,17 @@ namespace SocialPay.API.Controllers
         [HttpGet]
         [Route("business-segment-all-list")]
         public async Task<IActionResult> BusinessSegmentAllListAsync() => Response(await _spectaBusinessSegmentAllList.BusinessSegmentAllList(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("request-ticket")]
+        public async Task<IActionResult> RequestTicketAsync([FromBody] RequestTicketDto model) => Response(await _spectaRequestTicket.RequestTicket(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("confirm-ticket")]
+        public async Task<IActionResult> ConfirmTicketAsyn([FromBody] ConfirmTicketRequestDto model) => Response(await _spectaConfirmTicket.ConfirmTicket(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("specta-onboarding-stages")]
+        public async Task<IActionResult> OnboardingStagesAsync([FromBody] OnboardingStageRequestDto model) => Response(await _spectaOnboardingStages.OnboardingStages(model).ConfigureAwait(false));
     }
 }
