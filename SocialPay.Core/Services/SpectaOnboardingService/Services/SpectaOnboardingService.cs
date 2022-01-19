@@ -644,7 +644,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 
                 if (response.IsSuccessful)
                 {
-                    var Response = JsonConvert.DeserializeObject<BankBranchDto>(response.Content);
+                    var Response = JsonConvert.DeserializeObject<BankBranchDto.BankBranchDtoResponse>(response.Content);
                     
                     apiResponse.Data = Response;
                     apiResponse.StatusCode = ResponseCodes.Success;
@@ -685,7 +685,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 
                 if (response.IsSuccessful)
                 {
-                    var Response = JsonConvert.DeserializeObject<AvailableBanksDto>(response.Content);
+                    var Response = JsonConvert.DeserializeObject<AvailableBanksDto.AvailableBanksDtoResponse>(response.Content);
 
                     apiResponse.Data = Response;
                     apiResponse.StatusCode = ResponseCodes.Success;
