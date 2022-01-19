@@ -35,8 +35,8 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     try
                     {
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == email);
-                        
-                        if (checkregistered.RegistrationStatus != SpectaProcessCodes.ConfirmTicket && checkregistered.RegistrationStatus != SpectaProcessCodes.CreateIndividualCurrentAccount)
+
+                        if (checkregistered.RegistrationStatus != SpectaProcessCodes.ConfirmTicket)
                             return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Set Disbursement Account" };
                         
                         var requestmodel = _mapper.Map<SetDisbursementAccountRequest>(model);

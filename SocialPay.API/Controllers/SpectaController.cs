@@ -97,6 +97,7 @@ namespace SocialPay.API.Controllers
         [HttpGet]
         [Route("logged-in-customer-profile")]
         public async Task<IActionResult> LoggedInCustomerProfileAsync() => Response(await _spectaLoggedInCustomerProfile.LoggedInCustomerProfile(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+       
         [HttpPost]
         [Route("add-orr-information")]
         public async Task<IActionResult> AddOrrInformationAsync([FromBody] AddOrrInformationRequestDto model) => Response(await _spectaAddOrrInformation.AddOrrInformation(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
