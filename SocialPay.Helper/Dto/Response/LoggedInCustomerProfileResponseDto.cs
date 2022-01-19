@@ -16,31 +16,23 @@ namespace SocialPay.Helper.Dto.Response
             public string userName { get; set; }
             public string emailAddress { get; set; }
             public bool hasTokenizedCard { get; set; }
-            public double loanLimit { get; set; }
+            public object loanLimit { get; set; }
             public string registrationStage { get; set; }
-            public double remainingLimit { get; set; }
-            public DateTime remainingLimitExpiryDate { get; set; }
+            public object remainingLimit { get; set; }
+            public object remainingLimitExpiryDate { get; set; }
             public DateTime applicableForLimitOn { get; set; }
-            public string disbursementAccountNumber { get; set; }
+            public object disbursementAccountNumber { get; set; }
             public string userType { get; set; }
             public List<object> purchases { get; set; }
             public int id { get; set; }
         }
 
-        public class Error
-        {
-            public int code { get; set; }
-            public string message { get; set; }
-            public string details { get; set; }
-            public string validationErrors { get; set; }
-        }
-
         public class LoggedInCustomerProfileResponse
         {
             public Result result { get; set; }
-            public string targetUrl { get; set; }
+            public object targetUrl { get; set; }
             public bool success { get; set; }
-            public Error error { get; set; }
+            public object error { get; set; }
             public bool unAuthorizedRequest { get; set; }
             public bool __abp { get; set; }
         }

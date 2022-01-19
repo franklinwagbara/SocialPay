@@ -32,6 +32,8 @@ namespace SocialPay.API.Controllers
         private readonly ISpectaOnboardingStages _spectaOnboardingStages;
         private readonly ISpectaCreateIndividualCurrentAccount _spectaCreateIndividualCurrentAccount;
         private readonly ISpectaSetDisbursementAccount _spectaSetDisbursementAccount;
+        private readonly ISpectaBankBranch _spectabankbranch;
+        private readonly ISpectaAvailableBanks _spectaavailablebanks;
         public SpectaController(ISpectaCustomerRegistration spectaCustomerRegistration,
             ISpectaSendEmailVerificationCode spectaSendEmailVerificationCode,
             ISpectaVerifyEmailConfirmationCode spectaVerifyEmailConfirmationCode,
@@ -46,6 +48,8 @@ namespace SocialPay.API.Controllers
             ISpectaOnboardingStages spectaOnboardingStages,
             ISpectaCreateIndividualCurrentAccount spectaCreateIndividualCurrentAccount,
             ISpectaSetDisbursementAccount spectaSetDisbursementAccount,
+            ISpectaBankBranch spectaBankBranch,
+            ISpectaAvailableBanks spectaAvailableBanks,
             INotification notification) : base(notification)
         {
             _spectaCustomerRegistration = spectaCustomerRegistration ?? throw new ArgumentNullException(nameof(spectaCustomerRegistration));
@@ -62,6 +66,8 @@ namespace SocialPay.API.Controllers
             _spectaOnboardingStages = spectaOnboardingStages ?? throw new ArgumentNullException(nameof(spectaOnboardingStages));
             _spectaCreateIndividualCurrentAccount = spectaCreateIndividualCurrentAccount ?? throw new ArgumentNullException(nameof(spectaCreateIndividualCurrentAccount));
             _spectaSetDisbursementAccount = spectaSetDisbursementAccount ?? throw new ArgumentNullException(nameof(spectaSetDisbursementAccount));
+            _spectabankbranch = spectaBankBranch ?? throw new ArgumentNullException(nameof(spectaBankBranch));
+            _spectaavailablebanks = spectaAvailableBanks ?? throw new ArgumentNullException(nameof(spectaAvailableBanks));
         }
 
         [HttpPost]
@@ -118,5 +124,13 @@ namespace SocialPay.API.Controllers
         [HttpPost]
         [Route("specta-onboarding-stages")]
         public async Task<IActionResult> OnboardingStagesAsync([FromBody] OnboardingStageRequestDto model) => Response(await _spectaOnboardingStages.OnboardingStages(model).ConfigureAwait(false));
+
+        [HttpGet]
+        [Route("bank-branches")]
+        public async Task<IActionResult> BankBranchAsync() => Response(await _spectabankbranch.BankBranchList(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpGet]
+        [Route("available-banks")]
+        public async Task<IActionResult> AvailableBanks() => Response(await _spectaavailablebanks.AvailableBanksList(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
     }
 }

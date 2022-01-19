@@ -1,4 +1,5 @@
 ﻿using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.Collections.Generic;
@@ -20,18 +21,19 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
         public async Task<WebApiResponse> LoggedInCustomerProfile(string email)
         {
 
-            var response = await _spectaOnboardingService.LoggedInCustomerProfile(email);
-
             try
             {
-                return response;
+                return await _spectaOnboardingService.LoggedInCustomerProfile(email);
 
             }
             catch (Exception ex)
             {
                 _log4net.Error("Error occured" + " | " + "LoggedIn Customer Profile" + " | " + ex + " | " + DateTime.Now);
 
-                return response;
+                return new WebApiResponse
+                {
+                    ResponseCode = AppResponseCodes.InternalError, Data = "Internal error occured"
+                };
             }
         }
     }

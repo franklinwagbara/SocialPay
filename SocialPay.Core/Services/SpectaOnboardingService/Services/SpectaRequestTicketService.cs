@@ -36,7 +36,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     {
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == email);
 
-                        if (checkregistered.RegistrationStatus != AppResponseCodes.AddOrrInformation)
+                        if (checkregistered.RegistrationStatus != SpectaProcessCodes.AddOrrInformation)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Processing stage is not Request Ticket", StatusCode = ResponseCodes.InternalError };
                       
                         var requestmodel = _mapper.Map<RequestTicketRequest>(model);
@@ -46,6 +46,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;
+
                         var response = (RequestTicketResponseDto.RequestTicketResponse)request.Data;
 
                         var requestticketresponse = new RequestTicketResponse();
@@ -89,8 +90,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "RequestTicket" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex.Message, StatusCode = ResponseCodes.InternalError };
+                _log4net.Error("Error occured" + " | " + "RequestTicket" + " | " + ex + " | " + DateTime.Now);
+               
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed ", StatusCode = ResponseCodes.InternalError };
             }
         }
     }

@@ -226,6 +226,8 @@ namespace SocialPay.API
             services.AddScoped<ISpectaOnboardingStages, SpectaOnboardingStagesService>();
             services.AddScoped<ISpectaCreateIndividualCurrentAccount, SpectaCreateIndividualCurrentAccountService>();
             services.AddScoped<ISpectaSetDisbursementAccount, SpectaSetDisbursementAccountService>();
+            services.AddScoped<ISpectaBankBranch, SpectaBankBranchService>();
+            services.AddScoped<ISpectaAvailableBanks, SpectaAvailableBanksService>();
             // services.AddScoped<SpectaOnboardingService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
             services.AddScoped<TransactionPinSetup>();

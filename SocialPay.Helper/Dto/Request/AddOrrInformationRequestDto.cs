@@ -6,7 +6,6 @@ namespace SocialPay.Helper.Dto.Request
 {
     public class AddOrrInformationRequestDto
     {
-
         public int maritalStatus { get; set; }
         public int natureOfIncome { get; set; }
         public string incomeSource { get; set; }

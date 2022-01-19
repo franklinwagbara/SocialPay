@@ -37,7 +37,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     {
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == email);
 
-                        if (checkregistered.RegistrationStatus != AppResponseCodes.RequestTicket)
+                        if (checkregistered.RegistrationStatus != SpectaProcessCodes.RequestTicket)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Processing stage is not Confirm Ticket", StatusCode = ResponseCodes.InternalError };
                         
                         var requestmodel = _mapper.Map<ConfirmTicketRequest>(model);

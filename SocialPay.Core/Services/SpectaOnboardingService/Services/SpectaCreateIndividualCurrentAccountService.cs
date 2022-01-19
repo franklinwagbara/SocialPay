@@ -36,7 +36,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     {
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == email);
                        
-                        if (checkregistered.RegistrationStatus != AppResponseCodes.ConfirmTicket)
+                        if (checkregistered.RegistrationStatus != SpectaProcessCodes.ConfirmTicket)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Processing stage is not Create Individual Current Account", StatusCode = ResponseCodes.InternalError };
                        
                         var requestmodel = _mapper.Map<CreateIndividualCurrentAccountRequest>(model);

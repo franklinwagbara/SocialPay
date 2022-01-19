@@ -35,6 +35,9 @@ namespace SocialPay.Helper.AutoMapperSettings
 
             CreateMap<SetDisbursementAccountRequest, SetDisbursementAccountRequestDto>();
             CreateMap<SetDisbursementAccountRequestDto, SetDisbursementAccountRequest>();
+
+            CreateMap<CreateIndividualCurrentAccountRequest, CreateIndividualCurrentAccountRequestDto>();
+            CreateMap<CreateIndividualCurrentAccountRequestDto, CreateIndividualCurrentAccountRequest>();
         }
     }
 }
