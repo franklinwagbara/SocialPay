@@ -63,6 +63,8 @@
         public const string TransactionPinDoesNotExit = "59";
         public const string InvalidInvoiceDate = "60";
         public const string AddOrrInformation = "61";
+        public const string RequestTicket = "62";
+        public const string ConfirmTicket = "63";
     }
 
     public class SpectaProcessCodes
@@ -75,16 +77,14 @@
         public const string AddOrrInformation = "06";
         public const string RequestTicket = "07";
         public const string ConfirmTicket = "08";
-        public const string CreateIndividualCurrentAccount = "09";
-        public const string SetDisbursementAccount = "10";
-        public const string ChargeCard = "11";
-        public const string SendPhone = "12";
-        public const string SendOtp = "13";
-        public const string SendPin = "14";
-        public const string ValidateCharge = "15";
-        public const string Failed = "16";
+        public const string SetDisbursementAccount = "09";
+        public const string ChargeCard = "10";
+        public const string SendPhone = "11";
+        public const string SendOtp = "12";
+        public const string SendPin = "13";
+        public const string ValidateCharge = "14";
+        public const string Failed = "15";
         public const string success = "00";
-
     }
 
 

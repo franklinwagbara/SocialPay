@@ -98,5 +98,13 @@ namespace SocialPay.Domain
         public DbSet<VerifyBvnPhoneConfirmationCodeResponse> VerifyBvnPhoneConfirmationCodeResponse { get; set; }
         public DbSet<AddOrrInformationRequest> AddOrrInformationRequest { get; set; }
         public DbSet<AddOrrInformationResponse> AddOrrInformationResponse { get; set; }
+        public DbSet<RequestTicketRequest> RequestTicketRequest { get; set; }
+        public DbSet<RequestTicketResponse> RequestTicketResponse { get; set; }
+        public DbSet<ConfirmTicketRequest> ConfirmTicketRequest { get; set; }
+        public DbSet<ConfirmTicketResponse> ConfirmTicketResponse { get; set; }
+        public DbSet<CreateIndividualCurrentAccountRequest> CreateIndividualCurrentAccountRequest { get; set; }
+        public DbSet<CreateIndividualCurrentAccountResponse> CreateIndividualCurrentAccountResponse { get; set; }
+        public DbSet<SetDisbursementAccountRequest> SetDisbursementAccountRequest { get; set; }
+        public DbSet<SetDisbursementAccountResponse> SetDisbursementAccountResponse { get; set; }
     }
 }

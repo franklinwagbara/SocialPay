@@ -27,6 +27,13 @@ namespace SocialPay.API.Controllers
         private readonly ISpectaLoggedInCustomerProfile _spectaLoggedInCustomerProfile;
         private readonly ISpectaAddOrrInformation _spectaAddOrrInformation;
         private readonly ISpectaBusinessSegmentAllList _spectaBusinessSegmentAllList;
+        private readonly ISpectaRequestTicket _spectaRequestTicket;
+        private readonly ISpectaConfirmTicket _spectaConfirmTicket;
+        private readonly ISpectaOnboardingStages _spectaOnboardingStages;
+        private readonly ISpectaCreateIndividualCurrentAccount _spectaCreateIndividualCurrentAccount;
+        private readonly ISpectaSetDisbursementAccount _spectaSetDisbursementAccount;
+        private readonly ISpectaBankBranch _spectabankbranch;
+        private readonly ISpectaAvailableBanks _spectaavailablebanks;
         public SpectaController(ISpectaCustomerRegistration spectaCustomerRegistration,
             ISpectaSendEmailVerificationCode spectaSendEmailVerificationCode,
             ISpectaVerifyEmailConfirmationCode spectaVerifyEmailConfirmationCode,
@@ -36,6 +43,13 @@ namespace SocialPay.API.Controllers
             ISpectaLoggedInCustomerProfile spectaLoggedInCustomerProfile,
             ISpectaAddOrrInformation spectaAddOrrInformation,
             ISpectaBusinessSegmentAllList spectaBusinessSegmentAllList,
+            ISpectaRequestTicket spectaRequestTicket,
+            ISpectaConfirmTicket spectaConfirmTicket,
+            ISpectaOnboardingStages spectaOnboardingStages,
+            ISpectaCreateIndividualCurrentAccount spectaCreateIndividualCurrentAccount,
+            ISpectaSetDisbursementAccount spectaSetDisbursementAccount,
+            ISpectaBankBranch spectaBankBranch,
+            ISpectaAvailableBanks spectaAvailableBanks,
             INotification notification) : base(notification)
         {
             _spectaCustomerRegistration = spectaCustomerRegistration ?? throw new ArgumentNullException(nameof(spectaCustomerRegistration));
@@ -47,6 +61,13 @@ namespace SocialPay.API.Controllers
             _spectaLoggedInCustomerProfile = spectaLoggedInCustomerProfile ?? throw new ArgumentNullException(nameof(spectaLoggedInCustomerProfile));
             _spectaAddOrrInformation = spectaAddOrrInformation ?? throw new ArgumentNullException(nameof(spectaAddOrrInformation));
             _spectaBusinessSegmentAllList = spectaBusinessSegmentAllList ?? throw new ArgumentNullException(nameof(spectaBusinessSegmentAllList));
+            _spectaConfirmTicket = spectaConfirmTicket ?? throw new ArgumentNullException(nameof(spectaConfirmTicket));
+            _spectaRequestTicket = spectaRequestTicket ?? throw new ArgumentNullException(nameof(spectaRequestTicket));
+            _spectaOnboardingStages = spectaOnboardingStages ?? throw new ArgumentNullException(nameof(spectaOnboardingStages));
+            _spectaCreateIndividualCurrentAccount = spectaCreateIndividualCurrentAccount ?? throw new ArgumentNullException(nameof(spectaCreateIndividualCurrentAccount));
+            _spectaSetDisbursementAccount = spectaSetDisbursementAccount ?? throw new ArgumentNullException(nameof(spectaSetDisbursementAccount));
+            _spectabankbranch = spectaBankBranch ?? throw new ArgumentNullException(nameof(spectaBankBranch));
+            _spectaavailablebanks = spectaAvailableBanks ?? throw new ArgumentNullException(nameof(spectaAvailableBanks));
         }
 
         [HttpPost]
@@ -76,6 +97,7 @@ namespace SocialPay.API.Controllers
         [HttpGet]
         [Route("logged-in-customer-profile")]
         public async Task<IActionResult> LoggedInCustomerProfileAsync() => Response(await _spectaLoggedInCustomerProfile.LoggedInCustomerProfile(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+       
         [HttpPost]
         [Route("add-orr-information")]
         public async Task<IActionResult> AddOrrInformationAsync([FromBody] AddOrrInformationRequestDto model) => Response(await _spectaAddOrrInformation.AddOrrInformation(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
@@ -83,5 +105,33 @@ namespace SocialPay.API.Controllers
         [HttpGet]
         [Route("business-segment-all-list")]
         public async Task<IActionResult> BusinessSegmentAllListAsync() => Response(await _spectaBusinessSegmentAllList.BusinessSegmentAllList(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("request-ticket")]
+        public async Task<IActionResult> RequestTicketAsync([FromBody] RequestTicketDto model) => Response(await _spectaRequestTicket.RequestTicket(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("confirm-ticket")]
+        public async Task<IActionResult> ConfirmTicketAsyn([FromBody] ConfirmTicketRequestDto model) => Response(await _spectaConfirmTicket.ConfirmTicket(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("create-individual-current-account")]
+        public async Task<IActionResult> CreateIndividualCurrentAccountAsync([FromForm] CreateIndividualCurrentAccountRequestDto model) => Response(await _spectaCreateIndividualCurrentAccount.CreateIndividualCurrentAccount(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("set-disbursement-account")]
+        public async Task<IActionResult> DisbursementAccountAsync([FromBody] SetDisbursementAccountRequestDto model) => Response(await _spectaSetDisbursementAccount.SetDisbursementAccount(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpPost]
+        [Route("specta-onboarding-stages")]
+        public async Task<IActionResult> OnboardingStagesAsync([FromBody] OnboardingStageRequestDto model) => Response(await _spectaOnboardingStages.OnboardingStages(model).ConfigureAwait(false));
+
+        [HttpGet]
+        [Route("bank-branches")]
+        public async Task<IActionResult> BankBranchAsync() => Response(await _spectabankbranch.BankBranchList(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+
+        [HttpGet]
+        [Route("available-banks")]
+        public async Task<IActionResult> AvailableBanks() => Response(await _spectaavailablebanks.AvailableBanksList(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
     }
 }

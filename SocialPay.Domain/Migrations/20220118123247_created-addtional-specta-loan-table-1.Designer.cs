@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialPay.Domain;
 
 namespace SocialPay.Domain.Migrations
 {
     [DbContext(typeof(SocialPayDbContext))]
-    partial class SocialPayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220118123247_created-addtional-specta-loan-table-1")]
+    partial class createdaddtionalspectaloantable1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -705,84 +707,6 @@ namespace SocialPay.Domain.Migrations
                     b.HasKey("ConfirmTicketResponseId");
 
                     b.ToTable("ConfirmTicketResponse");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.CreateIndividualCurrentAccountRequest", b =>
-                {
-                    b.Property<long>("CreateIndividualCurrentAccountRequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("BranchCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CountryOfBirth")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("IdentityCard")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OtherNationality")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Passport")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Signature")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaxId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UtilityBill")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CreateIndividualCurrentAccountRequestId");
-
-                    b.ToTable("CreateIndividualCurrentAccountRequest");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.CreateIndividualCurrentAccountResponse", b =>
-                {
-                    b.Property<long>("CreateIndividualCurrentAccountResponseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("__abp")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("code")
-                        .HasColumnType("int");
-
-                    b.Property<string>("details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("openedCurrentAccount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("success")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("unAuthorizedRequest")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("validationErrors")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CreateIndividualCurrentAccountResponseId");
-
-                    b.ToTable("CreateIndividualCurrentAccountResponse");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.CreateWalletResponse", b =>
@@ -3401,60 +3325,6 @@ namespace SocialPay.Domain.Migrations
                     b.HasKey("SendEmailVerificationCodeResponseId");
 
                     b.ToTable("SendEmailVerificationCodeResponse");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.SetDisbursementAccountRequest", b =>
-                {
-                    b.Property<long>("SetDisbursementAccountRequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("disbAccountNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SetDisbursementAccountRequestId");
-
-                    b.ToTable("SetDisbursementAccountRequest");
-                });
-
-            modelBuilder.Entity("SocialPay.Domain.Entities.SetDisbursementAccountResponse", b =>
-                {
-                    b.Property<long>("SetDisbursementAccountResponseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("__abp")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("code")
-                        .HasColumnType("int");
-
-                    b.Property<string>("details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("success")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("unAuthorizedRequest")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("validationErrors")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SetDisbursementAccountResponseId");
-
-                    b.ToTable("SetDisbursementAccountResponse");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.SingleDstvPayment", b =>

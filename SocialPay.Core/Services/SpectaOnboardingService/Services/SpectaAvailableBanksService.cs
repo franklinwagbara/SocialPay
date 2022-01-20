@@ -8,34 +8,36 @@ using System.Threading.Tasks;
 
 namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 {
-    public class SpectaLoggedInCustomerProfile : ISpectaLoggedInCustomerProfile
+    public class SpectaAvailableBanksService : ISpectaAvailableBanks
     {
         private readonly ISpectaOnBoarding _spectaOnboardingService;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaLoggedInCustomerProfile));
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaAvailableBanksService));
 
-        public SpectaLoggedInCustomerProfile(ISpectaOnBoarding spectaOnboardingService)
+        public SpectaAvailableBanksService(ISpectaOnBoarding spectaOnboardingService)
         {
             _spectaOnboardingService = spectaOnboardingService;
         }
 
-        public async Task<WebApiResponse> LoggedInCustomerProfile(string email)
+        public async Task<WebApiResponse> AvailableBanksList(string email)
         {
 
             try
             {
-                return await _spectaOnboardingService.LoggedInCustomerProfile(email);
+                return await _spectaOnboardingService.AvailableBanksList(email);
 
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "LoggedIn Customer Profile" + " | " + ex + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "AvailableBanksList" + " | " + ex + " | " + DateTime.Now);
 
-                return new WebApiResponse
+                return new WebApiResponse 
                 {
                     ResponseCode = AppResponseCodes.InternalError, Data = "Internal error occured"
                 };
+
             }
+
+
         }
     }
-
 }
