@@ -36,8 +36,9 @@ namespace SocialPay.API.Controllers
         [Route("available-loan-for-merchant")]
         public async Task<IActionResult> AvailableLoanForMerchant() => Response(await _loanEligibiltyService.MerchantEligibilty(User.GetSessionDetails().ClientId).ConfigureAwait(false));
 
+        [AllowAnonymous]
         [HttpGet]
-        [Route("loan-repayment-model")]
+        [Route("loan-repayment-details")]
         public async Task<IActionResult> LoanRepaymentModel() => Response(await _loanRepaymentService.GetRepaymentModel().ConfigureAwait(false));
 
         [HttpPost]
