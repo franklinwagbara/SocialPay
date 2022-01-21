@@ -102,7 +102,7 @@ namespace SocialPay.Core.Services.Account
 
                 if (validateUser.ResponseCode != AppResponseCodes.Success)
                 {
-                    _log4net.Info("BVN validation response" + " | " + signUpRequestDto.Email + " | " + signUpRequestDto.Bvn + " - "+ validateUser.Message + " - "+ DateTime.Now);
+                    _log4net.Info("BVN validation response" + " | " + signUpRequestDto.Email + " | " + signUpRequestDto.Bvn + " - " + validateUser.Message + " - " + DateTime.Now);
 
                     return new WebApiResponse { ResponseCode = validateUser.ResponseCode, Data = ResponseMessage.BvnValidation, Message = ResponseMessage.BvnValidation };
                 }
@@ -263,6 +263,48 @@ namespace SocialPay.Core.Services.Account
             }
         }
 
+        public async Task<string> SendWelcomeEmail(ClientAuthentication getuserInfo, EmailService _emailService)
+        {
+            var emailModal = new EmailRequestDto
+            {
+                Subject = "Merchant Signed Up Completed",
+                DestinationEmail = getuserInfo.Email,
+            };
+
+            var mailBuilder = new StringBuilder();
+            mailBuilder.AppendLine("<div>");
+            mailBuilder.AppendLine("<div style='width: 710px; padding: 5px 0 5px 0;'><img style='width: 98%; height: 350px; display: block; margin: 0 auto;' src=" + _appSettings.WebportalBaseUrl + _appSettings.WelcomeEmailImageExtensionPath + " +  alt='Logo'/>");
+            mailBuilder.AppendLine("<div class='text-left' style='background-color: #f0f3f6; width: 700px; min-height: 200px;'>");
+            mailBuilder.AppendLine("<div style='padding: 10px 30px 30px 30px;'>");
+            mailBuilder.AppendLine("Hello" + " <b>" + getuserInfo.FullName + "</b>," + "<br />");
+            mailBuilder.AppendLine("<br />");
+            mailBuilder.AppendLine("Thank you for signing up on to Social Pay. We so are excited to have you join us.<br />");
+            mailBuilder.AppendLine("<br />");
+            mailBuilder.AppendLine("Social pay is a secure and convenient solution which allows you make and receive payments easily through a simple link, whether you have a physical store or sell online.<br />");
+            mailBuilder.AppendLine("<br />");
+            mailBuilder.AppendLine("Here are some of the benefits you get on social pay:<br/>");
+            mailBuilder.AppendLine("<ul>");
+            mailBuilder.AppendLine("<li>Setting up is absolutely free.</li><br/>");
+            mailBuilder.AppendLine("<li>You can start receiving payments instantly, no stories!</li><br/>");
+            mailBuilder.AppendLine("<li>Your customers can spread out their payments using PayWithSpecta while you still get paid in full, so you get to sell even more.</li><br />");
+            mailBuilder.AppendLine("<li>All your transactions can be tracked and you can generate periodic reports</li>.<br/>");
+            mailBuilder.AppendLine("<li>Access to a free invoicing system which eliminates the challenge of creating invoices for your customers.</li><br />");
+            mailBuilder.AppendLine("</ul>");
+            mailBuilder.AppendLine("<b>" + getuserInfo.FullName + "</b>" + " you no longer need to shout to collect payments, we are here to make your life easier.<br />");
+            mailBuilder.AppendLine("<br />");
+            mailBuilder.AppendLine("Once again thank you for signing up, you will be hearing from me as we go on this journey with you.<br />");
+            mailBuilder.AppendLine("<br />");
+            mailBuilder.AppendLine("Your Friend");
+            mailBuilder.AppendLine("</div>");
+            mailBuilder.AppendLine("</div>");
+            mailBuilder.AppendLine("</div>");
+            emailModal.EmailBody = mailBuilder.ToString();
+            var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
+
+            return sendMail;
+        }
+
+
         public async Task<WebApiResponse> ConfirmSignUp(SignUpConfirmationRequestDto model)
         {
             try
@@ -275,7 +317,6 @@ namespace SocialPay.Core.Services.Account
                 //1At4AGMX7HISvClyC2/mfnc2e/hp6n3gI4yoH7tAej+H+4UQTmnnyG5Rklpqjl02fgj2zoMbDv+ipMNeyDdrTin+/mcQ38u8L+HizkA1CKpAvf1Pxryz+nRB6UbsxhgA
                 //var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.Pin == encryptPin
                 //&& x.Status == false && x.TokenSecret == model.Token);
-
 
                 var validateToken = await _context.PinRequest.SingleOrDefaultAsync(x => x.Pin == encryptPin
                 && x.Status == false);
@@ -338,39 +379,70 @@ namespace SocialPay.Core.Services.Account
                             eventLog.ClientAuthenticationId = getuserInfo.ClientAuthenticationId;
 
                             await _eventLogService.ActivityRequestLog(eventLog);
+
+                            var sendMail = await SendWelcomeEmail(getuserInfo, _emailService);
+
+                            if (sendMail == AppResponseCodes.Success)
+                            {
+                                _log4net.Info("Welcome email have been sent" + " | " + model.Pin + " | " + DateTime.Now);
+                            }
+                            else
+                            {
+                                _log4net.Info("Unable to send Welcome email" + " | " + model.Pin + " | " + DateTime.Now);
+
+                            }
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, Data = getuserInfo.Email };
+
+
+
+                            // _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
+
+                            // return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, Data = getuserInfo.Email };
+                        }
+
+                       else
+                        {
+                            await _distributedCache.RemoveAsync(cacheKey);
+                            userInfo.Email = getuserInfo.Email;
+                            userInfo.StatusCode = getuserInfo.StatusCode;
+                            serializedCustomerList = JsonConvert.SerializeObject(userInfo);
+                            redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+
+                            var options = new DistributedCacheEntryOptions()
+                            .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
+                            .SetSlidingExpiration(TimeSpan.FromMinutes(15));
+                            await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+
+                            eventLog.ModuleAccessed = EventLogProcess.MerchantSignUpConfirmation;
+                            eventLog.Description = "Merchant Signup confirmation was successful";
+                            eventLog.UserId = getuserInfo.Email;
+                            eventLog.ClientAuthenticationId = getuserInfo.ClientAuthenticationId;
+
+                            await _eventLogService.ActivityRequestLog(eventLog);
                             _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
+
+                            var sendMail = await SendWelcomeEmail(getuserInfo, _emailService);
+
+                            if (sendMail == AppResponseCodes.Success)
+                            {
+                                _log4net.Info("Welcome email have been sent" + " | " + model.Pin + " | " + DateTime.Now);
+                            }
+                            else
+                            {
+                                _log4net.Info("Unable to send Welcome email" + " | " + model.Pin + " | " + DateTime.Now);
+
+                            }
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, Data = getuserInfo.Email };
                         }
 
-                        await _distributedCache.RemoveAsync(cacheKey);
-                        userInfo.Email = getuserInfo.Email;
-                        userInfo.StatusCode = getuserInfo.StatusCode;
-                        serializedCustomerList = JsonConvert.SerializeObject(userInfo);
-                        redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
-
-                        var options = new DistributedCacheEntryOptions()
-                        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(30))
-                        .SetSlidingExpiration(TimeSpan.FromMinutes(15));
-                        await _distributedCache.SetAsync(cacheKey, redisCustomerList, options);
-
-                        await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
-
-                        eventLog.ModuleAccessed = EventLogProcess.MerchantSignUpConfirmation;
-                        eventLog.Description = "Merchant Signup confirmation was successful";
-                        eventLog.UserId = getuserInfo.Email;
-                        eventLog.ClientAuthenticationId = getuserInfo.ClientAuthenticationId;
-
-                        await _eventLogService.ActivityRequestLog(eventLog);
-
-                        _log4net.Info("Initiating confirm signup was successful" + " | " + model.Pin + " | " + DateTime.Now);
-
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = ResponseMessage.Success, Data = getuserInfo.Email };
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + "ConfirmSignup" + " | " + model.Pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        _log4net.Error("Error occured" + " | " + "ConfirmSignup" + " | " + model.Pin + " | " + ex + " | " + DateTime.Now);
 
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = ResponseMessage.InternalError };
@@ -442,7 +514,7 @@ namespace SocialPay.Core.Services.Account
                         var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
                         if (sendMail != AppResponseCodes.Success)
-                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = ResponseMessage.SendMailFailed};
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = ResponseMessage.SendMailFailed };
 
 
                         await transaction.CommitAsync();

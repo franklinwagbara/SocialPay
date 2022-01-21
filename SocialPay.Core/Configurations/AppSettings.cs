@@ -151,5 +151,7 @@
         public string CardTokenizationAuthorizationToken { get; set; }
         public string CreditBureauSearch_Crc { get; set; }
         public string TokenizationURL { get; set; }     
+        public string WelcomeEmailImageExtensionPath { get; set; }     
+        public string WebportalBaseUrl { get; set; }     
     }
 }
