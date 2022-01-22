@@ -732,9 +732,9 @@ namespace SocialPay.Core.Services.Products
                             // where pro.MerchantStoreId == stores.MerchantStoreId
                              join pc in _context.ProductCategories on pro.ProductCategoryId equals pc.ProductCategoryId
                              join pi in _context.ProductInventory on pro.ProductId equals pi.ProductId
-                             join proItem in _context.ProductItems on pro.ProductId equals proItem.ProductId
+                             //join proItem in _context.ProductItems on pro.ProductId equals proItem.ProductId
                             // where pro.MerchantStoreId == storeId
-                             where pro.MerchantStoreId == storeId && proItem.IsDeleted == false
+                             where pro.MerchantStoreId == storeId //&& proItem.IsDeleted == false
 
                              select new StoreProductsDetailsViewModel
                              {
@@ -940,9 +940,9 @@ namespace SocialPay.Core.Services.Products
                 storeDetail.StoreLogoUrl = storeblob.Uri.AbsoluteUri;
 
                 if (query.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail, StatusCode = ResponseCodes.Success };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" , StatusCode = ResponseCodes.RecordNotFound };
             }
             catch (Exception ex)
             {
