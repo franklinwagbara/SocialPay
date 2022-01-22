@@ -222,8 +222,8 @@ namespace SocialPay.Core.Services.Products
 
                             blobRequest.ImageDetail = productImages;
 
-                           // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
-                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId });
+                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
+                           // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId });
 
                             await _blobService.UploadProducts(blobRequest);
 
@@ -256,14 +256,18 @@ namespace SocialPay.Core.Services.Products
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError,
+                            Message = "Error occured while updating product" + " - " + ex
+                        };
                     }
                 }
 
             }
             catch (Exception ex)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError,
+                    Message = "Error occured while updating product" + " - " + ex
+                };
             }
         }
 
@@ -298,7 +302,7 @@ namespace SocialPay.Core.Services.Products
                 var productInventory = await _context.ProductInventory.SingleOrDefaultAsync(p => p.ProductId == productInventoryDto.ProductId);
 
                 if (productInventory == default)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product not found"}", StatusCode = ResponseCodes.RecordNotFound };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product not found"}", Data = "Product not found", StatusCode = ResponseCodes.RecordNotFound };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -326,7 +330,7 @@ namespace SocialPay.Core.Services.Products
 
                         await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product inventory was successfully updated"}", StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product inventory was successfully updated"}", Data = "Product inventory was successfully updated", StatusCode = ResponseCodes.Success };
 
                     }
                     catch (Exception ex)
