@@ -286,7 +286,7 @@ namespace SocialPay.Core.Services.Products
                 _context.Update(product);
                 await _context.SaveChangesAsync();
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product images was successfully removed"}", StatusCode = ResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product images was successfully removed"}", Data = "Product images was successfully removed", StatusCode = ResponseCodes.Success };
 
             }
             catch (Exception ex)
