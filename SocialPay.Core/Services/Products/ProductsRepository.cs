@@ -281,8 +281,8 @@ namespace SocialPay.Core.Services.Products
                 if (product == default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product image not found"}", StatusCode = ResponseCodes.RecordNotFound };
 
-               // product.IsDeleted = true;
-               // product.LastDateModified = DateTime.Now;
+                product.IsDeleted = true;
+                product.LastDateModified = DateTime.Now;
                 _context.Update(product);
                 await _context.SaveChangesAsync();
 
