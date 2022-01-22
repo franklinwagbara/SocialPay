@@ -167,6 +167,7 @@ namespace SocialPay.Core.Services.Products
         {
             try
             {
+                //userModel.ClientId = 310;
                 var product = await _context.Products
                     .Include(x=>x.ProductInventory)
                     .SingleOrDefaultAsync(p => p.ProductId == productUpdateDto.ProductId);
@@ -207,50 +208,75 @@ namespace SocialPay.Core.Services.Products
                         blobRequest.RequestType = "Product";
                         blobRequest.ProductName = productUpdateDto.ProductName;
 
-                        foreach (var item in productUpdateDto.Image)
+                        var productHistory = new ProductInventoryHistory();
+
+                        if (productUpdateDto.Image.Count > 0)
                         {
-                            var filePath = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
-
-                            var fileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{filePath}";
-
-                            productImages.Add(new DefaultDocumentRequest
+                            foreach (var item in productUpdateDto.Image)
                             {
-                                Image = item,
-                                ImageGuidId = filePath,
-                                FileLocation = fileLocation
-                            });
+                                var filePath = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
 
-                            blobRequest.ImageDetail = productImages;
+                                var fileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{filePath}";
 
-                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
-                           // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId });
+                                productImages.Add(new DefaultDocumentRequest
+                                {
+                                    Image = item,
+                                    ImageGuidId = filePath,
+                                    FileLocation = fileLocation
+                                });
 
-                            await _blobService.UploadProducts(blobRequest);
+                                blobRequest.ImageDetail = productImages;
 
-                            productImages.Clear();
+                                proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
+                                // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId });
 
-                            blobRequest.ImageDetail.Clear();
+                                await _blobService.UploadProducts(blobRequest);
+
+                                productImages.Clear();
+
+                                blobRequest.ImageDetail.Clear();
+                            }
+
+
+                            productHistory.ProdId = productUpdateDto.ProductId;
+                            productHistory.LastDateModified = DateTime.Now;
+                            productHistory.ClientAuthenticationId = userModel.ClientId;
+                            productHistory.IsUpdated = true;
+                            productHistory.IsAdded = false;
+                            productHistory.ProductInventoryId = product.ProductInventory.Select(x => x.ProductInventoryId).FirstOrDefault();
+                          
+
+                            await _context.productInventoryHistories.AddAsync(productHistory);
+                            await _context.SaveChangesAsync();
+
+                            await _context.ProductItems.AddRangeAsync(proDetails);
+                            await _context.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
+
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product "} {productUpdateDto.ProductName}{" was successfully updated"}", StatusCode = ResponseCodes.Success };
+
                         }
-
-                        var productHistory = new ProductInventoryHistory
+                        else
                         {
-                            ProdId = productUpdateDto.ProductId,
-                            LastDateModified = DateTime.Now,
-                            ClientAuthenticationId = userModel.ClientId,
-                            IsUpdated = true,
-                            IsAdded = false,
-                            ProductInventoryId = product.ProductInventory.Select(x => x.ProductInventoryId).FirstOrDefault(),
-                        };
+                            productHistory.ProdId = productUpdateDto.ProductId;
+                            productHistory.LastDateModified = DateTime.Now;
+                            productHistory.ClientAuthenticationId = userModel.ClientId;
+                            productHistory.IsUpdated = true;
+                            productHistory.IsAdded = false;
+                            productHistory.ProductInventoryId = product.ProductInventory.Select(x => x.ProductInventoryId).FirstOrDefault();
 
-                        await _context.productInventoryHistories.AddAsync(productHistory);
-                        await _context.SaveChangesAsync();
+                            await _context.productInventoryHistories.AddAsync(productHistory);
+                            await _context.SaveChangesAsync();
 
-                        await _context.ProductItems.AddRangeAsync(proDetails);
-                        await _context.SaveChangesAsync();
+                            await _context.ProductItems.AddRangeAsync(proDetails);
+                            await _context.SaveChangesAsync();
 
-                        await transaction.CommitAsync();
+                            await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product "} {productUpdateDto.ProductName}{" was successfully updated"}", StatusCode = ResponseCodes.Success };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product "} {productUpdateDto.ProductName}{" was successfully updated"}", StatusCode = ResponseCodes.Success };
+                        }
+                       
 
                     }
                     catch (Exception ex)
