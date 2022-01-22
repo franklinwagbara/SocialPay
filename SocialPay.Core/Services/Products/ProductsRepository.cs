@@ -167,7 +167,7 @@ namespace SocialPay.Core.Services.Products
         {
             try
             {
-                //userModel.ClientId = 310;
+               // userModel.ClientId = 310;
                 var product = await _context.Products
                     .Include(x=>x.ProductInventory)
                     .SingleOrDefaultAsync(p => p.ProductId == productUpdateDto.ProductId);
@@ -182,15 +182,18 @@ namespace SocialPay.Core.Services.Products
                         var color = string.Empty;
                         var size = string.Empty;
 
-                        color = productUpdateDto.Color.Aggregate((a, b) => a + ", " + b);
+                        if (productUpdateDto.Color != default)
+                            color = string.Join(",", productUpdateDto.Color.ToArray());
 
-                        size = string.Join(",", productUpdateDto.Size.ToArray());
+                        if(productUpdateDto.Size != default)
+                            size = string.Join(",", productUpdateDto.Size.ToArray());
 
                         product.Description = productUpdateDto.Description;
-                        product.Color = color;
-                        product.Size = size;
+                        product.Color = color == default ? product.Color : color;
+                        product.Size = size == default ? product.Size : size;
                         product.ProductName = productUpdateDto.ProductName;
                         product.ProductCategoryId = productUpdateDto.ProductCategoryId;
+                        product.Price = productUpdateDto.Price == default ? product.Price : productUpdateDto.Price;
                         product.LastDateModified = DateTime.Now;
 
                         _context.Update(product);
@@ -210,7 +213,7 @@ namespace SocialPay.Core.Services.Products
 
                         var productHistory = new ProductInventoryHistory();
 
-                        if (productUpdateDto.Image.Count > 0)
+                        if (productUpdateDto.Image != default)
                         {
                             foreach (var item in productUpdateDto.Image)
                             {
@@ -269,8 +272,8 @@ namespace SocialPay.Core.Services.Products
                             await _context.productInventoryHistories.AddAsync(productHistory);
                             await _context.SaveChangesAsync();
 
-                            await _context.ProductItems.AddRangeAsync(proDetails);
-                            await _context.SaveChangesAsync();
+                            //await _context.ProductItems.AddRangeAsync(proDetails);
+                            //await _context.SaveChangesAsync();
 
                             await transaction.CommitAsync();
 
