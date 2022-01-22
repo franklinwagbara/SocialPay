@@ -48,9 +48,15 @@ namespace SocialPay.Core.Services.Products
                 var color = string.Empty;
                 var size = string.Empty;
 
-                color = request.Color.Aggregate((a, b) => a + ", " + b);
+                if (request.Color != default)
+                    color = string.Join(",", request.Color.ToArray());
 
-                size = string.Join(",", request.Size.ToArray());
+                if (request.Size != default)
+                    size = string.Join(",", request.Size.ToArray());
+
+                //color = request.Color.Aggregate((a, b) => a + ", " + b);
+
+                //size = string.Join(",", request.Size.ToArray());
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -69,8 +75,8 @@ namespace SocialPay.Core.Services.Products
                         var model = new Product
                         {
                             Description = request.Description,
-                            Color = color,
-                            Size = size,
+                            Color = color == default ? string.Empty : color,
+                            Size = size == default ? string.Empty : size,
                             Price = request.Price,
                             ProductCategoryId = request.ProductCategoryId,
                             ProductName = request.ProductName,
