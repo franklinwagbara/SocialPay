@@ -35,6 +35,8 @@ using SocialPay.Core.Services.Fiorano;
 using SocialPay.Core.Services.IBS;
 using SocialPay.Core.Services.Loan;
 using SocialPay.Core.Services.Merchant;
+using SocialPay.Core.Services.Merchant.Interfaces;
+using SocialPay.Core.Services.Merchant.Services;
 using SocialPay.Core.Services.PayU;
 using SocialPay.Core.Services.Products;
 using SocialPay.Core.Services.QrCode;
@@ -228,6 +230,8 @@ namespace SocialPay.API
             services.AddScoped<ISpectaSetDisbursementAccount, SpectaSetDisbursementAccountService>();
             services.AddScoped<ISpectaBankBranch, SpectaBankBranchService>();
             services.AddScoped<ISpectaAvailableBanks, SpectaAvailableBanksService>();
+            services.AddScoped<IMerchantsWithOutPaymentLink, MerchantsWithOutPaymentLinkService>();
+            services.AddScoped<IMerchantCustomerTransactions, MerchantCustomerTransactionsService>();
             // services.AddScoped<SpectaOnboardingService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
             services.AddScoped<TransactionPinSetup>();

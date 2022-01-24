@@ -32,6 +32,7 @@ namespace SocialPay.API.Controllers
         private readonly PayWithSpectaService _payWithSpectaService;
         private readonly MerchantBusinessInfoBaseService _merchantBusinessInfoBaseService;
         private readonly MerchantPersonalInfoBaseService _merchantPersonalInfoBaseService;
+
         public MerchantsController(MerchantRegistrationService merchantRegistrationService,
             MerchantPaymentLinkService merchantPaymentLinkService, MerchantReportService merchantReportService,
             InvoiceService invoiceService, CreateMerchantWalletService createMerchantWalletService,
@@ -647,6 +648,7 @@ namespace SocialPay.API.Controllers
                 return StatusCode(500, response);
             }
         }
+
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
