@@ -55,6 +55,7 @@ namespace SocialPay.API.Controllers
             StoreReportRepository storeReportRepository, ApplyForLoanService applyForLoanService,
             LoanEligibiltyService loanEligibiltyService, LoanRepaymentService loanRepaymentService,
             IMerchantsWithOutPaymentLink merchantsWithOutPaymentLink,
+            IMerchantCustomerTransactions merchantCustomerTransactions,
              INotification notification) : base(notification)
         {
             _aDRepoService = aDRepoService;
@@ -71,6 +72,7 @@ namespace SocialPay.API.Controllers
             _loanEligibiltyService = loanEligibiltyService ?? throw new ArgumentNullException(nameof(loanEligibiltyService));
             _loanRepaymentService = loanRepaymentService ?? throw new ArgumentNullException(nameof(loanRepaymentService));
             _merchantsWithOutPaymentLink = merchantsWithOutPaymentLink ?? throw new ArgumentNullException(nameof(merchantsWithOutPaymentLink));
+            _merchantCustomerTransactions = merchantCustomerTransactions ?? throw new ArgumentNullException(nameof(merchantCustomerTransactions));
         }
 
         [HttpPost]
