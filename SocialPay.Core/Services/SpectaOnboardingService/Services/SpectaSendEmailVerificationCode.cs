@@ -75,7 +75,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         
                         await transaction.CommitAsync();
                      
-                       return new WebApiResponse { ResponseCode = SpectaProcessCodes.SendEmailVerificationCode, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
+                       return new WebApiResponse { ResponseCode = SpectaProcessCodes.success, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
@@ -90,7 +90,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             catch (Exception ex)
             {
 
-                _log4net.Error("Error occured" + " | " + "SendEmailVerificationCode" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "SendEmailVerificationCode" + " | " + ex + " | " + DateTime.Now);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex.Message };
 
             }
