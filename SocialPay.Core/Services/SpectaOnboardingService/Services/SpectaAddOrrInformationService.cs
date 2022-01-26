@@ -73,7 +73,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         
                         await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.AddOrrInformation, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = request.Data, StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {

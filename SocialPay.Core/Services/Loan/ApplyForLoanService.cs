@@ -183,7 +183,7 @@ namespace SocialPay.Core.Services.Loan
                 //Update the Apply loan db
 
                 var GetLoanDetails = await _context.ApplyForLoan.
-                    Where(x => x.IsAttended == true).
+                    Where(x => x.IsAttended == false).
                     SingleOrDefaultAsync(x => x.ApplyForLoanId == model.ApplyForLoanId);
 
                 if (GetLoanDetails == null) return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Invalid ApplyForLoanId", StatusCode = ResponseCodes.Badrequest };

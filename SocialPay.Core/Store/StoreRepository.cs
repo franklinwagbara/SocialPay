@@ -276,7 +276,7 @@ namespace SocialPay.Core.Store
                 var validatProductDetails = await _productsService
                     .GetProductByNameCatIdAndClientId(request.ProductName, request.ProductCategoryId, request.StoreId);
 
-                if (validatProductDetails != null)
+                if (validatProductDetails != default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateProductName, Message = "Duplicate Product Name", StatusCode = ResponseCodes.RecordNotFound };
 
                 return await _productsRepository.CreateNewProduct(request, userModel);

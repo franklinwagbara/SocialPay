@@ -48,9 +48,15 @@ namespace SocialPay.Core.Services.Products
                 var color = string.Empty;
                 var size = string.Empty;
 
-                color = request.Color.Aggregate((a, b) => a + ", " + b);
+                if (request.Color != default)
+                    color = string.Join(",", request.Color.ToArray());
 
-                size = string.Join(",", request.Size.ToArray());
+                if (request.Size != default)
+                    size = string.Join(",", request.Size.ToArray());
+
+                //color = request.Color.Aggregate((a, b) => a + ", " + b);
+
+                //size = string.Join(",", request.Size.ToArray());
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -69,8 +75,8 @@ namespace SocialPay.Core.Services.Products
                         var model = new Product
                         {
                             Description = request.Description,
-                            Color = color,
-                            Size = size,
+                            Color = color == default ? string.Empty : color,
+                            Size = size == default ? string.Empty : size,
                             Price = request.Price,
                             ProductCategoryId = request.ProductCategoryId,
                             ProductName = request.ProductName,
@@ -167,6 +173,7 @@ namespace SocialPay.Core.Services.Products
         {
             try
             {
+               // userModel.ClientId = 310;
                 var product = await _context.Products
                     .Include(x=>x.ProductInventory)
                     .SingleOrDefaultAsync(p => p.ProductId == productUpdateDto.ProductId);
@@ -181,15 +188,18 @@ namespace SocialPay.Core.Services.Products
                         var color = string.Empty;
                         var size = string.Empty;
 
-                        color = productUpdateDto.Color.Aggregate((a, b) => a + ", " + b);
+                        if (productUpdateDto.Color != default)
+                            color = string.Join(",", productUpdateDto.Color.ToArray());
 
-                        size = string.Join(",", productUpdateDto.Size.ToArray());
+                        if(productUpdateDto.Size != default)
+                            size = string.Join(",", productUpdateDto.Size.ToArray());
 
                         product.Description = productUpdateDto.Description;
-                        product.Color = color;
-                        product.Size = size;
+                        product.Color = color == default ? product.Color : color;
+                        product.Size = size == default ? product.Size : size;
                         product.ProductName = productUpdateDto.ProductName;
                         product.ProductCategoryId = productUpdateDto.ProductCategoryId;
+                        product.Price = productUpdateDto.Price == default ? product.Price : productUpdateDto.Price;
                         product.LastDateModified = DateTime.Now;
 
                         _context.Update(product);
@@ -207,63 +217,92 @@ namespace SocialPay.Core.Services.Products
                         blobRequest.RequestType = "Product";
                         blobRequest.ProductName = productUpdateDto.ProductName;
 
-                        foreach (var item in productUpdateDto.Image)
+                        var productHistory = new ProductInventoryHistory();
+
+                        if (productUpdateDto.Image != default)
                         {
-                            var filePath = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
-
-                            var fileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{filePath}";
-
-                            productImages.Add(new DefaultDocumentRequest
+                            foreach (var item in productUpdateDto.Image)
                             {
-                                Image = item,
-                                ImageGuidId = filePath,
-                                FileLocation = fileLocation
-                            });
+                                var filePath = $"{blobRequest.ClientId}{"-"}{"PR-"}{Guid.NewGuid().ToString().Substring(18)}{".jpg"}";
 
-                            blobRequest.ImageDetail = productImages;
+                                var fileLocation = $"{blobRequest.RequestType}/{userModel.ClientId}/{blobRequest.ProductName}/{filePath}";
 
-                           // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
-                            proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId });
+                                productImages.Add(new DefaultDocumentRequest
+                                {
+                                    Image = item,
+                                    ImageGuidId = filePath,
+                                    FileLocation = fileLocation
+                                });
 
-                            await _blobService.UploadProducts(blobRequest);
+                                blobRequest.ImageDetail = productImages;
 
-                            productImages.Clear();
+                                proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId, IsDeleted = false, LastDateModified = DateTime.Now });
+                                // proDetails.Add(new ProductItems { FileLocation = $"{options.blobBaseUrl}{options.containerName}{"/"}{fileLocation}", ProductId = product.ProductId });
 
-                            blobRequest.ImageDetail.Clear();
+                                await _blobService.UploadProducts(blobRequest);
+
+                                productImages.Clear();
+
+                                blobRequest.ImageDetail.Clear();
+                            }
+
+
+                            productHistory.ProdId = productUpdateDto.ProductId;
+                            productHistory.LastDateModified = DateTime.Now;
+                            productHistory.ClientAuthenticationId = userModel.ClientId;
+                            productHistory.IsUpdated = true;
+                            productHistory.IsAdded = false;
+                            productHistory.ProductInventoryId = product.ProductInventory.Select(x => x.ProductInventoryId).FirstOrDefault();
+                          
+
+                            await _context.productInventoryHistories.AddAsync(productHistory);
+                            await _context.SaveChangesAsync();
+
+                            await _context.ProductItems.AddRangeAsync(proDetails);
+                            await _context.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
+
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product "} {productUpdateDto.ProductName}{" was successfully updated"}", StatusCode = ResponseCodes.Success };
+
                         }
-
-                        var productHistory = new ProductInventoryHistory
+                        else
                         {
-                            ProdId = productUpdateDto.ProductId,
-                            LastDateModified = DateTime.Now,
-                            ClientAuthenticationId = userModel.ClientId,
-                            IsUpdated = true,
-                            IsAdded = false,
-                            ProductInventoryId = product.ProductInventory.Select(x => x.ProductInventoryId).FirstOrDefault(),
-                        };
+                            productHistory.ProdId = productUpdateDto.ProductId;
+                            productHistory.LastDateModified = DateTime.Now;
+                            productHistory.ClientAuthenticationId = userModel.ClientId;
+                            productHistory.IsUpdated = true;
+                            productHistory.IsAdded = false;
+                            productHistory.ProductInventoryId = product.ProductInventory.Select(x => x.ProductInventoryId).FirstOrDefault();
 
-                        await _context.productInventoryHistories.AddAsync(productHistory);
-                        await _context.SaveChangesAsync();
+                            await _context.productInventoryHistories.AddAsync(productHistory);
+                            await _context.SaveChangesAsync();
 
-                        await _context.ProductItems.AddRangeAsync(proDetails);
-                        await _context.SaveChangesAsync();
+                            //await _context.ProductItems.AddRangeAsync(proDetails);
+                            //await _context.SaveChangesAsync();
 
-                        await transaction.CommitAsync();
+                            await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product "} {productUpdateDto.ProductName}{" was successfully updated"}", StatusCode = ResponseCodes.Success };
+                            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product "} {productUpdateDto.ProductName}{" was successfully updated"}", StatusCode = ResponseCodes.Success };
+                        }
+                       
 
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError,
+                            Message = "Error occured while updating product" + " - " + ex
+                        };
                     }
                 }
 
             }
             catch (Exception ex)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured while updating product inventory", StatusCode = ResponseCodes.InternalError,
+                    Message = "Error occured while updating product" + " - " + ex
+                };
             }
         }
 
@@ -277,12 +316,12 @@ namespace SocialPay.Core.Services.Products
                 if (product == default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product image not found"}", StatusCode = ResponseCodes.RecordNotFound };
 
-               // product.IsDeleted = true;
-               // product.LastDateModified = DateTime.Now;
+                product.IsDeleted = true;
+                product.LastDateModified = DateTime.Now;
                 _context.Update(product);
                 await _context.SaveChangesAsync();
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product images was successfully removed"}", StatusCode = ResponseCodes.Success };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product images was successfully removed"}", Data = "Product images was successfully removed", StatusCode = ResponseCodes.Success };
 
             }
             catch (Exception ex)
@@ -298,7 +337,7 @@ namespace SocialPay.Core.Services.Products
                 var productInventory = await _context.ProductInventory.SingleOrDefaultAsync(p => p.ProductId == productInventoryDto.ProductId);
 
                 if (productInventory == default)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product not found"}", StatusCode = ResponseCodes.RecordNotFound };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = $"{"Product not found"}", Data = "Product not found", StatusCode = ResponseCodes.RecordNotFound };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
@@ -326,7 +365,7 @@ namespace SocialPay.Core.Services.Products
 
                         await transaction.CommitAsync();
 
-                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product inventory was successfully updated"}", StatusCode = ResponseCodes.Success };
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = $"{"Product inventory was successfully updated"}", Data = "Product inventory was successfully updated", StatusCode = ResponseCodes.Success };
 
                     }
                     catch (Exception ex)
@@ -693,9 +732,9 @@ namespace SocialPay.Core.Services.Products
                             // where pro.MerchantStoreId == stores.MerchantStoreId
                              join pc in _context.ProductCategories on pro.ProductCategoryId equals pc.ProductCategoryId
                              join pi in _context.ProductInventory on pro.ProductId equals pi.ProductId
-                             join proItem in _context.ProductItems on pro.ProductId equals proItem.ProductId
+                             //join proItem in _context.ProductItems on pro.ProductId equals proItem.ProductId
                             // where pro.MerchantStoreId == storeId
-                             where pro.MerchantStoreId == storeId && proItem.IsDeleted == false
+                             where pro.MerchantStoreId == storeId //&& proItem.IsDeleted == false
 
                              select new StoreProductsDetailsViewModel
                              {
@@ -809,7 +848,7 @@ namespace SocialPay.Core.Services.Products
                 ////    }
                 ////}
 
-                storeDetail.StoreDetails = query;
+               // storeDetail.StoreDetails = query;
                 storeDetail.StoreName = stores.StoreName;
                 ////CloudBlockBlob storeblob = container.GetBlockBlobReference(stores.Select(x=>x.FileLocation).FirstOrDefault());
 
@@ -901,9 +940,9 @@ namespace SocialPay.Core.Services.Products
                 storeDetail.StoreLogoUrl = storeblob.Uri.AbsoluteUri;
 
                 if (query.Count > 0)
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = storeDetail, StatusCode = ResponseCodes.Success };
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found" , StatusCode = ResponseCodes.RecordNotFound };
             }
             catch (Exception ex)
             {

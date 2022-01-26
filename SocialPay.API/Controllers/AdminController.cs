@@ -14,6 +14,7 @@ using SocialPay.Core.Services.Authentication;
 using SocialPay.Core.Services.Customer;
 using SocialPay.Core.Services.Loan;
 using SocialPay.Core.Services.Merchant;
+using SocialPay.Core.Services.Merchant.Interfaces;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Store;
 using SocialPay.Core.Services.Wallet;
@@ -42,6 +43,8 @@ namespace SocialPay.API.Controllers
         private readonly ApplyForLoanService _applyForLoanService;
         private readonly LoanEligibiltyService _loanEligibiltyService;
         private readonly LoanRepaymentService _loanRepaymentService;
+        private readonly IMerchantsWithOutPaymentLink _merchantsWithOutPaymentLink;
+        private readonly IMerchantCustomerTransactions _merchantCustomerTransactions;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AdminController));
 
         public AdminController(ADRepoService aDRepoService, MerchantReportService merchantReportService,
@@ -51,6 +54,8 @@ namespace SocialPay.API.Controllers
             SendGridEmailService sendGridEmailService, CreateBulkMerchantService createBulkMerchantService,
             StoreReportRepository storeReportRepository, ApplyForLoanService applyForLoanService,
             LoanEligibiltyService loanEligibiltyService, LoanRepaymentService loanRepaymentService,
+            IMerchantsWithOutPaymentLink merchantsWithOutPaymentLink,
+            IMerchantCustomerTransactions merchantCustomerTransactions,
              INotification notification) : base(notification)
         {
             _aDRepoService = aDRepoService;
@@ -66,6 +71,8 @@ namespace SocialPay.API.Controllers
             _applyForLoanService = applyForLoanService ?? throw new ArgumentNullException(nameof(applyForLoanService));
             _loanEligibiltyService = loanEligibiltyService ?? throw new ArgumentNullException(nameof(loanEligibiltyService));
             _loanRepaymentService = loanRepaymentService ?? throw new ArgumentNullException(nameof(loanRepaymentService));
+            _merchantsWithOutPaymentLink = merchantsWithOutPaymentLink ?? throw new ArgumentNullException(nameof(merchantsWithOutPaymentLink));
+            _merchantCustomerTransactions = merchantCustomerTransactions ?? throw new ArgumentNullException(nameof(merchantCustomerTransactions));
         }
 
         [HttpPost]
@@ -232,6 +239,64 @@ namespace SocialPay.API.Controllers
                 return BadRequest(response);
             }
         }
+
+        [HttpGet]
+        [Route("list-of-merchants-without-payment-link")]
+        public async Task<IActionResult> MerchantsWithOutPaymentLinkAsync()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    return Ok(await _merchantsWithOutPaymentLink.MerchantsWithOutPaymentLink());
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("customer-transactions")]
+        public async Task<IActionResult> CustomerTransactionsAsync()
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    return Ok(await _merchantCustomerTransactions.CustomerTransactions());
+                }
+
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+
+                return StatusCode(500, response);
+            }
+        }
+
 
         //[AllowAnonymous]
         [HttpGet]

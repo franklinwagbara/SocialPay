@@ -46,7 +46,7 @@ namespace SocialPay.API.Controllers
         [HttpPost]
         [Route("create-product")]
         public async Task<IActionResult> CreateProducts([FromForm] ProductRequestDto request) => Response(await _storeRepository.CreateNewProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
-
+        
         [HttpPut]
         [Route("update-product")]
         public async Task<IActionResult> UpdateProduct([FromForm] ProductUpdateDto request) => Response(await _productsRepository.UpdateProductAsync(request, User.GetSessionDetails()).ConfigureAwait(false));
