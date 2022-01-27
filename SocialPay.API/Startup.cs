@@ -370,11 +370,11 @@ namespace SocialPay.API
                 c.CronExpression = options.NonEscrowWalletTransactionTask;
             });
 
-            services.AddCronJob<OnboardingNotificationTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.OnboardingNotificationTask;
-            });
+            ////services.AddCronJob<OnboardingNotificationTask>(c =>
+            ////{
+            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////    c.CronExpression = options.OnboardingNotificationTask;
+            ////});
 
 
             //////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
