@@ -114,7 +114,8 @@ namespace SocialPay.API.Controllers
 
         [HttpPost]
         [Route("request-ticket")]
-        public async Task<IActionResult> RequestTicketAsync([FromBody] RequestTicketDto model) => Response(await _spectaRequestTicket.RequestTicket(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+        //public async Task<IActionResult> RequestTicketAsync([FromBody] RequestTicketDto model) => Response(await _spectaRequestTicket.RequestTicket(model, User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
+        public async Task<IActionResult> RequestTicketAsync([FromBody] RequestTicketDto model) => Response(await _spectaRequestTicket.RequestTicket(model).ConfigureAwait(false));
 
         [HttpPost]
         [Route("confirm-ticket")]
