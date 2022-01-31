@@ -26,7 +26,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             _mapper = mapper;
             _spectaOnboardingService = spectaOnboardingService;
         }
-        public async Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model, string email)
+        public async Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 {
                     try
                     {
-                        var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == email);
+                        var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.Email);
 
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.ConfirmTicket 
                             && checkregistered.RegistrationStatus != SpectaProcessCodes.RequestTicket 
@@ -44,7 +44,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var requestmodel = _mapper.Map<CreateIndividualCurrentAccountRequest>(model);
                         await _context.CreateIndividualCurrentAccountRequest.AddAsync(requestmodel);
                         
-                        var request = await _spectaOnboardingService.CreateIndividualCurrentAccount(model, email);
+                        var request = await _spectaOnboardingService.CreateIndividualCurrentAccount(model, model.Email);
                         
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;

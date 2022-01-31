@@ -27,7 +27,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             _spectaOnboardingService = spectaOnboardingService;
         }
 
-        public async Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model, string email)
+        public async Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 {
                     try
                     {
-                        var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == email);
+                        var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.Email);
 
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.VerifyBvnPhoneConfirmationCode)
                             return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Add-Orr-Information", StatusCode = ResponseCodes.Badrequest};
@@ -43,7 +43,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var requestmodel = _mapper.Map<AddOrrInformationRequest>(model);
                         await _context.AddOrrInformationRequest.AddAsync(requestmodel);
                        
-                        var request = await _spectaOnboardingService.AddOrrInformation(model, email);
+                        var request = await _spectaOnboardingService.AddOrrInformation(model, model.Email);
 
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;

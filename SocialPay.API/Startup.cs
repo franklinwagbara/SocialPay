@@ -234,6 +234,7 @@ namespace SocialPay.API
             services.AddScoped<IMerchantCustomerTransactions, MerchantCustomerTransactionsService>();
             // services.AddScoped<SpectaOnboardingService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
+            services.AddSingleton<ISpectaStageVerificationPinRequest, SpectaStageVerificationPinRequestService>();
             services.AddScoped<TransactionPinSetup>();
             services.AddScoped<EventLogService>();
             services.AddScoped<CreateBulkMerchantService>();

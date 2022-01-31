@@ -36,6 +36,13 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     {
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.email);
 
+                        if (!checkregistered.RegistrationStatus.Equals(SpectaProcessCodes.RegisterCustomer))
+                        {
+                            checkregistered.RegistrationStatus = SpectaProcessCodes.RegisterCustomer;
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                        }
+
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.RegisterCustomer)
                             return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Send Email Verification Code", StatusCode = ResponseCodes.InternalError };
                        

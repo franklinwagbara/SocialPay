@@ -627,7 +627,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 
            }
 
-        public async Task<WebApiResponse> BankBranchList(string email)
+        public async Task<WebApiResponse> BankBranchList()
         {
             var apiResponse = new WebApiResponse { };
             try
@@ -635,7 +635,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 var client = new RestClient($"{_client.BaseAddress}{ _spectaOnboardingSettings.BankBranchListUrlExtension}");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.GET);
-                request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
+               // request.AddHeader("Authorization", "Bearer " + await _authentication.AccessTokenTesting(email));
                 request.AddHeader("Abp.TenantId", _spectaOnboardingSettings.SpectaRegistrationTenantId);
                 request.AddHeader("Content-Type", "application/json");
                 IRestResponse response = await Task.FromResult(client.Execute(request));           
@@ -661,7 +661,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Email" + " | " + email + " - " +  ex + " | " + DateTime.Now);
+                _log4net.Error("Error occured while trying to get branch list" + " - "+  ex + " | " + DateTime.Now);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured" };
             }

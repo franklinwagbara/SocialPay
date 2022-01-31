@@ -9,6 +9,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
 {
     public interface ISpectaSetDisbursementAccount
     {
-        Task<WebApiResponse> SetDisbursementAccount(SetDisbursementAccountRequestDto model, string email);
+        Task<WebApiResponse> SetDisbursementAccount(SetDisbursementAccountRequestDto model);
     }
 }

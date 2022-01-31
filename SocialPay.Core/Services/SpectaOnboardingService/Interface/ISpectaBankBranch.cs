@@ -8,6 +8,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
 {
     public interface ISpectaBankBranch
     {
-        public Task<WebApiResponse> BankBranchList(string email);
+        public Task<WebApiResponse> BankBranchList();
     }
 }

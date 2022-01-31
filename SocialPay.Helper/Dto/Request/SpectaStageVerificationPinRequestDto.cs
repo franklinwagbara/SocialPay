@@ -4,10 +4,8 @@ using System.Text;
 
 namespace SocialPay.Helper.Dto.Request
 {
-    public class SetDisbursementAccountRequestDto
+    public class SpectaStageVerificationPinRequestDto
     {
-        public string disbAccountNumber { get; set; }
         public string Email { get; set; }
-
     }
 }

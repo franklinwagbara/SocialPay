@@ -9,6 +9,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
 {
     public interface ISpectaAddOrrInformation
     {
-        Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model, string email);
+        Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model);
     }
 }

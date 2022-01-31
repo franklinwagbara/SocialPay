@@ -11,6 +11,7 @@ namespace SocialPay.Helper.Dto.Request
         public string TaxId { get; set; }
         public string CountryOfBirth { get; set; }
         public string OtherNationality { get; set; }
+        public string Email { get; set; }
         public IFormFile IdentityCard { get; set; }
         public IFormFile UtilityBill { get; set; }
         public IFormFile Signature { get; set; }

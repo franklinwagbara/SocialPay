@@ -27,7 +27,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             _spectaOnboardingService = spectaOnboardingService;
         }
 
-        public async Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model, string email)
+        public async Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 {
                     try
                     {
-                        var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == email);
+                        var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.Email);
 
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.RequestTicket)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Processing stage is not Confirm Ticket", StatusCode = ResponseCodes.InternalError };
@@ -43,7 +43,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var requestmodel = _mapper.Map<ConfirmTicketRequest>(model);
                         await _context.ConfirmTicketRequest.AddAsync(requestmodel);
                         
-                        var request = await _spectaOnboardingService.ConfirmTicket(model, email);
+                        var request = await _spectaOnboardingService.ConfirmTicket(model, model.Email);
                         
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;
