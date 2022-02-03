@@ -548,38 +548,38 @@ namespace SocialPay.API.Controllers
         }
 
 
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("clear-user-account")]
-        ////public async Task<IActionResult> ClearUserDetails(string email, string reference)
-        ////{
-        ////    _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("clear-user-account")]
+        public async Task<IActionResult> ClearUserDetails(string email, string reference)
+        {
+            _log4net.Info("Tasks starts to clear user account" + " | " + email + " | " + DateTime.Now);
 
-        ////    var response = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        if (reference != "7467r")
-        ////            return BadRequest();
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "4633gt")
+                    return BadRequest();
 
-        ////        if (ModelState.IsValid)
-        ////        {
-        ////            var result = await _transactionService.ClearUserAccount(email);
-        ////            return Ok(result);
-        ////        }
-        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        ////            .Select(e => e.ErrorMessage));
-        ////        response.ResponseCode = AppResponseCodes.Failed;
-        ////        response.Data = message;
-        ////        return BadRequest(response);
+                if (ModelState.IsValid)
+                {
+                    var result = await _transactionService.ClearUserAccount(email);
+                    return Ok(result);
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-        ////        response.ResponseCode = AppResponseCodes.InternalError;
-        ////        return BadRequest(response);
-        ////    }
-        ////}
+            }
+            catch (Exception ex)
+            {
+                _log4net.Error("Error occured" + " | " + email + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
 
@@ -803,64 +803,64 @@ namespace SocialPay.API.Controllers
         }
 
 
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("get-all-default-merchant-wallet-transfer-request -logs")]
-        ////public async Task<IActionResult> GetDefaultWalletTransferLogs([FromQuery] string reference)
-        ////{
-        ////    var response = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        if (reference != "43rt")
-        ////            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("get-all-default-merchant-wallet-transfer-request -logs")]
+        public async Task<IActionResult> GetDefaultWalletTransferLogs([FromQuery] string reference)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "43rt")
+                    return BadRequest();
 
-        ////        if (ModelState.IsValid)
-        ////        {
-        ////            return Ok(await _merchantReportService.GetAllDefaultWalletTransferRequestLogsAsync());
-        ////        }
-        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        ////            .Select(e => e.ErrorMessage));
-        ////        response.ResponseCode = AppResponseCodes.Failed;
-        ////        response.Data = message;
-        ////        return BadRequest(response);
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.GetAllDefaultWalletTransferRequestLogsAsync());
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        response.ResponseCode = AppResponseCodes.InternalError;
-        ////        return BadRequest(response);
-        ////    }
-        ////}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
-        ////[AllowAnonymous]
-        ////[HttpGet]
-        ////[Route("clear-default-log")]
-        ////public async Task<IActionResult> ClearDefaultLogs([FromQuery] string reference, string paymentRefernce)
-        ////{
-        ////    var response = new WebApiResponse { };
-        ////    try
-        ////    {
-        ////        if (reference != "t645")
-        ////            return BadRequest();
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("clear-default-log")]
+        public async Task<IActionResult> ClearDefaultLogs([FromQuery] string reference, string paymentRefernce)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "t645")
+                    return BadRequest();
 
-        ////        if (ModelState.IsValid)
-        ////        {
-        ////            return Ok(await _merchantReportService.ClearDefaultLogs(paymentRefernce));
-        ////        }
-        ////        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
-        ////            .Select(e => e.ErrorMessage));
-        ////        response.ResponseCode = AppResponseCodes.Failed;
-        ////        response.Data = message;
-        ////        return BadRequest(response);
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.ClearDefaultLogs(paymentRefernce));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
 
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        response.ResponseCode = AppResponseCodes.InternalError;
-        ////        return BadRequest(response);
-        ////    }
-        ////}
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
 
 
@@ -1378,6 +1378,35 @@ namespace SocialPay.API.Controllers
             }
         }
 
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("validate-user-wallet-info-2")]
+        public async Task<IActionResult> UpdateInfo2([FromQuery] string reference, string payRef, string code)
+        {
+            var response = new WebApiResponse { };
+            try
+            {
+                if (reference != "r142g")
+                    return BadRequest();
+
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _merchantReportService.UpdateCustomerInfo3(payRef, code));
+                }
+                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                response.ResponseCode = AppResponseCodes.Failed;
+                response.Data = message;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = AppResponseCodes.InternalError;
+                return BadRequest(response);
+            }
+        }
 
         ////[AllowAnonymous]
         ////[HttpGet]

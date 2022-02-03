@@ -753,7 +753,34 @@ namespace SocialPay.Core.Services.Report
             }
         }
 
+        public async Task<WebApiResponse> UpdateCustomerInfo3(string paymentReference, string code)
+        {
 
+            var sql = "UPDATE transactionLog SET OrderStatus = @OrderStatus where PaymentReference = @PaymentReference";
+            try
+            {
+                using (var connection = new SqlConnection("-----"))
+                {
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@OrderStatus", SqlDbType.NVarChar).Value = code;
+                        command.Parameters.AddWithValue("@PaymentReference", SqlDbType.NVarChar).Value = paymentReference;
+                        //  command.Parameters.Add("@PaymentReference", SqlDbType.NVarChar).Value = Fnamestring;
+                        // repeat for all variables....
+                        connection.Open();
+                        command.ExecuteNonQuery();
+
+                        return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Successful" };
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+
+            }
+        }
         public async Task<WebApiResponse> UpdateCustomerInfo2(string paymentReference, string code)
         {
 
