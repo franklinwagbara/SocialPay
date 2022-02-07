@@ -1258,6 +1258,7 @@ namespace SocialPay.Core.Services.Account
                 var getMerchantDefaultBankInfo = await _context.MerchantBankInfo
                 .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
+
                 OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
                 {
                     MerchantOtherBankInfoId = 0,
@@ -1271,6 +1272,7 @@ namespace SocialPay.Core.Services.Account
 
                 foreach (var bankDetails in result)
                 {
+                    if (bankDetails.BankCode == getMerchantDefaultBankInfo.BankCode) continue;
                     OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
                     {
                         MerchantOtherBankInfoId = bankDetails.MerchantOtherBankInfoId,
@@ -1289,11 +1291,10 @@ namespace SocialPay.Core.Services.Account
             {
                 _log4net.Error("An error ocuured while getting merchant other business info" + clientId + " | " + ex + " | " + DateTime.Now);
 
-
-
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
+
         public async Task<WebApiResponse> InitiateEnquiry()
         {
             try
