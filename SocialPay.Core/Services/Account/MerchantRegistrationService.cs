@@ -1250,10 +1250,24 @@ namespace SocialPay.Core.Services.Account
             try
             {
                 var result = await _context.OtherMerchantBankInfo
-                  .Where(x => x.ClientAuthenticationId == clientId && x.Deleted == false)
-                  .ToListAsync();
+                .Where(x => x.ClientAuthenticationId == clientId && x.Deleted == false)
+                .ToListAsync();
 
                 var OtherMerchantsBanksDTO = new List<MerchantResponseDTO>();
+
+                var getMerchantDefaultBankInfo = await _context.MerchantBankInfo
+                .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
+                OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
+                {
+                    MerchantOtherBankInfoId = 0,
+                    BankName = getMerchantDefaultBankInfo.BankName,
+                    BankCode = getMerchantDefaultBankInfo.BankCode,
+                    AccountName = getMerchantDefaultBankInfo.AccountName,
+                    Nuban = getMerchantDefaultBankInfo.Nuban,
+                    DateEntered = getMerchantDefaultBankInfo.DateEntered,
+                    DefaultAccount = getMerchantDefaultBankInfo.DefaultAccount
+                });
 
                 foreach (var bankDetails in result)
                 {
@@ -1265,21 +1279,21 @@ namespace SocialPay.Core.Services.Account
                         AccountName = bankDetails.AccountName,
                         Nuban = bankDetails.Nuban,
                         DateEntered = bankDetails.DateEntered,
-                        DefaultAccount = bankDetails.DefaultAccount
+                        DefaultAccount = false
                     });
                 }
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = OtherMerchantsBanksDTO };
-
             }
             catch (Exception ex)
             {
                 _log4net.Error("An error ocuured while getting merchant other business info" + clientId + " | " + ex + " | " + DateTime.Now);
 
+
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
-
         public async Task<WebApiResponse> InitiateEnquiry()
         {
             try
