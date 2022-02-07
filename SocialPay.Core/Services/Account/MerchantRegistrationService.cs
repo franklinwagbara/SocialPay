@@ -1263,7 +1263,9 @@ namespace SocialPay.Core.Services.Account
                         BankName = bankDetails.BankName,
                         BankCode = bankDetails.BankCode,
                         AccountName = bankDetails.AccountName,
-                        Nuban = bankDetails.Nuban
+                        Nuban = bankDetails.Nuban,
+                        DateEntered = bankDetails.DateEntered,
+                        DefaultAccount = bankDetails.DefaultAccount
                     });
                 }
 

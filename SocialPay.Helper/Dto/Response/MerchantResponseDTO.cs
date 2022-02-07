@@ -1,4 +1,6 @@
-﻿namespace SocialPay.Helper.Dto.Response
+﻿using System;
+
+namespace SocialPay.Helper.Dto.Response
 {
     public class MerchantResponseDTO
     {
@@ -7,5 +9,7 @@
         public string BankCode { get; set; }
         public string AccountName { get; set; }
         public string Nuban { get; set; }
+        public bool DefaultAccount { get; set; }
+        public DateTime DateEntered { get; set; }
     }
 }
