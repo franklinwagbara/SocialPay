@@ -787,7 +787,7 @@ namespace SocialPay.Core.Services.Report
             var sql = "UPDATE transactionLog SET TransactionJourney = @TransactionJourney where PaymentReference = @PaymentReference";
             try
             {
-                using (var connection = new SqlConnection("------"))
+                using (var connection = new SqlConnection("-----"))
                 {
                     using (var command = new SqlCommand(sql, connection))
                     {

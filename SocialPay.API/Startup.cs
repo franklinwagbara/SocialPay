@@ -234,7 +234,7 @@ namespace SocialPay.API
             services.AddScoped<IMerchantCustomerTransactions, MerchantCustomerTransactionsService>();
             // services.AddScoped<SpectaOnboardingService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
-            services.AddSingleton<ISpectaStageVerificationPinRequest, SpectaStageVerificationPinRequestService>();
+            services.AddScoped<ISpectaStageVerificationPinRequest, SpectaStageVerificationPinRequestService>();
             services.AddScoped<TransactionPinSetup>();
             services.AddScoped<EventLogService>();
             services.AddScoped<CreateBulkMerchantService>();
@@ -341,11 +341,11 @@ namespace SocialPay.API
             //    c.CronExpression = options.CreateNibbsMerchantTask;
             //});
 
-            //////services.AddCronJob<CardPaymentTask>(c =>
-            //////{
-            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //////    c.CronExpression = options.CardPaymentTask;
-            //////});
+            ////services.AddCronJob<CardPaymentTask>(c =>
+            ////{
+            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            ////    c.CronExpression = options.CardPaymentTask;
+            ////});
 
             ////services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
             ////{
