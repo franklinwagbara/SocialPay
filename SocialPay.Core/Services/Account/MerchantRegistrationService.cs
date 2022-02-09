@@ -1250,25 +1250,27 @@ namespace SocialPay.Core.Services.Account
             try
             {
                 var result = await _context.OtherMerchantBankInfo
-                .Where(x => x.ClientAuthenticationId == clientId && x.Deleted == false)
-                .ToListAsync();
+                  .Where(x => x.ClientAuthenticationId == clientId && x.Deleted == false)
+                  .ToListAsync();
 
                 var OtherMerchantsBanksDTO = new List<MerchantResponseDTO>();
 
                 var getMerchantDefaultBankInfo = await _context.MerchantBankInfo
-                .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+                   .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-
-                OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
+                if (getMerchantDefaultBankInfo != default)
                 {
-                    MerchantOtherBankInfoId = 0,
-                    BankName = getMerchantDefaultBankInfo.BankName,
-                    BankCode = getMerchantDefaultBankInfo.BankCode,
-                    AccountName = getMerchantDefaultBankInfo.AccountName,
-                    Nuban = getMerchantDefaultBankInfo.Nuban,
-                    DateEntered = getMerchantDefaultBankInfo.DateEntered,
-                    DefaultAccount = getMerchantDefaultBankInfo.DefaultAccount
-                });
+                    OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
+                    {
+                        MerchantOtherBankInfoId = 0,
+                        BankName = getMerchantDefaultBankInfo.BankName,
+                        BankCode = getMerchantDefaultBankInfo.BankCode,
+                        AccountName = getMerchantDefaultBankInfo.AccountName,
+                        Nuban = getMerchantDefaultBankInfo.Nuban,
+                        DateEntered = getMerchantDefaultBankInfo.DateEntered,
+                        DefaultAccount = getMerchantDefaultBankInfo.DefaultAccount
+                    });
+                }
 
                 foreach (var bankDetails in result)
                 {
@@ -1285,7 +1287,8 @@ namespace SocialPay.Core.Services.Account
                     });
                 }
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = OtherMerchantsBanksDTO };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = OtherMerchantsBanksDTO, Message = "Success" };
+
             }
             catch (Exception ex)
             {
