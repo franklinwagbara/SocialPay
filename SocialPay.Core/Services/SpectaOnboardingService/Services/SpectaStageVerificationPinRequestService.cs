@@ -75,8 +75,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
             if (sendMail != AppResponseCodes.Success)
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Error occured while sending email" };
-            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Email was sent successfully" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Error occured while sending email", StatusCode = ResponseCodes.InternalError };
+           
+            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Email was sent successfully", StatusCode = ResponseCodes.Success };
 
         }
 

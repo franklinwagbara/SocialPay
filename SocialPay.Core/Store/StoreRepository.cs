@@ -72,7 +72,7 @@ namespace SocialPay.Core.Store
 
                 var store = await _storeService.GetStoresByClientId(userModel.ClientId);
 
-                if (store == null)
+                if (store == default)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record not found", StatusCode = ResponseCodes.RecordNotFound };
 
                 //var storageAccount = CloudStorageAccount.Parse(options.blobConnectionstring);
