@@ -519,7 +519,7 @@ namespace SocialPay.Core.Repositories.Customer
                     if (getpaymentInfo.TransactionStatus == TransactionJourneyStatusCodes.Approved)
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
 
-                    if (model.Message.Contains("approve") || model.Message.Contains("success") || model.Message.Contains("Approve"))
+                    if (model.Message.ToLower().Contains("approve") || model.Message.ToLower().Contains("success"))
                     {
                         using (var transaction = await _context.Database.BeginTransactionAsync())
                         {
