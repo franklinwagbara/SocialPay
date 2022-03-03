@@ -9,6 +9,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
 {
     public interface ISpectaConfirmTicket
     {
-        Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model, string email);
+        Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model);
     }
 }

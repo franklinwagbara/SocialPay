@@ -15,6 +15,7 @@ namespace SocialPay.Helper.Dto.Request
         public int jobChanges { get; set; }
         public int numberOfDependants { get; set; }
         public int yearsInCurrentResidence { get; set; }
+        public string Email { get; set; }
         public DateTime DateEntered { get; set; } = DateTime.Now;
     }
 

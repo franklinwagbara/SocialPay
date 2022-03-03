@@ -18,9 +18,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             _spectaOnboardingService = spectaOnboardingService;
         }
 
-        public async Task<WebApiResponse> BankBranchList(string email)
+        public async Task<WebApiResponse> BankBranchList()
         {
-            var response = await _spectaOnboardingService.BankBranchList(email);
+            var response = await _spectaOnboardingService.BankBranchList();
 
             try
             {

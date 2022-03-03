@@ -26,7 +26,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             _mapper = mapper;
             _spectaOnboardingService = spectaOnboardingService;
         }
-        public async Task<WebApiResponse> SetDisbursementAccount(SetDisbursementAccountRequestDto model, string email)
+        public async Task<WebApiResponse> SetDisbursementAccount(SetDisbursementAccountRequestDto model)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 {
                     try
                     {
-                        var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == email);
+                        var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.Email);
 
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.ConfirmTicket)
                             return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Set Disbursement Account" };
@@ -42,7 +42,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var requestmodel = _mapper.Map<SetDisbursementAccountRequest>(model);
                         await _context.SetDisbursementAccountRequest.AddAsync(requestmodel);
                        
-                        var request = await _spectaOnboardingService.DisbursementAccount(model, email);
+                        var request = await _spectaOnboardingService.DisbursementAccount(model, model.Email);
                         
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;

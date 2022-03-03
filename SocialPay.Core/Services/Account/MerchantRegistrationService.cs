@@ -1255,19 +1255,39 @@ namespace SocialPay.Core.Services.Account
 
                 var OtherMerchantsBanksDTO = new List<MerchantResponseDTO>();
 
+                var getMerchantDefaultBankInfo = await _context.MerchantBankInfo
+                   .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
+
+                if (getMerchantDefaultBankInfo != default)
+                {
+                    OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
+                    {
+                        MerchantOtherBankInfoId = 0,
+                        BankName = getMerchantDefaultBankInfo.BankName,
+                        BankCode = getMerchantDefaultBankInfo.BankCode,
+                        AccountName = getMerchantDefaultBankInfo.AccountName,
+                        Nuban = getMerchantDefaultBankInfo.Nuban,
+                        DateEntered = getMerchantDefaultBankInfo.DateEntered,
+                        DefaultAccount = getMerchantDefaultBankInfo.DefaultAccount
+                    });
+                }
+
                 foreach (var bankDetails in result)
                 {
+                    if (bankDetails.BankCode == getMerchantDefaultBankInfo.BankCode) continue;
                     OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
                     {
                         MerchantOtherBankInfoId = bankDetails.MerchantOtherBankInfoId,
                         BankName = bankDetails.BankName,
                         BankCode = bankDetails.BankCode,
                         AccountName = bankDetails.AccountName,
-                        Nuban = bankDetails.Nuban
+                        Nuban = bankDetails.Nuban,
+                        DateEntered = bankDetails.DateEntered,
+                        DefaultAccount = false
                     });
                 }
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = OtherMerchantsBanksDTO };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = OtherMerchantsBanksDTO, Message = "Success" };
 
             }
             catch (Exception ex)

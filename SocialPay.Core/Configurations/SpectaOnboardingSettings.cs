@@ -28,5 +28,6 @@ namespace SocialPay.Core.Configurations
         public string SpectaRegistrationTenantId { get; set; }
         public string BankBranchListUrlExtension { get; set; }
         public string AvailableBankListUrlExtension { get; set; }
+        public string SpectaPinVerificationWebportalUrl { get; set; }
     }
 }

@@ -234,6 +234,7 @@ namespace SocialPay.API
             services.AddScoped<IMerchantCustomerTransactions, MerchantCustomerTransactionsService>();
             // services.AddScoped<SpectaOnboardingService>();
             services.AddSingleton<ICreateNibbsSubMerchantService, CreateNibbsSubMerchantService>();
+            services.AddScoped<ISpectaStageVerificationPinRequest, SpectaStageVerificationPinRequestService>();
             services.AddScoped<TransactionPinSetup>();
             services.AddScoped<EventLogService>();
             services.AddScoped<CreateBulkMerchantService>();
@@ -340,42 +341,46 @@ namespace SocialPay.API
             //    c.CronExpression = options.CreateNibbsMerchantTask;
             //});
 
-            ////services.AddCronJob<CardPaymentTask>(c =>
+            // current jobs to enable in their order of processing
+
+            services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            });
+
+            /// This service is for other payment method like pay with specta
+            services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
+            });
+            services.AddCronJob<CardPaymentTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.CardPaymentTask;
+            });
+
+            services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowWalletTransactionTask;
+            });
+
+            services.AddCronJob<NonEscrowBankTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowBankTransactionTask;
+            });
+
+            // main jobs to enable ends
+
+
+            ////services.AddCronJob<OnboardingNotificationTask>(c =>
             ////{
             ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.CardPaymentTask;
+            ////    c.CronExpression = options.OnboardingNotificationTask;
             ////});
-
-            ////services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            ////});
-
-            ////services.AddCronJob<NonEscrowBankTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowBankTransactionTask;
-            ////});
-
-            ////services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
-            ////});
-
-            ////services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.NonEscrowWalletTransactionTask;
-            ////});
-
-            //////services.AddCronJob<OnboardingNotificationTask>(c =>
-            //////{
-            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //////    c.CronExpression = options.OnboardingNotificationTask;
-            //////});
-
 
             //////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
             //////{

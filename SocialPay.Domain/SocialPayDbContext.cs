@@ -106,5 +106,6 @@ namespace SocialPay.Domain
         public DbSet<CreateIndividualCurrentAccountResponse> CreateIndividualCurrentAccountResponse { get; set; }
         public DbSet<SetDisbursementAccountRequest> SetDisbursementAccountRequest { get; set; }
         public DbSet<SetDisbursementAccountResponse> SetDisbursementAccountResponse { get; set; }
+        public DbSet<SpectaStageVerificationPinRequest> SpectaStageVerificationPinRequest { get; set; }
     }
 }
