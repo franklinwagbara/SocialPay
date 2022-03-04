@@ -781,7 +781,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.TransactionType = TransactionType.OtherPayment;
-                    // logconfirmation.CustomerEmail = model.e;
+                    logconfirmation.CustomerEmail = getCustomerInfo.Email;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try

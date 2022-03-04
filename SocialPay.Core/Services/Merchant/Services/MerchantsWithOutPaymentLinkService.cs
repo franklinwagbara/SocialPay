@@ -37,7 +37,7 @@ namespace SocialPay.Core.Services.Merchant.Services
                                        ReferralCode = c.ReferralCode,
                                        RegisteredDate = c.DateEntered,
                                        LastDateModified = c.LastDateModified,
-                                   }).ToListAsync();
+                                   }).OrderByDescending(x=> x.RegisteredDate).ToListAsync();
 
                 if (query.Count == 0)
                 {

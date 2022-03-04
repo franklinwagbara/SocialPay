@@ -186,7 +186,7 @@ namespace SocialPay.Core.Services.Report
                                             DateEntered = d.DateEntered,
                                             PaymentReference = d.PaymentReference,
                                             Document = _appSettings.BaseApiUrl + d.FileLocation + "/" + d.DisputeFile
-                                        }).ToList();
+                                        }).OrderByDescending(x => x.DateEntered).ToList();
 
                     result = dataResponse;
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
@@ -206,7 +206,7 @@ namespace SocialPay.Core.Services.Report
                                     ProcessedBy = d.ProcessedBy,
                                     DateEntered = d.DateEntered,
                                     Document = _appSettings.BaseApiUrl + d.FileLocation + "/" + d.DisputeFile
-                                }).ToList();
+                                }).OrderByDescending(x=>x.DateEntered).ToList();
 
                 result = response;
                 _log4net.Info("Initiating GetAllLoggedDisputes response" + " | " + clientId + " | " + DateTime.Now);
@@ -240,7 +240,7 @@ namespace SocialPay.Core.Services.Report
                                           UserRole = c.RoleName,
                                           UserName = c.UserName,
                                           PhoneNumber = c.PhoneNumber
-                                      }).ToListAsync();
+                                      }).OrderByDescending(x => x.DateRegistered).ToListAsync();
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = response };
             }
@@ -277,7 +277,7 @@ namespace SocialPay.Core.Services.Report
             try
             {
                 //clientId = 30032;
-                var result = await _context.TransactionLog.ToListAsync();
+                var result = await _context.TransactionLog.OrderByDescending(x => x.TransactionDate).ToListAsync();
 
                 return new WebApiResponse { ResponseCode = "00", Data = result };
             }
@@ -295,7 +295,7 @@ namespace SocialPay.Core.Services.Report
             try
             {
                 //clientId = 30032;
-                var result = await _context.FailedTransactions.ToListAsync();
+                var result = await _context.FailedTransactions.OrderByDescending(x => x.DateEntered).ToListAsync();
 
                 return new WebApiResponse { ResponseCode = "00", Data = result };
             }

@@ -82,7 +82,7 @@ namespace SocialPay.Core.Services.Store
                                      PhoneNumber = c.PhoneNumber,
                                      DateEntered = m.DateEntered,
                                      Email = c.Email
-                                 }).ToListAsync();              
+                                 }).OrderByDescending(x=>x.DateEntered).ToListAsync();              
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = query, Message = "Success" };
             }

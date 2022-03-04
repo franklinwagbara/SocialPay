@@ -3375,3 +3375,216 @@ INFO  2021-12-08 12:53:25,026 107534ms CustomerRepoService    ?                 
 INFO  2021-12-08 12:53:40,121 122629ms CustomerRepoService    ?                  - GetLinkDetails | So-Pay-343434errf | 08/12/2021 12:53:40
 INFO  2021-12-14 14:31:36,741 37369ms MerchantReportService  ?                  - Initiating GetMerchants request | 14/12/2021 14:31:36
 INFO  2021-12-14 14:36:16,950 23342ms MerchantReportService  ?                  - Initiating GetMerchants request | 14/12/2021 14:36:16
+INFO  2022-03-04 13:47:45,246 71919ms AuthRepoService        ?                  - Authenticate | joseph.oyeniyi@sterling.ng | 04/03/2022 13:47:45
+INFO  2022-03-04 13:47:47,561 74234ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 2348160580772 | 04/03/2022 13:47:47
+INFO  2022-03-04 13:47:52,370 79043ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 04/03/2022 13:47:52
+INFO  2022-03-04 13:47:53,904 80577ms AuthRepoService        ?                  - Authenticate for login was successful | joseph.oyeniyi@sterling.ng | 04/03/2022 13:47:53
+INFO  2022-03-04 13:48:00,099 86772ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 13:48:00
+INFO  2022-03-04 13:48:00,099 86772ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 13:48:00
+INFO  2022-03-04 13:48:00,099 86772ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 13:48:00
+INFO  2022-03-04 13:48:00,159 86832ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 13:48:00
+INFO  2022-03-04 13:48:00,303 86976ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 13:48:00
+INFO  2022-03-04 13:48:00,322 86995ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 13:48:00
+INFO  2022-03-04 13:50:35,252 241925ms MerchantReportService  ?                  - Initiating GenerateCustomerReceipt request | 04/03/2022 13:50:35
+INFO  2022-03-04 13:51:01,219 267892ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 13:51:01
+INFO  2022-03-04 13:51:01,219 267892ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 13:51:01
+INFO  2022-03-04 13:51:56,808 323481ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 13:51:56
+INFO  2022-03-04 13:51:56,808 323481ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 13:51:56
+INFO  2022-03-04 13:52:00,314 326988ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 13:52:00
+INFO  2022-03-04 13:52:02,917 329590ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 13:52:02
+INFO  2022-03-04 13:52:47,717 374390ms EmailService           ?                  - Email service response |  | 04/03/2022 13:52:47
+INFO  2022-03-04 13:52:53,212 379885ms MerchantReportService  ?                  - Initiating GenerateCustomerReceipt request | 04/03/2022 13:52:53
+INFO  2022-03-04 13:54:03,473 450146ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 13:54:03
+INFO  2022-03-04 13:54:03,478 450151ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 13:54:03
+INFO  2022-03-04 13:54:17,241 463914ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 13:54:17
+INFO  2022-03-04 13:54:17,293 463966ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 13:54:17
+INFO  2022-03-04 13:54:17,737 464410ms EmailService           ?                  - Email service response |  | 04/03/2022 13:54:17
+INFO  2022-03-04 13:54:20,691 467364ms MerchantReportService  ?                  - Initiating GenerateCustomerReceipt request | 04/03/2022 13:54:20
+INFO  2022-03-04 13:58:46,861 733534ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 13:58:46
+INFO  2022-03-04 13:58:48,535 735208ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 13:58:48
+INFO  2022-03-04 13:58:48,536 735209ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 13:58:48
+INFO  2022-03-04 13:58:48,572 735245ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 13:58:48
+INFO  2022-03-04 13:58:48,723 735396ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 13:58:48
+INFO  2022-03-04 13:58:48,724 735397ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 13:58:48
+INFO  2022-03-04 13:58:49,379 736053ms EmailService           ?                  - Email service response |  | 04/03/2022 13:58:49
+INFO  2022-03-04 13:58:52,817 739490ms MerchantReportService  ?                  - Initiating GenerateCustomerReceipt request | 04/03/2022 13:58:52
+INFO  2022-03-04 13:59:18,416 765089ms EmailService           ?                  - Email service response | nchimdike@gmail.com | 04/03/2022 13:59:18
+INFO  2022-03-04 14:00:00,037 806710ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 14:00:00
+INFO  2022-03-04 14:00:00,044 806717ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:00:00
+INFO  2022-03-04 14:00:00,048 806721ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:00:00
+INFO  2022-03-04 14:00:00,200 806873ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 04/03/2022 14:00:00
+INFO  2022-03-04 14:00:00,200 806873ms wCardWalletTransaction ?                  - Job Service-to fetch awaiting transactions for Non Escrow Card Wallet Transaction | 04/03/2022 14:00:00
+INFO  2022-03-04 14:00:00,272 806945ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 14:00:00
+INFO  2022-03-04 14:00:00,334 807007ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:00:00
+INFO  2022-03-04 14:00:00,695 807368ms wCardWalletTransaction ?                  - Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions | 1 | 04/03/2022 14:00:00
+INFO  2022-03-04 14:00:00,825 807498ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:00:00
+INFO  2022-03-04 14:00:00,883 807556ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 0 | 04/03/2022 14:00:00
+INFO  2022-03-04 14:27:00,052 14798ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:27:00
+INFO  2022-03-04 14:27:00,052 14798ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:27:00
+INFO  2022-03-04 14:27:00,348 15094ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:27:00
+INFO  2022-03-04 14:27:00,407 15153ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:27:00
+INFO  2022-03-04 14:27:42,289 57034ms AuthRepoService        ?                  - Authenticate | joseph.oyeniyi@sterling.ng | 04/03/2022 14:27:42
+INFO  2022-03-04 14:27:43,757 58502ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 2348160580772 | 04/03/2022 14:27:43
+INFO  2022-03-04 14:27:49,163 63909ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 04/03/2022 14:27:49
+INFO  2022-03-04 14:27:50,570 65315ms AuthRepoService        ?                  - Authenticate for login was successful | joseph.oyeniyi@sterling.ng | 04/03/2022 14:27:50
+INFO  2022-03-04 14:28:00,011 74757ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 14:28:00
+INFO  2022-03-04 14:28:00,064 74809ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 14:28:00
+INFO  2022-03-04 14:30:00,014 194759ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:30:00
+INFO  2022-03-04 14:30:00,019 194765ms wCardWalletTransaction ?                  - Job Service-to fetch awaiting transactions for Non Escrow Card Wallet Transaction | 04/03/2022 14:30:00
+INFO  2022-03-04 14:30:00,045 194791ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 04/03/2022 14:30:00
+INFO  2022-03-04 14:30:00,080 194826ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:30:00
+INFO  2022-03-04 14:30:00,081 194827ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:30:00
+INFO  2022-03-04 14:30:00,123 194869ms wCardWalletTransaction ?                  - Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions | 1 | 04/03/2022 14:30:00
+INFO  2022-03-04 14:30:00,130 194876ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:30:00
+INFO  2022-03-04 14:30:00,273 195019ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 0 | 04/03/2022 14:30:00
+INFO  2022-03-04 14:32:00,020 314766ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 14:32:00
+INFO  2022-03-04 14:32:00,085 314831ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 14:32:00
+INFO  2022-03-04 14:33:00,006 374751ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:33:00
+INFO  2022-03-04 14:33:00,006 374752ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:33:00
+INFO  2022-03-04 14:33:00,068 374814ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:33:00
+INFO  2022-03-04 14:33:00,068 374814ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:33:00
+INFO  2022-03-04 14:36:00,052 69337ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:36:00
+INFO  2022-03-04 14:36:00,052 69337ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:36:00
+INFO  2022-03-04 14:36:00,052 69337ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 14:36:00
+INFO  2022-03-04 14:36:00,116 69401ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:36:00
+INFO  2022-03-04 14:36:00,278 69563ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:36:00
+INFO  2022-03-04 14:36:00,289 69574ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 14:36:00
+INFO  2022-03-04 14:43:24,571 52244ms AuthRepoService        ?                  - Authenticate | ferdinand.nnona@sterling.ng | 04/03/2022 14:43:24
+INFO  2022-03-04 14:43:25,752 53425ms AuthRepoService        ?                  - Authenticate for super admin | ferdinand.nnona@sterling.ng | 04/03/2022 14:43:25
+INFO  2022-03-04 14:44:00,027 87700ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 14:44:00
+INFO  2022-03-04 14:44:00,083 87756ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 14:44:00
+INFO  2022-03-04 14:44:07,811 95484ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 04/03/2022 14:44:07
+INFO  2022-03-04 14:44:08,239 95912ms TransactionService     ?                  - Response for GetCustomerOrders -  - 15 - 04/03/2022 14:44:08
+INFO  2022-03-04 14:45:00,032 147706ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:45:00
+INFO  2022-03-04 14:45:00,032 147706ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:45:00
+INFO  2022-03-04 14:45:00,095 147768ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:45:00
+INFO  2022-03-04 14:45:00,257 147930ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:45:00
+INFO  2022-03-04 14:45:29,191 176864ms MerchantReportService  ?                  - Initiating GetMerchants request | 04/03/2022 14:45:29
+INFO  2022-03-04 14:46:44,129 251802ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 04/03/2022 14:46:44
+INFO  2022-03-04 14:46:44,488 252161ms TransactionService     ?                  - Response for GetCustomerOrders -  - 15 - 04/03/2022 14:46:44
+INFO  2022-03-04 14:48:00,144 20493ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:48:00
+INFO  2022-03-04 14:48:00,144 20493ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:48:00
+INFO  2022-03-04 14:48:00,144 20493ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 14:48:00
+INFO  2022-03-04 14:48:00,451 20799ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:48:00
+INFO  2022-03-04 14:48:00,591 20940ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:48:00
+INFO  2022-03-04 14:48:00,591 20940ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 14:48:00
+INFO  2022-03-04 14:48:19,103 39452ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 04/03/2022 14:48:19
+INFO  2022-03-04 14:48:19,960 40309ms TransactionService     ?                  - Response for GetCustomerOrders -  - 15 - 04/03/2022 14:48:19
+INFO  2022-03-04 14:51:00,016 200365ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:51:00
+INFO  2022-03-04 14:51:00,016 200365ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:51:00
+INFO  2022-03-04 14:51:00,081 200430ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:51:00
+INFO  2022-03-04 14:51:00,089 200437ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:51:00
+INFO  2022-03-04 14:52:00,026 260375ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 14:52:00
+INFO  2022-03-04 14:52:00,116 260465ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 14:52:00
+INFO  2022-03-04 14:54:00,021 380370ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:54:00
+INFO  2022-03-04 14:54:00,021 380370ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:54:00
+INFO  2022-03-04 14:54:00,092 380441ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:54:00
+INFO  2022-03-04 14:54:00,092 380441ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:54:00
+INFO  2022-03-04 14:56:00,006 500355ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 14:56:00
+INFO  2022-03-04 14:56:00,061 500410ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 14:56:00
+INFO  2022-03-04 14:57:00,006 560355ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 14:57:00
+INFO  2022-03-04 14:57:00,013 560362ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 14:57:00
+INFO  2022-03-04 14:57:00,070 560419ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 14:57:00
+INFO  2022-03-04 14:57:00,075 560424ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 14:57:00
+INFO  2022-03-04 15:00:00,083 53135ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 15:00:00
+INFO  2022-03-04 15:00:00,083 53135ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 04/03/2022 15:00:00
+INFO  2022-03-04 15:00:00,083 53135ms wCardWalletTransaction ?                  - Job Service-to fetch awaiting transactions for Non Escrow Card Wallet Transaction | 04/03/2022 15:00:00
+INFO  2022-03-04 15:00:00,083 53135ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 15:00:00
+INFO  2022-03-04 15:00:00,083 53135ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 15:00:00
+INFO  2022-03-04 15:00:00,334 53387ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 0 | 04/03/2022 15:00:00
+INFO  2022-03-04 15:00:00,417 53470ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 15:00:00
+INFO  2022-03-04 15:00:00,531 53583ms wCardWalletTransaction ?                  - Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions | 1 | 04/03/2022 15:00:00
+INFO  2022-03-04 15:00:00,546 53599ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 15:00:00
+INFO  2022-03-04 15:00:00,549 53601ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 15:00:00
+INFO  2022-03-04 15:02:37,934 210986ms AuthRepoService        ?                  - Authenticate | ferdinand.nnona@sterling.ng | 04/03/2022 15:02:37
+INFO  2022-03-04 15:02:39,116 212169ms AuthRepoService        ?                  - Authenticate for super admin | ferdinand.nnona@sterling.ng | 04/03/2022 15:02:39
+INFO  2022-03-04 15:03:00,004 233057ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 15:03:00
+INFO  2022-03-04 15:03:00,004 233057ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 15:03:00
+INFO  2022-03-04 15:03:00,078 233131ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 15:03:00
+INFO  2022-03-04 15:03:00,078 233131ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 15:03:00
+INFO  2022-03-04 15:04:00,017 293070ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 15:04:00
+INFO  2022-03-04 15:04:00,094 293146ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 15:04:00
+INFO  2022-03-04 15:04:34,302 327355ms MerchantReportService  ?                  - Initiating GetMerchants request | 04/03/2022 15:04:34
+INFO  2022-03-04 15:04:54,082 347135ms hOutPaymentLinkService ?                  - Successful | Merchants WithOut Payment Link
+INFO  2022-03-04 15:05:05,627 358680ms merTransactionsService ?                  - Successful | Customer Transaction Details
+INFO  2022-03-04 15:06:00,018 413070ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 15:06:00
+INFO  2022-03-04 15:06:00,019 413071ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 15:06:00
+INFO  2022-03-04 15:06:00,096 413148ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 15:06:00
+INFO  2022-03-04 15:06:00,096 413148ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 15:06:00
+INFO  2022-03-04 15:08:00,026 533079ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 15:08:00
+INFO  2022-03-04 15:08:00,089 533141ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 15:08:00
+INFO  2022-03-04 15:09:00,001 593054ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 15:09:00
+INFO  2022-03-04 15:09:00,002 593055ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 15:09:00
+INFO  2022-03-04 15:09:00,037 593089ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 15:09:00
+INFO  2022-03-04 15:09:00,045 593098ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 15:09:00
+INFO  2022-03-04 15:10:14,412 667465ms enantProfileAPIService ?                  - CreateNewTenant 04/03/2022 15:10:14
+INFO  2022-03-04 15:10:25,189 678242ms EmailService           ?                  - Email service response | string@gmail.com | 04/03/2022 15:10:25
+INFO  2022-03-04 15:12:00,008 773061ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 15:12:00
+INFO  2022-03-04 15:12:00,012 773065ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 15:12:00
+INFO  2022-03-04 15:12:00,013 773065ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 15:12:00
+INFO  2022-03-04 15:12:00,055 773108ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 15:12:00
+INFO  2022-03-04 15:12:00,055 773108ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 15:12:00
+INFO  2022-03-04 15:12:00,218 773270ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 15:12:00
+INFO  2022-03-04 15:16:00,063 43670ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 15:16:00
+INFO  2022-03-04 15:16:00,391 43998ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 15:16:00
+INFO  2022-03-04 15:24:00,072 27436ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 15:24:00
+INFO  2022-03-04 15:24:00,072 27436ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 15:24:00
+INFO  2022-03-04 15:24:00,072 27436ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 15:24:00
+INFO  2022-03-04 15:24:00,365 27730ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 15:24:00
+INFO  2022-03-04 15:24:00,433 27798ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 15:24:00
+INFO  2022-03-04 15:24:00,434 27799ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 15:24:00
+INFO  2022-03-04 15:24:09,684 37048ms AuthRepoService        ?                  - Authenticate | ferdinand.nnona@sterling.ng | 04/03/2022 15:24:09
+INFO  2022-03-04 15:24:11,056 38420ms AuthRepoService        ?                  - Authenticate for super admin | ferdinand.nnona@sterling.ng | 04/03/2022 15:24:11
+ERROR 2022-03-04 15:25:03,760 91125ms enantProfileAPIService ?                  - GetTenant error occured  - Newtonsoft.Json.JsonSerializationException: Cannot deserialize the current JSON array (e.g. [1,2,3]) into type 'SocialPay.Helper.Dto.Response.Lv2Data' because the type requires a JSON object (e.g. {"name":"value"}) to deserialize correctly.
+To fix this error either change the JSON to a JSON object (e.g. {"name":"value"}) or change the deserialized type to an array or a type that implements a collection interface (e.g. ICollection, IList) like List<T> that can be deserialized from a JSON array. JsonArrayAttribute can also be added to the type to force it to deserialize from a JSON array.
+Path 'data.data', line 1, position 85.
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureArrayContract(JsonReader reader, Type objectType, JsonContract contract)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateList(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, Object existingValue, String id)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.SetPropertyValue(JsonProperty property, JsonConverter propertyConverter, JsonContainerContract containerContract, JsonProperty containerProperty, JsonReader reader, Object target)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateObject(Object newObject, JsonReader reader, JsonObjectContract contract, JsonProperty member, String id)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.SetPropertyValue(JsonProperty property, JsonConverter propertyConverter, JsonContainerContract containerContract, JsonProperty containerProperty, JsonReader reader, Object target)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateObject(Object newObject, JsonReader reader, JsonObjectContract contract, JsonProperty member, String id)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.Deserialize(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value)
+   at SocialPay.Core.Services.Tenant.TenantProfileAPIService.GetTenant(Int64 clientId) in C:\Users\nnonadf\Documents\New folder\SocialPay.API\SocialPay.Core\Services\Tenant\TenantProfileAPIService.cs:line 119 - 04/03/2022 15:25:03
+INFO  2022-03-04 15:30:14,916 83356ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 15:30:14
+INFO  2022-03-04 15:30:14,916 83356ms PayWithCardTransaction ?                  - Job Service-PendingPayWithCardTransaction transactions | 04/03/2022 15:30:14
+INFO  2022-03-04 15:30:14,916 83356ms wCardWalletTransaction ?                  - Job Service-to fetch awaiting transactions for Non Escrow Card Wallet Transaction | 04/03/2022 15:30:14
+INFO  2022-03-04 15:30:14,916 83356ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 15:30:14
+ERROR 2022-03-04 15:30:14,965 83405ms enantProfileAPIService ?                  - GetTenant error occured  - Newtonsoft.Json.JsonSerializationException: Cannot deserialize the current JSON object (e.g. {"name":"value"}) into type 'System.Collections.Generic.List`1[SocialPay.Helper.Dto.Response.GetTenantResponseDto]' because the type requires a JSON array (e.g. [1,2,3]) to deserialize correctly.
+To fix this error either change the JSON to a JSON array (e.g. [1,2,3]) or change the deserialized type so that it is a normal .NET type (e.g. not a primitive type like integer, not a collection type like an array or List<T>) that can be deserialized from a JSON object. JsonObjectAttribute can also be added to the type to force it to deserialize from a JSON object.
+Path 'success', line 1, position 11.
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.Deserialize(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value)
+   at SocialPay.Core.Services.Tenant.TenantProfileAPIService.GetTenant(Int64 clientId) in C:\Users\nnonadf\Documents\New folder\SocialPay.API\SocialPay.Core\Services\Tenant\TenantProfileAPIService.cs:line 119 - 04/03/2022 15:30:14
+INFO  2022-03-04 15:30:15,129 83569ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService pending transactions | 0 | 04/03/2022 15:30:15
+INFO  2022-03-04 15:30:15,274 83714ms PayWithCardTransaction ?                  - Job Service: Total number of pending cards transactions | 0 | 04/03/2022 15:30:15
+INFO  2022-03-04 15:30:15,284 83724ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 15:30:15
+INFO  2022-03-04 15:30:15,488 83928ms wCardWalletTransaction ?                  - Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions | 1 | 04/03/2022 15:30:15
+INFO  2022-03-04 15:32:00,047 36990ms OtherWalletTransaction ?                  - Job Service-to fetch awaiting transactions for NonEscrowWalletTransaction | 04/03/2022 15:32:00
+INFO  2022-03-04 15:32:00,191 37134ms OtherWalletTransaction ?                  - Job Service: NonEscrowWalletTransaction. Total number of pending transactions | 0 | 04/03/2022 15:32:00
+ERROR 2022-03-04 15:32:19,760 56703ms enantProfileAPIService ?                  - GetTenant error occured  - Newtonsoft.Json.JsonSerializationException: Cannot deserialize the current JSON object (e.g. {"name":"value"}) into type 'System.Collections.Generic.List`1[SocialPay.Helper.Dto.Response.GetTenantResponseDto]' because the type requires a JSON array (e.g. [1,2,3]) to deserialize correctly.
+To fix this error either change the JSON to a JSON array (e.g. [1,2,3]) or change the deserialized type so that it is a normal .NET type (e.g. not a primitive type like integer, not a collection type like an array or List<T>) that can be deserialized from a JSON object. JsonObjectAttribute can also be added to the type to force it to deserialize from a JSON object.
+Path 'success', line 1, position 11.
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.Deserialize(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value)
+   at SocialPay.Core.Services.Tenant.TenantProfileAPIService.GetTenant(Int64 clientId) in C:\Users\nnonadf\Documents\New folder\SocialPay.API\SocialPay.Core\Services\Tenant\TenantProfileAPIService.cs:line 119 - 04/03/2022 15:32:19
+INFO  2022-03-04 15:33:05,332 102275ms nEscrowBankTransaction ?                  - Job Service-NonEscrowBankTransaction request | 04/03/2022 15:33:05
+INFO  2022-03-04 15:33:05,332 102275ms tMerchantWalletService ?                  - Job Service-CreditMerchantWalletService | 04/03/2022 15:33:05
+INFO  2022-03-04 15:33:07,269 104212ms nEscrowBankTransaction ?                  - Job Service: Total number of pending transactions | 0 | 04/03/2022 15:33:07

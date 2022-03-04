@@ -1258,7 +1258,7 @@ namespace SocialPay.Core.Services.Account
                 var getMerchantDefaultBankInfo = await _context.MerchantBankInfo
                    .SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-                if (getMerchantDefaultBankInfo != default)
+                if (getMerchantDefaultBankInfo != null)
                 {
                     OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
                     {
