@@ -55,6 +55,7 @@ using SocialPay.Domain;
 using SocialPay.Helper.AutoMapperSettings;
 using SocialPay.Helper.Cryptography;
 using SocialPay.Helper.Notification;
+using SocialPay.Helper.SerilogService.Account;
 using SocialPay.Helper.SerilogService.Store;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.Fiorano;
@@ -267,9 +268,10 @@ namespace SocialPay.API
             services.AddSingleton<EncryptDecryptJob>();
             services.AddSingleton<EncryptDecrypt>();
             services.AddSingleton<StoreLogger>();
+            services.AddSingleton<AccountLogger>();
 
             ///Loan Services
-            
+
             services.AddScoped<LoanEligibiltyService>();
             services.AddScoped<LoanRepaymentService>();
             services.AddScoped<ApplyForLoanService>();

@@ -10,5 +10,6 @@ namespace SocialPay.Helper.Configurations
         public string merchantAdvancelogger { get; set; }
         public string containerName { get; set; }
         public string blobBaseUrl { get; set; }
+        public string accountLogger { get; set; }
     }
 }
