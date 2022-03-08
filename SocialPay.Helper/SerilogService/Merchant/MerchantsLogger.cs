@@ -7,15 +7,15 @@ using System.Text;
 
 namespace SocialPay.Helper.SerilogService.Merchant
 {
-    public class MerchantsLoggerLogger
+    public class MerchantsLogger
     {
         public IConfiguration Configuration { get; }
-        public MerchantsLoggerLogger(IConfiguration configuration)
+        public MerchantsLogger(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public void LogRequest(string message, bool isError)
+        public void LogRequest(string message, bool isError =false)
         {
             var options = Configuration.GetSection(nameof(SerilogConfiguration)).Get<SerilogConfiguration>();
 
