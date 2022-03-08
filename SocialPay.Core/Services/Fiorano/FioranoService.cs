@@ -5,6 +5,7 @@ using SocialPay.Core.Configurations;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.FioranoT24;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Threading.Tasks;
@@ -19,21 +20,26 @@ namespace SocialPay.Core.Services.Fiorano
         private readonly IMerchantBankingInfoService _merchantBankingInfoService;
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(FioranoService));
+        private readonly FioranoT24Logger _fioranoT24Logger;
+
 
         public FioranoService(FioranoAPIService fioranoService, IFioranoRequestService fioranoRequestService,
             IOptions<AppSettings> appSettings, IFioranoResponseService fioranoResponseService,
-            IMerchantBankingInfoService merchantBankingInfoService)
+            IMerchantBankingInfoService merchantBankingInfoService, FioranoT24Logger fioranoT24Logger)
         {
             _appSettings = appSettings.Value;
             _fioranoService = fioranoService ?? throw new ArgumentNullException(nameof(fioranoService));
             _fioranoRequestService = fioranoRequestService ?? throw new ArgumentNullException(nameof(fioranoRequestService));
             _fioranoResponseService = fioranoResponseService ?? throw new ArgumentNullException(nameof(fioranoResponseService));
             _merchantBankingInfoService = merchantBankingInfoService ?? throw new ArgumentNullException(nameof(merchantBankingInfoService));
+            _fioranoT24Logger = fioranoT24Logger;
         }
+
+
 
         public async Task<WebApiResponse> InitiateFioranoRequest(FioranoBillsRequestDto fioranoBillsRequestDto, long clientId)
         {
-            _log4net.Info("Initiating fiorano transaction" + " - " + fioranoBillsRequestDto.TransactionReference + " - " + DateTime.Now);
+            _fioranoT24Logger.LogRequest($"{"Initiating fiorano transaction"}{ " - "}{ fioranoBillsRequestDto.TransactionReference}{" - " }{DateTime.Now}");
             try
             {
                 var bankInfo = await _merchantBankingInfoService.GetMerchantBankInfo(clientId);
@@ -101,7 +107,7 @@ namespace SocialPay.Core.Services.Fiorano
 
                     await _fioranoResponseService.AddAsync(response);
 
-                    _log4net.Info("Fiorano response was successful" + " - " + fioranoBillsRequestDto.TransactionReference + " - " + debitCustomer.Message + " - " + debitCustomer.FTResponse.FTID + " - "+  DateTime.Now);
+                    _fioranoT24Logger.LogRequest($"{"Fiorano response was successful"}{" - "}{fioranoBillsRequestDto.TransactionReference}{ " - "}{ debitCustomer.Message.ToString()}{ " - "}{debitCustomer.FTResponse.FTID}{ " - "}{DateTime.Now}");
 
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = debitCustomer, Message = "Success", StatusCode = ResponseCodes.Success };
 
@@ -120,7 +126,7 @@ namespace SocialPay.Core.Services.Fiorano
             }
             catch (Exception ex)
             {
-                _log4net.Error("Fiorano response error" + " - " + fioranoBillsRequestDto.TransactionReference + " - " + ex + " - " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Fiorano response error"}{ " - "}{fioranoBillsRequestDto.TransactionReference}{ " - "}{ ex.Message.ToString()}{ " - "}{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, StatusCode = ResponseCodes.InternalError };
             }

@@ -4,16 +4,18 @@ using SocialPay.Helper.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Text;
-namespace SocialPay.Helper.SerilogService.Account
+
+namespace SocialPay.Helper.SerilogService.Merchant
 {
-    public class AccountLogger
+    public class MerchantsLoggerLogger
     {
         public IConfiguration Configuration { get; }
-        public AccountLogger(IConfiguration configuration)
+        public MerchantsLoggerLogger(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-        public void LogRequest(string message, bool isError = false)
+
+        public void LogRequest(string message, bool isError)
         {
             var options = Configuration.GetSection(nameof(SerilogConfiguration)).Get<SerilogConfiguration>();
 
@@ -22,7 +24,7 @@ namespace SocialPay.Helper.SerilogService.Account
            .Enrich.FromLogContext()
            // Add this line:
            .WriteTo.File(
-              options.accountLogger,
+              options.merchantsLogger,
                outputTemplate: "{Timestamp:o} [{Level:u3}] ({SourceContext}) {Message}{NewLine}{Exception}",
                fileSizeLimitBytes: 1_000_000,
                rollingInterval: RollingInterval.Day,
@@ -40,6 +42,10 @@ namespace SocialPay.Helper.SerilogService.Account
                 Log.Logger.Information(message);
             }
         }
+
+
+
+
 
     }
 }

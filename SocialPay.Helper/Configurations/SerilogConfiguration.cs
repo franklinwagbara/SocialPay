@@ -11,5 +11,9 @@ namespace SocialPay.Helper.Configurations
         public string containerName { get; set; }
         public string blobBaseUrl { get; set; }
         public string accountLogger { get; set; }
+        public string customerLogger { get; set; }
+        public string fioranoT24Logger { get; set; }
+        public string merchantsLogger { get; set; }
+        public string transactionLogger { get; set; }
     }
 }
