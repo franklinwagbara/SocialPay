@@ -155,7 +155,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 join p in _context.TransactionLog on c.TransactionReference equals p.TransactionReference
                                 join a in _context.CustomerOtherPaymentsInfo on p.PaymentReference equals a.PaymentReference
 
-                               // where p.TransactionType != TransactionType.StorePayment
+                               // where p.TransactionType != TransactionType.StorePayment   by ferdinand 
 
                                 select new CustomerPaymentViewModel
                                 {
