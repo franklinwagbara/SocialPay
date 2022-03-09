@@ -114,7 +114,7 @@ namespace SocialPay.Core.Repositories.Customer
         public async Task<List<TransactionLog>> GetTransactionByClientId(long clientId)
         {
             return await _context.TransactionLog
-                .Where(x => x.CustomerInfo == clientId
+                .Where(x => x.ClientAuthenticationId == clientId
                ).ToListAsync();
         }
 
