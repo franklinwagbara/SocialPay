@@ -32,7 +32,9 @@ namespace SocialPay.Core.Services.Tenant
 
             _client = new HttpClient
             {
-                BaseAddress = new Uri(_appSettings.BaseUrlTenant),
+                //BaseAddress = new Uri(_appSettings.BaseUrlTenant),
+                BaseAddress = new Uri("http://localhost:53237"),
+                
             };
         }
 
@@ -83,9 +85,9 @@ namespace SocialPay.Core.Services.Tenant
                     var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
                     if (sendMail != AppResponseCodes.Success)
-                        return new WebApiResponse { ResponseCode = successfulResponse.data.responseCode, Message = "Ternant created but email service failed", Data = successfulResponse.data.data };
+                        return new WebApiResponse { ResponseCode = successfulResponse.data.responseCode, StatusCode = ResponseCodes.InternalError, Message = "Ternant created but email service failed", Data = successfulResponse.data.data };
 
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = "Success" };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = "Success" ,StatusCode = ResponseCodes.Success};
                 }
 
                 return new WebApiResponse { ResponseCode = successfulResponse.data.responseCode, Message = successfulResponse.data.message, Data = successfulResponse.data.data };
@@ -95,7 +97,7 @@ namespace SocialPay.Core.Services.Tenant
             {
                 _log4net.Error("CreateNewTenant error occured " + " - "+ ex + " - "+  DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured", StatusCode = ResponseCodes.InternalError };
             }
         }
 
@@ -111,18 +113,18 @@ namespace SocialPay.Core.Services.Tenant
                 var response = await _client.GetAsync($"{_appSettings.getTenantUrl}");
 
                 if (!response.IsSuccessStatusCode)
-                    new WebApiResponse { ResponseCode = AppResponseCodes.Failed };
+                    new WebApiResponse { ResponseCode = AppResponseCodes.Failed,StatusCode = ResponseCodes.InternalError };
 
                 var content = await response.Content.ReadAsStringAsync();
-                var successfulResponse = JsonConvert.DeserializeObject<GetTenantResponseDto>(content);
+                List< GetTenantResponseDto> successfulResponse = JsonConvert.DeserializeObject<List<GetTenantResponseDto>>(content);
 
-                return new WebApiResponse { ResponseCode = successfulResponse.data.responseCode, Data = successfulResponse.data.data };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = successfulResponse, StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
                 _log4net.Error("GetTenant error occured " + " - " + ex + " - " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured" };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured", StatusCode = ResponseCodes.InternalError };
             }
         }
         //public async Task<WebApiResponse> CreateNewTenant(TenantProfileRequestDto request, long clientId)

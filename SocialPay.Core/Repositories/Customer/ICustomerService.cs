@@ -114,7 +114,7 @@ namespace SocialPay.Core.Repositories.Customer
         public async Task<List<TransactionLog>> GetTransactionByClientId(long clientId)
         {
             return await _context.TransactionLog
-                .Where(x => x.CustomerInfo == clientId
+                .Where(x => x.ClientAuthenticationId == clientId
                ).ToListAsync();
         }
 
@@ -155,7 +155,7 @@ namespace SocialPay.Core.Repositories.Customer
                                 join p in _context.TransactionLog on c.TransactionReference equals p.TransactionReference
                                 join a in _context.CustomerOtherPaymentsInfo on p.PaymentReference equals a.PaymentReference
 
-                                where p.TransactionType != TransactionType.StorePayment
+                                //where p.TransactionType != TransactionType.StorePayment
 
                                 select new CustomerPaymentViewModel
                                 {
@@ -781,7 +781,7 @@ namespace SocialPay.Core.Repositories.Customer
                     logconfirmation.TransactionJourney = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.ActivityStatus = TransactionJourneyStatusCodes.Approved;
                     logconfirmation.TransactionType = TransactionType.OtherPayment;
-                    // logconfirmation.CustomerEmail = model.e;
+                    logconfirmation.CustomerEmail = getCustomerInfo.Email;
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try

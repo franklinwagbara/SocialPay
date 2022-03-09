@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using SocialPay.Helper;
 using SocialPay.Core.Services.Wallet;
 using Microsoft.Data.SqlClient;
+using SocialPay.Helper.SerilogService.Escrow;
 
 namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
 {
@@ -20,13 +21,14 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeclineEscrowWalletPendingTransaction));
-
+        private readonly EscrowJobLogger _escrowLogger;
         public DeclineEscrowWalletPendingTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
-            WalletRepoJobService walletRepoJobService)
+            WalletRepoJobService walletRepoJobService, EscrowJobLogger escrowLogger)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _walletRepoJobService = walletRepoJobService;
+            _escrowLogger = escrowLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -41,7 +43,7 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
-                        _log4net.Info("Job Service" + "-" + "DeclineEscrowWalletPendingTransaction" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                        _escrowLogger.LogRequest($"{"Job Service" + "-" + "DeclineEscrowWalletPendingTransaction" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " }{DateTime.Now}", false);
 
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
@@ -119,13 +121,13 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
                                     await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
-                                    _log4net.Info("Job Service" + "-" + "DeclineEscrowWalletPendingTransaction successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                                    _escrowLogger.LogRequest($"{"Job Service" + "-" + "DeclineEscrowWalletPendingTransaction successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "  }{DateTime.Now}", false);
 
                                     return null;
                                 }
                                 catch (Exception ex)
                                 {
-                                    _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                                    _escrowLogger.LogRequest($"{"Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " }{DateTime.Now}", true);
 
                                     await transaction.RollbackAsync();
                                     return null;
@@ -148,7 +150,7 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _escrowLogger.LogRequest($"{"Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " }{DateTime.Now}", true);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
@@ -166,8 +168,8 @@ namespace SocialPay.Job.Repository.DeclinedEscrowWalletTransaction
                     //    context.Update(getTransInfo);
                     //    await context.SaveChangesAsync();
                     //}
+                    _escrowLogger.LogRequest($"{"Job Service. An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
-                    _log4net.Error("Job Service. An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

@@ -9,6 +9,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.WalletJob;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,14 +21,16 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ProcessMerchantWalletTransactions));
+        private readonly WalletJobLogger _walletLogger;
 
 
         public ProcessMerchantWalletTransactions(IServiceProvider service, IOptions<AppSettings> appSettings,
-         WalletRepoJobService walletRepoJobService)
+         WalletRepoJobService walletRepoJobService, WalletJobLogger walletLogger)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _walletRepoJobService = walletRepoJobService;
+            _walletLogger = walletLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -41,9 +44,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
-                        _log4net.Info("Job Service" + "-" + "ProcessMerchantWalletTransactions wallet request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
 
-                        //var requestId = $"{"So-Pay-"}{Guid.NewGuid().ToString().Substring(0, 22)}";
+                        _walletLogger.LogRequest($"{"Job Service" + "-" + "ProcessMerchantWalletTransactions wallet request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                         var getTransInfo = await context.TransactionLog
                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
@@ -64,7 +66,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                        
                         if (getWalletInfo == null)
                         {
-                            _log4net.Info("Job Service" + "-" + "Credit merchant wallet. Bank info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                            _walletLogger.LogRequest($"{"Job Service" + "-" + "Credit merchant wallet. Bank info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                             return null;
                         }
@@ -75,7 +77,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
 
                         if(validateWallet != null)
                         {
-                            _log4net.Info("Job Service" + "-" + "ProcessMerchantWalletTransactions merchant wallet request was successfully logged" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                            _walletLogger.LogRequest($"{"Job Service" + "-" + "ProcessMerchantWalletTransactions merchant wallet request was successfully logged" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                             var walletModel = new WalletTransferRequestDto
                             {
@@ -118,14 +120,13 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                         await context.SaveChangesAsync();
 
                                         await transaction.CommitAsync();
-
-                                        _log4net.Info("Job Service" + "-" + "ProcessMerchantWalletTransactions Wallet Pending Transaction successfully updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                                        _walletLogger.LogRequest($"{"Job Service" + "-" + "ProcessMerchantWalletTransactions Wallet Pending Transaction successfully updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                                         return null;
                                     }
                                     catch (Exception ex)
                                     {
-                                        _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                                        _walletLogger.LogRequest($"{"Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                                         await transaction.RollbackAsync();
                                         return null;
@@ -133,8 +134,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                 }
                             }
 
-                            _log4net.Info("Job Service" + "-" + "ProcessMerchantWalletTransactions Wallet Pending Transaction Failed" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
-
+                            _walletLogger.LogRequest($"{"Job Service" + "-" + "ProcessMerchantWalletTransactions Wallet Pending Transaction Failed" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                             var failedResponse = new FailedTransactions
                             {
@@ -153,8 +153,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         context.Update(getTransInfo);
 
                         await context.SaveChangesAsync();
-
-                        _log4net.Info("Job Service" + "-" + "ProcessMerchantWalletTransactions Wallet Pending Transaction Failed with record not found" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                        _walletLogger.LogRequest($"{"Job Service" + "-" + "ProcessMerchantWalletTransactions Wallet Pending Transaction Failed with record not found" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " }{DateTime.Now}", false);
 
                         //var walletRequestModel = new DefaultWalletTransferRequestLog
                         //{
@@ -184,14 +183,13 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
             }
             catch (SqlException ex)
             {
-                _log4net.Error("Job Service: ProcessMerchantWalletTransactions" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
+                _walletLogger.LogRequest($"{"Job Service: ProcessMerchantWalletTransactions" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
             catch (Exception ex)
             {
-                _log4net.Error("Job Service: ProcessMerchantWalletTransactions" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _walletLogger.LogRequest($"{"Job Service: ProcessMerchantWalletTransactions" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
@@ -209,8 +207,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                     //    context.Update(getTransInfo);
                     //    await context.SaveChangesAsync();
                     //}
-                       
-                    _log4net.Error("Job Service: ProcessMerchantWalletTransactions" + "-" + "Error occured. Duplicate transaction" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _walletLogger.LogRequest($"{"Job Service: ProcessMerchantWalletTransactions" + "-" + "Error occured. Duplicate transaction" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

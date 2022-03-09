@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
+using SocialPay.Helper.SerilogService.NotificationJob;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,10 +13,12 @@ namespace SocialPay.Job.Repository.NotificationService
     {
         private readonly NotificationTransactions _transactions;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NotificationService));
-        public NotificationService(NotificationTransactions transactions, IServiceProvider services)
+        private readonly NotificationJobLogger _notificationjobLogger;
+        public NotificationService(NotificationTransactions transactions, IServiceProvider services, NotificationJobLogger notificationjobLogger)
         {
             Services = services;
             _transactions = transactions;
+            _notificationjobLogger = notificationjobLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -23,7 +26,8 @@ namespace SocialPay.Job.Repository.NotificationService
         {
             try
             {
-                  _log4net.Info("Job Service" + "-"+ "Tasks starts to get all notification transactions" + " | " + DateTime.Now);
+                _notificationjobLogger.LogRequest($"{"Job Service" + "-" + "Tasks starts to get all notification transactions" + " | "}{DateTime.Now}", false);
+
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -36,8 +40,8 @@ namespace SocialPay.Job.Repository.NotificationService
                     var getvalidRequest = pendingTransactions.Where(x => x.Category 
                          == MerchantPaymentLinkCategory.Escrow
                      || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
-                     _log4net.Info("Job Service" + "-" + "Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
-                  
+                    _notificationjobLogger.LogRequest($"{"Job Service" + "-" + "Total number of pending transactions" + " | " + pendingTransactions.Count + " | "}{DateTime.Now}", false);
+
                     if (getvalidRequest.Count == 0)
                         return "No record";
 
@@ -51,7 +55,7 @@ namespace SocialPay.Job.Repository.NotificationService
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service. An error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _notificationjobLogger.LogRequest($"{"Job Service. An error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
                 return "Error";
             }
 

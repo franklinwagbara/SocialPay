@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
+using SocialPay.Helper.SerilogService.WalletJob;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +13,12 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
     {
         private readonly ProcessMerchantWalletTransactions _transactions;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ProcessMerchantWalletService));
-
-        public ProcessMerchantWalletService(IServiceProvider services, ProcessMerchantWalletTransactions transactions)
+        private readonly WalletJobLogger _walletLogger;
+        public ProcessMerchantWalletService(IServiceProvider services, ProcessMerchantWalletTransactions transactions, WalletJobLogger walletLogger)
         {
             Services = services;
             _transactions = transactions;
+            _walletLogger = walletLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -24,7 +26,8 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
         {
             try
             {
-                _log4net.Info("Job Service" + "-" + "to fetch awaiting transactions for Non Escrow Card Wallet Transaction" + " | " + DateTime.Now);
+                _walletLogger.LogRequest($"{"Job Service" + "-" + "to fetch awaiting transactions for Non Escrow Card Wallet Transaction" + " | "}{DateTime.Now}", false);
+
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -36,7 +39,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
 
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Basic
                     || x.Category == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
-                    _log4net.Info("Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                    _walletLogger.LogRequest($"{"Job Service: Non Escrow Card Wallet Transaction. Total number of pending transactions" + " | " + pendingTransactions.Count + " | "}{DateTime.Now}", false);
 
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
@@ -50,7 +53,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service. Non Escrow Card Wallet Transaction" + "Error occured" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _walletLogger.LogRequest($"{"Job Service. Non Escrow Card Wallet Transaction" + "Error occured" + " | " + ex.Message.ToString() + " | " }{DateTime.Now}", true);
                 return "Error";
             }
 

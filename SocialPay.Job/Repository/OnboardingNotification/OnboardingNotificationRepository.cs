@@ -43,7 +43,7 @@ namespace SocialPay.Job.Repository.OnboardingNotification
 
                     var emailModal = new EmailRequestDto
                     {
-                        Subject = "Complet Onboarding",
+                        Subject = "Complete Onboarding",
                         DestinationEmail = item.Email,
                         SourceEmail = _appSettings.senderEmailInfo
                     };

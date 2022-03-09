@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using SocialPay.Helper;
 using SocialPay.Core.Services.Wallet;
 using Microsoft.Data.SqlClient;
+using SocialPay.Helper.SerilogService.Escrow;
 
 namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
 {
@@ -20,13 +21,14 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AcceptedEscrowOrderTransactions));
-
+        private readonly EscrowJobLogger _escrowLogger;
         public AcceptedEscrowOrderTransactions(IServiceProvider service, IOptions<AppSettings> appSettings,
-            WalletRepoJobService walletRepoJobService)
+            WalletRepoJobService walletRepoJobService, EscrowJobLogger escrowLogger)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _walletRepoJobService = walletRepoJobService;
+            _escrowLogger = escrowLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -41,7 +43,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
-                        _log4net.Info("Job Service. AcceptedEscrowOrderTransactions" + "-" + "ProcessTransactions request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                        _escrowLogger.LogRequest($"{"Job Service. AcceptedEscrowOrderTransactions" + "-" + "ProcessTransactions request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "  }{DateTime.Now}", false);
 
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
@@ -118,13 +120,13 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                                     await context.WalletTransferResponse.AddAsync(walletResponse);
                                     await context.SaveChangesAsync();
                                     await transaction.CommitAsync();
-                                    _log4net.Info("Job Service. AcceptedEscrowOrderTransactions" + "-" + "ProcessTransactions request was successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                                    _escrowLogger.LogRequest($"{"Job Service. AcceptedEscrowOrderTransactions" + "-" + "ProcessTransactions request was successful" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                                     return null;
                                 }
                                 catch (Exception ex)
                                 {
-                                    _log4net.Error("Job Service. AcceptedEscrowOrderTransactions: An error occured" + " | " + transactionLogid + " | " +  ex.Message.ToString() + " | " + DateTime.Now);
+                                    _escrowLogger.LogRequest($"{"Job Service. AcceptedEscrowOrderTransactions: An error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", false);
                                     await transaction.RollbackAsync();
                                     return null;
                                 }
@@ -139,8 +141,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                         };
                         await context.FailedTransactions.AddAsync(failedResponse);
                         await context.SaveChangesAsync();
-                        _log4net.Info("Job Service. AcceptedEscrowOrderTransactions" + "-" + "ProcessTransactions request failed" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + failedResponse.Message + " | "+ DateTime.Now);
-
+                        _escrowLogger.LogRequest($"{"Job Service. AcceptedEscrowOrderTransactions" + "-" + "ProcessTransactions request failed" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + failedResponse.Message + " | "}{DateTime.Now}", false);
                     }
                     return null;
                 }
@@ -165,8 +166,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
                     //    context.Update(getTransInfo);
                     //    await context.SaveChangesAsync();
                     //}
-
-                    _log4net.Error("Job Service. AcceptedEscrowOrderTransactions: An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _escrowLogger.LogRequest($"{"Job Service. AcceptedEscrowOrderTransactions: An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | " + ex.Message.ToString() + " | " }{DateTime.Now}", false);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

@@ -41,7 +41,7 @@ namespace SocialPay.Core.Services.Merchant.Services
                                                       Message = t.Message,
                                                       TransactionType = t.TransactionType,
                                                       transactionDate = t.TransactionDate
-                                                  }).ToListAsync();
+                                                  }).OrderByDescending(x=> x.transactionDate).ToListAsync();
 
                 if (customertransactions.Count == 0)
                 {

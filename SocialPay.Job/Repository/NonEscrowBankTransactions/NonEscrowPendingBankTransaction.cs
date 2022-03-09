@@ -8,6 +8,7 @@ using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.NonEscrowJob;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
 using System;
@@ -23,10 +24,10 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
         private readonly InterBankPendingTransferService _interBankPendingTransferService;
         private readonly BankServiceRepositoryJobService _bankServiceRepositoryJobService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowPendingBankTransaction));
-
+        private readonly NonEscrowJobLogger _nonescrowLogger;
         public NonEscrowPendingBankTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
              FioranoTransferNonEscrowRepository fioranoTransferRepository,
-         InterBankPendingTransferService interBankPendingTransferService,
+         InterBankPendingTransferService interBankPendingTransferService, NonEscrowJobLogger nonescrowLogger,
          BankServiceRepositoryJobService bankServiceRepositoryJobService)
         {
             Services = service;
@@ -34,6 +35,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
             _fioranoTransferRepository = fioranoTransferRepository;
             _interBankPendingTransferService = interBankPendingTransferService;
             _bankServiceRepositoryJobService = bankServiceRepositoryJobService;
+            _nonescrowLogger = nonescrowLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -50,8 +52,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 
                     foreach (var item in pendingRequest)
                     {
-                        _log4net.Info("Job Service" + "-" + "Non Escrow Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
-                       
+                        _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Non Escrow Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                         var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
 
@@ -78,7 +79,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 
                             if (getBankInfo == null)
                             {
-                                _log4net.Info("Job Service" + "-" + "Non Escrow PendingBank Transaction Bank info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                                _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Non Escrow PendingBank Transaction Bank info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                                 return null;
                             }
@@ -106,7 +107,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                     context.Update(getTransInfo);
 
                                     await context.SaveChangesAsync();
-                                    _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                                    _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "NonEscrowPendingBankTransaction response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                                     return null;
                                 }
@@ -127,19 +128,17 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                                 await context.FailedTransactions.AddAsync(failedTransaction);
                                 await context.SaveChangesAsync();
 
-                                _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction failed response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                                _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "NonEscrowPendingBankTransaction failed response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                                 return null;
                             }
 
-                            _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
-
+                            _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                             var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                                 getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
                                 item.PaymentReference, item.TransactionReference);
-
-                            _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                            _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                             if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
                             {
@@ -162,7 +161,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
 
                             await context.FailedTransactions.AddAsync(failedResponse);
                             await context.SaveChangesAsync();
-                            _log4net.Info("Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response failed" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                            _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "NonEscrowPendingBankTransaction inter bank response failed" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                             return null;
                         }
@@ -192,14 +191,15 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service" + "-" + "Base Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Base Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
-                {                   
-                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                {
+                    _nonescrowLogger.LogRequest($"{"An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

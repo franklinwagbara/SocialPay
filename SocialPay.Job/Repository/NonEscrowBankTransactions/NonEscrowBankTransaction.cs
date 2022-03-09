@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
+using SocialPay.Helper.SerilogService.NonEscrowJob;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +13,12 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
     {
         private readonly NonEscrowPendingBankTransaction _transactions;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowBankTransaction));
-
-        public NonEscrowBankTransaction(NonEscrowPendingBankTransaction transactions, IServiceProvider services)
+        private readonly NonEscrowJobLogger _nonescrowLogger;
+        public NonEscrowBankTransaction(NonEscrowPendingBankTransaction transactions, IServiceProvider services, NonEscrowJobLogger nonescrowLogger)
         {
             Services = services;
             _transactions = transactions;
+            _nonescrowLogger = nonescrowLogger;
         }
 
         public IServiceProvider Services { get; }
@@ -25,7 +27,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
         {
             try
             {
-                _log4net.Info("Job Service" + "-" + "NonEscrowBankTransaction request" + " | "+ DateTime.Now);
+                _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "NonEscrowBankTransaction request" + " | "}{DateTime.Now}", false);
+
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -37,8 +40,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Basic
                      || x.LinkCategory == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
                    
-                    _log4net.Info("Job Service: Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
-                  
+                    _nonescrowLogger.LogRequest($"{"Job Service: Total number of pending transactions" + " | " + pendingTransactions.Count + " | "}{DateTime.Now}", false);
+
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
                    
@@ -51,7 +54,8 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service: An error occured while fetching transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _nonescrowLogger.LogRequest($"{"Job Service: An error occured while fetching transactions" + " | " + ex.Message.ToString() + " | " }{DateTime.Now}", true);
+
                 return "Error";
             }
 
