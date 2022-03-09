@@ -12,6 +12,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.Merchant;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -31,10 +32,11 @@ namespace SocialPay.Core.Services.Report
         private readonly IDistributedCache _distributedCache;
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantReportService));
+        private readonly MerchantsLogger _merchantLogger;
 
         public MerchantReportService(SocialPayDbContext context,
             ICustomerService customerService, TransactionReceipt transactionReceipt,
-            InvoiceService invoiceService, IDistributedCache distributedCache, IOptions<AppSettings> appSettings)
+            InvoiceService invoiceService, IDistributedCache distributedCache, IOptions<AppSettings> appSettings, MerchantsLogger merchantLogger)
         {
             _context = context;
             _customerService = customerService;
@@ -42,6 +44,7 @@ namespace SocialPay.Core.Services.Report
             _invoiceService = invoiceService;
             _distributedCache = distributedCache;
             _appSettings = appSettings.Value;
+            _merchantLogger = merchantLogger;
         }
 
         public async Task<WebApiResponse> GetMerchants(bool hasCompanyProfile)
@@ -49,7 +52,7 @@ namespace SocialPay.Core.Services.Report
             var result = new List<MerchantBusinessInfoViewModel>();
             try
             {
-                _log4net.Info("Initiating GetMerchants request" + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Initiating GetMerchants request"}{ " | "}{ DateTime.Now}");
 
 
                 var getMerchantInfo = await _context.ClientAuthentication
@@ -125,7 +128,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetMerchants" + " | " + ex + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "GetMerchants"}{ " | "}{ex}{ " | "}{DateTime.Now}",true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = result };
             }
         }
@@ -134,7 +137,7 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
-                _log4net.Info("Initiating GenerateCustomerReceipt request" + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Initiating GenerateCustomerReceipt request"}{" | "}{ DateTime.Now}");
 
                 //await _transactionReceipt.ReceiptTemplate("festypat9@gmail.com");
                 var validateTransaction = await _customerService.GetTransactionReference(model.TransactionReference);
@@ -157,7 +160,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GenerateCustomerReceipt" + " | " + model.TransactionReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GenerateCustomerReceipt"}{ " | "}{ model.TransactionReference}{" | "}{ ex.Message.ToString()}{ " | "}{DateTime.Now}");
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
@@ -168,7 +171,7 @@ namespace SocialPay.Core.Services.Report
             var result = new List<ItemDisputeViewModel>();
             try
             {
-                _log4net.Info("Initiating GetAllLoggedDisputes request" + " | " + clientId + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Initiating GetAllLoggedDisputes request"}{ " | "}{ clientId}{ " | "}{ DateTime.Now}");
 
                 //clientId = 30032;
                 if (IsAdmin)
@@ -209,13 +212,13 @@ namespace SocialPay.Core.Services.Report
                                 }).OrderByDescending(x=>x.DateEntered).ToList();
 
                 result = response;
-                _log4net.Info("Initiating GetAllLoggedDisputes response" + " | " + clientId + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Initiating GetAllLoggedDisputes response"}{ " | "}{ clientId}{" | " }{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = result };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllLoggedDisputes" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllLoggedDisputes"}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -227,7 +230,7 @@ namespace SocialPay.Core.Services.Report
             var result = new List<ItemDisputeViewModel>();
             try
             {
-                _log4net.Info("Initiating GetAllUsers request" + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Initiating GetAllUsers request"}{ " | "}{ DateTime.Now}");
 
                 //clientId = 30032;
                 var response = await (from c in _context.ClientAuthentication
@@ -246,7 +249,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllLoggedDisputes" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "GetAllLoggedDisputes"}{ " | "}{ ex.Message.ToString()}{" | "}{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -264,7 +267,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllInvoiceByMerchantId" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "GetAllInvoiceByMerchantId"}{" | "}{ clientId}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -283,7 +286,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "GetAllTransactions"}{ " | "}{ex.Message.ToString()}{ " | "}{ DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -301,7 +304,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{"GetAllTransactions"}{ " | "}{ex.Message.ToString()}{ " | "}{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -319,7 +322,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -344,7 +347,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -362,7 +365,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{"GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -377,7 +380,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -391,7 +394,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{" | " }{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -403,7 +406,7 @@ namespace SocialPay.Core.Services.Report
             try
             {
                 //clientId = 30032;
-                _log4net.Info("Initiating GetAllEscrowTransactions request" + " | " + clientId + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Initiating GetAllEscrowTransactions request"}{ " | "}{clientId}{ " | "}{ DateTime.Now}");
 
                 var getTransactions = await _context.MerchantPaymentSetup
                     .Include(c => c.CustomerTransaction)
@@ -455,7 +458,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllEscrowTransactions" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllEscrowTransactions"}{ " | "}{ clientId}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -496,7 +499,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -510,7 +513,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -525,7 +528,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -540,7 +543,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{"GetAllTransactions"}{" | "}{ ex.Message.ToString()}{ " | "}{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -555,7 +558,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{"GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -570,7 +573,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{"GetAllTransactions"}{" | " + ex.Message.ToString()}{" | " }{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -587,7 +590,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -601,7 +604,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -616,7 +619,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "GetAllTransactions"}{" | "}{ex.Message.ToString()}{" | "}{ DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -642,7 +645,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -669,7 +672,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -695,7 +698,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -721,7 +724,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{" | "}{ ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -747,7 +750,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -831,7 +834,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -858,7 +861,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{"GetAllTransactions"}{ " | "}{ ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -884,7 +887,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "GetAllTransactions"}{" | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -910,7 +913,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAllTransactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetAllTransactions"}{" | "}{ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -921,7 +924,7 @@ namespace SocialPay.Core.Services.Report
             try
             {
                 //  clientId = 238;
-                _log4net.Info("GetCustomersTransactionCount" + " | " + clientId + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"GetCustomersTransactionCount"}{ " | "}{ clientId}{" | "}{DateTime.Now}");
 
                 var result = await _context.TransactionLog
                     .Where(x => x.ClientAuthenticationId == clientId)
@@ -933,7 +936,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetCustomersTransactionCount" + " | " + clientId + " | " + ex + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{"GetCustomersTransactionCount"}{ " | "}{clientId}{" | "}{ex.Message.ToString()}{" | "}{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -944,7 +947,7 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
-                _log4net.Info("GetCustomersTransactionValue" + " | " + clientId + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"GetCustomersTransactionValue"}{" | "}{ clientId}{ " | "}{ DateTime.Now}");
 
                 var result = await _context.TransactionLog
                     .Where(x => x.ClientAuthenticationId == clientId)
@@ -954,7 +957,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetCustomersTransactionValue" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetCustomersTransactionValue"}{ " | "}{ clientId}{ " | "}{ ex.Message.ToString()}{ " | "}{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -965,7 +968,7 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
-                _log4net.Info("GetCustomersTransactionValue" + " | " + clientId + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"GetCustomersTransactionValue"}{ " | "}{ clientId}{ " | "}{ DateTime.Now}");
 
                 var result = await _context.TransactionLog
                     .Where(x => x.ClientAuthenticationId == clientId)
@@ -983,7 +986,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetCustomersTransactionValue" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{"GetCustomersTransactionValue"}{" | "}{ clientId}{" | "}{ ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -993,7 +996,7 @@ namespace SocialPay.Core.Services.Report
         public async Task<WebApiResponse> AdminGetCustomersTransactionCount(string category)
         {
 
-            _log4net.Info("AdminGetCustomersTransactionCount" + " | " + DateTime.Now);
+            _merchantLogger.LogRequest($"{"AdminGetCustomersTransactionCount"}{ " | "}{ DateTime.Now}");
 
             var request = new List<OrdersViewModel>();
             try
@@ -1016,7 +1019,7 @@ namespace SocialPay.Core.Services.Report
 
                     request = invoiceResponse;
 
-                    _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
+                    _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{" - "}{category}{ " - "}{ request.Count}{ " - "}{DateTime.Now}");
 
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Count() };
                 }
@@ -1041,7 +1044,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "AdminGetCustomersTransactionCount" + " | " + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ "AdminGetCustomersTransactionCount"}{ " | "}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -1078,7 +1081,7 @@ namespace SocialPay.Core.Services.Report
 
                     request = invoiceResponse;
 
-                    _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
+                    _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{ request.Count}{ " - "}{ DateTime.Now}");
 
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Sum(x => x.TotalAmount) };
                 }
@@ -1096,7 +1099,7 @@ namespace SocialPay.Core.Services.Report
 
                 request = otherLinksresponse;
 
-                _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{request.Count}{ " - "}{ DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Sum(x => x.TotalAmount) };
 
@@ -1117,7 +1120,7 @@ namespace SocialPay.Core.Services.Report
         {
             try
             {
-                _log4net.Info("AdminMostUsedPaymentChannel" + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"AdminMostUsedPaymentChannel"}{ " | "}{ DateTime.Now}");
 
                 var result = await _context.TransactionLog
                     .ToListAsync();
@@ -1134,7 +1137,7 @@ namespace SocialPay.Core.Services.Report
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "AdminMostUsedPaymentChannel" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{" | "}{ "AdminMostUsedPaymentChannel"}{ " | "}{ex.Message.ToString()}{" | "}{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

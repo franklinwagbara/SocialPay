@@ -39,6 +39,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ApiLogs\BillsPaymentLogs\" />
+    <Folder Include="ApiLogs\AccountLogs\" />
+    <Folder Include="ApiLogs\CustomerLogs\" />
+    <Folder Include="ApiLogs\FioranoT24Logs\" />
+    <Folder Include="ApiLogs\MerchantsLogs\" />
+    <Folder Include="ApiLogs\TransactionLogs\" />
     <Folder Include="wwwroot\CustomerDocuments\" />
   </ItemGroup>
 
