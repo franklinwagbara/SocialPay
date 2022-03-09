@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
+using SocialPay.Helper.SerilogService.WalletJob;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +13,13 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
     {
         private readonly CreditMerchantWalletTransactions _transactions;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(CreditMerchantWalletService));
+        private readonly WalletJobLogger _walletLogger;
 
-        public CreditMerchantWalletService(IServiceProvider services, CreditMerchantWalletTransactions transactions)
+        public CreditMerchantWalletService(IServiceProvider services, CreditMerchantWalletTransactions transactions, WalletJobLogger walletLogger)
         {
             Services = services;
             _transactions = transactions;
+            _walletLogger = walletLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -24,7 +27,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
         {
             try
             {
-                _log4net.Info("Job Service" + "-" + "CreditMerchantWalletService" + " | " + DateTime.Now);
+                _walletLogger.LogRequest($"{"Job Service" + "-" + "CreditMerchantWalletService" + " | " }{DateTime.Now}", false);
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -33,8 +36,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                         .Where(x => x.OrderStatus == 
                         TransactionJourneyStatusCodes.Pending 
                         && x.PaymentChannel != PaymentChannel.PayWithSpecta).Take(1).ToListAsync();
-
-                     _log4net.Info("Job Service" + "-" + "CreditMerchantWalletService pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                    _walletLogger.LogRequest($"{"Job Service" + "-" + "CreditMerchantWalletService pending transactions" + " | " + pendingTransactions.Count + " | " }{DateTime.Now}", false);                    
                     
                     if (pendingTransactions.Count == 0)
                         return "No record";
@@ -48,7 +50,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _walletLogger.LogRequest($"{"Job Service" + "-" + "Error occured" + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", false);
                 return "Error";
             }
 

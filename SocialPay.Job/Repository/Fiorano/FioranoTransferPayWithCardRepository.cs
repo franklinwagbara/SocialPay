@@ -8,6 +8,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.FioranoJob;
 using System;
 using System.Threading.Tasks;
 
@@ -18,13 +19,15 @@ namespace SocialPay.Job.Repository.Fiorano
         private readonly CreditDebitService _creditDebitService;
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(FioranoTransferPayWithCardRepository));
+        private readonly FioranoJobLogger _fioranoLogger;
 
         public FioranoTransferPayWithCardRepository(IOptions<AppSettings> appSettings, CreditDebitService creditDebitService,
-            IServiceProvider services)
+            IServiceProvider services, FioranoJobLogger fioranoLogger)
         {
             _appSettings = appSettings.Value;
             _creditDebitService = creditDebitService;
             Services = services;
+            _fioranoLogger = fioranoLogger;
         }
 
         public IServiceProvider Services { get; }
@@ -113,7 +116,7 @@ namespace SocialPay.Job.Repository.Fiorano
 
             catch (Exception ex)
             {
-                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _fioranoLogger.LogRequest($"{"Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", false);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
@@ -133,8 +136,8 @@ namespace SocialPay.Job.Repository.Fiorano
                         //    context.Update(getTransInfo);
                         //    await context.SaveChangesAsync();
                         //}
+                        _fioranoLogger.LogRequest($"{"Job Service" + "-" + "Error occured. Duplicate transaction" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " }{DateTime.Now}", false);
 
-                        _log4net.Error("Job Service" + "-" + "Error occured. Duplicate transaction" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
                         return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                     }
                 }
@@ -147,7 +150,7 @@ namespace SocialPay.Job.Repository.Fiorano
            string transactionRef, string creditAccountNo, bool tranType, string channel,
            string message, string paymentReference)
         {
-            _log4net.Info("Job Service" + "-" + "InititiateMerchantCredit fiorano request" + " | " + transactionRef + " | " + paymentReference + " | " + creditAccountNo + " | "+ debitAmount + " | "+ DateTime.Now);
+            _fioranoLogger.LogRequest($"{"Job Service" + "-" + "InititiateMerchantCredit fiorano request" + " | " + transactionRef + " | " + paymentReference + " | " + creditAccountNo + " | " + debitAmount + " | "}{DateTime.Now}", false);
 
             try
             {
@@ -205,7 +208,7 @@ namespace SocialPay.Job.Repository.Fiorano
 
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
 
-                    _log4net.Info("Job Service" + "-" + "InititiateMerchantCredit fiorano base response" + " | " + transactionRef + " | " + paymentReference + " | " + postTransaction.FTResponse + " | " + postTransaction.Message + " | " + DateTime.Now);
+                    _fioranoLogger.LogRequest($"{"Job Service" + "-" + "InititiateMerchantCredit fiorano base response" + " | " + transactionRef + " | " + paymentReference + " | " + postTransaction.FTResponse + " | " + postTransaction.Message + " | "}{DateTime.Now}", false);
 
                     var logFioranoResponse = new FioranoT24TransactionResponse
                     {
@@ -243,7 +246,8 @@ namespace SocialPay.Job.Repository.Fiorano
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionRef + " | " + paymentReference + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                    _fioranoLogger.LogRequest($"{"An error occured. Duplicate transaction reference" + " | " + transactionRef + " | " + paymentReference + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction, Data = errorMessage };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = errorMessage };

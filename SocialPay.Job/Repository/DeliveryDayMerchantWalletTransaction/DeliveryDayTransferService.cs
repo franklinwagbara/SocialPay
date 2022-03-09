@@ -9,6 +9,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.WalletJob;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,14 +21,15 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayTransferService));
-
+        private readonly WalletJobLogger _walletLogger;
 
         public DeliveryDayTransferService(IServiceProvider service, IOptions<AppSettings> appSettings,
-         WalletRepoJobService walletRepoJobService)
+         WalletRepoJobService walletRepoJobService, WalletJobLogger walletLogger)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _walletRepoJobService = walletRepoJobService;
+            _walletLogger = walletLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -41,7 +43,7 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
-                        _log4net.Info("Job Service" + "-" + "Tasks starts to process deliveryday transaction" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                        _walletLogger.LogRequest($"{"Job Service" + "-" + "Tasks starts to process deliveryday transaction" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " }{DateTime.Now}", false);
 
                         var requestId = Guid.NewGuid().ToString();
                         var getWalletInfo = await context.MerchantWallet
@@ -155,14 +157,15 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
 
             catch (Exception ex)
             {
-                _log4net.Error("Job Service: An error occured DeliveryDayTransferService." + " | " + transactionId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _walletLogger.LogRequest($"{"Job Service: An error occured DeliveryDayTransferService." + " | " + transactionId + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    _log4net.Error("Job Service. DeliveryDayTransferService: An error occured. Duplicate transaction reference" + " | " + transactionId + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                    _walletLogger.LogRequest($"{"Job Service. DeliveryDayTransferService: An error occured. Duplicate transaction reference" + " | " + transactionId + " | " + errorMessage + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

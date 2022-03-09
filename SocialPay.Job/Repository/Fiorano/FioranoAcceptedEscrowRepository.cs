@@ -8,6 +8,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.FioranoJob;
 using System;
 using System.Threading.Tasks;
 
@@ -18,13 +19,14 @@ namespace SocialPay.Job.Repository.Fiorano
         private readonly CreditDebitService _creditDebitService;
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(FioranoAcceptedEscrowRepository));
-
+        private readonly FioranoJobLogger _fioranoLogger;
         public FioranoAcceptedEscrowRepository(IOptions<AppSettings> appSettings, CreditDebitService creditDebitService,
-            IServiceProvider services)
+            IServiceProvider services, FioranoJobLogger fioranoLogger)
         {
             _appSettings = appSettings.Value;
             _creditDebitService = creditDebitService;
             Services = services;
+            _fioranoLogger = fioranoLogger;
         }
 
         public IServiceProvider Services { get; }
@@ -34,8 +36,7 @@ namespace SocialPay.Job.Repository.Fiorano
          string transactionRef, string creditAccountNo, string channel,
          string message, string paymentReference)
         {
-            _log4net.Info("Job Service: InititiateEscrowAcceptedRequest task starts" + " | " + paymentReference + " | " +  " | " + DateTime.Now);
-
+            _fioranoLogger.LogRequest($"{"Job Service: InititiateEscrowAcceptedRequest task starts" + " | " + paymentReference + " | "}{DateTime.Now}", false);
             try
             {
                 using (var scope = Services.CreateScope())
@@ -114,14 +115,15 @@ namespace SocialPay.Job.Repository.Fiorano
 
             catch (Exception ex)
             {
-                _log4net.Error("Job Service: An error occured. Base error" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _fioranoLogger.LogRequest($"{"Job Service: An error occured. Base error" + " | " + paymentReference + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    _log4net.Error("Job Service: An error occured. Duplicate transaction reference" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                    _fioranoLogger.LogRequest($"{"Job Service: An error occured. Duplicate transaction reference" + " | " + paymentReference + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

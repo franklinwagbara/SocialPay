@@ -10,6 +10,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.InterBankJob;
 using System;
 using System.Threading.Tasks;
 
@@ -22,16 +23,17 @@ namespace SocialPay.Job.Repository.InterBankService
         private readonly IBSReposerviceJob _iBSReposerviceJob;
         private readonly SqlRepository _sqlRepository;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(InterBankPendingTransferService));
-
+        private readonly InterBankJobLogger _interbankLogger;
         public InterBankPendingTransferService(IServiceProvider service, IOptions<AppSettings> appSettings,
             BankServiceRepositoryJobService bankServiceRepositoryJobService,
-            IBSReposerviceJob iBSReposerviceJob, SqlRepository sqlRepository)
+            IBSReposerviceJob iBSReposerviceJob, SqlRepository sqlRepository, InterBankJobLogger interbankLogger)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _bankServiceRepositoryJobService = bankServiceRepositoryJobService;
             _iBSReposerviceJob = iBSReposerviceJob;
             _sqlRepository = sqlRepository;
+            _interbankLogger = interbankLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -42,7 +44,7 @@ namespace SocialPay.Job.Repository.InterBankService
         {
             try
             {
-                _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions Bank info" + " | " + destinationAccount + " | " +  paymentReference + " | " + sourceAccount + " - "+ DateTime.Now);
+                _interbankLogger.LogRequest($"{"Job Service" + "-" + "ProcessInterBankTransactions Bank info" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - "}{DateTime.Now}", false);
 
                 using (var scope = Services.CreateScope())
                 {
@@ -69,7 +71,7 @@ namespace SocialPay.Job.Repository.InterBankService
 
                     if (string.IsNullOrEmpty(lockAccount))
                     {
-                        _log4net.Info("Job Service" + "-" + "Account lock failed" + " | " + sourceAccount + " | "+ destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
+                        _interbankLogger.LogRequest($"{"Job Service" + "-" + "Account lock failed" + " | " + sourceAccount + " | "+ destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - "}{DateTime.Now}", false);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.AccountLockFailed };
                     }
@@ -79,7 +81,7 @@ namespace SocialPay.Job.Repository.InterBankService
 
                     if (nipEnquiry.ResponseCode != AppResponseCodes.Success)
                     {
-                        _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions Name enquiry failed" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
+                        _interbankLogger.LogRequest($"{"Job Service" + "-" + "ProcessInterBankTransactions Name enquiry failed" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - "}{DateTime.Now}", false);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InterBankNameEnquiryFailed };
                     }
@@ -88,7 +90,7 @@ namespace SocialPay.Job.Repository.InterBankService
 
                     if (getFeesAndVat == null)
                     {
-                        _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions getFeesAndVat is null" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
+                        _interbankLogger.LogRequest($"{"Job Service" + "-" + "ProcessInterBankTransactions getFeesAndVat is null" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - "}{DateTime.Now}", false);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.NipFeesCalculationFailed };
                     }
@@ -120,7 +122,7 @@ namespace SocialPay.Job.Repository.InterBankService
                         SubAcctVal = "0"
                     };
 
-                    _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions to save records InterBankTransactionRequest" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
+                    _interbankLogger.LogRequest($"{"Job Service" + "-" + "ProcessInterBankTransactions to save records InterBankTransactionRequest" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - "}{DateTime.Now}", false);
 
                     var logInterBankRequest = new InterBankTransactionRequest
                     {
@@ -154,7 +156,7 @@ namespace SocialPay.Job.Repository.InterBankService
                     await context.InterBankTransactionRequest.AddAsync(logInterBankRequest);
                     await context.SaveChangesAsync();
 
-                    _log4net.Info("Job Service" + "-" + "ProcessInterBankTransactions InterBankTransactionRequest was saved" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - " + DateTime.Now);
+                    _interbankLogger.LogRequest($"{"Job Service" + "-" + "ProcessInterBankTransactions to save records InterBankTransactionRequest" + " | " + destinationAccount + " | " + paymentReference + " | " + sourceAccount + " - "}{DateTime.Now}", false);
 
                     return await _sqlRepository.InsertNipTransferRequest(nipRequestModel);
                 }
@@ -162,7 +164,7 @@ namespace SocialPay.Job.Repository.InterBankService
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured. For interbank transactions" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _interbankLogger.LogRequest($"{"An error occured. For interbank transactions" + " | " + paymentReference + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
@@ -181,8 +183,8 @@ namespace SocialPay.Job.Repository.InterBankService
                     //    await context.SaveChangesAsync();
                     //}
 
-                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + paymentReference + " | " + errorMessage + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-                    
+                    _interbankLogger.LogRequest($"{"An error occured. Duplicate transaction reference" + " | " + paymentReference + " | " + errorMessage + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
+
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction, Data = errorMessage };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
