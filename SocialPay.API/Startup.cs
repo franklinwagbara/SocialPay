@@ -56,11 +56,19 @@ using SocialPay.Helper.AutoMapperSettings;
 using SocialPay.Helper.Cryptography;
 using SocialPay.Helper.Notification;
 using SocialPay.Helper.SerilogService.Account;
+using SocialPay.Helper.SerilogService.BankTransactionJob;
 using SocialPay.Helper.SerilogService.Customer;
+using SocialPay.Helper.SerilogService.Escrow;
+using SocialPay.Helper.SerilogService.FioranoJob;
 using SocialPay.Helper.SerilogService.FioranoT24;
+using SocialPay.Helper.SerilogService.InterBankJob;
 using SocialPay.Helper.SerilogService.Merchant;
+using SocialPay.Helper.SerilogService.NonEscrowJob;
+using SocialPay.Helper.SerilogService.NotificationJob;
+using SocialPay.Helper.SerilogService.PayWithCardJob;
 using SocialPay.Helper.SerilogService.Store;
 using SocialPay.Helper.SerilogService.Transaction;
+using SocialPay.Helper.SerilogService.WalletJob;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
@@ -277,7 +285,14 @@ namespace SocialPay.API
             services.AddSingleton<FioranoT24Logger>();
             services.AddSingleton<MerchantsLogger>();
             services.AddSingleton<TransactionLogger>();
-
+            services.AddSingleton<EscrowJobLogger>();
+            services.AddSingleton<FioranoJobLogger>();
+            services.AddSingleton<InterBankJobLogger>();
+            services.AddSingleton<NonEscrowJobLogger>();
+            services.AddSingleton<NotificationJobLogger>();
+            services.AddSingleton<PayWithCardJobLogger>();
+            services.AddSingleton<WalletJobLogger>();
+            services.AddSingleton<BankTransactionJobLogger>();
             ///Loan Services
 
             services.AddScoped<LoanEligibiltyService>();
@@ -319,17 +334,17 @@ namespace SocialPay.API
 
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
 
-            ////////services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
-            ////////{
-            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////////    c.CronExpression = options.AcceptedEscrowBankOrderTask;
-            ////////});
+            services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.AcceptedEscrowBankOrderTask;
+            });
 
-            ////////services.AddCronJob<AcceptedWalletOrderTask>(c =>
-            ////////{
-            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////////    c.CronExpression = options.AcceptedWalletOrderTask;
-            ////////});
+            services.AddCronJob<AcceptedWalletOrderTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.AcceptedWalletOrderTask;
+            });
 
             ///Main jobs starts
 
@@ -406,17 +421,17 @@ namespace SocialPay.API
             ////////    c.CronExpression = options.DeclinedEscrowWalletTask;
             ////////});
 
-            ////////services.AddCronJob<DeliveryDayBankTask>(c =>
-            ////////{
-            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////////    c.CronExpression = options.DeliveryDayBankTask;
-            ////////});
+            services.AddCronJob<DeliveryDayBankTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.DeliveryDayBankTask;
+            });
 
-            ////////services.AddCronJob<DeliveryDayWalletTask>(c =>
-            ////////{
-            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////////    c.CronExpression = options.DeliveryDayWalletTask;
-            ////////});
+            services.AddCronJob<DeliveryDayWalletTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.DeliveryDayWalletTask;
+            });
 
             ////////services.AddCronJob<ExpiredProductNotificationTask>(c =>
             ////////{
