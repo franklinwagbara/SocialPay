@@ -70,6 +70,7 @@ using SocialPay.Helper.SerilogService.Store;
 using SocialPay.Helper.SerilogService.Transaction;
 using SocialPay.Helper.SerilogService.WalletJob;
 using SocialPay.Job.Repository.BasicWalletFundService;
+using SocialPay.Job.Repository.DeliveryDayBankTransaction;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
 using SocialPay.Job.Repository.NibbsMerchantJobService.Interface;
@@ -331,7 +332,7 @@ namespace SocialPay.API
             services.AddSingleton<ProcessMerchantWalletTransactions>();
             services.AddSingleton<IOnboardingNotificationService, OnboardingNotificationService>();
             services.AddSingleton<OnboardingNotificationRepository>();
-
+            //services.AddSingleton<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
 
             services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>

@@ -12,7 +12,7 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
     public class DeliveryDayBankTransaction : IDeliveryDayBankTransaction
     {
         private readonly DeliveryDayBankPendingTransaction _transactions;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayBankTransaction));
+        //static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayBankTransaction));
         private readonly BankTransactionJobLogger _banktransactionLogger;
         public DeliveryDayBankTransaction(DeliveryDayBankPendingTransaction transactions, IServiceProvider services, BankTransactionJobLogger banktransactionLogger)
         {

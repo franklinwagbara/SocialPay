@@ -389,7 +389,7 @@ namespace SocialPay.Core.Services.Transaction
 
                         await _invoiceService.SendInvoiceAsync(invoiceRequestDto.CustomerEmail,
                             invoiceRequestDto.UnitPrice, calculatedTotalAmount, model.DateEntered, invoiceRequestDto.InvoiceName,
-                            model.TransactionReference, calculatedDiscount, calculatedVAT
+                            model.TransactionReference, calculatedDiscount, calculatedVAT, invoiceRequestDto.ShippingFee
                             );
                         //send mail
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Success" };

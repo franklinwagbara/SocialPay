@@ -80,7 +80,7 @@ namespace SocialPay.Core.Repositories.Invoice
         }
 
         public async Task<WebApiResponse> SendInvoiceAsync(string destinationEmail, decimal amount, decimal totalAmount,
-           DateTime tranDate, string invoicename, string transactionReference, decimal discount = 0, decimal VAT = 0)
+           DateTime tranDate, string invoicename, string transactionReference, decimal discount = 0, decimal VAT = 0, decimal shippingFee = 0)
         {
             try
             {
@@ -119,8 +119,8 @@ namespace SocialPay.Core.Repositories.Invoice
                         builder.Replace("{paymentLink}", $"{_appSettings.invoicePaymentlinkUrl}{transactionReference}");
                         builder.Replace("{currentyear}", Convert.ToString(DateTime.Now.Year));
                         builder.Replace("{transactionReference}", transactionReference);
-                      //  builder.Replace("{payNow}", transactionReference);
-
+                       // builder.Replace("{tax}", "0.00");
+                        builder.Replace("{shippingfee}" , Convert.ToString(shippingFee));
                         emailModal.EmailBody = builder.ToString();
                     }
 
