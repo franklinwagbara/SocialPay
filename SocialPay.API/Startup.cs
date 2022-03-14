@@ -422,11 +422,11 @@ namespace SocialPay.API
             ////////    c.CronExpression = options.DeclinedEscrowWalletTask;
             ////////});
 
-            services.AddCronJob<DeliveryDayBankTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.DeliveryDayBankTask;
-            });
+            //////services.AddCronJob<DeliveryDayBankTask>(c =>
+            //////{
+            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //////    c.CronExpression = options.DeliveryDayBankTask;
+            //////});
 
             services.AddCronJob<DeliveryDayWalletTask>(c =>
             {
