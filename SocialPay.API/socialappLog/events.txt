@@ -4015,3 +4015,570 @@ INFO  2022-03-10 17:28:21,396 366784ms EmailService           ?                 
 INFO  2022-03-15 13:32:21,701 88383ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08164577759 | 3/15/2022 1:32:21 PM
 INFO  2022-03-15 13:32:29,424 96105ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 3/15/2022 1:32:29 PM
 INFO  2022-03-15 13:32:31,767 98449ms AuthRepoService        ?                  - Authenticate for login was successful | sheriff.ebelebe@gmail.com | 3/15/2022 1:32:31 PM
+INFO  2022-03-15 14:15:04,163 225337ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 2:15:04 PM
+INFO  2022-03-15 14:17:27,822 368996ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 2:17:27 PM
+INFO  2022-03-15 14:18:13,012 414186ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20-08-1980 | 3/15/2022 2:18:12 PM
+ERROR 2022-03-15 14:19:56,743 517917ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '20-08-1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:19:56 PM
+INFO  2022-03-15 14:20:03,852 525026ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 2:20:03 PM
+INFO  2022-03-15 14:20:03,983 525156ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/4/1967 | 3/15/2022 2:20:03 PM
+INFO  2022-03-15 14:20:57,903 579077ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 2:20:57 PM
+INFO  2022-03-15 14:20:58,266 579440ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26-09-1986 | 3/15/2022 2:20:58 PM
+ERROR 2022-03-15 14:20:58,699 579873ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22178875077 | System.FormatException: String '26-09-1986' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:20:58 PM
+INFO  2022-03-15 14:20:58,699 579873ms ateBulkMerchantService ?                  - Initiating create merchant account | USMANYAHAYAMAICHELSEA200@GMAIL.COM | 3/15/2022 2:20:58 PM
+INFO  2022-03-15 14:20:58,740 579914ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22297740162 | 1/1/1992 | 3/15/2022 2:20:58 PM
+INFO  2022-03-15 14:21:02,096 583270ms ateBulkMerchantService ?                  - Initiating create merchant account | ADETIKKAS@GMAIL.COM | 3/15/2022 2:21:02 PM
+INFO  2022-03-15 14:21:02,150 583324ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22295566359 | 12/5/1976 | 3/15/2022 2:21:02 PM
+INFO  2022-03-15 14:21:04,742 585916ms ateBulkMerchantService ?                  - Initiating create merchant account | GGPEACE@GMAIL.COM | 3/15/2022 2:21:04 PM
+INFO  2022-03-15 14:21:04,826 586000ms ateBulkMerchantService ?                  - Initiating create merchant account | UPSALEGIGNOW@GMAIL.COM | 3/15/2022 2:21:04 PM
+INFO  2022-03-15 14:21:04,870 586044ms ateBulkMerchantService ?                  - Initiating create merchant account | ISMAILTELADAHIRU@GMAIL.COM | 3/15/2022 2:21:04 PM
+INFO  2022-03-15 14:21:04,951 586125ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22437543947 | 10/1/1979 | 3/15/2022 2:21:04 PM
+INFO  2022-03-15 14:21:08,599 589773ms ateBulkMerchantService ?                  - Initiating create merchant account | RGCBUYER@GMAIL.COM | 3/15/2022 2:21:08 PM
+INFO  2022-03-15 14:21:08,662 589836ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22364525340 | 20-07-1995 | 3/15/2022 2:21:08 PM
+ERROR 2022-03-15 14:21:09,137 590311ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22364525340 | System.FormatException: String '20-07-1995' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:21:09 PM
+INFO  2022-03-15 14:21:09,138 590311ms ateBulkMerchantService ?                  - Initiating create merchant account | ALGINNAHSCHOOLS@GMAIL.COM | 3/15/2022 2:21:09 PM
+INFO  2022-03-15 14:21:09,183 590356ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22162268636 | 9/3/1980 | 3/15/2022 2:21:09 PM
+INFO  2022-03-15 14:21:11,898 593072ms ateBulkMerchantService ?                  - Initiating create merchant account | OSAZEPRECIOUS100@YAHOO.COM | 3/15/2022 2:21:11 PM
+INFO  2022-03-15 14:21:11,949 593122ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22228849427 | 19-02-1985 | 3/15/2022 2:21:11 PM
+ERROR 2022-03-15 14:21:12,600 593774ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22228849427 | System.FormatException: String '19-02-1985' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:21:12 PM
+INFO  2022-03-15 14:21:12,601 593774ms ateBulkMerchantService ?                  - Initiating create merchant account | MORUFATSOLA@GMAIL.COM | 3/15/2022 2:21:12 PM
+INFO  2022-03-15 14:21:12,679 593853ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22197766028 | 24-12-1976 | 3/15/2022 2:21:12 PM
+ERROR 2022-03-15 14:21:13,325 594499ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22197766028 | System.FormatException: String '24-12-1976' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:21:13 PM
+INFO  2022-03-15 14:21:13,325 594499ms ateBulkMerchantService ?                  - Initiating create merchant account | AKINOLAODUNLAMI202@YAHOO.COM | 3/15/2022 2:21:13 PM
+INFO  2022-03-15 14:21:13,373 594546ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22150833561 | 20-03-1972 | 3/15/2022 2:21:13 PM
+ERROR 2022-03-15 14:21:14,575 595748ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22150833561 | System.FormatException: String '20-03-1972' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:21:14 PM
+INFO  2022-03-15 14:21:14,575 595749ms ateBulkMerchantService ?                  - Initiating create merchant account | mubasheerabubakar28@gmail.com | 3/15/2022 2:21:14 PM
+INFO  2022-03-15 14:21:14,663 595837ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22311090835 | 4/4/1989 | 3/15/2022 2:21:14 PM
+INFO  2022-03-15 14:21:17,249 598423ms ateBulkMerchantService ?                  - Initiating create merchant account | MOLAMILOKUN@GMAIL.COM | 3/15/2022 2:21:17 PM
+INFO  2022-03-15 14:21:17,438 598611ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22152399889 | 20-09-1961 | 3/15/2022 2:21:17 PM
+ERROR 2022-03-15 14:21:17,885 599059ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22152399889 | System.FormatException: String '20-09-1961' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:21:17 PM
+INFO  2022-03-15 14:21:17,885 599059ms ateBulkMerchantService ?                  - Initiating create merchant account | OLUWABUNMISUCCESS@YAHOO.COM | 3/15/2022 2:21:17 PM
+INFO  2022-03-15 14:21:17,955 599129ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22152943644 | 1/1/1983 | 3/15/2022 2:21:17 PM
+INFO  2022-03-15 14:21:20,691 601865ms ateBulkMerchantService ?                  - Initiating create merchant account | ALAMINALINBABABA22@GMAIL.COM | 3/15/2022 2:21:20 PM
+INFO  2022-03-15 14:21:20,773 601947ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22304368547 | 12/2/1990 | 3/15/2022 2:21:20 PM
+INFO  2022-03-15 14:21:23,192 604366ms ateBulkMerchantService ?                  - Initiating create merchant account | FABRIKAYENTERPRISES@GMAIL.COM | 3/15/2022 2:21:23 PM
+INFO  2022-03-15 14:21:23,276 604450ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22145027403 | 8/6/1982 | 3/15/2022 2:21:23 PM
+INFO  2022-03-15 14:21:26,029 607203ms ateBulkMerchantService ?                  - Initiating create merchant account | YUSUFSAF6@GMAIL.COM | 3/15/2022 2:21:26 PM
+INFO  2022-03-15 14:21:26,084 607258ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22278904370 | 1/1/1989 | 3/15/2022 2:21:26 PM
+INFO  2022-03-15 14:21:28,621 609795ms ateBulkMerchantService ?                  - Initiating create merchant account | EASIFOLD@GMAIL.COM]BUKMOD15@GMAIL.COM | 3/15/2022 2:21:28 PM
+INFO  2022-03-15 14:21:28,668 609842ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22146176230 | 2/7/1985 | 3/15/2022 2:21:28 PM
+INFO  2022-03-15 14:21:31,459 612633ms ateBulkMerchantService ?                  - Initiating create merchant account | PRINCESSNK206@YAHOO.COM | 3/15/2022 2:21:31 PM
+INFO  2022-03-15 14:21:31,513 612687ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22251889939 | 8/6/1984 | 3/15/2022 2:21:31 PM
+INFO  2022-03-15 14:21:33,993 615167ms ateBulkMerchantService ?                  - Initiating create merchant account | ADIIALHASSAN57@GMAIL.COM | 3/15/2022 2:21:33 PM
+INFO  2022-03-15 14:21:34,076 615250ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22262490793 | 10/1/1982 | 3/15/2022 2:21:34 PM
+INFO  2022-03-15 14:21:36,656 617830ms ateBulkMerchantService ?                  - Initiating create merchant account | LASHEUN35@YAHOO.COM | 3/15/2022 2:21:36 PM
+INFO  2022-03-15 14:21:36,717 617891ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22142236587 | 16-10-1982 | 3/15/2022 2:21:36 PM
+ERROR 2022-03-15 14:21:37,203 618377ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22142236587 | System.FormatException: String '16-10-1982' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:21:37 PM
+INFO  2022-03-15 14:21:37,203 618377ms ateBulkMerchantService ?                  - Initiating create merchant account | JAMEELMUHAMMAD3@GMAIL.COM | 3/15/2022 2:21:37 PM
+INFO  2022-03-15 14:21:37,258 618432ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22442342704 | 25-02-1983 | 3/15/2022 2:21:37 PM
+ERROR 2022-03-15 14:21:37,958 619132ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22442342704 | System.FormatException: String '25-02-1983' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:21:37 PM
+INFO  2022-03-15 14:21:37,958 619132ms ateBulkMerchantService ?                  - Initiating create merchant account | OLAREWAJUABIDEMIYEWANDE@GMAIL.COM | 3/15/2022 2:21:37 PM
+INFO  2022-03-15 14:21:38,050 619224ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22175312641 | 3/2/1990 | 3/15/2022 2:21:38 PM
+INFO  2022-03-15 14:21:41,425 622599ms ateBulkMerchantService ?                  - Initiating create merchant account | OLUWAKEMIOLUGBILE@GMAIL.COM | 3/15/2022 2:21:41 PM
+INFO  2022-03-15 14:21:41,497 622671ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22165554374 | 2/1/1978 | 3/15/2022 2:21:41 PM
+INFO  2022-03-15 14:21:44,100 625274ms ateBulkMerchantService ?                  - Initiating create merchant account | OPEYEMII819@GMAIL.COM | 3/15/2022 2:21:44 PM
+INFO  2022-03-15 14:21:44,157 625331ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22200409805 | 5/4/1984 | 3/15/2022 2:21:44 PM
+INFO  2022-03-15 14:21:46,618 627792ms ateBulkMerchantService ?                  - Initiating create merchant account | BAGABAALHERIVENTURES@GMAIL.COM | 3/15/2022 2:21:46 PM
+INFO  2022-03-15 14:21:46,663 627837ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22175519765 | 3/4/1979 | 3/15/2022 2:21:46 PM
+ERROR 2022-03-15 14:22:47,175 688349ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22175519765 | System.TimeoutException: The request channel timed out attempting to send after 00:01:00. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.
+ ---> System.TimeoutException: The HTTP request to 'http://10.0.41.188:8083/banks.asmx' has exceeded the allotted timeout of 00:01:00. The time allotted to this operation may have been a portion of a longer timeout.
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   at System.ServiceModel.Channels.RequestChannel.RequestAsync(Message message, TimeSpan timeout)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 100 | 3/15/2022 2:22:47 PM
+INFO  2022-03-15 14:22:47,175 688349ms ateBulkMerchantService ?                  - Initiating create merchant account | NELABISENGLOBAL@YAHOO.COM | 3/15/2022 2:22:47 PM
+INFO  2022-03-15 14:22:47,248 688422ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22151778850 | 30-04-1980 | 3/15/2022 2:22:47 PM
+ERROR 2022-03-15 14:22:47,796 688970ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22151778850 | System.FormatException: String '30-04-1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:47 PM
+INFO  2022-03-15 14:22:47,796 688970ms ateBulkMerchantService ?                  - Initiating create merchant account | NOLIMITSFURNITURE01@GMAIL.COM | 3/15/2022 2:22:47 PM
+INFO  2022-03-15 14:22:47,850 689024ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22237438825 | 14-08-1993 | 3/15/2022 2:22:47 PM
+ERROR 2022-03-15 14:22:48,460 689634ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22237438825 | System.FormatException: String '14-08-1993' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:48 PM
+INFO  2022-03-15 14:22:48,460 689634ms ateBulkMerchantService ?                  - Initiating create merchant account | USMANISHAQALIYU@GMAIL.COM | 3/15/2022 2:22:48 PM
+INFO  2022-03-15 14:22:48,545 689719ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22505015051 | 21-04-1987 | 3/15/2022 2:22:48 PM
+ERROR 2022-03-15 14:22:48,959 690132ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22505015051 | System.FormatException: String '21-04-1987' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:48 PM
+INFO  2022-03-15 14:22:48,959 690133ms ateBulkMerchantService ?                  - Initiating create merchant account | UGAPOMA@GMAIL.COM | 3/15/2022 2:22:48 PM
+INFO  2022-03-15 14:22:49,049 690223ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22337021455 | 24-06-1997 | 3/15/2022 2:22:49 PM
+ERROR 2022-03-15 14:22:49,460 690634ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22337021455 | System.FormatException: String '24-06-1997' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:49 PM
+INFO  2022-03-15 14:22:49,460 690634ms ateBulkMerchantService ?                  - Initiating create merchant account | NZEHC2000@YAHOO.COM | 3/15/2022 2:22:49 PM
+INFO  2022-03-15 14:22:49,517 690691ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22294260403 | 28-10-1979 | 3/15/2022 2:22:49 PM
+ERROR 2022-03-15 14:22:50,046 691220ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22294260403 | System.FormatException: String '28-10-1979' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:50 PM
+INFO  2022-03-15 14:22:50,046 691220ms ateBulkMerchantService ?                  - Initiating create merchant account | NASIRUBALALEKO5@GMAIL.COM | 3/15/2022 2:22:50 PM
+INFO  2022-03-15 14:22:50,121 691294ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22235881065 | 25-01-1977 | 3/15/2022 2:22:50 PM
+ERROR 2022-03-15 14:22:50,603 691777ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22235881065 | System.FormatException: String '25-01-1977' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:50 PM
+INFO  2022-03-15 14:22:50,603 691777ms ateBulkMerchantService ?                  - Initiating create merchant account | DONZUUBBY63@YAHOO.COM | 3/15/2022 2:22:50 PM
+INFO  2022-03-15 14:22:50,640 691814ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22169777452 | 16-07-1979 | 3/15/2022 2:22:50 PM
+ERROR 2022-03-15 14:22:51,144 692318ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22169777452 | System.FormatException: String '16-07-1979' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:51 PM
+INFO  2022-03-15 14:22:51,144 692318ms ateBulkMerchantService ?                  - Initiating create merchant account | FAVOURGOODNESS585@YAHOO.COM | 3/15/2022 2:22:51 PM
+INFO  2022-03-15 14:22:51,190 692363ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22336138558 | 23-03-1983 | 3/15/2022 2:22:51 PM
+ERROR 2022-03-15 14:22:51,725 692899ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22336138558 | System.FormatException: String '23-03-1983' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:51 PM
+INFO  2022-03-15 14:22:51,725 692899ms ateBulkMerchantService ?                  - Initiating create merchant account | JAMESBARRY0315@GMAIL.COM | 3/15/2022 2:22:51 PM
+INFO  2022-03-15 14:22:51,807 692981ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22328587533 | 13-04-1980 | 3/15/2022 2:22:51 PM
+ERROR 2022-03-15 14:22:52,325 693499ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22328587533 | System.FormatException: String '13-04-1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:52 PM
+INFO  2022-03-15 14:22:52,325 693499ms ateBulkMerchantService ?                  - Initiating create merchant account | VERAAZUKA57@GMAIL.COM | 3/15/2022 2:22:52 PM
+INFO  2022-03-15 14:22:52,390 693563ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22193305399 | 1/1/1982 | 3/15/2022 2:22:52 PM
+INFO  2022-03-15 14:22:54,893 696067ms ateBulkMerchantService ?                  - Initiating create merchant account | DONGREMY@YAHOO.COM | 3/15/2022 2:22:54 PM
+INFO  2022-03-15 14:22:54,944 696118ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22142031915 | 12/1/1958 | 3/15/2022 2:22:54 PM
+INFO  2022-03-15 14:22:56,973 698147ms ateBulkMerchantService ?                  - Initiating create merchant account | MURTALAGARBAMADAKI1111@GMAIL.COM | 3/15/2022 2:22:56 PM
+INFO  2022-03-15 14:22:57,036 698210ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22380449358 | 20-02-1989 | 3/15/2022 2:22:57 PM
+ERROR 2022-03-15 14:22:57,420 698594ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22380449358 | System.FormatException: String '20-02-1989' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:22:57 PM
+INFO  2022-03-15 14:22:57,420 698594ms ateBulkMerchantService ?                  - Initiating create merchant account | FIRSTCALLGADGETTECH@GMAIL.COM | 3/15/2022 2:22:57 PM
+INFO  2022-03-15 14:22:57,500 698674ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22152662499 | 8/5/1988 | 3/15/2022 2:22:57 PM
+INFO  2022-03-15 14:22:59,583 700757ms ateBulkMerchantService ?                  - Initiating create merchant account | STARMINDPROFESSIONAL@GMAIL.COM | 3/15/2022 2:22:59 PM
+INFO  2022-03-15 14:22:59,659 700833ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22295306250 | 12/11/1988 | 3/15/2022 2:22:59 PM
+INFO  2022-03-15 14:23:01,989 703163ms ateBulkMerchantService ?                  - Initiating create merchant account | BIDEXY2K4REAL@GMAIL.COM | 3/15/2022 2:23:01 PM
+INFO  2022-03-15 14:23:02,083 703257ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22162599064 | 30-08-1983 | 3/15/2022 2:23:02 PM
+ERROR 2022-03-15 14:23:02,808 703982ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22162599064 | System.FormatException: String '30-08-1983' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 95 | 3/15/2022 2:23:02 PM
+INFO  2022-03-15 14:23:02,808 703982ms ateBulkMerchantService ?                  - Initiating create merchant account | HASSAN4TIAMIYU@GMAIL.COM | 3/15/2022 2:23:02 PM
+INFO  2022-03-15 14:23:02,876 704050ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22176163916 | 9/1/1984 | 3/15/2022 2:23:02 PM
+INFO  2022-03-15 14:53:18,028 95528ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 2:53:18 PM
+INFO  2022-03-15 14:54:29,043 166543ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 2:54:28 PM
+INFO  2022-03-15 14:54:52,825 190325ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20-08-1980 | 3/15/2022 2:54:52 PM
+ERROR 2022-03-15 14:55:55,927 253427ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '20-08-1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.Convert.ToDateTime(String value)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) | 3/15/2022 2:55:55 PM
+INFO  2022-03-15 14:55:58,086 255586ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 2:55:58 PM
+INFO  2022-03-15 14:55:58,133 255633ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/4/1967 | 3/15/2022 2:55:58 PM
+INFO  2022-03-15 14:56:14,950 272450ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 2:56:14 PM
+INFO  2022-03-15 14:56:14,995 272496ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 2:56:14 PM
+INFO  2022-03-15 14:56:16,508 274008ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26-09-1986 | 3/15/2022 2:56:16 PM
+INFO  2022-03-15 14:56:18,213 275713ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 2:56:18 PM
+ERROR 2022-03-15 14:56:21,469 278969ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22178875077 | System.FormatException: String '26-09-1986' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.Convert.ToDateTime(String value)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) | 3/15/2022 2:56:21 PM
+INFO  2022-03-15 14:56:26,669 284169ms ateBulkMerchantService ?                  - Initiating create merchant account | USMANYAHAYAMAICHELSEA200@GMAIL.COM | 3/15/2022 2:56:26 PM
+INFO  2022-03-15 14:56:26,799 284299ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22297740162 | 1/1/1992 | 3/15/2022 2:56:26 PM
+INFO  2022-03-15 14:56:31,120 288620ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 2:56:31 PM
+INFO  2022-03-15 14:56:31,172 288672ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20-08-1980 | 3/15/2022 2:56:31 PM
+INFO  2022-03-15 14:56:38,535 296035ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 2:56:38 PM
+INFO  2022-03-15 14:56:41,881 299381ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20-08-1980 | 3/15/2022 2:56:41 PM
+INFO  2022-03-15 14:58:40,660 418160ms ateBulkMerchantService ?                  - Initiating create merchant account | ADETIKKAS@GMAIL.COM | 3/15/2022 2:58:40 PM
+INFO  2022-03-15 14:58:40,736 418236ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22295566359 | 12/5/1976 | 3/15/2022 2:58:40 PM
+ERROR 2022-03-15 14:58:42,022 419523ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '20-08-1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.Convert.ToDateTime(String value)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) | 3/15/2022 2:58:42 PM
+INFO  2022-03-15 14:58:44,121 421621ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 2:58:44 PM
+INFO  2022-03-15 14:58:44,161 421661ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/4/1967 | 3/15/2022 2:58:44 PM
+ERROR 2022-03-15 14:58:45,541 423041ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '20-08-1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.Convert.ToDateTime(String value)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) | 3/15/2022 2:58:45 PM
+INFO  2022-03-15 14:58:46,629 424129ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 2:58:46 PM
+INFO  2022-03-15 14:58:46,783 424283ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/4/1967 | 3/15/2022 2:58:46 PM
+INFO  2022-03-15 14:58:50,815 428315ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 2:58:50 PM
+INFO  2022-03-15 14:58:53,296 430796ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 2:58:53 PM
+INFO  2022-03-15 14:58:53,296 430796ms ateBulkMerchantService ?                  - Initiating create merchant account | GGPEACE@GMAIL.COM | 3/15/2022 2:58:53 PM
+INFO  2022-03-15 14:58:53,354 430854ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26-09-1986 | 3/15/2022 2:58:53 PM
+INFO  2022-03-15 14:58:53,355 430855ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26-09-1986 | 3/15/2022 2:58:53 PM
+INFO  2022-03-15 15:06:37,304 132012ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 3:06:37 PM
+INFO  2022-03-15 15:06:44,549 139256ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 3:06:44 PM
+INFO  2022-03-15 15:06:44,597 139305ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20-08-1980 | 3/15/2022 3:06:44 PM
+ERROR 2022-03-15 15:07:50,248 204956ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '20-08-1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.Convert.ToDateTime(String value)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) | 3/15/2022 3:07:50 PM
+INFO  2022-03-15 15:07:51,785 206492ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 3:07:51 PM
+INFO  2022-03-15 15:07:51,933 206641ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/4/1967 | 3/15/2022 3:07:51 PM
+INFO  2022-03-15 15:08:04,184 218892ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 3:08:04 PM
+INFO  2022-03-15 15:08:04,248 218956ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26-09-1986 | 3/15/2022 3:08:04 PM
+ERROR 2022-03-15 15:08:16,483 231191ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22178875077 | System.FormatException: String '26-09-1986' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.Convert.ToDateTime(String value)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) | 3/15/2022 3:08:16 PM
+INFO  2022-03-15 15:10:14,821 94160ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 3:10:14 PM
+INFO  2022-03-15 15:10:20,930 100269ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 3:10:20 PM
+INFO  2022-03-15 15:10:20,998 100337ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20-08-1980 | 3/15/2022 3:10:20 PM
+INFO  2022-03-15 15:15:22,137 87038ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 3:15:22 PM
+INFO  2022-03-15 15:15:46,053 110955ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 3:15:46 PM
+INFO  2022-03-15 15:15:46,104 111006ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20-08-1980 | 3/15/2022 3:15:46 PM
+INFO  2022-03-15 15:17:40,415 225316ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 3:17:40 PM
+INFO  2022-03-15 15:17:57,363 242264ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/4/1967 | 3/15/2022 3:17:57 PM
+ERROR 2022-03-15 15:18:49,885 294787ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22471617152 | System.FormatException: String '12/4/1967' was not recognized as a valid DateTime.
+   at System.DateTime.ParseExact(String s, String format, IFormatProvider provider)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 96 | 3/15/2022 3:18:49 PM
+INFO  2022-03-15 15:18:55,896 300798ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 3:18:55 PM
+INFO  2022-03-15 15:18:55,936 300837ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26-09-1986 | 3/15/2022 3:18:55 PM
+INFO  2022-03-15 15:36:25,348 1350250ms ateBulkMerchantService ?                  - Initiating create merchant account | USMANYAHAYAMAICHELSEA200@GMAIL.COM | 3/15/2022 3:36:25 PM
+INFO  2022-03-15 15:39:14,295 136245ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 3:39:14 PM
+INFO  2022-03-15 15:40:28,590 210539ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 3:40:28 PM
+ERROR 2022-03-15 15:40:28,733 210682ms ateBulkMerchantService ?                  - Error occured | NWEKEZOBA@GMAIL.COM | Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=18969; handshake=1; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.OpenAsync(CancellationToken cancellationToken)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(DbContext _, Boolean result, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.Merchant.CreateBulkMerchantService.CreateNewMerchant(BulkSignUpRequestDto signUpRequestDto) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Merchant\CreateBulkMerchantService.cs:line 417
+ClientConnectionId:086c7cf2-5063-4a49-a975-88874a3d4e61
+Error Number:-2,State:0,Class:11 | 3/15/2022 3:40:28 PM
+INFO  2022-03-15 15:40:32,495 214445ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 3:40:32 PM
+INFO  2022-03-15 15:40:33,356 215306ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/4/1967 | 3/15/2022 3:40:33 PM
+INFO  2022-03-15 15:41:00,734 242684ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 3:41:00 PM
+INFO  2022-03-15 15:41:00,807 242757ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26-09-1986 | 3/15/2022 3:41:00 PM
+ERROR 2022-03-15 15:42:10,441 312391ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22178875077 | System.FormatException: String '26-09-1986' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 96 | 3/15/2022 3:42:10 PM
+INFO  2022-03-15 15:42:12,753 314703ms ateBulkMerchantService ?                  - Initiating create merchant account | USMANYAHAYAMAICHELSEA200@GMAIL.COM | 3/15/2022 3:42:12 PM
+INFO  2022-03-15 15:42:12,790 314740ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22297740162 | 1/1/1992 | 3/15/2022 3:42:12 PM
+INFO  2022-03-15 15:49:13,104 92081ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 3:49:13 PM
+INFO  2022-03-15 15:49:24,278 103256ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 3:49:24 PM
+INFO  2022-03-15 15:49:28,131 107109ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20-08-1980 | 3/15/2022 3:49:28 PM
+ERROR 2022-03-15 15:49:52,907 131884ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '20-08-1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 96 | 3/15/2022 3:49:52 PM
+INFO  2022-03-15 15:49:55,346 134324ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 3:49:55 PM
+INFO  2022-03-15 15:49:57,348 136325ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/4/1967 | 3/15/2022 3:49:57 PM
+INFO  2022-03-15 16:27:23,731 93450ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 4:27:23 PM
+INFO  2022-03-15 16:40:35,191 153248ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 4:40:35 PM
+INFO  2022-03-15 16:41:02,835 180891ms ateBulkMerchantService ?                  - Initiating create merchant account | "NWEKEZOBA@GMAIL.COM" | 3/15/2022 4:41:02 PM
+INFO  2022-03-15 16:41:03,855 181911ms BankServiceRepository  ?                  - Initiating BvnValidation request | "22156670025" | "20/08/1980" | 3/15/2022 4:41:03 PM
+ERROR 2022-03-15 16:42:47,125 285182ms BankServiceRepository  ?                  - Error occured | Bvn Validation | "22156670025" | System.FormatException: String '"20/08/1980"' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 96 | 3/15/2022 4:42:47 PM
+INFO  2022-03-15 16:42:48,934 286990ms ateBulkMerchantService ?                  - Initiating create merchant account | "TGWA3@YMAIL.COM" | 3/15/2022 4:42:48 PM
+INFO  2022-03-15 16:42:49,432 287489ms BankServiceRepository  ?                  - Initiating BvnValidation request | "22471617152" | "12/4/1967" | 3/15/2022 4:42:49 PM
+ERROR 2022-03-15 16:43:03,727 301784ms BankServiceRepository  ?                  - Error occured | Bvn Validation | "22471617152" | System.FormatException: String '"12/4/1967"' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 96 | 3/15/2022 4:43:03 PM
+INFO  2022-03-15 16:43:05,288 303345ms ateBulkMerchantService ?                  - Initiating create merchant account | "KINGSTONGROUPOFSCHOOLS@GMAIL.COM" | 3/15/2022 4:43:05 PM
+INFO  2022-03-15 16:43:06,292 304349ms BankServiceRepository  ?                  - Initiating BvnValidation request | "22178875077" | "26/09/1986" | 3/15/2022 4:43:06 PM
+ERROR 2022-03-15 16:43:09,809 307866ms BankServiceRepository  ?                  - Error occured | Bvn Validation | "22178875077" | System.FormatException: String '"26/09/1986"' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 96 | 3/15/2022 4:43:09 PM
+INFO  2022-03-15 16:43:11,023 309080ms ateBulkMerchantService ?                  - Initiating create merchant account | "USMANYAHAYAMAICHELSEA200@GMAIL.COM" | 3/15/2022 4:43:11 PM
+INFO  2022-03-15 16:43:11,886 309942ms BankServiceRepository  ?                  - Initiating BvnValidation request | "22297740162" | "1/1/1992" | 3/15/2022 4:43:11 PM
+ERROR 2022-03-15 16:43:17,559 315616ms BankServiceRepository  ?                  - Error occured | Bvn Validation | "22297740162" | System.FormatException: String '"1/1/1992"' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 96 | 3/15/2022 4:43:17 PM
+INFO  2022-03-15 16:48:56,601 95759ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 4:48:56 PM
+INFO  2022-03-15 16:49:04,639 103797ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 4:49:04 PM
+INFO  2022-03-15 16:49:15,026 114184ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20/08/1980 | 3/15/2022 4:49:15 PM
+ERROR 2022-03-15 16:50:22,949 182108ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '20/08/1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) | 3/15/2022 4:50:22 PM
+INFO  2022-03-15 16:50:25,027 184186ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 4:50:25 PM
+INFO  2022-03-15 16:50:25,117 184275ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/04/1967 | 3/15/2022 4:50:25 PM
+INFO  2022-03-15 16:50:53,898 213056ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 4:50:53 PM
+INFO  2022-03-15 16:50:54,263 213421ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26/09/1986 | 3/15/2022 4:50:54 PM
+ERROR 2022-03-15 16:50:57,490 216648ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22178875077 | System.FormatException: String '26/09/1986' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.DateTime.Parse(String s)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) | 3/15/2022 4:50:57 PM
+INFO  2022-03-15 16:50:59,011 218169ms ateBulkMerchantService ?                  - Initiating create merchant account | USMANYAHAYAMAICHELSEA200@GMAIL.COM | 3/15/2022 4:50:59 PM
+INFO  2022-03-15 16:50:59,082 218240ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22297740162 | 01/01/1992 | 3/15/2022 4:50:59 PM
+INFO  2022-03-15 17:07:51,830 154224ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 5:07:51 PM
+INFO  2022-03-15 17:07:57,606 160000ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 5:07:57 PM
+INFO  2022-03-15 17:07:57,838 160231ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20/08/1980 | 3/15/2022 5:07:57 PM
+ERROR 2022-03-15 17:09:37,554 259947ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '20/08/1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.Convert.ToDateTime(String value)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 117 | 3/15/2022 5:09:37 PM
+INFO  2022-03-15 17:09:38,662 261056ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 5:09:38 PM
+INFO  2022-03-15 17:09:39,215 261609ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/04/1967 | 3/15/2022 5:09:39 PM
+INFO  2022-03-15 17:09:46,456 268850ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 5:09:46 PM
+INFO  2022-03-15 17:09:46,521 268914ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26/09/1986 | 3/15/2022 5:09:46 PM
+ERROR 2022-03-15 17:10:46,955 329348ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22178875077 | System.TimeoutException: The request channel timed out attempting to send after 00:01:00. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.
+ ---> System.TimeoutException: The HTTP request to 'http://10.0.41.188:8083/banks.asmx' has exceeded the allotted timeout of 00:01:00. The time allotted to this operation may have been a portion of a longer timeout.
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   at System.ServiceModel.Channels.RequestChannel.RequestAsync(Message message, TimeSpan timeout)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 102 | 3/15/2022 5:10:46 PM
+INFO  2022-03-15 18:43:17,203 540247ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 6:43:17 PM
+INFO  2022-03-15 18:43:26,698 549742ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 6:43:26 PM
+INFO  2022-03-15 18:43:26,786 549830ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20/08/1980 | 3/15/2022 6:43:26 PM
+INFO  2022-03-15 18:49:03,857 111398ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 6:49:03 PM
+INFO  2022-03-15 18:49:10,438 117980ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 6:49:10 PM
+INFO  2022-03-15 18:49:10,524 118065ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20/08/1980 | 3/15/2022 6:49:10 PM
+INFO  2022-03-15 19:03:41,512 204456ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 7:03:41 PM
+INFO  2022-03-15 19:03:48,596 211540ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 7:03:48 PM
+INFO  2022-03-15 19:03:48,685 211629ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20/08/1980 | 3/15/2022 7:03:48 PM
+ERROR 2022-03-15 19:03:48,787 211731ms BankServiceRepository  ?                  - Error occured | Bvn Validation | 22156670025 | System.FormatException: String '20/08/1980' was not recognized as a valid DateTime.
+   at System.DateTimeParse.Parse(ReadOnlySpan`1 s, DateTimeFormatInfo dtfi, DateTimeStyles styles)
+   at System.Convert.ToDateTime(String value)
+   at SocialPay.Core.Services.Validations.BankServiceRepository.BvnValidation(String bvn, String dateOfbirth, String firstname, String lastname, String email) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Validations\BankServiceRepository.cs:line 93 | 3/15/2022 7:03:48 PM
+INFO  2022-03-15 19:03:57,488 220432ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 7:03:57 PM
+INFO  2022-03-15 19:03:57,560 220504ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/04/1967 | 3/15/2022 7:03:57 PM
+INFO  2022-03-15 19:04:18,401 241345ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 7:04:18 PM
+INFO  2022-03-15 19:04:18,465 241410ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26/09/1986 | 3/15/2022 7:04:18 PM
+INFO  2022-03-15 19:17:01,283 97493ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 7:17:01 PM
+INFO  2022-03-15 19:17:23,443 119653ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 7:17:23 PM
+INFO  2022-03-15 19:17:23,525 119736ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20/08/1980 | 3/15/2022 7:17:23 PM
+INFO  2022-03-15 19:20:06,745 282955ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 7:20:06 PM
+INFO  2022-03-15 19:20:07,068 283278ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/04/1967 | 3/15/2022 7:20:07 PM
+INFO  2022-03-15 19:28:51,568 807778ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 7:28:51 PM
+INFO  2022-03-15 19:28:51,998 808209ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26/09/1986 | 3/15/2022 7:28:51 PM
+ERROR 2022-03-15 19:29:23,965 840175ms ateBulkMerchantService ?                  - Error occured | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__169_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:0ef83cb8-08cf-4a9c-8881-45df8d180e25
+Error Number:8152,State:13,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.Merchant.CreateBulkMerchantService.CreateNewMerchant(BulkSignUpRequestDto signUpRequestDto) | 3/15/2022 7:29:23 PM
+INFO  2022-03-15 19:29:25,522 841732ms ateBulkMerchantService ?                  - Initiating create merchant account | USMANYAHAYAMAICHELSEA200@GMAIL.COM | 3/15/2022 7:29:25 PM
+INFO  2022-03-15 19:29:25,594 841805ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22297740162 | 01/01/1992 | 3/15/2022 7:29:25 PM
+ERROR 2022-03-15 19:29:30,627 846837ms ateBulkMerchantService ?                  - Error occured | USMANYAHAYAMAICHELSEA200@GMAIL.COM | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreResults(Boolean& moreResults)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryNextResult(Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.NextResultAsyncExecute(Task task, Object state)
+   at Microsoft.Data.SqlClient.SqlDataReader.InvokeAsyncCall[T](AAsyncCallContext`1 context)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+ClientConnectionId:0ef83cb8-08cf-4a9c-8881-45df8d180e25
+Error Number:8152,State:13,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.Merchant.CreateBulkMerchantService.CreateNewMerchant(BulkSignUpRequestDto signUpRequestDto) | 3/15/2022 7:29:30 PM
+INFO  2022-03-15 19:30:00,053 876263ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 7:30:00 PM
+INFO  2022-03-15 19:30:10,606 886816ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 7:30:10 PM
+INFO  2022-03-15 19:30:10,672 886882ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20/08/1980 | 3/15/2022 7:30:10 PM
+INFO  2022-03-15 19:31:13,150 949360ms ateBulkMerchantService ?                  - Initiating create merchant account was successful | NWEKEZOBA@GMAIL.COM | 3/15/2022 7:31:13 PM
+INFO  2022-03-15 19:31:20,523 956733ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 7:31:20 PM
+INFO  2022-03-15 19:31:20,663 956873ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22471617152 | 12/04/1967 | 3/15/2022 7:31:20 PM
+INFO  2022-03-15 19:31:26,257 962467ms ateBulkMerchantService ?                  - Initiating create merchant account was successful | TGWA3@YMAIL.COM | 3/15/2022 7:31:26 PM
+INFO  2022-03-15 19:31:28,401 964611ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 7:31:28 PM
+INFO  2022-03-15 19:31:28,468 964678ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26/09/1986 | 3/15/2022 7:31:28 PM
+ERROR 2022-03-15 19:31:36,720 972931ms ateBulkMerchantService ?                  - Error occured | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__169_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:408fedd4-2523-49a2-b055-ef7ce785f7c4
+Error Number:8152,State:13,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.Merchant.CreateBulkMerchantService.CreateNewMerchant(BulkSignUpRequestDto signUpRequestDto) | 3/15/2022 7:31:36 PM
+INFO  2022-03-15 19:31:38,920 975130ms ateBulkMerchantService ?                  - Initiating create merchant account | USMANYAHAYAMAICHELSEA200@GMAIL.COM | 3/15/2022 7:31:38 PM
+INFO  2022-03-15 19:31:38,960 975171ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22297740162 | 01/01/1992 | 3/15/2022 7:31:38 PM
+ERROR 2022-03-15 19:31:49,520 985731ms ateBulkMerchantService ?                  - Error occured | USMANYAHAYAMAICHELSEA200@GMAIL.COM | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreResults(Boolean& moreResults)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryNextResult(Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.NextResultAsyncExecute(Task task, Object state)
+   at Microsoft.Data.SqlClient.SqlDataReader.InvokeAsyncCall[T](AAsyncCallContext`1 context)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+ClientConnectionId:408fedd4-2523-49a2-b055-ef7ce785f7c4
+Error Number:8152,State:13,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.Merchant.CreateBulkMerchantService.CreateNewMerchant(BulkSignUpRequestDto signUpRequestDto) | 3/15/2022 7:31:49 PM
+INFO  2022-03-15 19:32:34,325 1030535ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 7:32:34 PM
+INFO  2022-03-15 19:32:39,340 1035550ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 7:32:39 PM
+INFO  2022-03-15 19:32:42,027 1038237ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 7:32:42 PM
+INFO  2022-03-15 19:32:43,532 1039742ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 7:32:43 PM
+INFO  2022-03-15 19:32:43,599 1039809ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26/09/1986 | 3/15/2022 7:32:43 PM
+INFO  2022-03-15 19:36:30,787 184148ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 7:36:30 PM
+INFO  2022-03-15 19:36:47,355 200716ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 7:36:47 PM
+INFO  2022-03-15 19:36:52,928 206289ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 7:36:52 PM
+INFO  2022-03-15 19:36:55,232 208593ms ateBulkMerchantService ?                  - Initiating create merchant account | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | 3/15/2022 7:36:55 PM
+INFO  2022-03-15 19:36:55,292 208653ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22178875077 | 26/09/1986 | 3/15/2022 7:36:55 PM
+ERROR 2022-03-15 19:37:29,894 243255ms ateBulkMerchantService ?                  - Error occured | KINGSTONGROUPOFSCHOOLS@GMAIL.COM | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__169_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:78d2c968-28e3-4f6b-9106-b22a883ba0ba
+Error Number:8152,State:13,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.Merchant.CreateBulkMerchantService.CreateNewMerchant(BulkSignUpRequestDto signUpRequestDto) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Merchant\CreateBulkMerchantService.cs:line 474 | 3/15/2022 7:37:29 PM
+INFO  2022-03-15 19:37:32,218 245579ms ateBulkMerchantService ?                  - Initiating create merchant account | USMANYAHAYAMAICHELSEA200@GMAIL.COM | 3/15/2022 7:37:32 PM
+INFO  2022-03-15 19:37:32,283 245644ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22297740162 | 01/01/1992 | 3/15/2022 7:37:32 PM
+ERROR 2022-03-15 19:37:42,776 256136ms ateBulkMerchantService ?                  - Error occured | USMANYAHAYAMAICHELSEA200@GMAIL.COM | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreResults(Boolean& moreResults)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryNextResult(Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.NextResultAsyncExecute(Task task, Object state)
+   at Microsoft.Data.SqlClient.SqlDataReader.InvokeAsyncCall[T](AAsyncCallContext`1 context)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+ClientConnectionId:78d2c968-28e3-4f6b-9106-b22a883ba0ba
+Error Number:8152,State:13,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.Merchant.CreateBulkMerchantService.CreateNewMerchant(BulkSignUpRequestDto signUpRequestDto) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\Merchant\CreateBulkMerchantService.cs:line 474 | 3/15/2022 7:37:42 PM
+INFO  2022-03-15 19:44:19,974 653335ms ateBulkMerchantService ?                  - BulkCreateMerchant | 3/15/2022 7:44:19 PM
+INFO  2022-03-15 19:44:28,439 661800ms ateBulkMerchantService ?                  - Initiating create merchant account | NWEKEZOBA@GMAIL.COM | 3/15/2022 7:44:28 PM
+INFO  2022-03-15 19:44:28,488 661849ms BankServiceRepository  ?                  - Initiating BvnValidation request | 22156670025 | 20-08-1980 | 3/15/2022 7:44:28 PM
+INFO  2022-03-15 19:45:47,887 741248ms ateBulkMerchantService ?                  - Initiating create merchant account was successful | NWEKEZOBA@GMAIL.COM | 3/15/2022 7:45:47 PM
+INFO  2022-03-15 19:46:07,416 760777ms ateBulkMerchantService ?                  - Initiating create merchant account | TGWA3@YMAIL.COM | 3/15/2022 7:46:07 PM
