@@ -4012,3 +4012,6 @@ INFO  2022-03-10 17:23:04,499 49887ms WalletRepoService      ?                  
 INFO  2022-03-10 17:23:09,974 55361ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 3/10/2022 5:23:09 PM
 INFO  2022-03-10 17:23:11,674 57061ms AuthRepoService        ?                  - Authenticate for login was successful | sheriff.ebelebe@gmail.com | 3/10/2022 5:23:11 PM
 INFO  2022-03-10 17:28:21,396 366784ms EmailService           ?                  - Email service response |  | 3/10/2022 5:28:21 PM
+INFO  2022-03-15 13:32:21,701 88383ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08164577759 | 3/15/2022 1:32:21 PM
+INFO  2022-03-15 13:32:29,424 96105ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 3/15/2022 1:32:29 PM
+INFO  2022-03-15 13:32:31,767 98449ms AuthRepoService        ?                  - Authenticate for login was successful | sheriff.ebelebe@gmail.com | 3/15/2022 1:32:31 PM
