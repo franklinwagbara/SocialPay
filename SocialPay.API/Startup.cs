@@ -332,7 +332,7 @@ namespace SocialPay.API
             services.AddSingleton<IBindMerchantService, BindMerchantService>();
             services.AddSingleton<ProcessMerchantWalletTransactions>();
             services.AddSingleton<IOnboardingNotificationService, OnboardingNotificationService>();
-           services.AddSingleton<IAcceptedEscrowOrders, AcceptedEscrowOrders>();
+           //services.AddSingleton<IAcceptedEscrowOrders, AcceptedEscrowOrders>();
             services.AddSingleton<OnboardingNotificationRepository>();
             //services.AddSingleton<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
