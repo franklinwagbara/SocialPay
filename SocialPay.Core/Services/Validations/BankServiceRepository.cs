@@ -6,6 +6,7 @@ using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.ViewModel;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -74,27 +75,38 @@ namespace SocialPay.Core.Services.Validations
             //                    Years, Months, Days, Hours, Seconds);
         }
 
-        public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth, string firstname, 
-            string lastname, string email)
+        public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth, string firstname,
+                  string lastname, string email)
         {
-           
+            DateTime DOB = DateTime.Now;
             try
 
             {
                 _log4net.Info("Initiating BvnValidation request" + " | " + bvn + " | " + dateOfbirth + " | " + DateTime.Now);
-
+                firstname = firstname.ToLower(); lastname = lastname.ToLower();
                 var eventLog = new EventRequestDto
                 {
                     ModuleAccessed = EventLogProcess.BvnValidation,
                     Description = "Bvn Validation request",
                     UserId = email
                 };
-
+                if (dateOfbirth.Contains("/"))
+                {
+                    DOB = DateTime.ParseExact(dateOfbirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                }
+                else if (dateOfbirth.Contains("-"))
+                {
+                    DOB = DateTime.ParseExact(dateOfbirth, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                }
+                var day = Convert.ToDateTime(DOB).ToString("dd");
+                var month = Convert.ToDateTime(DOB).ToString("MMM");
+                var yr = Convert.ToDateTime(DOB).ToString("yy");
                 await _eventLogService.ActivityRequestLog(eventLog);
 
-                var currentDob = DateTime.Parse(dateOfbirth).ToString("dd-MMM-yy");
+                var currentDob = day + "-" + month + "-" + yr;
 
-               // var banksServices = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
+                //var currentDob = DateTime.Parse(dateOfbirth).ToString("dd-MMM-yy");.
+                // var banksServices = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
 
                 var banksServices = new banksSoapClient(_basicHttpBinding, endpointAddress);
                 var validatebvn = await banksServices.GetBvnAsync(bvn);
@@ -112,13 +124,14 @@ namespace SocialPay.Core.Services.Validations
 
                     }).FirstOrDefault();
 
+
                 if (bvnDetails == default)
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN, Message = "Invalid BVN" };
 
                 if (bvnDetails.Bvn.Contains("exit"))
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN, Message = "BVN does not exist" };
 
-                if (!bvnDetails.DateOfBirth.Equals(currentDob))
+                if (!bvnDetails.DateOfBirth.Equals(currentDob))//
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth, Message = "Invalid Date of birth" };
 
                 var dob = Convert.ToDateTime(bvnDetails.DateOfBirth);
@@ -131,15 +144,15 @@ namespace SocialPay.Core.Services.Validations
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetailsFirstNameOrLastName, Message = "Invalid firstname or lastname" };
 
                 if (currentAge.Year >= ageLimit)
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success, Message = "Success" };              
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success, Message = "Success" };
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange, Message = "Age specified not supported" };
 
-               // return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
+                // return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Bvn Validation" + " | " + bvn + " | "+ ex + " | " + DateTime.Now);
+                _log4net.Error("Error occured" + " | " + "Bvn Validation" + " | " + bvn + " | " + ex + " | " + DateTime.Now);
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.BvnValidationError, Message = "Error occured while validating BVN" };
             }
