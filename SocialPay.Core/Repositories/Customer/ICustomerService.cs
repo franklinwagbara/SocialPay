@@ -12,6 +12,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.Customer;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -31,10 +32,11 @@ namespace SocialPay.Core.Repositories.Customer
         private readonly SendGridEmailService _sendGridEmailService;
         private readonly StoreRepository _storeRepository;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ICustomerService));
+        private readonly CustomerLogger _customerLogger;
 
         public ICustomerService(SocialPayDbContext context, AuthRepoService authRepoService,
             IOptions<AppSettings> appSettings, EmailService emailService,
-            TransactionReceipt transactionReceipt, SendGridEmailService sendGridEmailService,
+            TransactionReceipt transactionReceipt, SendGridEmailService sendGridEmailService, CustomerLogger customerLogger,
             StoreRepository storeRepository) : base(context)
         {
             _context = context;
@@ -44,6 +46,8 @@ namespace SocialPay.Core.Repositories.Customer
             _transactionReceipt = transactionReceipt;
             _sendGridEmailService = sendGridEmailService;
             _storeRepository = storeRepository ?? throw new ArgumentNullException(nameof(storeRepository));
+            _customerLogger = customerLogger;
+
         }
 
         public async Task<MerchantPaymentSetup> GetTransactionReference(string refId)
@@ -182,7 +186,7 @@ namespace SocialPay.Core.Repositories.Customer
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetCustomerPaymentsByMerchantPayRef" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _customerLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetCustomerPaymentsByMerchantPayRef"}{ " | "}{ clientId}{" | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -355,7 +359,8 @@ namespace SocialPay.Core.Repositories.Customer
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetTransactionDetails" + " | " + customUrl + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _customerLogger.LogRequest($"{"Error occured"}{" | "}{"GetTransactionDetails"}{ " | "}{customUrl}{" | "}{ ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
+
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -406,7 +411,7 @@ namespace SocialPay.Core.Repositories.Customer
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetInvoiceTransactionDetails" + " | " + refId + " | " + ex + " | " + DateTime.Now);
+                _customerLogger.LogRequest($"{"Error occured"}{ " | "}{ "GetInvoiceTransactionDetails"}{ " | "}{refId}{" | "}{ ex.Message.ToString()}{" | "}{ DateTime.Now}");
 
                 return new InvoiceViewModel { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -472,7 +477,7 @@ namespace SocialPay.Core.Repositories.Customer
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetCustomerOrders" + " | " + clientId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _customerLogger.LogRequest($"{"Error occured"}{" | "}{ "GetCustomerOrders"}{" | "}{clientId}{" | "}{ex.Message.ToString()}{ " | "}{ DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -757,7 +762,7 @@ namespace SocialPay.Core.Repositories.Customer
                 ////        }
                 ////    }
 
-                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed };
+                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.TransactionFailed }; cccc
                 ////}
 
 
@@ -862,7 +867,7 @@ namespace SocialPay.Core.Repositories.Customer
                             //if (sendCustomerMail.ResponseCode != AppResponseCodes.Success)
                             //    return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = "Request Failed" };
 
-                            _log4net.Info("Emails was successfully sent" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + DateTime.Now);
+                            _customerLogger.LogRequest($"{"Emails was successfully sent"}{" | "}{ "LogPaymentResponse"}{" | "}{model.PaymentReference}{" | "}{ model.TransactionReference}{ " | "}{ DateTime.Now}");
 
                             await transaction.CommitAsync();
 
@@ -870,7 +875,7 @@ namespace SocialPay.Core.Repositories.Customer
                         }
                         catch (Exception ex)
                         {
-                            _log4net.Error("Database Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                            _customerLogger.LogRequest($"{"Database Error occured"}{" | "}{ "LogPaymentResponse"}{" | "}{model.PaymentReference}{ " | "}{ex.Message.ToString()}{" | "}{DateTime.Now}",true);
                             await transaction.RollbackAsync();
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
@@ -880,7 +885,7 @@ namespace SocialPay.Core.Repositories.Customer
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    _log4net.Info("Transaction failed" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
+                    _customerLogger.LogRequest($"{"Transaction failed"}{" | "}{"LogPaymentResponse"}{ " | "}{model.PaymentReference}{ " | "}{ model.TransactionReference}{ " | "}{ model.Message}{" - "}{ DateTime.Now}");
 
                     try
                     {
@@ -895,14 +900,14 @@ namespace SocialPay.Core.Repositories.Customer
 
                         if (model.Message.Contains("Incorrect PIN"))
                         {
-                            _log4net.Info("Transaction failed" + " | " + "Incorrect PIN" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
+                            _customerLogger.LogRequest($"{"Transaction failed"}{ " | "}{"Incorrect PIN"}{" | "}{model.PaymentReference}{ " | "}{model.TransactionReference}{" | "}{ model.Message}{" - "}{ DateTime.Now}");
 
                             return new WebApiResponse { ResponseCode = AppResponseCodes.IncorrectTransactionPin, Data = "Incorrect Transaction Pin" };
                         }
 
                         if (model.Message.Contains("Insufficient"))
                         {
-                            _log4net.Info("Transaction failed" + " | " + "Insufficient" + " | " + model.PaymentReference + " | " + model.TransactionReference + " | " + model.Message + " - " + DateTime.Now);
+                            _customerLogger.LogRequest($"{"Transaction failed"}{ " | "}{ "Insufficient"}{" | "}{ model.PaymentReference}{" | "}{ model.TransactionReference}{" | "}{model.Message}{ " - "}{ DateTime.Now}");
                             return new WebApiResponse { ResponseCode = AppResponseCodes.InsufficientFunds, Data = "Insufficient Funds" };
                         }
 
@@ -910,7 +915,7 @@ namespace SocialPay.Core.Repositories.Customer
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                        _customerLogger.LogRequest($"{"Error occured"}{ " | "}{ "LogPaymentResponse"}{" | "}{ model.PaymentReference}{ " | "}{ex.Message.ToString()}{ " | "}{ DateTime.Now}");
 
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
@@ -920,7 +925,7 @@ namespace SocialPay.Core.Repositories.Customer
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "LogPaymentResponse" + " | " + model.PaymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _customerLogger.LogRequest($"{"Error occured"}{ " | "}{ "LogPaymentResponse"}{" | "}{model.PaymentReference}{" | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

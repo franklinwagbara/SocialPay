@@ -4,7 +4,6 @@ using SocialPay.Core.Configurations;
 using SocialPay.Core.Services.EventLogs;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
-using SocialPay.Helper.SerilogService.FioranoT24;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Globalization;
@@ -21,8 +20,7 @@ namespace SocialPay.Core.Services.Validations
         private readonly EventLogService _eventLogService;
         public readonly BasicHttpBinding _basicHttpBinding;
         public readonly EndpointAddress endpointAddress;
-        private readonly FioranoT24Logger _fioranoT24Logger;
-        public BankServiceRepository(IOptions<AppSettings> appSettings, EventLogService eventLogService, FioranoT24Logger fioranoT24Logger)
+        public BankServiceRepository(IOptions<AppSettings> appSettings, EventLogService eventLogService)
         {
             _appSettings = appSettings.Value;
             _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
@@ -39,7 +37,6 @@ namespace SocialPay.Core.Services.Validations
             _basicHttpBinding.MaxReceivedMessageSize = Convert.ToInt32(_appSettings.MaxReceivedMessageSize);
             _basicHttpBinding.MaxBufferSize = Convert.ToInt32(_appSettings.MaxBufferSize);
             _basicHttpBinding.MaxBufferPoolSize = Convert.ToInt32(_appSettings.MaxBufferPoolSize);
-            _fioranoT24Logger = fioranoT24Logger;
         }
 
         private AgeCalculatorViewModel CalculateAge(DateTime Dob)
@@ -78,16 +75,14 @@ namespace SocialPay.Core.Services.Validations
             //                    Years, Months, Days, Hours, Seconds);
         }
 
-        public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth, string firstname,
-                  string lastname, string email)
+        public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth, string firstname, 
+            string lastname, string email)
         {
             DateTime DOB = DateTime.Now;
-            string day = ""; string month = ""; string yr = "";
-            //DateTime DOB;
             try
 
             {
-                _fioranoT24Logger.LogRequest($"{"Initiating BvnValidation request"}{ " | "}{bvn }{" | "}{ dateOfbirth}{" | "}{DateTime.Now}");
+                _log4net.Info("Initiating BvnValidation request" + " | " + bvn + " | " + dateOfbirth + " | " + DateTime.Now);
                 firstname = firstname.ToLower(); lastname = lastname.ToLower();
                 var eventLog = new EventRequestDto
                 {
@@ -95,31 +90,17 @@ namespace SocialPay.Core.Services.Validations
                     Description = "Bvn Validation request",
                     UserId = email
                 };
-                var dateValues = new[] { dateOfbirth, dateOfbirth, dateOfbirth, dateOfbirth, dateOfbirth, dateOfbirth };
-                var formats = new[] { "dd/MM/yyyy", "dd-MM-yyyy", "MM/dd/yyyy", "MM-dd-yyyy", "yyyy-MM-dd","yyyy/MM/dd" };
-
-                foreach (var s in dateValues)
+                if (dateOfbirth.Contains("/"))
                 {
-                    
-                    if (DateTime.TryParseExact(s, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DOB) == true)
-                    {
-                        day = Convert.ToDateTime(DOB).ToString("dd");
-                        month = Convert.ToDateTime(DOB).ToString("MMM");
-                        yr = Convert.ToDateTime(DOB).ToString("yy");
-                    }
+                    DOB = DateTime.ParseExact(dateOfbirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                }else if (dateOfbirth.Contains("-"))
+                {
+                    DOB = DateTime.ParseExact(dateOfbirth, "dd-MM-yyyy", CultureInfo.InvariantCulture);
                 }
-                //if (dateOfbirth.Contains("/"))
-                //{
-                //    DOB = DateTime.ParseExact(dateOfbirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                //}
-                //else if (dateOfbirth.Contains("-"))
-                //{
-                //    DOB = DateTime.ParseExact(dateOfbirth, "dd-MM-yyyy", CultureInfo.InvariantCulture);
-                //}
-                //var day = Convert.ToDateTime(DOB).ToString("dd");
-                //var month = Convert.ToDateTime(DOB).ToString("MMM");
-                //var yr = Convert.ToDateTime(DOB).ToString("yy");
-                //await _eventLogService.ActivityRequestLog(eventLog);
+                var day = Convert.ToDateTime(DOB).ToString("dd");
+                var month = Convert.ToDateTime(DOB).ToString("MMM");
+                var yr = Convert.ToDateTime(DOB).ToString("yy");
+                await _eventLogService.ActivityRequestLog(eventLog);
 
                 var currentDob = day + "-" + month + "-" + yr;
 
@@ -142,7 +123,7 @@ namespace SocialPay.Core.Services.Validations
 
                     }).FirstOrDefault();
 
-
+                
                 if (bvnDetails == default)
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN, Message = "Invalid BVN" };
 
@@ -162,15 +143,15 @@ namespace SocialPay.Core.Services.Validations
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetailsFirstNameOrLastName, Message = "Invalid firstname or lastname" };
 
                 if (currentAge.Year >= ageLimit)
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success, Message = "Success" };
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success, Message = "Success" };              
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange, Message = "Age specified not supported" };
 
-                // return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
+               // return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
-                _fioranoT24Logger.LogRequest($"{"Error occured"}{ " | "}{"Bvn Validation"}{" | "}{bvn}{ " | "}{ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
+                _log4net.Error("Error occured" + " | " + "Bvn Validation" + " | " + bvn + " | "+ ex + " | " + DateTime.Now);
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.BvnValidationError, Message = "Error occured while validating BVN" };
             }
@@ -180,7 +161,7 @@ namespace SocialPay.Core.Services.Validations
         {
             try
             {
-                _fioranoT24Logger.LogRequest($"{"Initiating GetAccountFullInfoAsync request"}{" | " }{bvn}{" | "}{nuban}{" | "}{ DateTime.Now}");
+                _log4net.Info("Initiating GetAccountFullInfoAsync request" + " | " + bvn + " | " + nuban + " | " + DateTime.Now);
 
                 //var validateBvn = await BvnValidation(bvn, "");
                 //if (validateBvn.ResponseCode != AppResponseCodes.Success)
@@ -193,7 +174,7 @@ namespace SocialPay.Core.Services.Validations
 
                 // var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, ServicesPoint.CoreBanking);
                 var validAccount = getUserInfo.Nodes[1];
-                _fioranoT24Logger.LogRequest($"{"Initiating GetAccountFullInfoAsync response"}{ " | "}{bvn}{ " | "}{nuban}{" | "}{ validAccount}{" | "}{ DateTime.Now}");
+                _log4net.Info("Initiating GetAccountFullInfoAsync response" + " | " + bvn + " | " + nuban + " | " + validAccount + " | "+ DateTime.Now);
 
                 var accountDetail = validAccount.Descendants("BankAccountFullInfo")
 
@@ -225,7 +206,7 @@ namespace SocialPay.Core.Services.Validations
             }
             catch (Exception ex)
             {
-                _fioranoT24Logger.LogRequest($"{"Error occured"}{" | "}{ "GetAccountFullInfoAsync"}{ " | "}{ bvn}{ " | "}{ex.Message.ToString()}{" | "}{DateTime.Now}");
+                _log4net.Error("Error occured" + " | " + "GetAccountFullInfoAsync" + " | " + bvn + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InternalError };
             }

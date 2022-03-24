@@ -69,6 +69,7 @@ using SocialPay.Helper.SerilogService.PayWithCardJob;
 using SocialPay.Helper.SerilogService.Store;
 using SocialPay.Helper.SerilogService.Transaction;
 using SocialPay.Helper.SerilogService.WalletJob;
+using SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction;
 using SocialPay.Job.Repository.BasicWalletFundService;
 using SocialPay.Job.Repository.DeliveryDayBankTransaction;
 using SocialPay.Job.Repository.Fiorano;
@@ -331,6 +332,7 @@ namespace SocialPay.API
             services.AddSingleton<IBindMerchantService, BindMerchantService>();
             services.AddSingleton<ProcessMerchantWalletTransactions>();
             services.AddSingleton<IOnboardingNotificationService, OnboardingNotificationService>();
+           //services.AddSingleton<IAcceptedEscrowOrders, AcceptedEscrowOrders>();
             services.AddSingleton<OnboardingNotificationRepository>();
             //services.AddSingleton<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
@@ -402,11 +404,11 @@ namespace SocialPay.API
             // main jobs to enable ends
 
 
-            ////services.AddCronJob<OnboardingNotificationTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.OnboardingNotificationTask;
-            ////});
+            services.AddCronJob<OnboardingNotificationTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.OnboardingNotificationTask;
+            });
 
             //////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
             //////{
@@ -422,11 +424,11 @@ namespace SocialPay.API
             ////////    c.CronExpression = options.DeclinedEscrowWalletTask;
             ////////});
 
-            services.AddCronJob<DeliveryDayBankTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.DeliveryDayBankTask;
-            });
+            //////services.AddCronJob<DeliveryDayBankTask>(c =>
+            //////{
+            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //////    c.CronExpression = options.DeliveryDayBankTask;
+            //////});
 
             services.AddCronJob<DeliveryDayWalletTask>(c =>
             {
