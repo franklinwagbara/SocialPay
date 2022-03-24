@@ -4,6 +4,7 @@ using SocialPay.Core.Configurations;
 using SocialPay.Core.Services.EventLogs;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
+using SocialPay.Helper.SerilogService.FioranoT24;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Globalization;
@@ -20,7 +21,8 @@ namespace SocialPay.Core.Services.Validations
         private readonly EventLogService _eventLogService;
         public readonly BasicHttpBinding _basicHttpBinding;
         public readonly EndpointAddress endpointAddress;
-        public BankServiceRepository(IOptions<AppSettings> appSettings, EventLogService eventLogService)
+        private readonly FioranoT24Logger _fioranoT24Logger;
+        public BankServiceRepository(IOptions<AppSettings> appSettings, EventLogService eventLogService, FioranoT24Logger fioranoT24Logger)
         {
             _appSettings = appSettings.Value;
             _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
@@ -37,6 +39,7 @@ namespace SocialPay.Core.Services.Validations
             _basicHttpBinding.MaxReceivedMessageSize = Convert.ToInt32(_appSettings.MaxReceivedMessageSize);
             _basicHttpBinding.MaxBufferSize = Convert.ToInt32(_appSettings.MaxBufferSize);
             _basicHttpBinding.MaxBufferPoolSize = Convert.ToInt32(_appSettings.MaxBufferPoolSize);
+            _fioranoT24Logger = fioranoT24Logger;
         }
 
         private AgeCalculatorViewModel CalculateAge(DateTime Dob)
@@ -82,7 +85,7 @@ namespace SocialPay.Core.Services.Validations
             try
 
             {
-                _log4net.Info("Initiating BvnValidation request" + " | " + bvn + " | " + dateOfbirth + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Initiating BvnValidation request"}{ " | "}{bvn }{" | "}{ dateOfbirth}{" | "}{DateTime.Now}");
                 firstname = firstname.ToLower(); lastname = lastname.ToLower();
                 var eventLog = new EventRequestDto
                 {
@@ -152,7 +155,7 @@ namespace SocialPay.Core.Services.Validations
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Bvn Validation" + " | " + bvn + " | " + ex + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Error occured"}{ " | "}{"Bvn Validation"}{" | "}{bvn}{ " | "}{ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.BvnValidationError, Message = "Error occured while validating BVN" };
             }
@@ -162,7 +165,7 @@ namespace SocialPay.Core.Services.Validations
         {
             try
             {
-                _log4net.Info("Initiating GetAccountFullInfoAsync request" + " | " + bvn + " | " + nuban + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Initiating GetAccountFullInfoAsync request"}{" | " }{bvn}{" | "}{nuban}{" | "}{ DateTime.Now}");
 
                 //var validateBvn = await BvnValidation(bvn, "");
                 //if (validateBvn.ResponseCode != AppResponseCodes.Success)
@@ -175,7 +178,7 @@ namespace SocialPay.Core.Services.Validations
 
                 // var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, ServicesPoint.CoreBanking);
                 var validAccount = getUserInfo.Nodes[1];
-                _log4net.Info("Initiating GetAccountFullInfoAsync response" + " | " + bvn + " | " + nuban + " | " + validAccount + " | "+ DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Initiating GetAccountFullInfoAsync response"}{ " | "}{bvn}{ " | "}{nuban}{" | "}{ validAccount}{" | "}{ DateTime.Now}");
 
                 var accountDetail = validAccount.Descendants("BankAccountFullInfo")
 
@@ -207,7 +210,7 @@ namespace SocialPay.Core.Services.Validations
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAccountFullInfoAsync" + " | " + bvn + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Error occured"}{" | "}{ "GetAccountFullInfoAsync"}{ " | "}{ bvn}{ " | "}{ex.Message.ToString()}{" | "}{DateTime.Now}");
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InternalError };
             }
