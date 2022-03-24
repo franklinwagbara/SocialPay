@@ -178,7 +178,7 @@ namespace SocialPay.Core.Services.Validations
 
                 // var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, ServicesPoint.CoreBanking);
                 var validAccount = getUserInfo.Nodes[1];
-                _fioranoT24Logger.LogRequest($"{"Initiating GetAccountFullInfoAsync response"}{ " | "}{bvn}{ " | "}{nuban}{" | "}{ validAccount}{" | "}{ DateTime.Now}";
+                _fioranoT24Logger.LogRequest($"{"Initiating GetAccountFullInfoAsync response"}{ " | "}{bvn}{ " | "}{nuban}{" | "}{ validAccount}{" | "}{ DateTime.Now}");
 
                 var accountDetail = validAccount.Descendants("BankAccountFullInfo")
 
