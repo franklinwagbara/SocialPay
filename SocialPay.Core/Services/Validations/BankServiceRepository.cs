@@ -79,6 +79,7 @@ namespace SocialPay.Core.Services.Validations
             string lastname, string email)
         {
             DateTime DOB = DateTime.Now;
+            string day = ""; string month = ""; string yr = "";
             try
 
             {
@@ -90,17 +91,19 @@ namespace SocialPay.Core.Services.Validations
                     Description = "Bvn Validation request",
                     UserId = email
                 };
-                if (dateOfbirth.Contains("/"))
+                var dateValues = new[] { dateOfbirth, dateOfbirth, dateOfbirth, dateOfbirth, dateOfbirth, dateOfbirth };
+                var formats = new[] { "dd/MM/yyyy", "dd-MM-yyyy", "MM/dd/yyyy", "MM-dd-yyyy", "yyyy-MM-dd", "yyyy/MM/dd" };
+
+                foreach (var s in dateValues)
                 {
-                    DOB = DateTime.ParseExact(dateOfbirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                }else if (dateOfbirth.Contains("-"))
-                {
-                    DOB = DateTime.ParseExact(dateOfbirth, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+                    if (DateTime.TryParseExact(s, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DOB) == true)
+                    {
+                        day = Convert.ToDateTime(DOB).ToString("dd");
+                        month = Convert.ToDateTime(DOB).ToString("MMM");
+                        yr = Convert.ToDateTime(DOB).ToString("yy");
+                    }
                 }
-                var day = Convert.ToDateTime(DOB).ToString("dd");
-                var month = Convert.ToDateTime(DOB).ToString("MMM");
-                var yr = Convert.ToDateTime(DOB).ToString("yy");
-                await _eventLogService.ActivityRequestLog(eventLog);
 
                 var currentDob = day + "-" + month + "-" + yr;
 
