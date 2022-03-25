@@ -10,6 +10,7 @@ using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
@@ -48,6 +49,56 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
                                 var user = await context.ClientAuthentication
                                 .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
 
+
+
+                                ////var defaultRequest = new CreateNibsMerchantRequestDto
+                                ////{
+                                ////    address = merchant.Address,
+                                ////    feeBearer = merchant.Contact,
+                                ////    email = merchant.Email,
+                                ////    Fee = 00,
+                                ////    name = merchant.Name,
+                                ////    phone = merchant.Phone,
+                                ////    tin = merchant.Tin
+                                ////};
+
+
+                                var QueryAccountRequestDto = new QueryAccountRequestDto();
+                                var NewCreateNibsMerchantRequestDto = new NewCreateNibsMerchantRequestDto();
+                                var UserSterlingBankInfo = await context.MerchantBankInfo.
+                                    Where(x => x.BankCode == _appSettings.SterlingBankCode).
+                                    Where(x => x.ClientAuthenticationId == item.ClientAuthenticationId).
+                                    SingleOrDefaultAsync();
+                                //if(UserSterlingBankInfo == null)
+                                //{
+                                //    var OthersterSterlingBankInfo = await context.OtherMerchantBankInfo.
+                                //       Where(x => x.ClientAuthenticationId == item.ClientAuthenticationId).
+                                //       Where(x => x.BankCode == _appSettings.SterlingBankCode).
+                                //       SingleOrDefaultAsync();
+
+                                //    if (OthersterSterlingBankInfo == null) {
+                                //        user.LastDateModified = DateTime.Now;
+                                //        context.Update(user);
+                                //        await context.SaveChangesAsync();
+
+                                //        await transaction.CommitAsync();
+                                //        continue;
+
+                                //    }
+                                //    QueryAccountRequestDto.accountNumber = OthersterSterlingBankInfo.Nuban;
+                                //    NewCreateNibsMerchantRequestDto.accountName = OthersterSterlingBankInfo.AccountName;
+
+                                //}
+                                //else
+                                //{
+                                //    QueryAccountRequestDto.accountNumber = UserSterlingBankInfo.Nuban;
+                                //    NewCreateNibsMerchantRequestDto.accountName = UserSterlingBankInfo.AccountName;
+
+                                //}
+
+                                QueryAccountRequestDto.accountNumber = "7060564377";
+                                NewCreateNibsMerchantRequestDto.accountName = "NNONA CHIMDIKE";
+
                                 var merchant = new MerchantQRCodeOnboarding
                                 {
                                     IsDeleted = false,
@@ -63,18 +114,24 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
                                     Status = NibbsMerchantOnboarding.CreateAccount
                                 };
 
-                                await context.MerchantQRCodeOnboarding.AddAsync(merchant);
-                                await context.SaveChangesAsync();
 
-                                var defaultRequest = new CreateNibsMerchantRequestDto
+
+
+                                QueryAccountRequestDto.bankNumber = _appSettings.nibsQRCodeBankNumber;
+                                NewCreateNibsMerchantRequestDto.accountNumber = QueryAccountRequestDto.accountNumber;
+                                NewCreateNibsMerchantRequestDto.tin = merchant.Tin;
+                                NewCreateNibsMerchantRequestDto.name = NewCreateNibsMerchantRequestDto.accountName;
+                                NewCreateNibsMerchantRequestDto.phone = merchant.Phone;
+                                NewCreateNibsMerchantRequestDto.contact = item.Contact;
+                                NewCreateNibsMerchantRequestDto.email = merchant.Email;
+                                NewCreateNibsMerchantRequestDto.address = merchant.Address;
+                                NewCreateNibsMerchantRequestDto.feeBearer = "0.00";
+                                NewCreateNibsMerchantRequestDto.bankCode = "999232";
+
+                                var defaultRequest = new createMerchantRequestPayload
                                 {
-                                    Address = merchant.Address,
-                                    Contact = merchant.Contact,
-                                    Email = merchant.Email,
-                                    Fee = 00,
-                                    Name = merchant.Name,
-                                    Phone = merchant.Phone,
-                                    Tin = merchant.Tin
+                                    NewCreateNibsMerchantRequestDto = NewCreateNibsMerchantRequestDto,
+                                    QueryAccountRequestDto = QueryAccountRequestDto
                                 };
 
                                 var createNibbsMerchant = await _nibbsQRCodeAPIJobService.CreateMerchant(defaultRequest);
@@ -103,6 +160,9 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
                                     context.Update(user);
                                     await context.SaveChangesAsync();
 
+                                    await context.MerchantQRCodeOnboarding.AddAsync(merchant);
+                                    await context.SaveChangesAsync();
+
                                     await transaction.CommitAsync();
 
                                     //return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = "Merchant was successfully created" };
@@ -110,14 +170,19 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
 
                                 else
                                 {
-                                  ///  merchantResponseLog.JsonResponse = createNibbsMerchant.jsonResponse;
+                                    ///  merchantResponseLog.JsonResponse = createNibbsMerchant.jsonResponse;
 
                                     //await context.MerchantQRCodeOnboardingResponse.AddAsync(merchantResponseLog);
                                     //await context.SaveChangesAsync();
 
-                                   // await transaction.CommitAsync();
+                                    // await transaction.CommitAsync();
+
+                                    user.LastDateModified = DateTime.Now;
+                                    context.Update(user);
+                                    await context.SaveChangesAsync();
+                                    await transaction.CommitAsync();
                                 }
-                                
+
                             }
                             catch (Exception ex)
                             {
@@ -128,7 +193,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
 
                     }
 
-                  //  return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    //  return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
 
             }
@@ -136,7 +201,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
             {
                 _log4net.Error("Job Service" + "-" + "Base Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-              //  return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                //  return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
