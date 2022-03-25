@@ -59,10 +59,14 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
 
                                     var model = new BindMerchantRequestDto();
 
-                                    //model.accountName = "OGUNLANA TUNJI";
-                                    //model.accountNumber = "0122047425";
+                                    //model.accountName = "NNONA CHIMDIKE";
+                                    //model.accountNumber = "7060564377";
                                     //model.bankNo = "999058";
-                                    model.mchNo = "M0000000105";
+                                    //model.mchNo = "M0000000105";
+                                    model.accountName = getMerchantBankInfo.AccountName;
+                                    model.accountNumber = getMerchantBankInfo.Nuban;
+                                    model.bankNo = _appSettings.nibsQRCodeBankNumber;
+                                    model.mchNo = _appSettings.MchQRCodeNumber;
                                     var bindMerchant = new BindMerchant
                                     {
                                         AccountName = getMerchantBankInfo.AccountName,

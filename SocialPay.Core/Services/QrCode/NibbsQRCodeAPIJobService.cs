@@ -57,6 +57,8 @@ namespace SocialPay.Core.Services.QrCode
 
 
                 var signature = QueryAccountPayload.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
+                _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeXClientHeaderName);
+                _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeCheckSumHeaderName);
 
                 _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
                 _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
@@ -85,17 +87,21 @@ namespace SocialPay.Core.Services.QrCode
                 requestModel.NewCreateNibsMerchantRequestDto.name = DeserializeQueryAccounPayload.accountName;
                 var CreateMerchantPayload = JsonConvert.SerializeObject(requestModel.NewCreateNibsMerchantRequestDto);
                 signature = CreateMerchantPayload.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
+                _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeXClientHeaderName);
+                _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeCheckSumHeaderName);
+
                 __client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
                 __client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
 
                 var CreateMerchantRequest = await __client.PostAsync($"{_appSettings.nibsQRCodeUpdatedCreateMerchantURL}",
                    new StringContent(CreateMerchantPayload, Encoding.UTF8, "application/json"));
+                var CreateMerchantAccountResult = await CreateMerchantRequest.Content.ReadAsStringAsync();
+
                 if (!CreateMerchantRequest.IsSuccessStatusCode)
                 {
                     response.ResponseCode = AppResponseCodes.Failed;
                     return response;
                 }
-                var CreateMerchantAccountResult = await CreateMerchantRequest.Content.ReadAsStringAsync();
                 var DeserializeCreateMerchantAccountPayload = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(CreateMerchantAccountResult);
                 if (DeserializeCreateMerchantAccountPayload.returnCode != "Success")
                 {

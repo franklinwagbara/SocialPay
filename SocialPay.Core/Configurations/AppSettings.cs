@@ -108,6 +108,7 @@
         public string nibsQRCodeClientId { get; set; }
         public string nibsQRCodeClientSecret { get; set; }
         public string nibsQRCodeBankNumber { get; set; }
+        public string MchQRCodeNumber { get; set; }
         public string paywithPayUBaseUrl { get; set; }
         public string paywithPayUSingleDstvPurchaseUrlExtension { get; set; }
         public string paywithPayUAccountLookupDstvPurchaseUrlExtension { get; set; }
