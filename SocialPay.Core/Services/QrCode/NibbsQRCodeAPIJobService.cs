@@ -42,7 +42,9 @@ namespace SocialPay.Core.Services.QrCode
 
                 _log4net.Info("Initiating CreateMerchantWallet request" + " | " + jsonRequest + " | " + DateTime.Now);
 
-                var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);            
+                var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
+                _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeXClientHeaderName);
+                _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeCheckSumHeaderName);
 
                 _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
                 _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
