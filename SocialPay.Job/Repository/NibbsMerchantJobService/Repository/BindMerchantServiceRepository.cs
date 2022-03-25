@@ -53,25 +53,32 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
 
                                 if (merchantInfo != null)
                                 {
-                                   
+
                                     var nibbsMerchantInfo = await context.MerchantQRCodeOnboarding
                                         .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
 
                                     var model = new BindMerchantRequestDto();
 
-                                    model.accountName = "OGUNLANA TUNJI";
-                                    model.accountNumber = "0122047425";
-                                    model.bankNo = "999058";
+                                    //model.accountName = "OGUNLANA TUNJI";
+                                    //model.accountNumber = "0122047425";
+                                    //model.bankNo = "999058";
                                     model.mchNo = "M0000000105";
-
                                     var bindMerchant = new BindMerchant
                                     {
-                                        AccountName = model.accountName,
-                                        BankNo = model.bankNo,
-                                        AccountNumber = model.accountNumber,
+                                        AccountName = getMerchantBankInfo.AccountName,
+                                        BankNo = getMerchantBankInfo.BranchCode,
+                                        AccountNumber = getMerchantBankInfo.Nuban,
                                         MchNo = model.mchNo,
                                         MerchantQRCodeOnboardingId = nibbsMerchantInfo.MerchantQRCodeOnboardingId,
                                     };
+                                    //var bindMerchant = new BindMerchant
+                                    //{
+                                    //    AccountName = model.accountName,
+                                    //    BankNo = model.bankNo,
+                                    //    AccountNumber = model.accountNumber,
+                                    //    MchNo = model.mchNo,
+                                    //    MerchantQRCodeOnboardingId = nibbsMerchantInfo.MerchantQRCodeOnboardingId,
+                                    //};
 
                                     await context.BindMerchant.AddAsync(bindMerchant);
                                     await context.SaveChangesAsync();
@@ -80,7 +87,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
 
                                     var merchantResponseLog = new BindMerchantResponse();
 
-                                    merchantResponseLog.BindMerchantId = bindMerchant.BindMerchantId;                                    
+                                    merchantResponseLog.BindMerchantId = bindMerchant.BindMerchantId;
 
                                     if (bindNibbsMerchant.ResponseCode == AppResponseCodes.Success)
                                     {
@@ -115,7 +122,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
                                         //await context.SaveChangesAsync();
 
                                         //await transaction.CommitAsync();
-                                    }                                   
+                                    }
 
                                 }
 
@@ -129,7 +136,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
 
                     }
 
-                  //  return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
+                    //  return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
 
             }
@@ -137,7 +144,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Repository
             {
                 _log4net.Error("Job Service" + "-" + "Base Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
 
-              //  return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
+                //  return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
