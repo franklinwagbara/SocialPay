@@ -78,88 +78,147 @@ namespace SocialPay.Core.Services.Validations
             //                    Years, Months, Days, Hours, Seconds);
         }
 
+    
+
+
         public async Task<AccountInfoViewModel> BvnValidation(string bvn, string dateOfbirth, string firstname,
-                  string lastname, string email)
+          string lastname, string email)
         {
             DateTime DOB = DateTime.Now;
             try
 
+
+
             {
-                _fioranoT24Logger.LogRequest($"{"Initiating BvnValidation request"}{ " | "}{bvn }{" | "}{ dateOfbirth}{" | "}{DateTime.Now}");
-                firstname = firstname.ToLower(); lastname = lastname.ToLower();
+               _fioranoT24Logger.LogRequest($"{"Initiating BvnValidation request"}{ " | "}{bvn }{" | "}{ dateOfbirth}{" | "}{DateTime.Now}");
+
+
+
+                firstname = firstname.ToLower();
+                lastname = lastname.ToLower();
+                try
+                {
+                    DOB = DateTime.ParseExact(dateOfbirth, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                }
+                catch (Exception ex)
+                {
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth, Message = "Invalid Date of birth format, use MM/dd/yyyy" };
+
+
+
+                }
+
+
+
                 var eventLog = new EventRequestDto
                 {
                     ModuleAccessed = EventLogProcess.BvnValidation,
                     Description = "Bvn Validation request",
                     UserId = email
                 };
-                if (dateOfbirth.Contains("/"))
-                {
-                    DOB = DateTime.ParseExact(dateOfbirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                }
-                else if (dateOfbirth.Contains("-"))
-                {
-                    DOB = DateTime.ParseExact(dateOfbirth, "dd-MM-yyyy", CultureInfo.InvariantCulture);
-                }
+
+
+
+
+                ////if (dateOfbirth.Contains("/"))
+                ////{
+                //// DOB = DateTime.ParseExact(dateOfbirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                ////}
+                ////else if (dateOfbirth.Contains("-"))
+                ////{
+                //// DOB = DateTime.ParseExact(dateOfbirth, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                ////}
+
+
+
+
                 var day = Convert.ToDateTime(DOB).ToString("dd");
                 var month = Convert.ToDateTime(DOB).ToString("MMM");
                 var yr = Convert.ToDateTime(DOB).ToString("yy");
                 await _eventLogService.ActivityRequestLog(eventLog);
 
+
+
                 var currentDob = day + "-" + month + "-" + yr;
+
+
 
                 //var currentDob = DateTime.Parse(dateOfbirth).ToString("dd-MMM-yy");.
                 // var banksServices = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
 
+
+
                 var banksServices = new banksSoapClient(_basicHttpBinding, endpointAddress);
                 var validatebvn = await banksServices.GetBvnAsync(bvn);
+                if (validatebvn == default) return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InternalError, Message = "BVN api failed" };
                 var validateNode = validatebvn.Nodes[1];
                 var bvnDetails = validateNode.Descendants("Customer")
 
-                    .Select(b => new BvnViewModel
-                    {
-                        Bvn = b.Element("Bvn")?.Value,
-                        FirstName = b.Element("FirstName")?.Value.ToLower(),
-                        LastName = b.Element("LastName")?.Value.ToLower(),
-                        PhoneNumber = b.Element("PhoneNumber")?.Value,
-                        DateOfBirth = b.Element("DateOfBirth")?.Value,
-                        MiddleName = b.Element("MiddleName")?.Value,
 
-                    }).FirstOrDefault();
+
+                .Select(b => new BvnViewModel
+                {
+                    Bvn = b.Element("Bvn")?.Value,
+                    FirstName = b.Element("FirstName")?.Value.ToLower(),
+                    LastName = b.Element("LastName")?.Value.ToLower(),
+                    PhoneNumber = b.Element("PhoneNumber")?.Value,
+                    DateOfBirth = b.Element("DateOfBirth")?.Value,
+                    MiddleName = b.Element("MiddleName")?.Value,
+
+
+
+                }).FirstOrDefault();
+
+
 
 
                 if (bvnDetails == default)
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN, Message = "Invalid BVN" };
 
+
+
                 if (bvnDetails.Bvn.Contains("exit"))
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVN, Message = "BVN does not exist" };
+
+
 
                 if (!bvnDetails.DateOfBirth.Equals(currentDob))//
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth, Message = "Invalid Date of birth" };
 
+
+
                 var dob = Convert.ToDateTime(bvnDetails.DateOfBirth);
+
+
 
                 int ageLimit = Convert.ToInt32(_appSettings.ageLimit);
 
+
+
                 var currentAge = CalculateAge(dob);
+
+
 
                 if (!firstname.Equals($"{bvnDetails.FirstName.ToLower()}") || !lastname.Equals($"{bvnDetails.LastName.ToLower()}"))
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDetailsFirstNameOrLastName, Message = "Invalid firstname or lastname" };
 
+
+
                 if (currentAge.Year >= ageLimit)
                     return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success, Message = "Success" };
 
-                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange, Message = "Age specified not supported" };
 
+
+                return new AccountInfoViewModel { ResponseCode = AppResponseCodes.AgeNotWithinRange, Message = "Age specified not supported" };
                 // return new AccountInfoViewModel { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
-                _fioranoT24Logger.LogRequest($"{"Error occured"}{ " | "}{"Bvn Validation"}{" | "}{bvn}{ " | "}{ex.Message.ToString()}{" | "}{ DateTime.Now}",true);
-
+                _fioranoT24Logger.LogRequest($"{"Error occured"}{ " | "}{"Bvn Validation"}{" | "}{bvn}{ " | "}{ex.Message.ToString()}{" | "}{ DateTime.Now}", true);
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.BvnValidationError, Message = "Error occured while validating BVN" };
             }
         }
+
 
         public async Task<AccountInfoViewModel> GetAccountFullInfoAsync(string nuban, string bvn)
         {

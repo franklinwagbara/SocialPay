@@ -107,6 +107,8 @@
         public string nibsQRCodeXWebhookChecksum { get; set; }
         public string nibsQRCodeClientId { get; set; }
         public string nibsQRCodeClientSecret { get; set; }
+        public string nibsQRCodeBankNumber { get; set; }
+        public string MchQRCodeNumber { get; set; }
         public string paywithPayUBaseUrl { get; set; }
         public string paywithPayUSingleDstvPurchaseUrlExtension { get; set; }
         public string paywithPayUAccountLookupDstvPurchaseUrlExtension { get; set; }
@@ -152,6 +154,8 @@
         public string CreditBureauSearch_Crc { get; set; }
         public string TokenizationURL { get; set; }     
         public string WelcomeEmailImageExtensionPath { get; set; }     
-        public string WebportalBaseUrl { get; set; }     
+        public string WebportalBaseUrl { get; set; }
+        public string nibsQRCodeQueryAccountUrl { get; set; }
+        public string nibsQRCodeUpdatedCreateMerchantURL { get; set; }
     }
 }

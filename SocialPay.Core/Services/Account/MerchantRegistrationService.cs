@@ -106,8 +106,7 @@ namespace SocialPay.Core.Services.Account
                 if (validateUser.ResponseCode != AppResponseCodes.Success)
                 {
                     _accountLogger.LogRequest($"{"BVN validation response"}{" | "}{signUpRequestDto.Email}{" | "}{signUpRequestDto.Bvn}{ " - "}{validateUser.Message}{" - "}{ DateTime.Now}");
-
-                    return new WebApiResponse { ResponseCode = validateUser.ResponseCode, Data = ResponseMessage.BvnValidation, Message = ResponseMessage.BvnValidation };
+                    return new WebApiResponse { ResponseCode = AppResponseCodes.BvnValidationError, Data = validateUser.Message, Message = validateUser.Message };
                 }
 
                 var token = $"{DateTime.Now.ToString()}{Guid.NewGuid().ToString()}{DateTime.Now.AddMilliseconds(120)}{Utilities.GeneratePin()}";

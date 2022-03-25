@@ -43,17 +43,20 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
 
-                    var query = await context.ClientAuthentication.Where(x => x.StatusCode == "00" && !context.MerchantQRCodeOnboarding
-                      .Select(b => b.ClientAuthenticationId).Contains(x.ClientAuthenticationId)).Take(5).ToListAsync();
 
-                    //var query = await context.ClientAuthentication.Where(x => x.ClientAuthenticationId == 83).ToListAsync();
+                    var query = await context.ClientAuthentication
+                    .Where(x => x.LastDateModified < DateTime.Now.AddMinutes(-10))
+                    .Where(x => x.StatusCode == "00" && !context.MerchantQRCodeOnboarding
+                    .Select(b => b.ClientAuthenticationId).Contains(x.ClientAuthenticationId)).Take(5).ToListAsync();
+
+                    //var query = await context.ClientAuthentication.Where(x => x.ClientAuthenticationId == 10369).ToListAsync();
 
                     var model = new DefaultMerchantRequestDto();
 
                     var qrRequest = new List<NibbsQrMerchantViewModel>();
 
                     foreach (var item in query)
-                    {                      
+                    {
                         qrRequest.Add(new NibbsQrMerchantViewModel
                         {
                             IsDeleted = false,
@@ -67,7 +70,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
                         });
                     }
 
-                    await _nibbsQrJobCreateMerchantRepository.ProcessTransactions(qrRequest);                  
+                    await _nibbsQrJobCreateMerchantRepository.ProcessTransactions(qrRequest);
 
                     return "Task Completed";
                 }

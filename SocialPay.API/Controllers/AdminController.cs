@@ -319,7 +319,7 @@ namespace SocialPay.API.Controllers
             }
         }
 
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet]
         [Route("get-transactions")]
         public async Task<IActionResult> GetCustomerTransactions([FromQuery] string category)

@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using SocialPay.Helper.ViewModel;
 using SocialPay.Job.Repository.NibbsMerchantJobService.Repository;
+using SocialPay.Helper;
 
 namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
 {
@@ -26,6 +27,7 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
         {
             var result = new List<ClientAuthenticationViewModel>();
 
+
             try
             {
 
@@ -33,8 +35,8 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
 
-                    var merchants = await context.ClientAuthentication.Where(x => x.ClientAuthenticationId == 200).ToListAsync();
-                  //  var merchants = await context.ClientAuthentication.Where(x => x.QrCodeStatus == NibbsMerchantOnboarding.SubAccount).ToListAsync();
+                    //var merchants = await context.ClientAuthentication.Where(x => x.ClientAuthenticationId == 10369).ToListAsync();
+                   var merchants = await context.ClientAuthentication.Where(x => x.QrCodeStatus == NibbsMerchantOnboarding.SubAccount).ToListAsync();
 
                     if(merchants.Count > 0)
                         await _bindMerchantServiceRepository.ProcessTransactions(merchants);
