@@ -44,6 +44,7 @@ namespace SocialPay.Core.Services.QrCode
             try
             {
                 //requestModel.Tin = "012348484";
+
                 //requestModel.Fee = 0.5;
                 //requestModel.Phone = "4532366644";
                 var response = new CreateNibsMerchantQrCodeResponse();
