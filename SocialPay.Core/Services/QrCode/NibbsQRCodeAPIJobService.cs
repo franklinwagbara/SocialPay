@@ -39,116 +39,121 @@ namespace SocialPay.Core.Services.QrCode
         }
 
 
-        public async Task<CreateNibsMerchantQrCodeResponse> CreateMerchant(createMerchantRequestPayload requestModel)
-        {
-            try
-            {
-                //requestModel.Tin = "012348484";
-                //requestModel.Fee = 0.5;
-                //requestModel.Phone = "4532366644";
-                var response = new CreateNibsMerchantQrCodeResponse();
+        //public async Task<CreateNibsMerchantQrCodeResponse> CreateMerchant(createMerchantRequestPayload requestModel)
+        //{
+        //    try
+        //    {
+        //        //requestModel.Tin = "012348484";
+        //        //requestModel.Fee = 0.5;
+        //        //requestModel.Phone = "4532366644";
+        //        var response = new CreateNibsMerchantQrCodeResponse();
 
-                //QueryAccount
+        //        //QueryAccount
 
-                var QueryAccountPayload = JsonConvert.SerializeObject(requestModel.QueryAccountRequestDto);
+        //        var QueryAccountPayload = JsonConvert.SerializeObject(requestModel.QueryAccountRequestDto);
 
-                _log4net.Info("Initiating QueryAccount request" + " | " + QueryAccountPayload + " | " + DateTime.Now);
-
-
-                var signature = QueryAccountPayload.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
-
-                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
-                _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
-                //_client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeClientSecretHeaderName, _appSettings.nibsQRCodeClientSecret);
-
-                var request = await _client.PostAsync($"{_appSettings.nibsQRCodeQueryAccountUrl}",
-                    new StringContent(QueryAccountPayload, Encoding.UTF8, "application/json"));
-                if (!request.IsSuccessStatusCode)
-                {
-                    response.ResponseCode = AppResponseCodes.Failed;
-                    return response;
-                }
-                var QueryAccountResult = await request.Content.ReadAsStringAsync();
-                var DeserializeQueryAccounPayload = JsonConvert.DeserializeObject<QueryAccountResponse>(QueryAccountResult);
-                if (DeserializeQueryAccounPayload.returnCode != "Success")
-                {
-                    response.ResponseCode = AppResponseCodes.Failed;
-                    return response;
-                }
+        //        _log4net.Info("Initiating QueryAccount request" + " | " + QueryAccountPayload + " | " + DateTime.Now);
 
 
 
+        //        //var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
+        //        _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeXClientHeaderName);
+        //        _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeCheckSumHeaderName);
 
-                //CreateMerchant
-                requestModel.NewCreateNibsMerchantRequestDto.accountName = DeserializeQueryAccounPayload.accountName;
-                requestModel.NewCreateNibsMerchantRequestDto.name = DeserializeQueryAccounPayload.accountName;
-                var CreateMerchantPayload = JsonConvert.SerializeObject(requestModel.NewCreateNibsMerchantRequestDto);
-                signature = CreateMerchantPayload.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
-                __client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
-                __client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
+        //        //var signature = QueryAccountPayload.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
 
-                var CreateMerchantRequest = await __client.PostAsync($"{_appSettings.nibsQRCodeUpdatedCreateMerchantURL}",
-                   new StringContent(CreateMerchantPayload, Encoding.UTF8, "application/json"));
-                if (!CreateMerchantRequest.IsSuccessStatusCode)
-                {
-                    response.ResponseCode = AppResponseCodes.Failed;
-                    return response;
-                }
-                var CreateMerchantAccountResult = await CreateMerchantRequest.Content.ReadAsStringAsync();
-                var DeserializeCreateMerchantAccountPayload = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(CreateMerchantAccountResult);
-                if (DeserializeCreateMerchantAccountPayload.returnCode != "Success")
-                {
-                    response.ResponseCode = AppResponseCodes.Failed;
-                    return response;
-                }
+        //        _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
+        //        _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
+        //        //_client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeClientSecretHeaderName, _appSettings.nibsQRCodeClientSecret);
 
-                response = DeserializeCreateMerchantAccountPayload;
-                response.ResponseCode = AppResponseCodes.Success;
-                return response;
+        //        var request = await _client.PostAsync($"{_appSettings.nibsQRCodeQueryAccountUrl}",
+        //            new StringContent(QueryAccountPayload, Encoding.UTF8, "application/json"));
+        //        if (!request.IsSuccessStatusCode)
+        //        {
+        //            response.ResponseCode = AppResponseCodes.Failed;
+        //            return response;
+        //        }
+        //        var QueryAccountResult = await request.Content.ReadAsStringAsync();
+        //        var DeserializeQueryAccounPayload = JsonConvert.DeserializeObject<QueryAccountResponse>(QueryAccountResult);
+        //        if (DeserializeQueryAccounPayload.returnCode != "Success")
+        //        {
+        //            response.ResponseCode = AppResponseCodes.Failed;
+        //            return response;
+        //        }
 
 
 
 
-                //var jsonRequest = JsonConvert.SerializeObject(requestModel);
+        //        //CreateMerchant
+        //        requestModel.NewCreateNibsMerchantRequestDto.accountName = DeserializeQueryAccounPayload.accountName;
+        //        requestModel.NewCreateNibsMerchantRequestDto.name = DeserializeQueryAccounPayload.accountName;
+        //        var CreateMerchantPayload = JsonConvert.SerializeObject(requestModel.NewCreateNibsMerchantRequestDto);
+        //        signature = CreateMerchantPayload.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
+        //        __client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
+        //        __client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeCheckSumHeaderName, signature);
+
+        //        var CreateMerchantRequest = await __client.PostAsync($"{_appSettings.nibsQRCodeUpdatedCreateMerchantURL}",
+        //           new StringContent(CreateMerchantPayload, Encoding.UTF8, "application/json"));
+        //        if (!CreateMerchantRequest.IsSuccessStatusCode)
+        //        {
+        //            response.ResponseCode = AppResponseCodes.Failed;
+        //            return response;
+        //        }
+        //        var CreateMerchantAccountResult = await CreateMerchantRequest.Content.ReadAsStringAsync();
+        //        var DeserializeCreateMerchantAccountPayload = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(CreateMerchantAccountResult);
+        //        if (DeserializeCreateMerchantAccountPayload.returnCode != "Success")
+        //        {
+        //            response.ResponseCode = AppResponseCodes.Failed;
+        //            return response;
+        //        }
+
+        //        response = DeserializeCreateMerchantAccountPayload;
+        //        response.ResponseCode = AppResponseCodes.Success;
+        //        return response;
 
 
 
-                //_log4net.Info("Initiating CreateMerchantWallet request" + " | " + jsonRequest + " | " + DateTime.Now);
 
-                ////var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);            
-
+        //        //var jsonRequest = JsonConvert.SerializeObject(requestModel);
 
 
-                //var result = await request.Content.ReadAsStringAsync();
 
-                //if (request.IsSuccessStatusCode)
-                //{
-                //    response = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(result);
+        //        //_log4net.Info("Initiating CreateMerchantWallet request" + " | " + jsonRequest + " | " + DateTime.Now);
 
-                //    if(response.returnCode != "Success")
-                //    {
-                //        response.ResponseCode = AppResponseCodes.Failed;
+        //        ////var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);            
 
-                //        return response;
-                //    }
 
-                //    response.ResponseCode = AppResponseCodes.Success;
 
-                //    return response;
-                //}
+        //        //var result = await request.Content.ReadAsStringAsync();
 
-                //response.jsonResponse = result;
-                //response.ResponseCode = AppResponseCodes.Failed;
+        //        //if (request.IsSuccessStatusCode)
+        //        //{
+        //        //    response = JsonConvert.DeserializeObject<CreateNibsMerchantQrCodeResponse>(result);
 
-                //return response;
+        //        //    if(response.returnCode != "Success")
+        //        //    {
+        //        //        response.ResponseCode = AppResponseCodes.Failed;
 
-            }
-            catch (Exception ex)
-            {
+        //        //        return response;
+        //        //    }
 
-                return new CreateNibsMerchantQrCodeResponse { ResponseCode = AppResponseCodes.InternalError };
-            }
-        }
+        //        //    response.ResponseCode = AppResponseCodes.Success;
+
+        //        //    return response;
+        //        //}
+
+        //        //response.jsonResponse = result;
+        //        //response.ResponseCode = AppResponseCodes.Failed;
+
+        //        //return response;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        return new CreateNibsMerchantQrCodeResponse { ResponseCode = AppResponseCodes.InternalError };
+        //    }
+        //}
 
         public async Task<CreateNibsSubMerchantQrCodeResponse> CreateSubMerchant(CreateNibbsSubMerchantDto requestModel)
         {
