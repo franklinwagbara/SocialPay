@@ -5,6 +5,7 @@ using SocialPay.Core.Extensions.Common;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.Merchant;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -18,25 +19,17 @@ namespace SocialPay.Core.Services.QrCode
         private readonly HttpClient __client;
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NibbsQRCodeAPIService));
-
-        public NibbsQRCodeAPIJobService(IOptions<AppSettings> appSettings)
+        private readonly MerchantsLogger _merchantLogger;
+        public NibbsQRCodeAPIJobService(IOptions<AppSettings> appSettings, MerchantsLogger merchantLogger)
         {
             _appSettings = appSettings.Value;
-
+            _merchantLogger = merchantLogger;
             _client = new HttpClient
             {
                 BaseAddress = new Uri(_appSettings.nibsQRCodeBaseUrl)
             };
-            __client = new HttpClient
-            {
-                BaseAddress = new Uri(_appSettings.nibsQRCodeBaseUrl)
-            };
-
-            //_client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeXClientHeaderName, _appSettings.nibsQRCodeClientId);
-            //   _client.DefaultRequestHeaders.Add(_appSettings.nibsQRCodeClientSecretHeaderName, _appSettings.nibsQRCodeClientSecret);
-
-
         }
+       
 
 
         public async Task<CreateNibsMerchantQrCodeResponse> CreateMerchant(createMerchantRequestPayload requestModel)
@@ -53,7 +46,7 @@ namespace SocialPay.Core.Services.QrCode
 
                 var QueryAccountPayload = JsonConvert.SerializeObject(requestModel.QueryAccountRequestDto);
 
-                _log4net.Info("Initiating QueryAccount request" + " | " + QueryAccountPayload + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Initiating QueryAccount request"}{ " | " + QueryAccountPayload + " | "}{ DateTime.Now}");
 
 
                 var signature = QueryAccountPayload.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
@@ -83,9 +76,12 @@ namespace SocialPay.Core.Services.QrCode
 
 
                 //CreateMerchant
+
                 requestModel.NewCreateNibsMerchantRequestDto.accountName = DeserializeQueryAccounPayload.accountName;
                 requestModel.NewCreateNibsMerchantRequestDto.name = DeserializeQueryAccounPayload.accountName;
                 var CreateMerchantPayload = JsonConvert.SerializeObject(requestModel.NewCreateNibsMerchantRequestDto);
+                _merchantLogger.LogRequest($"{"Create Merchant request"}{ " | " + CreateMerchantPayload + " | "}{ DateTime.Now}");
+
                 signature = CreateMerchantPayload.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
                 _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeXClientHeaderName);
                 _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeCheckSumHeaderName);
@@ -164,9 +160,7 @@ namespace SocialPay.Core.Services.QrCode
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
 
                 var response = new CreateNibsSubMerchantQrCodeResponse();
-
-                _log4net.Info("Initiating Create sub Merchant request" + " | " + jsonRequest + " | " + DateTime.Now);
-
+                _merchantLogger.LogRequest($"{"Initiating Create sub Merchant request"}{ " | " + jsonRequest + " | "}{ DateTime.Now}");
                 var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
                 _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeXClientHeaderName);
                 _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeCheckSumHeaderName);
@@ -221,7 +215,7 @@ namespace SocialPay.Core.Services.QrCode
 
                 var response = new BindMechantResponseDto();
 
-                _log4net.Info("Initiating Create sub Merchant request" + " | " + jsonRequest + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Bind Merchant request"}{ " | " + jsonRequest + " | "}{ DateTime.Now}");
 
                 var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
                 _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeXClientHeaderName);
@@ -270,7 +264,7 @@ namespace SocialPay.Core.Services.QrCode
 
                 var response = new DynamicPaymentResponseDto();
 
-                _log4net.Info("Initiating Create sub Merchant request" + " | " + jsonRequest + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Dynamic Pay request"}{ " | " + jsonRequest + " | "}{ DateTime.Now}");
 
                 var signature = jsonRequest.GenerateHmac(_appSettings.nibsQRCodeClientSecret, true);
                 _client.DefaultRequestHeaders.Remove(_appSettings.nibsQRCodeXClientHeaderName);
