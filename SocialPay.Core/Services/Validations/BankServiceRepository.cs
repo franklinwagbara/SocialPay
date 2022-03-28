@@ -96,19 +96,19 @@ namespace SocialPay.Core.Services.Validations
 
                 firstname = firstname.ToLower();
                 lastname = lastname.ToLower();
+
                 try
                 {
-                    DOB = DateTime.ParseExact(dateOfbirth, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                    //DOB = DateTime.ParseExact(dateOfbirth, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                    string[] formats = { "MM/dd/yyyy", "yyyy-MM-dd", "MM-dd-yyyy", "yyyy/MM/dd", "dd/MM/yyyy", "dd-MM-yyyy" };
+                    DOB = DateTime.ParseExact(dateOfbirth, formats, new CultureInfo("en-GB"), DateTimeStyles.None);
                 }
                 catch (Exception ex)
                 {
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth, Message = "Invalid Date of birth format, use MM/dd/yyyy" };
-
-
+                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InvalidBVNDateOfBirth, Message = "Invalid Date of birth format, use either MM/dd/yyyy, yyyy-MM-dd, MM-dd-yyyy, yyyy/MM/dd, dd/MM/yyyy OR dd-MM-yyyy" };
 
                 }
-
-
+                
 
                 var eventLog = new EventRequestDto
                 {
