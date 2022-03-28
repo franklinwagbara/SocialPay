@@ -4092,3 +4092,6 @@ INFO  2022-03-25 17:36:00,402 202001ms NibbsQRCodeAPIService  ?                 
 INFO  2022-03-25 17:36:02,109 203708ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:36:02 PM
 INFO  2022-03-25 17:38:00,451 322050ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:38:00 PM
 INFO  2022-03-25 17:38:02,266 323865ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:38:02 PM
+INFO  2022-03-28 14:35:23,741 203340ms AccountsController     ?                  - Tasks starts to create account | sheriff.ebelebe@gmail.com | 3/28/2022 2:35:23 PM
+INFO  2022-03-28 14:37:52,799 352398ms AccountsController     ?                  - Tasks starts to create account | sheriff.ebelebe@gmail.com | 3/28/2022 2:37:52 PM
+INFO  2022-03-28 14:38:01,058 360657ms EmailService           ?                  - Email service response | sheriff.ebelebe@gmail.com | 3/28/2022 2:38:01 PM
