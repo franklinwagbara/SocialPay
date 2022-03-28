@@ -1256,7 +1256,7 @@ namespace SocialPay.Core.Services.Account
                 var result = await _context.OtherMerchantBankInfo
                   .Where(x => x.ClientAuthenticationId == clientId && x.Deleted == false)
                   .ToListAsync();
-
+                var AccountNumber = "";
                 var OtherMerchantsBanksDTO = new List<MerchantResponseDTO>();
 
                 var getMerchantDefaultBankInfo = await _context.MerchantBankInfo
@@ -1264,6 +1264,7 @@ namespace SocialPay.Core.Services.Account
 
                 if (getMerchantDefaultBankInfo != null)
                 {
+                    AccountNumber = getMerchantDefaultBankInfo.AccountName;
                     OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
                     {
                         MerchantOtherBankInfoId = 0,
@@ -1278,7 +1279,7 @@ namespace SocialPay.Core.Services.Account
 
                 foreach (var bankDetails in result)
                 {
-                    if (bankDetails.BankCode == getMerchantDefaultBankInfo.BankCode) continue;
+                    if (bankDetails.BankCode == getMerchantDefaultBankInfo.BankCode && AccountNumber == bankDetails.AccountName) continue;
                     OtherMerchantsBanksDTO.Add(new MerchantResponseDTO
                     {
                         MerchantOtherBankInfoId = bankDetails.MerchantOtherBankInfoId,
