@@ -225,16 +225,16 @@ namespace SocialPay.Core.Services.Merchant
 
                 var getMerchantBankInfo = await _context.MerchantBankInfo.SingleOrDefaultAsync(x => x.ClientAuthenticationId == clientId);
 
-                //model.accountName = getMerchantBankInfo.AccountName;
-                //model.accountNumber = getMerchantBankInfo.Nuban;
-                //model.bankNo = getMerchantBankInfo.BankCode;
-                //model.mchNo = nibbsMerchantInfo.MerchantQRCodeOnboardingResponse.Select(x=>x.MchNo).FirstOrDefault();
+                model.accountName = getMerchantBankInfo.AccountName;
+                model.accountNumber = getMerchantBankInfo.Nuban;
+                model.bankNo = getMerchantBankInfo.BankCode;
+                model.mchNo = nibbsMerchantInfo.MerchantQRCodeOnboardingResponse.Select(x => x.MchNo).FirstOrDefault();
 
 
-                model.accountName = "OGUNLANA TUNJI";
-                model.accountNumber = "0122047425";
-                model.bankNo = "999058";
-                model.mchNo = "M0000000105";
+                ////model.accountName = "OGUNLANA TUNJI";
+                ////model.accountNumber = "0122047425";
+                ////model.bankNo = "999058";
+                ////model.mchNo = "M0000000105";
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
