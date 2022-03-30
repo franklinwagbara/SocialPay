@@ -42,7 +42,7 @@ namespace SocialPay.Domain.Entities
         public string Email { get; set; }
         [Column(TypeName = "NVARCHAR(50)")]
         public string UserName { get; set; }
-        [Column(TypeName = "NVARCHAR(20)")]
+        [Column(TypeName = "NVARCHAR(50)")]
         public string PhoneNumber { get; set; }
         [Column(TypeName = "NVARCHAR(55)")]
         public string FullName { get; set; }

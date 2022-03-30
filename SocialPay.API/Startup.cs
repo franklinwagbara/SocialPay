@@ -349,11 +349,11 @@ namespace SocialPay.API
 
             ///Main jobs starts
 
-            services.AddCronJob<BindMerchantTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.BindMerchantTask;
-            });
+            //services.AddCronJob<BindMerchantTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.BindMerchantTask;
+            //});
 
             //services.AddCronJob<CreateNibbsSubMerchantTask>(c =>
             //{
@@ -450,10 +450,10 @@ namespace SocialPay.API
                 options.InstanceName = redisInstance;
             });
 
-            //services.AddDistributedRedisCache(option =>
+            //  services.AddDistributedRedisCache(option =>
             //{
             //    option.Configuration = "172.18.4.114:6379";
-            //    option.InstanceName = "master";
+            //    option.InstanceName = "master";   
             //});
 
             services.AddScoped<INotificationServices, NotificationService>();

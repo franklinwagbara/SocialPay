@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SocialPay.Core.Configurations;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.FioranoT24;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -15,8 +16,9 @@ namespace SocialPay.Core.Services.Fiorano
         private readonly AppSettings _appSettings;
         private readonly HttpClient _client;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(FioranoAPIService));
+        private readonly FioranoT24Logger _fioranoT24Logger;
 
-        public FioranoAPIService(IOptions<AppSettings> appSettings)
+        public FioranoAPIService(IOptions<AppSettings> appSettings, FioranoT24Logger fioranoT24Logger)
         {
             _appSettings = appSettings.Value;
 
@@ -24,20 +26,21 @@ namespace SocialPay.Core.Services.Fiorano
             {
                 BaseAddress = new Uri(_appSettings.fioranoBaseUrl),
             };
+            _fioranoT24Logger = fioranoT24Logger;
         }
 
         public async Task<FTResponseDto> InitiateTransaction(string jsonRequest)
         {
             try
             {
-                _log4net.Info("Job Service: Initiate Fiorano transfer service" + " | " + jsonRequest + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Job Service: Initiate Fiorano transfer service"}{ " | "}{jsonRequest}{" | "}{DateTime.Now}");
 
                 var response = await _client.PostAsync(_appSettings.fioranoFundsTransferUrl,
                     new StringContent(jsonRequest, Encoding.UTF8, "application/json"));
 
                 var result = await response.Content.ReadAsStringAsync();
 
-                _log4net.Info("Job Service: InitiateTransaction response" + " | " + result + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Job Service: InitiateTransaction response"}{" | "}{result}{" | "}{DateTime.Now}");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -61,7 +64,7 @@ namespace SocialPay.Core.Services.Fiorano
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service: An error occured while initiating fiorano transactions" + " | " + ex + " - "+ DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Job Service: An error occured while initiating fiorano transactions"}{" | "}{ex}{" - "}{DateTime.Now}");
 
                 return new FTResponseDto { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured" };
             }
