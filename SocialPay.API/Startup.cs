@@ -349,11 +349,11 @@ namespace SocialPay.API
 
             ///Main jobs starts
 
-            services.AddCronJob<BindMerchantTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.BindMerchantTask;
-            });
+            //services.AddCronJob<BindMerchantTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.BindMerchantTask;
+            //});
 
             //services.AddCronJob<CreateNibbsSubMerchantTask>(c =>
             //{
@@ -361,11 +361,11 @@ namespace SocialPay.API
             //    c.CronExpression = options.CreateNibbsMerchantTask;
             //});
 
-            services.AddCronJob<CreateNibbsMerchantTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.CreateNibbsMerchantTask;
-            });
+            //services.AddCronJob<CreateNibbsMerchantTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CreateNibbsMerchantTask;
+            //});
 
             // current jobs to enable in their order of processing
 
@@ -399,7 +399,7 @@ namespace SocialPay.API
             //    c.CronExpression = options.NonEscrowBankTransactionTask;
             //});
 
-            // main jobs to enable ends
+            // Notification to merchants to complet onboarding
 
 
             services.AddCronJob<OnboardingNotificationTask>(c =>

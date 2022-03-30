@@ -36,7 +36,11 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+<<<<<<< HEAD
                 _accountLogger.LogRequest($"{"GenerateResetToken"}{" | "}{email}{" | "}{DateTime.Now}");
+=======
+                _accountLogger.LogRequest($"{"GenerateResetToken"}{" | "}{email}{" | " }{DateTime.Now}");
+>>>>>>> 00fa4f1552564f1c0dd39c5a6253f0ca195189b4
 
                 var getUser = await _userRepoService.GetClientAuthenticationAsync(email);
 
@@ -71,13 +75,21 @@ namespace SocialPay.Core.Services.Account
 
                  await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
+<<<<<<< HEAD
                 _accountLogger.LogRequest($"{"GenerateResetToken sent"}{" | "}{email}{" | "}{ DateTime.Now}");
+=======
+                _accountLogger.LogRequest($"{"GenerateResetToken sent"}{ " | "}{email}{" | "}{DateTime.Now}");
+>>>>>>> 00fa4f1552564f1c0dd39c5a6253f0ca195189b4
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 _accountLogger.LogRequest($"{"Error occured"}{" | "}{"GenerateResetToken"}{" | "}{email}{" | " }{ex.Message.ToString()}{ " | "}{DateTime.Now}",true);
+=======
+                _accountLogger.LogRequest($"{"Error occured"}{ " | "}{"GenerateResetToken"}{ " | "}{email}{" | "}{ex.Message.ToString()}{" | "}{DateTime.Now}");
+>>>>>>> 00fa4f1552564f1c0dd39c5a6253f0ca195189b4
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -88,7 +100,11 @@ namespace SocialPay.Core.Services.Account
         {
             try
             {
+<<<<<<< HEAD
                 _accountLogger.LogRequest($"{"ResetGuestAccess"}{" | "}{ email}{" | "}{DateTime.Now}");
+=======
+                _accountLogger.LogRequest($"{"ResetGuestAccess"}{ " | "}{email}{" | "}{DateTime.Now}");
+>>>>>>> 00fa4f1552564f1c0dd39c5a6253f0ca195189b4
 
                 var getUser = await _userRepoService.GetClientAuthenticationAsync(email);
 
@@ -126,13 +142,21 @@ namespace SocialPay.Core.Services.Account
 
                  await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
+<<<<<<< HEAD
                 _accountLogger.LogRequest($"{"GenerateResetToken sent"}{" | "}{email}{" | "}{DateTime.Now}");
+=======
+                _accountLogger.LogRequest($"{"GenerateResetToken sent"}{" | "}{ email}{" | "}{DateTime.Now}");
+>>>>>>> 00fa4f1552564f1c0dd39c5a6253f0ca195189b4
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 _accountLogger.LogRequest($"{"Error occured"}{ " | "}{"ResetGuestAccess"}{" | "}{email}{" | "}{ex.Message.ToString()}{ " | "}{DateTime.Now}");
+=======
+                _accountLogger.LogRequest($"{"Error occured"}{ " | "}{"ResetGuestAccess"}{" | "}{email}{" | "}{ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
+>>>>>>> 00fa4f1552564f1c0dd39c5a6253f0ca195189b4
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -149,7 +173,11 @@ namespace SocialPay.Core.Services.Account
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 _accountLogger.LogRequest($"{"Error occured"}{" | "}{"ChangePassword"}{" | "}{passwordResetDto.Token}{" | "}{ ex.Message.ToString()}{" | "}{DateTime.Now}",true);
+=======
+                _accountLogger.LogRequest($"{"Error occured"}{ " | "}{ "ChangePassword"}{" | "}{passwordResetDto.Token}{" | "}{ ex.Message.ToString()}{" | "}{DateTime.Now}");
+>>>>>>> 00fa4f1552564f1c0dd39c5a6253f0ca195189b4
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -165,7 +193,11 @@ namespace SocialPay.Core.Services.Account
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 _accountLogger.LogRequest($"{"Error occured"}{" | "}{"PasswordReset"}{" | "}{ clientId}{" | "}{ex.Message.ToString()}{" | "}{ DateTime.Now}");
+=======
+                _accountLogger.LogRequest($"{"Error occured"}{" | "}{"PasswordReset"}{" | "}{clientId}{" | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}",true);
+>>>>>>> 00fa4f1552564f1c0dd39c5a6253f0ca195189b4
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
