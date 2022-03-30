@@ -44,12 +44,12 @@ namespace SocialPay.Job.Repository.NibbsMerchantJobService.Services
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
 
 
-                    var query = await context.ClientAuthentication
-                    .Where(x => x.LastDateModified < DateTime.Now.AddMinutes(-10))
-                    .Where(x => x.StatusCode == "00" && !context.MerchantQRCodeOnboarding
-                    .Select(b => b.ClientAuthenticationId).Contains(x.ClientAuthenticationId)).Take(5).ToListAsync();
+                    //var query = await context.ClientAuthentication
+                    //.Where(x => x.LastDateModified < DateTime.Now.AddMinutes(-10))
+                    //.Where(x => x.StatusCode == "00" && !context.MerchantQRCodeOnboarding
+                    //.Select(b => b.ClientAuthenticationId).Contains(x.ClientAuthenticationId)).Take(5).ToListAsync();
 
-                    //var query = await context.ClientAuthentication.Where(x => x.ClientAuthenticationId == 10369).ToListAsync();
+                    var query = await context.ClientAuthentication.Where(x => x.ClientAuthenticationId == 10380).ToListAsync();
 
                     var model = new DefaultMerchantRequestDto();
 
