@@ -28,7 +28,7 @@ namespace SocialPay.Job.Repository.OnboardingNotification
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
-                    var query = await context.ClientAuthentication.Where(x => x.StatusCode != "00" && x.DateEntered < DateTime.Now.AddMinutes(-10)).Take(5).ToListAsync();
+                    var query = await context.ClientAuthentication.Where(x => x.StatusCode != "00" && x.LastDateModified < DateTime.Now.AddMinutes(-10)).Take(5).ToListAsync();
                     //var query = await context.ClientAuthentication.Where(x => x.StatusCode != "00").ToListAsync();
                     foreach (var item in query)
                     {

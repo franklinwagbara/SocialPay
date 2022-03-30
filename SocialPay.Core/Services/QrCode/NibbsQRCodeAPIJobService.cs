@@ -59,12 +59,13 @@ namespace SocialPay.Core.Services.QrCode
 
                 var request = await _client.PostAsync($"{_appSettings.nibsQRCodeQueryAccountUrl}",
                     new StringContent(QueryAccountPayload, Encoding.UTF8, "application/json"));
+                var QueryAccountResult = await request.Content.ReadAsStringAsync();
+
                 if (!request.IsSuccessStatusCode)
                 {
                     response.ResponseCode = AppResponseCodes.Failed;
                     return response;
                 }
-                var QueryAccountResult = await request.Content.ReadAsStringAsync();
                 var DeserializeQueryAccounPayload = JsonConvert.DeserializeObject<QueryAccountResponse>(QueryAccountResult);
                 if (DeserializeQueryAccounPayload.returnCode != "Success")
                 {
