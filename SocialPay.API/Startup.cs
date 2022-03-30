@@ -399,7 +399,7 @@ namespace SocialPay.API
             //    c.CronExpression = options.NonEscrowBankTransactionTask;
             //});
 
-            // main jobs to enable ends
+            // main jobs to enable ends x  d 
 
 
             services.AddCronJob<OnboardingNotificationTask>(c =>
