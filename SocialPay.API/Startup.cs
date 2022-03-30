@@ -402,11 +402,11 @@ namespace SocialPay.API
             // main jobs to enable ends
 
 
-            //services.AddCronJob<OnboardingNotificationTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.OnboardingNotificationTask;
-            //});
+            services.AddCronJob<OnboardingNotificationTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.OnboardingNotificationTask;
+            });
 
             //////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
             //////{
