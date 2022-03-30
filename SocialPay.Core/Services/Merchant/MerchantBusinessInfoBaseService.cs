@@ -3,6 +3,7 @@ using SocialPay.ApplicationCore.Interfaces.Service;
 using SocialPay.Core.Configurations;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.Merchant;
 using System;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace SocialPay.Core.Services.Merchant
     {
         private readonly IMerchantBusinessInfoService _merchantBusinessInfoService;
         private readonly AppSettings _appSettings;
-
+        private readonly MerchantsLogger _merchantLogger;
         public MerchantBusinessInfoBaseService(IMerchantBusinessInfoService merchantBusinessInfoService,
             IOptions<AppSettings> appSettings)
         {
@@ -36,7 +37,7 @@ namespace SocialPay.Core.Services.Merchant
             }
             catch (Exception ex)
             {
-
+                _merchantLogger.LogRequest($"{"GetMerchantBusinessInfoAsync"}{ ex.Message.ToString() }{" | "}{DateTime.Now}");
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = "Error occured" };
             }
         }

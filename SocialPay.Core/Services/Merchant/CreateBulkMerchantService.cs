@@ -13,6 +13,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.Merchant;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,11 +36,14 @@ namespace SocialPay.Core.Services.Merchant
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly MerchantRegistrationService _merchantRegistrationService;
         private readonly BankServiceRepository _bankServiceRepository;
+        private readonly MerchantsLogger _merchantLogger;
         public CreateBulkMerchantService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             EmailService emailService, Utilities utilities, MerchantRegistrationService merchantRegistrationService,
             BankServiceRepository bankServiceRepository,
             IWebHostEnvironment webHostEnvironment,
-            BlobService blobService
+            BlobService blobService,
+            MerchantsLogger merchantLogger
+
 
             )
         {
@@ -51,6 +55,8 @@ namespace SocialPay.Core.Services.Merchant
             _appSettings = appSettings.Value;
             _webHostEnvironment = webHostEnvironment;
             _blobService = blobService;
+            _merchantLogger = merchantLogger;
+
         }
 
         private async Task<string> GetReferCode()
@@ -106,7 +112,7 @@ namespace SocialPay.Core.Services.Merchant
             }
             catch (Exception ex)
             {
-                _log4net.Error("ProcessCSVFile" + ex + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"ProcessCSVFile"}{ ex.Message.ToString() }{" | "}{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error" };
             }
@@ -114,7 +120,7 @@ namespace SocialPay.Core.Services.Merchant
 
         public async Task<WebApiResponse> BulkCreateMerchantBankInfo(IFormFile doc)
         {
-            _log4net.Info("BulkCreateMerchantBankInfo" + " | " + DateTime.Now);
+            _merchantLogger.LogRequest($"{"BulkCreateMerchantBankInfo"}{ " | "}{ DateTime.Now })");
             try
             {
                 var processCSV = await ProcessCSVFile(doc, "BulkCreateMerchantBankInfo");
@@ -236,14 +242,14 @@ namespace SocialPay.Core.Services.Merchant
             }
             catch (Exception ex)
             {
-                _log4net.Error("BulkCreateMerchantBankInfo" + ex + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"BulkCreateMerchantBankInfo"}{ex}{" | "}{DateTime.Now}");
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
         public async Task<WebApiResponse> BulkCreateMerchantBusinessInfo(IFormFile doc)
         {
-            _log4net.Info("BulkCreateMerchantBusinessInfo" + " | " + DateTime.Now);
+            _merchantLogger.LogRequest($"{"BulkCreateMerchantBusinessInfo"}{ " | "}{DateTime.Now}");
             try
             {
                 var processCSV = await ProcessCSVFile(doc, "BulkCreateMerchantBusinessInfo");
@@ -310,14 +316,14 @@ namespace SocialPay.Core.Services.Merchant
             }
             catch (Exception ex)
             {
-                _log4net.Error("BulkCreateMerchantBusinessInfo" + ex.Message.ToString() + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"BulkCreateMerchantBusinessInfo"}{ex.Message.ToString()}{ " | "}{ DateTime.Now}");
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
 
         public async Task<WebApiResponse> BulkCreateMerchant(IFormFile doc)
         {
-            _log4net.Info("BulkCreateMerchant" + " | " + DateTime.Now);
+            _merchantLogger.LogRequest($"{"BulkCreateMerchant"}{" | "}{DateTime.Now}");
             try
             {
 
@@ -404,13 +410,13 @@ namespace SocialPay.Core.Services.Merchant
             catch (Exception ex)
 
             {
-                _log4net.Error("Create bulk merchant" + ex + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Create bulk merchant"}{ex }{" | "}{DateTime.Now}");
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
         }
         private async Task<WebApiResponse> CreateNewMerchant(BulkSignUpRequestDto signUpRequestDto)
         {
-            _log4net.Info("Initiating create merchant account" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
+            _merchantLogger.LogRequest($"{"Initiating create merchant account"}{ " | "}{signUpRequestDto.Email}{" | "}{DateTime.Now}");
 
             try
             {
@@ -543,13 +549,13 @@ namespace SocialPay.Core.Services.Merchant
 
                         await transaction.CommitAsync();
 
-                        _log4net.Info("Initiating create merchant account was successful" + " | " + signUpRequestDto.Email + " | " + DateTime.Now);
+                        _merchantLogger.LogRequest($"{"Initiating create merchant account was successful"}{ " | "}{signUpRequestDto.Email}{" | "}{ DateTime.Now}");
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | " + ex + " | " + DateTime.Now);
+                        _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{signUpRequestDto.Email}{" | "}{ex}{" | "}{DateTime.Now}",true);
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
                     }
@@ -558,7 +564,7 @@ namespace SocialPay.Core.Services.Merchant
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + signUpRequestDto.Email + " | " + ex + " | " + DateTime.Now);
+                _merchantLogger.LogRequest($"{"Error occured"}{ " | "}{ signUpRequestDto.Email}{" | "}{ex}{" | "}{ DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
