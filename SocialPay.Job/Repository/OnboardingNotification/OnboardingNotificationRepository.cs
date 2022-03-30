@@ -82,6 +82,10 @@ namespace SocialPay.Job.Repository.OnboardingNotification
 
                     };
 
+                    user.LastDateModified = DateTime.Now;
+                    context.Update(user);
+                    await context.SaveChangesAsync();
+
                     await context.AddAsync(payloadOnboardingNotification);
                     await context.SaveChangesAsync();
                 }
