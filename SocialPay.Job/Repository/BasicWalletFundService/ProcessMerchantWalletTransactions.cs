@@ -120,6 +120,11 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                         await context.SaveChangesAsync();
 
                                         await transaction.CommitAsync();
+                                        //Lock Wallet here 
+
+
+
+
                                         _walletLogger.LogRequest($"{"Job Service" + "-" + "ProcessMerchantWalletTransactions Wallet Pending Transaction successfully updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                                         return null;

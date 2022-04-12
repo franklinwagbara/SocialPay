@@ -81,6 +81,14 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                             remarks = "Social-Pay Core pool to merchant wallet" + " - " + item.PaymentReference + " - " + requestId
                         };
 
+
+
+
+
+
+
+
+
                         var walletRequestModel = new DefaultWalletTransferRequestLog
                         {
                             amt = Convert.ToDecimal(walletModel.amt),
@@ -133,6 +141,11 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                                     await context.SaveChangesAsync();
 
                                     await transaction.CommitAsync();
+
+                                    //Lock fund here
+
+
+
                                     _walletLogger.LogRequest($"{"Job Service" + "-" + "Credit merchant wallet saved and updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
                                 }
                                 catch (Exception ex)
