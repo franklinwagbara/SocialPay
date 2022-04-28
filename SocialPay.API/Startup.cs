@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -482,7 +483,6 @@ namespace SocialPay.API
             //    option.Configuration = "172.18.4.114:6379";
             //    option.InstanceName = "master";   
             //});
-
             services.AddScoped<INotificationServices, NotificationService>();
             //services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
             services.AddSingleton<JobEmailService>();
@@ -569,7 +569,6 @@ namespace SocialPay.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
                 //app.UseSwagger();
                 //app.UseSwaggerUI(c =>
                 //{
