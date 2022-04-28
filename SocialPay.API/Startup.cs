@@ -333,6 +333,10 @@ namespace SocialPay.API
             services.AddSingleton<IOnboardingNotificationService, OnboardingNotificationService>();
             services.AddSingleton<OnboardingNotificationRepository>();
             //services.AddSingleton<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
+
+            services.AddScoped<ISettleCardPayment, SettleCardPaymentJobService>();
+            services.AddScoped<MerchantBankSettlementService>();
+
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
 
             services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
@@ -369,6 +373,7 @@ namespace SocialPay.API
 
             // current jobs to enable in their order of processing
 
+
             services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
             {
                 c.TimeZoneInfo = TimeZoneInfo.Local;
@@ -387,17 +392,17 @@ namespace SocialPay.API
                 c.CronExpression = options.CardPaymentTask;
             });
 
-            //services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.NonEscrowWalletTransactionTask;
-            //});
+            services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowWalletTransactionTask;
+            });
 
-            //services.AddCronJob<NonEscrowBankTransactionTask>(c =>
-            //{
-            //    c.TimeZoneInfo = TimeZoneInfo.Local;
-            //    c.CronExpression = options.NonEscrowBankTransactionTask;
-            //});
+            services.AddCronJob<NonEscrowBankTransactionTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.NonEscrowBankTransactionTask;
+            });
 
             // Notification to merchants to complet onboarding
 
@@ -413,6 +418,24 @@ namespace SocialPay.API
                 c.TimeZoneInfo = TimeZoneInfo.Local;
                 c.CronExpression = options.ProcessFailedMerchantWalletTask;
             });
+
+
+            services.AddCronJob<SettleCardPaymentTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.SettleCardPaymentTask;
+            });
+
+
+
+            
+
+            //////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
+            //////{
+            //////    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //////    c.CronExpression = options.ProcessFailedMerchantWalletTask;
+            //////});
+
 
             ///Main jobs ends
 
