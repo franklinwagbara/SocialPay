@@ -205,6 +205,7 @@
         public const string WalletFundingProgressFinalDeliveryDay = "26"; 
         public const string DuplicateTransaction = "27"; 
         public const string RecordNotFound = "28"; 
+        public const string TransactionNotVerified = "29"; 
     }
     public class RoleDetails
     {
