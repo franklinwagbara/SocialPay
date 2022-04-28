@@ -115,7 +115,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                         if (! await TransactionVerification(item.Message, item.TotalAmount))
                         {
-                            getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionNotVeried;
+                            getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
                             await context.SaveChangesAsync();

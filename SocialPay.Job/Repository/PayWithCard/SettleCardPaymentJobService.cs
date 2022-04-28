@@ -17,7 +17,7 @@ namespace SocialPay.Job.Repository.PayWithCard
     {
         
         private readonly PayWithCardJobLogger _paywithcardjobLogger;
-        private readonly HttpClient _client;
+        //private readonly HttpClient _client;
         private readonly MerchantBankSettlementService _merchantBankSettlementService;
         public SettleCardPaymentJobService( PayWithCardJobLogger paywithcardjobLogger, IServiceProvider services, MerchantBankSettlementService merchantBankSettlementService
         )
