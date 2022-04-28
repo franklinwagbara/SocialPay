@@ -15,7 +15,7 @@ namespace SocialPay.Job.TaskSchedules
 
         private readonly IServiceProvider _scopeServiceProvider;
 
-        public SettleCardPaymentTask(IServiceProvider serviceProvider, IScheduleConfig<BindMerchantTask> config) : base(config.CronExpression, config.TimeZoneInfo)
+        public SettleCardPaymentTask(IServiceProvider serviceProvider, IScheduleConfig<SettleCardPaymentTask> config) : base(config.CronExpression, config.TimeZoneInfo)
         {
             _scopeServiceProvider = serviceProvider;
         }
