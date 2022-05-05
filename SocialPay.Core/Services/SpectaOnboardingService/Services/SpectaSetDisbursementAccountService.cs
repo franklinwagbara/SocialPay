@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -42,7 +42,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var requestmodel = _mapper.Map<SetDisbursementAccountRequest>(model);
                         await _context.SetDisbursementAccountRequest.AddAsync(requestmodel);
                        
-                        var request = await _spectaOnboardingService.DisbursementAccount(model, model.Email);
+                        var request = await _spectaOnboardingService.DisbursementAccount(model);
                         
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;

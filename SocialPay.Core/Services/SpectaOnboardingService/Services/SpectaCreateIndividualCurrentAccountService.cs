@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -44,7 +44,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var requestmodel = _mapper.Map<CreateIndividualCurrentAccountRequest>(model);
                         await _context.CreateIndividualCurrentAccountRequest.AddAsync(requestmodel);
                         
-                        var request = await _spectaOnboardingService.CreateIndividualCurrentAccount(model, model.Email);
+                        var request = await _spectaOnboardingService.CreateIndividualCurrentAccount(model);
                         
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;

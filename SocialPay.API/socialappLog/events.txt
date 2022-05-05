@@ -4013,3 +4013,215 @@ INFO  2022-03-10 17:23:09,974 55361ms WalletRepoService      ?                  
 INFO  2022-03-10 17:23:11,674 57061ms AuthRepoService        ?                  - Authenticate for login was successful | sheriff.ebelebe@gmail.com | 3/10/2022 5:23:11 PM
 INFO  2022-03-10 17:28:21,396 366784ms EmailService           ?                  - Email service response |  | 3/10/2022 5:28:21 PM
 INFO  2022-03-24 11:30:49,634 98989ms AccountsController     ?                  - Tasks starts to create account | sheriff.ebelebe@gmail.com | 3/24/2022 11:30:49 AM
+ERROR 2022-05-05 07:40:27,772 333698ms PayWithSpectaService   ?                  - Error occured | CustomerRegistration | Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'SpectaRegisterCustomerRequest'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__169_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.Tasks.Task.<>c.<.cctor>b__274_0(Object obj)
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(DbContext _, Boolean result, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaCustomerRegistration.RegisterCustomer(RegisterCustomerRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaCustomerRegistration.cs:line 42
+ClientConnectionId:c26640fc-70a0-497d-9af2-614b9d428aa4
+Error Number:208,State:1,Class:16 | 5/5/2022 7:40:27 AM
+ERROR 2022-05-05 08:47:35,715 1184061ms PayWithSpectaService   ?                  - Error occured | CustomerRegistration | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SpectaRegisterCustomerRequestId'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__169_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.Tasks.Task.<>c.<.cctor>b__274_0(Object obj)
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:bf4d4ef3-d651-46b0-bcc1-6912af264b9f
+Error Number:207,State:1,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaCustomerRegistration.RegisterCustomer(RegisterCustomerRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaCustomerRegistration.cs:line 80 | 5/5/2022 8:47:35 AM
+ERROR 2022-05-05 09:01:54,354 2042701ms PayWithSpectaService   ?                  - Error occured | CustomerRegistration | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SpectaRegisterCustomerRequestId'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__169_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:bf4d4ef3-d651-46b0-bcc1-6912af264b9f
+Error Number:207,State:1,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaCustomerRegistration.RegisterCustomer(RegisterCustomerRequestDto model) | 5/5/2022 9:01:54 AM
+ERROR 2022-05-05 09:39:20,034 910811ms dOrrInformationService ?                  - Error occured | AddOrrInformation | System.NullReferenceException: Object reference not set to an instance of an object.
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaAddOrrInformationService.AddOrrInformation(AddOrrInformationRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaAddOrrInformationService.cs:line 40 | 5/5/2022 9:39:20 AM
+ERROR 2022-05-05 14:15:24,395 133920ms pectaOnboardingService ?                  - Error occured | ConfirmTicketInfo | 0086699360 | 1 | 20118 | Object reference not set to an instance of an object. | 5/5/2022 2:15:24 PM
+ERROR 2022-05-05 15:05:13,453 158413ms taRequestTicketService ?                  - Error occured | RequestTicket | System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. To show additional information call EnableSensitiveDataLogging() when overriding DbContext.OnConfiguring.
+ ---> System.NullReferenceException: Object reference not set to an instance of an object.
+   at lambda_method(Closure )
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Evaluate(Expression expression, Boolean generateParameter)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitBinary(BinaryExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitBinary(BinaryExpression binaryExpression)
+   at System.Linq.Expressions.BinaryExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitLambda[T](Expression`1 node)
+   at System.Linq.Expressions.Expression`1.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitUnary(UnaryExpression node)
+   at System.Linq.Expressions.UnaryExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at System.Linq.Expressions.MethodCallExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.ExtractParameters(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExtractParameters(Expression query, IParameterValues parameterValues, IDiagnosticsLogger`1 logger, Boolean parameterize, Boolean generateContextAccessors)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, LambdaExpression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.SingleOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaRequestTicketService.RequestTicket(RequestTicketDto model) | 5/5/2022 3:05:13 PM
+ERROR 2022-05-05 15:05:43,146 188106ms pectaOnboardingService ?                  - Error occured | RequestTicketInfo | 0083645074 | 1 | 20118 | Object reference not set to an instance of an object. | 5/5/2022 3:05:43 PM
+ERROR 2022-05-05 15:19:30,178 1015138ms pectaOnboardingService ?                  - Error occured | CreateIndividualCurrentAccountInfo | NG0020009  | Nigeria | Microsoft.AspNetCore.Http.FormFile | Microsoft.AspNetCore.Http.FormFile | N-5053670 | Microsoft.AspNetCore.Http.FormFile | Value cannot be null. (Parameter 'content') | 5/5/2022 3:19:30 PM
+ERROR 2022-05-05 15:19:40,641 1025602ms pectaOnboardingService ?                  - Error occured | CreateIndividualCurrentAccountInfo | NG0020009  | Nigeria | Microsoft.AspNetCore.Http.FormFile | Microsoft.AspNetCore.Http.FormFile | N-5053670 | Microsoft.AspNetCore.Http.FormFile | Value cannot be null. (Parameter 'content') | 5/5/2022 3:19:40 PM
+ERROR 2022-05-05 15:21:10,026 1114986ms pectaOnboardingService ?                  - Error occured | CreateIndividualCurrentAccountInfo | NG0020009  | Nigeria | Microsoft.AspNetCore.Http.FormFile | Microsoft.AspNetCore.Http.FormFile | N-5053670 | Microsoft.AspNetCore.Http.FormFile | Value cannot be null. (Parameter 'content') | 5/5/2022 3:21:10 PM
+ERROR 2022-05-05 15:21:31,739 1136699ms pectaOnboardingService ?                  - Error occured | CreateIndividualCurrentAccountInfo | NG0020009  | Nigeria | Microsoft.AspNetCore.Http.FormFile | Microsoft.AspNetCore.Http.FormFile | N-5053670 | Microsoft.AspNetCore.Http.FormFile | Value cannot be null. (Parameter 'content') | 5/5/2022 3:21:31 PM
+ERROR 2022-05-05 18:50:14,839 152500ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Messaging\EmailService.cs:line 25 | 5/5/2022 6:50:14 PM
+ERROR 2022-05-05 19:00:10,675 748336ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Messaging\EmailService.cs:line 25 | 5/5/2022 7:00:10 PM
+ERROR 2022-05-05 19:04:43,955 1021616ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) | 5/5/2022 7:04:43 PM
+ERROR 2022-05-05 19:05:41,002 1078663ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) | 5/5/2022 7:05:41 PM
+ERROR 2022-05-05 19:11:39,091 98354ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Messaging\EmailService.cs:line 25 | 5/5/2022 7:11:39 PM
+ERROR 2022-05-05 19:49:04,022 237889ms SpectaChargeCard       ?                  - Error occured | ChargeCard | AutoMapper.AutoMapperMappingException: Missing type map configuration or unsupported mapping.
+
+Mapping types:
+Object -> ChargeCardRequest
+System.Object -> SocialPay.Domain.Entities.ChargeCardRequest
+   at lambda_method(Closure , Object , ChargeCardRequest , ResolutionContext )
+   at SocialPay.Core.Services.SpectaChargeCard.ChargeCard(ChargeCardRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaChargeCard.cs:line 41 | 5/5/2022 7:49:04 PM
+ERROR 2022-05-05 21:30:33,542 225016ms SpectaSendPhone        ?                  - Error occured | SendPhone | AutoMapper.AutoMapperMappingException: Missing type map configuration or unsupported mapping.
+
+Mapping types:
+Object -> SendPhoneRequest
+System.Object -> SocialPay.Domain.Entities.SendPhoneRequest
+   at lambda_method(Closure , Object , SendPhoneRequest , ResolutionContext )
+   at SocialPay.Core.Services.SpectaSendPhone.SendPhone(SendPhoneRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaSendPhone.cs:line 41 | 5/5/2022 9:30:33 PM
+ERROR 2022-05-05 21:41:19,777 231984ms SpectaSendOtp          ?                  - Error occured | SendOtp | System.NullReferenceException: Object reference not set to an instance of an object.
+   at SocialPay.Core.Services.SpectaSendOtp.SendOtp(SendOtpRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaSendOtp.cs:line 39 | 5/5/2022 9:41:19 PM
+ERROR 2022-05-05 21:41:49,361 261568ms SpectaSendOtp          ?                  - Error occured | SendOtp | System.NullReferenceException: Object reference not set to an instance of an object.
+   at SocialPay.Core.Services.SpectaSendOtp.SendOtp(SendOtpRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaSendOtp.cs:line 39 | 5/5/2022 9:41:49 PM
+ERROR 2022-05-05 21:42:54,843 327050ms pectaOnboardingService ?                  - Error occured | SendOtpInfo | 0dd15457-0bf0-4e33-c9da-08d960c51f8f | 0 | Object reference not set to an instance of an object. | 5/5/2022 9:42:54 PM

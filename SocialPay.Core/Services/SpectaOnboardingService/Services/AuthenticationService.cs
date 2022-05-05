@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
@@ -22,7 +22,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
         private readonly SpectaOnboardingSettings _spectaOnboardingSettings;
         private readonly SocialPayDbContext _context;
 
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaOnboardingService));
+        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AuthenticationService));
         private readonly HttpClient _client;
         public AuthenticationService(IOptions<AppSettings> appSettings, IOptions<SpectaOnboardingSettings> spectaOnboardingSettings, SocialPayDbContext context)
         {
@@ -45,7 +45,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 client.Timeout = -1;
 
                 var request = new RestRequest(Method.POST);
-                request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
+                request.AddHeader("Abp.TenantId", _spectaOnboardingSettings.SpectaRegistrationTenantId);
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));

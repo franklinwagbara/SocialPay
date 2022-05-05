@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -43,7 +43,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var requestmodel = _mapper.Map<AddOrrInformationRequest>(model);
                         await _context.AddOrrInformationRequest.AddAsync(requestmodel);
                        
-                        var request = await _spectaOnboardingService.AddOrrInformation(model, model.Email);
+                        var request = await _spectaOnboardingService.AddOrrInformation(model);
 
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;

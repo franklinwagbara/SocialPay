@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;

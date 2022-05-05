@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
+namespace SocialPay.Core.Services.ISpectaOnboardingService
 {
     public interface ISpectaOnBoarding
     {
@@ -15,20 +15,19 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
         Task<WebApiResponse> SendBvnPhoneVerificationCode(string emailaddress);
         Task<WebApiResponse> VerifyBvnPhoneConfirmationCode(VerifyBvnPhoneConfirmationCodeRequestDto model);
         Task<WebApiResponse> LoggedInCustomerProfile(string email);
-        Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model, string email);
+        Task<WebApiResponse> AddOrrInformation(AddOrrInformationRequestDto model);
         Task<WebApiResponse> Authenticate(AuthenticateRequestDto model);
-        Task<WebApiResponse> BusinessSegmentAllList(string email);
-        Task<WebApiResponse> RequestTicket(RequestTicketDto model, string email);
-        Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model, string email);
-        Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model, string email);
-        Task<WebApiResponse> DisbursementAccount(SetDisbursementAccountRequestDto model, string email);
+        Task<WebApiResponse> BusinessSegmentAllList();
+        Task<WebApiResponse> RequestTicket(RequestTicketDto model);
+        Task<WebApiResponse> ConfirmTicket(ConfirmTicketRequestDto model);
+        Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model);
+        Task<WebApiResponse> DisbursementAccount(SetDisbursementAccountRequestDto model);
+        Task<WebApiResponse> ChargeCard(ChargeCardRequestDto model);
+        Task<WebApiResponse> SendPhone(SendPhoneRequestDto model);
+        Task<WebApiResponse> SendOtp(SendOtpRequestDto model);
+        Task<WebApiResponse> SendPin(SendPinRequestDto model);
+        Task<WebApiResponse> ValidateCharge(ValidateChargeRequestDto model);
         public Task<WebApiResponse> BankBranchList();
         public Task<WebApiResponse> AvailableBanksList(string email);
-        //Task<WebApiResponse> ChargeCard(ChargeCardRequestDto model, string email);
-        //Task<WebApiResponse> SendPhone(SendPhoneRequestDto model, string email);
-        //Task<WebApiResponse> SendOtp(SendOtpRequestDto model, string email);
-        //Task<WebApiResponse> SendPin(SendPinRequestDto model, string email);
-        //Task<WebApiResponse> ValidateCharge(ValidateChargeRequestDto model, string email);
     }
-
 }

@@ -1,4 +1,4 @@
-﻿using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+﻿using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
 using System;

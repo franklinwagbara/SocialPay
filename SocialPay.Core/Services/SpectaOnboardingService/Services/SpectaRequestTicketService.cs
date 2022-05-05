@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -35,14 +35,19 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     try
                     {
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.Email);
-
+                        if (!checkregistered.RegistrationStatus.Equals(SpectaProcessCodes.AddOrrInformation))
+                        {
+                            checkregistered.RegistrationStatus = SpectaProcessCodes.AddOrrInformation;
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                        }
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.AddOrrInformation)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Processing stage is not Request Ticket", StatusCode = ResponseCodes.InternalError };
                       
                         var requestmodel = _mapper.Map<RequestTicketRequest>(model);
                         await _context.RequestTicketRequest.AddAsync(requestmodel);
 
-                        var request = await _spectaOnboardingService.RequestTicket(model, model.Email);
+                        var request = await _spectaOnboardingService.RequestTicket(model);
                         
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;

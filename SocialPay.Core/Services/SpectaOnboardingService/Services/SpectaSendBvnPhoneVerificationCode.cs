@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
@@ -36,7 +36,12 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     try
                     {
                         var checkregistered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.emailAddress);
-
+                        if (!checkregistered.RegistrationStatus.Equals(SpectaProcessCodes.VerifyEmailConfirmationCode))
+                        {
+                            checkregistered.RegistrationStatus = SpectaProcessCodes.VerifyEmailConfirmationCode;
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                        }
                         if (checkregistered.RegistrationStatus != SpectaProcessCodes.VerifyEmailConfirmationCode)
                             return new WebApiResponse { ResponseCode = checkregistered.RegistrationStatus, Message = "Processing stage is not Send Bvn Phone Verification Code", StatusCode = ResponseCodes.InternalError };
                        

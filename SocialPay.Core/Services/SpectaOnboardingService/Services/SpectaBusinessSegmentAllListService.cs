@@ -1,4 +1,4 @@
-﻿using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+﻿using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Helper.Dto.Response;
 using System;
 using System.Collections.Generic;
@@ -17,9 +17,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             _spectaOnboardingService = spectaOnboardingService;
         }
 
-        public async Task<WebApiResponse> BusinessSegmentAllList(string email)
+        public async Task<WebApiResponse> BusinessSegmentAllList()
         {
-            return await _spectaOnboardingService.BusinessSegmentAllList(email);
+            return await _spectaOnboardingService.BusinessSegmentAllList();
         }
     }
 }
