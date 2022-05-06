@@ -407,11 +407,11 @@ namespace SocialPay.API
             // Notification to merchants to complet onboarding
 
 
-            ////services.AddCronJob<OnboardingNotificationTask>(c =>
-            ////{
-            ////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////    c.CronExpression = options.OnboardingNotificationTask;
-            ////});
+            services.AddCronJob<OnboardingNotificationTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.OnboardingNotificationTask;
+            });
 
             services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
             {

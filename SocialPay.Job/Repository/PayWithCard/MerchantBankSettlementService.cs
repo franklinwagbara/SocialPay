@@ -96,109 +96,108 @@ namespace SocialPay.Job.Repository.PayWithCard
 
             try
             {
-                using (var scope = Services.CreateScope())
+                using var scope = Services.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+
+                foreach (var item in pendingRequest)
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+                    _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
-                    foreach (var item in pendingRequest)
+                    var getTransInfo = await context.TransactionLog
+                        .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                        && x.TransactionJourney == TransactionJourneyStatusCodes.Approved);
+
+                    if (getTransInfo == null)
+                        return null;
+
+
+
+                    if (!await TransactionVerification(item.Message, item.TotalAmount))
                     {
-                        _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
-
-                        var getTransInfo = await context.TransactionLog
-                            .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                            && x.TransactionJourney == TransactionJourneyStatusCodes.Approved);
-
-                        if (getTransInfo == null)
-                            return null;
-
-
-
-                        if (! await TransactionVerification(item.Message, item.TotalAmount))
-                        {
-                            getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
-                            getTransInfo.LastDateModified = DateTime.Now;
-                            context.Update(getTransInfo);
-                            await context.SaveChangesAsync();
-                            return null;
-                        }
-                        
-                        
-                        
-                        var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
-
-                        var requestId = Guid.NewGuid().ToString();
-
-
-
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.Pending;
+                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
+                        return null;
+                    }
 
-                        transactionLogid = getTransInfo.TransactionLogId;
 
-                        var getBankInfo = await context.MerchantBankInfo
-                            .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
 
-                        if (getBankInfo == null)
-                        {
+                    var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
+
+                    var requestId = Guid.NewGuid().ToString();
+
+
+
+                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.Pending;
+                    getTransInfo.LastDateModified = DateTime.Now;
+                    context.Update(getTransInfo);
+                    await context.SaveChangesAsync();
+
+                    transactionLogid = getTransInfo.TransactionLogId;
+
+                    var getBankInfo = await context.MerchantBankInfo
+                        .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+
+                    if (getBankInfo == null)
+                    {
                         _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService PendingBank Transaction Bank info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
-                            return null;
-                        }
+                        return null;
+                    }
 
-                        //For test purpose
-                        ////getBankInfo.BankCode = "000014";
-                        ////getBankInfo.Nuban = "0025998012";
-                        ////item.TotalAmount = 300;
+                    //For test purpose
+                    ////getBankInfo.BankCode = "000014";
+                    ////getBankInfo.Nuban = "0025998012";
+                    ////item.TotalAmount = 300;
 
-                        if (getBankInfo.BankCode == _appSettings.SterlingBankCode)
+                    if (getBankInfo.BankCode == _appSettings.SterlingBankCode)
+                    {
+
+                        var initiateRequest = await _fioranoTransferRepository
+                            .InititiateMerchantCredit(Convert.ToString(getTransInfo.TotalAmount),
+                            "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
+                            " - " + item.PaymentReference, item.TransactionReference,
+                            getBankInfo.Nuban, item.PaymentChannel, "Intra-Bank Transfer",
+                            item.PaymentReference);
+
+                        if (initiateRequest.ResponseCode == AppResponseCodes.Success)
                         {
-
-                            var initiateRequest = await _fioranoTransferRepository
-                                .InititiateMerchantCredit(Convert.ToString(getTransInfo.TotalAmount),
-                                "Credit Merchant Sterling Acc" + " - " + item.TransactionReference +
-                                " - " + item.PaymentReference, item.TransactionReference,
-                                getBankInfo.Nuban, item.PaymentChannel, "Intra-Bank Transfer",
-                                item.PaymentReference);
-
-                            if (initiateRequest.ResponseCode == AppResponseCodes.Success)
-                            {
-                                getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
-                                getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                                getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                                getTransInfo.LastDateModified = DateTime.Now;
-                                context.Update(getTransInfo);
-
-                                await context.SaveChangesAsync();
-                            _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementServicePendingBankTransaction response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
-
-                                return null;
-                            }
-
-                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
+                            getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
+                            getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
 
                             await context.SaveChangesAsync();
-
-                            var failedTransaction = new FailedTransactions
-                            {
-                                CustomerTransactionReference = item.CustomerTransactionReference,
-                                Message = initiateRequest.Message,
-                                TransactionReference = item.TransactionReference
-                            };
-
-                            await context.FailedTransactions.AddAsync(failedTransaction);
-                            await context.SaveChangesAsync();
-
-                        _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementServicePendingBankTransaction failed response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
+                            _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementServicePendingBankTransaction response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                             return null;
                         }
 
-                    _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService PendingBankTransaction inter bank request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
 
+                        await context.SaveChangesAsync();
+
+                        var failedTransaction = new FailedTransactions
+                        {
+                            CustomerTransactionReference = item.CustomerTransactionReference,
+                            Message = initiateRequest.Message,
+                            TransactionReference = item.TransactionReference
+                        };
+
+                        await context.FailedTransactions.AddAsync(failedTransaction);
+                        await context.SaveChangesAsync();
+
+                        _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementServicePendingBankTransaction failed response" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
+
+                        return null;
+                    }
+
+                    _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService PendingBankTransaction inter bank request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
+                    getBankInfo.Nuban = "0919199919191";
                     var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
                             item.PaymentReference, item.TransactionReference);
@@ -230,11 +229,10 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                     return null;
 
-                    } 
-
-                    //Other banks transfer
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
                 }
+
+                //Other banks transfer
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
 
             }
             catch (Exception ex)
