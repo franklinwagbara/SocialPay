@@ -54,7 +54,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                     if (getNonEscrowTransactions.Count == 0)
                         return "No record";
 
-                    await _merchantBankSettlementService.ProcessTransactions(getNonEscrowTransactions);
+                    await _merchantBankSettlementService.ProcessTransactions(getNonEscrowTransactions, context);
                 }
 
                 Console.WriteLine("GenerateDailyReport : " + DateTime.Now.ToString());
