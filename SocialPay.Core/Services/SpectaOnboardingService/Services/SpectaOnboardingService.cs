@@ -21,11 +21,12 @@ namespace SocialPay.Core.Services.Specta
         private readonly IAuthentication _authentication;
         private readonly HttpClient _client;
         private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
-        public SpectaOnboardingService(IOptions<AppSettings> appSettings, IOptions<SpectaOnboardingSettings> spectaOnboardingSettings, IAuthentication authentication)
+        public SpectaOnboardingService(IOptions<AppSettings> appSettings, IOptions<SpectaOnboardingSettings> spectaOnboardingSettings, IAuthentication authentication, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _appSettings = appSettings.Value;
             _spectaOnboardingSettings = spectaOnboardingSettings.Value;
             _authentication = authentication;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
             _client = new HttpClient
             {
                 BaseAddress = new Uri(_appSettings.paywithSpectaBaseUrl),

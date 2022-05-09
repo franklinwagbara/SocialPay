@@ -6,6 +6,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,13 +19,14 @@ namespace SocialPay.Core.Services
         private readonly SocialPayDbContext _context;
         private readonly ISpectaOnBoarding _spectaOnboardingService;
         private readonly IMapper _mapper;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaSendPhone));
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
 
-        public SpectaSendPhone(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
+        public SpectaSendPhone(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _context = context;
             _mapper = mapper;
             _spectaOnboardingService = spectaOnboardingService;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
 
         public async Task<WebApiResponse> SendPhone(SendPhoneRequestDto model)
@@ -74,7 +76,8 @@ namespace SocialPay.Core.Services
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _log4net.Error("Error occured" + " | " + "SendPhone" + " | " + ex + " | " + DateTime.Now);
+                        _spectaOnboardingLogger.LogRequest($"{"Error occured -- SendPhone" + ex.ToString()}{"-"}{DateTime.Now}", true);
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
 
                     }
@@ -82,7 +85,7 @@ namespace SocialPay.Core.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "SendPhone" + " | " + ex + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- SendPhone" + ex.ToString()}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
 
             }

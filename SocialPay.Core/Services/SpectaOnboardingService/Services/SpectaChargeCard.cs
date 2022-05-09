@@ -6,6 +6,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,13 +19,14 @@ namespace SocialPay.Core.Services
         private readonly SocialPayDbContext _context;
         private readonly ISpectaOnBoarding _spectaOnboardingService;
         private readonly IMapper _mapper;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaChargeCard));
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
 
-        public SpectaChargeCard(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
+        public SpectaChargeCard(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _context = context;
             _mapper = mapper;
             _spectaOnboardingService = spectaOnboardingService;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
 
         public async Task<WebApiResponse> ChargeCard(ChargeCardRequestDto model)
@@ -73,14 +75,14 @@ namespace SocialPay.Core.Services
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _log4net.Error("Error occured" + " | " + "ChargeCard" + " | " + ex + " | " + DateTime.Now);
+                        _spectaOnboardingLogger.LogRequest($"{"Error occured -- ChargeCard "+ex.ToString()}{"-"}{DateTime.Now}", true);
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "ChargeCard" + " | " + ex + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- ChargeCard " + ex.ToString()}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex.Message, StatusCode = ResponseCodes.InternalError };
             }
         }

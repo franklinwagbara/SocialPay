@@ -67,6 +67,7 @@ using SocialPay.Helper.SerilogService.Merchant;
 using SocialPay.Helper.SerilogService.NonEscrowJob;
 using SocialPay.Helper.SerilogService.NotificationJob;
 using SocialPay.Helper.SerilogService.PayWithCardJob;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using SocialPay.Helper.SerilogService.Store;
 using SocialPay.Helper.SerilogService.Transaction;
 using SocialPay.Helper.SerilogService.WalletJob;
@@ -300,6 +301,7 @@ namespace SocialPay.API
             services.AddSingleton<PayWithCardJobLogger>();
             services.AddSingleton<WalletJobLogger>();
             services.AddSingleton<BankTransactionJobLogger>();
+            services.AddSingleton<SpectaOnboardingLogger>();
             ///Loan Services
 
             services.AddScoped<LoanEligibiltyService>();

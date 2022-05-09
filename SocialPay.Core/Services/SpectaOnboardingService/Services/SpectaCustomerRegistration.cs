@@ -10,6 +10,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Threading.Tasks;
 
@@ -21,14 +22,15 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
         private readonly AppSettings _appSettings;
         private readonly ISpectaOnBoarding _spectaOnboardingService;
         private readonly IMapper _mapper;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(PayWithSpectaService));
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
 
-        public SpectaCustomerRegistration(IOptions<AppSettings> appSettings,SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
+        public SpectaCustomerRegistration(IOptions<AppSettings> appSettings, SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _appSettings = appSettings.Value;
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper;
             _spectaOnboardingService = spectaOnboardingService ?? throw new ArgumentNullException(nameof(spectaOnboardingService));
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
 
         public async Task<WebApiResponse> RegisterCustomer(RegisterCustomerRequestDto model)
@@ -40,7 +42,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     try
                     {
                         var registered = await _context.SpectaRegisterCustomerRequest.SingleOrDefaultAsync(x => x.emailAddress == model.emailAddress);
-                        
+
                         if (registered != null)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateEmail, Message = "Duplicate email", StatusCode = ResponseCodes.Duplicate };
 
@@ -81,22 +83,23 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", StatusCode = ResponseCodes.Badrequest };
-                       
+
                         await transaction.CommitAsync();
-                        
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", StatusCode = ResponseCodes.Success };
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _log4net.Error("Error occured" + " | " + "CustomerRegistration" + " | " + ex + " | " + DateTime.Now);
+                        _spectaOnboardingLogger.LogRequest($"{"Error occured -- CustomerRegistration " + ex.ToString()}{"-"}{DateTime.Now}", true);
+
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Request failed", StatusCode = ResponseCodes.InternalError };
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "CustomerRegistration" + " | " + ex + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- CustomerRegistration " + ex.ToString()}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = SpectaProcessCodes.Failed, Message = "Request failed ", StatusCode = ResponseCodes.InternalError };
 
             }

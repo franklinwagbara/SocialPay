@@ -1,6 +1,7 @@
 ﻿using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,11 +12,12 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
     public class SpectaAvailableBanksService : ISpectaAvailableBanks
     {
         private readonly ISpectaOnBoarding _spectaOnboardingService;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaAvailableBanksService));
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
 
-        public SpectaAvailableBanksService(ISpectaOnBoarding spectaOnboardingService)
+        public SpectaAvailableBanksService(ISpectaOnBoarding spectaOnboardingService, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _spectaOnboardingService = spectaOnboardingService;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
 
         public async Task<WebApiResponse> AvailableBanksList(string email)
@@ -28,8 +30,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "AvailableBanksList" + " | " + ex + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- AvailableBanksList "+ex.ToString()}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse 
                 {
                     ResponseCode = AppResponseCodes.InternalError, Data = "Internal error occured"

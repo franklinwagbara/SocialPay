@@ -9,6 +9,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,17 +21,19 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
     {
         private readonly SocialPayDbContext _context;
         private readonly EmailService _emailService;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaStageVerificationPinRequestService));
         private readonly AppSettings _appSettings;
         private readonly SpectaOnboardingSettings _spectaOnboardingSettings;
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
+
         public SpectaStageVerificationPinRequestService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
-            IOptions<SpectaOnboardingSettings> spectaOnboardingSettings,
+            IOptions<SpectaOnboardingSettings> spectaOnboardingSettings, SpectaOnboardingLogger spectaOnboardingLogger,
             EmailService emailService)
         {
             _context = context;
             _appSettings = appSettings.Value;
             _spectaOnboardingSettings = spectaOnboardingSettings.Value;
             _emailService = emailService;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
         public async Task<WebApiResponse> SpectaStageVerificationPinRequest(SpectaStageVerificationPinRequestDto model)
         {
@@ -39,6 +42,8 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             var newPin = Utilities.GeneratePin();
             var encryptedPin = newPin.Encrypt(_appSettings.appKey);
 
+            _spectaOnboardingLogger.LogRequest($"{"SpectaStageVerificationPinRequest -- Token & Pin generated"}{encryptedToken}{"-"}{newPin}{"-"}{DateTime.Now}", false);
+            
             if (await _context.SpectaStageVerificationPinRequest.AnyAsync(x => x.Pin == encryptedPin))
             {
                 newPin = string.Empty;
@@ -53,6 +58,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             };
             _context.SpectaStageVerificationPinRequest.Add(spectastage);
             await _context.SaveChangesAsync();
+            _spectaOnboardingLogger.LogRequest($"{"SpectaStageVerificationPinRequest -- Token & Pin generated saved to DB"}{encryptedToken}{"-"}{newPin}{"-"}{DateTime.Now}", false);
 
             var emailModal = new EmailRequestDto
             {
@@ -75,10 +81,16 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             var sendMail = await _emailService.SendMail(emailModal, _appSettings.EwsServiceUrl);
 
             if (sendMail != AppResponseCodes.Success)
+            {
+                _spectaOnboardingLogger.LogRequest($"{"SpectaStageVerificationPinRequest -- failed to send pin generated to email"}{"-"}{emailModal}{"-"}{DateTime.Now}", false);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Error occured while sending email", StatusCode = ResponseCodes.InternalError };
-           
-            return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Email was sent successfully", StatusCode = ResponseCodes.Success };
+            }
+            else
+            {
+                _spectaOnboardingLogger.LogRequest($"{"SpectaStageVerificationPinRequest -- successfully sent generated pin to email"}{"-"}{emailModal}{"-"}{DateTime.Now}", false);
 
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Email was sent successfully", StatusCode = ResponseCodes.Success };
+            }
         }
 
         public async Task<WebApiResponse> SpectaPinConfirmationRequest(SpectaPinConfirmationRequestDto model)
@@ -87,12 +99,14 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             var details = await _context.SpectaStageVerificationPinRequest.SingleOrDefaultAsync(x => x.Pin == encryptedPin);
             if (details == null)
             {
-                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record Not Fount", StatusCode = ResponseCodes.RecordNotFound };
+                _spectaOnboardingLogger.LogRequest($"{"SpectaPinConfirmationRequest -- Record Not Found"}{"-"}{"-"}{DateTime.Now}", false);
+                return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound, Message = "Record Not Found", StatusCode = ResponseCodes.RecordNotFound };
             }
             else
             {
                 if (details.LastDateModified.AddMinutes(Convert.ToInt32(_appSettings.otpSession)) < DateTime.Now)
                 {
+                    _spectaOnboardingLogger.LogRequest($"{"SpectaPinConfirmationRequest -- Token has expired"}{"-"}{"-"}{DateTime.Now}", false);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.TokenExpired, Message = "Token has expired", StatusCode = ResponseCodes.InternalError };
                 }
                 else
@@ -100,6 +114,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     details.LastDateModified = DateTime.Now;
                     details.Status = true;
                     _context.SaveChanges();
+                    _spectaOnboardingLogger.LogRequest($"{"SpectaPinConfirmationRequest -- Pin was successfully confirmed"}{"-"}{"-"}{DateTime.Now}", false);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", StatusCode = ResponseCodes.Success };
                 }
             }

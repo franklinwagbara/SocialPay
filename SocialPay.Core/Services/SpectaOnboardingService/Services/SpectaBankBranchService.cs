@@ -1,5 +1,6 @@
 ﻿using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,11 +12,12 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
     {
 
         private readonly ISpectaOnBoarding _spectaOnboardingService;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaBankBranchService));
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
 
-        public SpectaBankBranchService(ISpectaOnBoarding spectaOnboardingService)
+        public SpectaBankBranchService(ISpectaOnBoarding spectaOnboardingService, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _spectaOnboardingService = spectaOnboardingService;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
 
         public async Task<WebApiResponse> BankBranchList()
@@ -29,7 +31,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "BankBranchList" + " | " + ex + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- BankBranchList " + ex.ToString()}{"-"}{DateTime.Now}", true);
 
                 return response;
 

@@ -6,6 +6,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,12 +20,13 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
         private readonly SocialPayDbContext _context;
         private readonly ISpectaOnBoarding _spectaOnboardingService;
         private readonly IMapper _mapper;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaRequestTicketService));
-        public SpectaRequestTicketService(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
+        public SpectaRequestTicketService(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _context = context;
             _mapper = mapper;
             _spectaOnboardingService = spectaOnboardingService;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
         public async Task<WebApiResponse> RequestTicket(RequestTicketDto model)
         {
@@ -87,7 +89,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _log4net.Error("Error occured" + " | " + "RequestTicket" + " | " + ex + " | " + DateTime.Now);
+                        _spectaOnboardingLogger.LogRequest($"{"Error occured -- RequestTicket" + ex.ToString()}{"-"}{DateTime.Now}", true);
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed", StatusCode = ResponseCodes.InternalError };
                     }
@@ -95,8 +97,8 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "RequestTicket" + " | " + ex + " | " + DateTime.Now);
-               
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- RequestTicket" + ex.ToString()}{"-"}{DateTime.Now}", true);
+
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed ", StatusCode = ResponseCodes.InternalError };
             }
         }
