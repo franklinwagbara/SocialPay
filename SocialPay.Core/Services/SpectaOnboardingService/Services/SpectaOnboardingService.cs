@@ -52,8 +52,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.SpectaRegistrationCustomerUrlExtension}");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-                //request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
-                //request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.emailAddress));
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));
@@ -92,8 +90,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.SendEmailVerificationCodeUrlExtension}");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-                //request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
-                //request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));
@@ -134,8 +130,6 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.VerifyEmailConfirmationCodeUrlExtension}");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-               // request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
-                //request.AddHeader("Authorization", "Bearer Token " + await _authentication.AccessTokenTesting(model.email));
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));              
@@ -177,15 +171,10 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 client.Timeout = -1;
                 
                 var request = new RestRequest(Method.POST);
-               // request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(emailaddress));
                 request.AlwaysMultipartFormData = true;
                 request.AddParameter("emailAddress", emailaddress);
                 
                 IRestResponse response = await Task.FromResult(client.Execute(request));
-                ////var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
-                ////apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-                ////apiResponse.Data = Response;
-
                 apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
 
                 if (response.IsSuccessful)
@@ -220,16 +209,9 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 var client = new RestClient(_client.BaseAddress + _spectaOnboardingSettings.VerifyBvnPhoneConfirmationCodeUrlExtension);
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-                //request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-               // request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));
-
-                ////var Response = JsonConvert.DeserializeObject<SpectaResponseWithObjectResultMessage.SpectaResponseDto>(response.Content);
-                ////apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-                ////apiResponse.Data = Response;
-                ////return apiResponse;
 
                 apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
 
@@ -346,21 +328,11 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             {
                 var requestobj = JsonConvert.SerializeObject(model);
                 var client = new RestClient($"{_client.BaseAddress}{_spectaOnboardingSettings.AuthenticaUrlExtensionUrl}");
-
-               // var client = new RestClient(_client.BaseAddress + _appSettings.AuthenticaUrlExtension);
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-               // request.AddHeader("Abp.TenantId", _appSettings.TenantId);
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));
-
-                //var Response = JsonConvert.DeserializeObject<AuthenticateResponseDto.AuthenticateResponse>(response.Content);
-                //apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
-                //apiResponse.Data = Response.result;
-                //apiResponse.StatusCode = ResponseCodes.Success;
-
-
 
                 apiResponse.ResponseCode = response.IsSuccessful == true ? AppResponseCodes.Success : AppResponseCodes.Failed;
 

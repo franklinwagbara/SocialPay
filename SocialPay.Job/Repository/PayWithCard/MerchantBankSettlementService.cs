@@ -130,7 +130,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
 
 
-                    var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
+                    //var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
 
                     var requestId = Guid.NewGuid().ToString();
 
@@ -204,7 +204,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                     }
 
                     _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService PendingBankTransaction inter bank request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
-                    getBankInfo.Nuban = "0919199919191";
                     var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
                             item.PaymentReference, item.TransactionReference);
