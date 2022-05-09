@@ -119,8 +119,6 @@ namespace SocialPay.Core.Services.Specta
                 var client = new RestClient(_client.BaseAddress + _spectaOnboardingSettings.VerifyEmailConfirmationCodeUrlExtension);
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-                //request.AddHeader("Abp.TenantId", _appSettings.TenantId);
-                //request.AddHeader("Authorization", "Bearer Bearer " + await _authentication.AccessTokenTesting(model.email));
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));
@@ -232,8 +230,6 @@ namespace SocialPay.Core.Services.Specta
             var apiResponse = new WebApiResponse { };
             try
             {
-                //var requestobj = JsonConvert.SerializeObject(model);
-
                 var client = new RestClient(_client.BaseAddress + _spectaOnboardingSettings.LoggedInCustomerProfileUrlExtension);
                 client.Timeout = -1;
                 var request = new RestRequest(Method.GET);
