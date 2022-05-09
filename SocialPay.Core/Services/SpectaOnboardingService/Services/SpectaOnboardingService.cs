@@ -6,6 +6,7 @@ using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -19,8 +20,7 @@ namespace SocialPay.Core.Services.Specta
         private readonly SpectaOnboardingSettings _spectaOnboardingSettings;
         private readonly IAuthentication _authentication;
         private readonly HttpClient _client;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaOnboardingService));
-
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
         public SpectaOnboardingService(IOptions<AppSettings> appSettings, IOptions<SpectaOnboardingSettings> spectaOnboardingSettings, IAuthentication authentication)
         {
             _appSettings = appSettings.Value;
@@ -66,8 +66,8 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "RegisterCustomerInfo" + " | " + model.bvn + " | " + model.emailAddress + " | " + model.name + " | " + ex + " | " + DateTime.Now);
-
+             
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- RegisterCustomerInfo "+ ex.ToString()}{"-"}{model.bvn}{"-"}{model.emailAddress}{"-"}{model.name}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -102,8 +102,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "SendEmailVerificationCodeInfo" + " | " + model.email + " | " + model.clientBaseUrl + " | " + model.verificationCodeParameterName + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- SendEmailVerificationCodeInfo " + ex.ToString()}{"-"}{model.email}{"-"}{model.clientBaseUrl}{"-"}{model.verificationCodeParameterName}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -142,7 +141,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "VerifyEmailConfirmationCodeInfo" + " | " + model.email + " | " + model.token + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- VerifyEmailConfirmationCodeInfo " + ex.ToString()}{"-"}{model.email}{"-"}{model.token}{"-"}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -181,7 +180,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "SendBvnPhoneVerificationCodeInfo" + " | " + emailaddress + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- SendBvnPhoneVerificationCodeInfo " + ex.ToString()}{"-"}{emailaddress}{"-"}{"-"}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -220,7 +219,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "VerifyBvnPhoneConfirmationInfo" + " | " + model.email + " | " + model.token + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- VerifyBvnPhoneConfirmationInfo " + ex.ToString()}{"-"}{model.email}{"-"}{model.token}{"-"}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -282,8 +281,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "AddOrrInformation" + " | " + model.incomeSource + " | " + model.jobChanges + " | " + model.natureOfIncome + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- AddOrrInformation " + ex.ToString()}{"-"}{model.incomeSource}{"-"}{model.jobChanges}{"-"}{model.natureOfIncome}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -317,7 +315,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "AuthenticateInfo" + " | " + model.password + " | " + model.userNameOrEmailAddress + " | " + model.rememberClient + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- AuthenticateInfo " + ex.ToString()}{"-"}{model.password}{"-"}{model.userNameOrEmailAddress}{"-"}{model.rememberClient}{"-"}{DateTime.Now}", true);
 
                 return apiResponse;
             }
@@ -383,8 +381,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "RequestTicketInfo" + " | " + model.accountNumber + " | " + model.bankId + " | " + model.customerId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- RequestTicketInfo " + ex.ToString()}{"-"}{model.accountNumber}{"-"}{model.bankId}{"-"}{model.customerId}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -417,8 +414,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "ConfirmTicketInfo" + " | " + model.accountNumber + " | " + model.bankId + " | " + model.customerId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- ConfirmTicketInfo " + ex.ToString()}{"-"}{model.accountNumber}{"-"}{model.bankId}{"-"}{model.customerId}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -485,8 +481,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "CreateIndividualCurrentAccountInfo" + " | " + model.BranchCode + " | " + model.CountryOfBirth + " | " + model.Passport + " | " + model.Signature + " | " + model.TaxId + " | " + model.UtilityBill + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- CreateIndividualCurrentAccountInfo " + ex.ToString()}{"-"}{model.BranchCode}{"-"}{model.CountryOfBirth}{"-"}{model.Passport}{"-"}{model.Signature}{"-"}{model.TaxId}{"-"}{model.UtilityBill}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -519,8 +514,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "DisbursementAccountInfo" + " | " + model.disbAccountNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- DisbursementAccountInfo " + ex.ToString()}{"-"}{model.disbAccountNumber}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -553,7 +547,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "ChargeCardInfo" + " | " + model.cvv + " | " + " | " + model.expiryMonth + " | " + " | " + model.expiryYear + " | " + " | " + model.pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- ChargeCardInfo " + ex.ToString()}{"-"}{model.cvv}{"-"}{model.expiryMonth}{"-"}{model.expiryYear}{"-"}{model.pin}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -586,8 +580,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "SendPhoneInfo" + " | " + model.cardId + " | " + " | " + model.phoneNumber + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- SendPhoneInfo " + ex.ToString()}{"-"}{model.cardId}{"-"}{model.phoneNumber}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -622,7 +615,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "SendOtpInfo" + " | " + model.cardId + " | " + model.otp + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- SendPhoneInfo " + ex.ToString()}{"-"}{model.cardId}{"-"}{model.otp}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -655,7 +648,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "SendPinInfo" + " | " + model.cardId + " | " + model.pin + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- SendPinInfo " + ex.ToString()}{"-"}{model.cardId}{"-"}{model.pin}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
@@ -688,7 +681,7 @@ namespace SocialPay.Core.Services.Specta
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "ValidateChargeInfo" + " | " + model.cardId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- ValidateChargeInfo " + ex.ToString()}{"-"}{model.cardId}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
 
