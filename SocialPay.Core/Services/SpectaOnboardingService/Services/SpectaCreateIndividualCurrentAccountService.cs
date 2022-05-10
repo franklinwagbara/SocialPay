@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,13 +19,14 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
         private readonly SocialPayDbContext _context;
         private readonly ISpectaOnBoarding _spectaOnboardingService;
         private readonly IMapper _mapper;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaCreateIndividualCurrentAccountService));
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
 
-        public SpectaCreateIndividualCurrentAccountService(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper)
+        public SpectaCreateIndividualCurrentAccountService(SocialPayDbContext context, ISpectaOnBoarding spectaOnboardingService, IMapper mapper, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _context = context;
             _mapper = mapper;
             _spectaOnboardingService = spectaOnboardingService;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
         public async Task<WebApiResponse> CreateIndividualCurrentAccount(CreateIndividualCurrentAccountRequestDto model)
         {
@@ -44,7 +46,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                         var requestmodel = _mapper.Map<CreateIndividualCurrentAccountRequest>(model);
                         await _context.CreateIndividualCurrentAccountRequest.AddAsync(requestmodel);
                         
-                        var request = await _spectaOnboardingService.CreateIndividualCurrentAccount(model, model.Email);
+                        var request = await _spectaOnboardingService.CreateIndividualCurrentAccount(model);
                         
                         if (request.ResponseCode != AppResponseCodes.Success)
                             return request;
@@ -83,14 +85,14 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _log4net.Error("Error occured" + " | " + "CreateIndividualCurrentAccount" + " | " + ex + " | " + DateTime.Now);
+                        _spectaOnboardingLogger.LogRequest($"{"Error occured -- CreateIndividualCurrentAccount " + ex.ToString()}{"-"}{DateTime.Now}", true);
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed " + ex, StatusCode = ResponseCodes.InternalError };
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "CreateIndividualCurrentAccount" + " | " + ex + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- CreateIndividualCurrentAccount " + ex.ToString()}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request failed ", StatusCode = ResponseCodes.InternalError };
             }
         }

@@ -107,8 +107,6 @@
         public string nibsQRCodeXWebhookChecksum { get; set; }
         public string nibsQRCodeClientId { get; set; }
         public string nibsQRCodeClientSecret { get; set; }
-        public string nibsQRCodeBankNumber { get; set; }
-        public string MchQRCodeNumber { get; set; }
         public string paywithPayUBaseUrl { get; set; }
         public string paywithPayUSingleDstvPurchaseUrlExtension { get; set; }
         public string paywithPayUAccountLookupDstvPurchaseUrlExtension { get; set; }
@@ -140,7 +138,6 @@
         public string createTenantUrl { get; set; }
         public string PayUClientId { get; set; }
         public string PayUClientSecret { get; set; }
-        public string SpectaRegistrationTenantId { get; set; }        
         public string OpenTimeout { get; set; }
         public string CloseTimeout { get; set; }
         public string ReceiveTimeout { get; set; }
@@ -155,7 +152,6 @@
         public string TokenizationURL { get; set; }     
         public string WelcomeEmailImageExtensionPath { get; set; }     
         public string WebportalBaseUrl { get; set; }
-        public string nibsQRCodeQueryAccountUrl { get; set; }
-        public string nibsQRCodeUpdatedCreateMerchantURL { get; set; }
+        public string TenantId { get; set; }
     }
 }

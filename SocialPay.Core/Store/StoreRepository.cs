@@ -31,7 +31,6 @@ namespace SocialPay.Core.Store
         private readonly AppSettings _appSettings;
         private readonly BlobService _blobService;
         private readonly StoreLogger _storeLogger;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(StoreRepository));
 
         public IConfiguration Configuration { get; }
 
@@ -199,7 +198,7 @@ namespace SocialPay.Core.Store
         {
             try
             {
-                _log4net.Info("Task starts to create store product category" + " | " + request.CategoryName + " | " + userModel.ClientId + " | " + DateTime.Now);
+                _storeLogger.LogRequest($"{"Task starts to create store product category" + " | " + request.CategoryName + " | " + userModel.ClientId}{" "}{" - "}{" - "}{DateTime.Now}", true);
 
                 var category = await _productCategoryService.GetCategoryByNameAndClientId(request.CategoryName, userModel.ClientId);
 

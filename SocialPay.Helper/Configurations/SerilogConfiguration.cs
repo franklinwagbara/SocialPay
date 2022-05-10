@@ -24,6 +24,6 @@ namespace SocialPay.Helper.Configurations
         public string fioranoT24Logger { get; set; }
         public string merchantsLogger { get; set; }
         public string transactionLogger { get; set; }
-        public string billsPaymentLogger { get; set; }
+        public string spectaonboardinglogger { get; set; }
     }
 }

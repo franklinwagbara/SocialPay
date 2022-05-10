@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,11 +15,12 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
     public class SpectaOnboardingStagesService : ISpectaOnboardingStages
     {
         private readonly SocialPayDbContext _context;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaOnboardingStagesService));
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
 
-        public SpectaOnboardingStagesService(SocialPayDbContext context)
+        public SpectaOnboardingStagesService(SocialPayDbContext context, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _context = context;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
         public async Task<WebApiResponse> OnboardingStages(OnboardingStageRequestDto model)
         {
@@ -33,7 +35,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "OnboardingStages" + " | " + ex + " | " + DateTime.Now);
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- OnboardingStages" + ex.ToString()}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "Request Failed", StatusCode = ResponseCodes.InternalError };
             }
         }
