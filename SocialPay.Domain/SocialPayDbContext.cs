@@ -107,5 +107,17 @@ namespace SocialPay.Domain
         public DbSet<SetDisbursementAccountRequest> SetDisbursementAccountRequest { get; set; }
         public DbSet<SetDisbursementAccountResponse> SetDisbursementAccountResponse { get; set; }
         public DbSet<SpectaStageVerificationPinRequest> SpectaStageVerificationPinRequest { get; set; }
+        public DbSet<ChargeCardRequest> ChargeCardRequest { get; set; }
+        public DbSet<ChargeCardResponse> ChargeCardResponse { get; set; }
+        public DbSet<SendOtpRequest> SendOtpRequest { get; set; }
+        public DbSet<SendOtpResponse> SendOtpResponse { get; set; }
+        public DbSet<SendPhoneRequest> SendPhoneRequest { get; set; }
+        public DbSet<SendPhoneResponse> SendPhoneResponse { get; set; }
+        public DbSet<SendPinRequest> SendPinRequest { get; set; }
+        public DbSet<SendPinResponse> SendPinResponse { get; set; }
+        public DbSet<ValidateChargeRequest> ValidateChargeRequest { get; set; }
+        public DbSet<ValidateChargeResponse> ValidateChargeResponse { get; set; }
+        public DbSet<PurchasedProduct> PurchasedProduct { get; set; }
+        public DbSet<InventoryHistory> InventoryHistory { get; set; }
     }
 }

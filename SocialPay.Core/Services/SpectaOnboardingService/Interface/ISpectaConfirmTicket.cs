@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialPay.Core.Services.SpectaOnboardingService.Interface
+namespace SocialPay.Core.Services.ISpectaOnboardingService
 {
     public interface ISpectaConfirmTicket
     {

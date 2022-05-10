@@ -543,6 +543,93 @@ namespace SocialPay.Domain.Migrations
                     b.ToTable("CardTokenization");
                 });
 
+            modelBuilder.Entity("SocialPay.Domain.Entities.ChargeCardRequest", b =>
+                {
+                    b.Property<long>("ChargeCardRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("cvv")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("expiryMonth")
+                        .HasColumnType("int");
+
+                    b.Property<int>("expiryYear")
+                        .HasColumnType("int");
+
+                    b.Property<string>("pan")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ChargeCardRequestId");
+
+                    b.ToTable("ChargeCardRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.ChargeCardResponse", b =>
+                {
+                    b.Property<long>("ChargeCardResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("__abp")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("authUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("bankName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("displayText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isSterling")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isValidCardForStatement")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("success")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("unAuthorizedRequest")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ChargeCardResponseId");
+
+                    b.ToTable("ChargeCardResponse");
+                });
+
             modelBuilder.Entity("SocialPay.Domain.Entities.ClientAuthentication", b =>
                 {
                     b.Property<long>("ClientAuthenticationId")
@@ -1804,6 +1891,42 @@ namespace SocialPay.Domain.Migrations
                     b.ToTable("InterBankTransactionRequest");
                 });
 
+            modelBuilder.Entity("SocialPay.Domain.Entities.InventoryHistory", b =>
+                {
+                    b.Property<long>("InventoryHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("ClientAuthenticationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsAdded")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUpdated")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastDateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("InventoryHistoryId");
+
+                    b.ToTable("InventoryHistory");
+                });
+
             modelBuilder.Entity("SocialPay.Domain.Entities.InvoicePaymentInfo", b =>
                 {
                     b.Property<long>("InvoicePaymentInfoId")
@@ -2964,6 +3087,9 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long?>("InventoryHistoryId")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -2988,6 +3114,9 @@ namespace SocialPay.Domain.Migrations
                     b.Property<string>("ProductReference")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long?>("PurchasedProductId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Size")
                         .HasColumnType("nvarchar(max)");
 
@@ -2995,7 +3124,11 @@ namespace SocialPay.Domain.Migrations
 
                     b.HasIndex("ClientAuthenticationId");
 
+                    b.HasIndex("InventoryHistoryId");
+
                     b.HasIndex("ProductCategoryId");
+
+                    b.HasIndex("PurchasedProductId");
 
                     b.ToTable("Products");
                 });
@@ -3145,6 +3278,33 @@ namespace SocialPay.Domain.Migrations
                     b.HasKey("OptionId");
 
                     b.ToTable("ProductOption");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.PurchasedProduct", b =>
+                {
+                    b.Property<long>("PurchasedProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("ClientAuthenticationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("PurchasedProductId");
+
+                    b.ToTable("PurchasedProduct");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.QrPaymentRequest", b =>
@@ -3401,6 +3561,231 @@ namespace SocialPay.Domain.Migrations
                     b.HasKey("SendEmailVerificationCodeResponseId");
 
                     b.ToTable("SendEmailVerificationCodeResponse");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.SendOtpRequest", b =>
+                {
+                    b.Property<long>("SendOtpRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("cardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("otp")
+                        .HasColumnType("int");
+
+                    b.HasKey("SendOtpRequestId");
+
+                    b.ToTable("SendOtpRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.SendOtpResponse", b =>
+                {
+                    b.Property<long>("SendOtpResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("__abp")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("authUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("bankName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("displayText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isSterling")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isValidCardForStatement")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("success")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("unAuthorizedRequest")
+                        .HasColumnType("bit");
+
+                    b.HasKey("SendOtpResponseId");
+
+                    b.ToTable("SendOtpResponse");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.SendPhoneRequest", b =>
+                {
+                    b.Property<long>("SendPhoneRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("cardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("phoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SendPhoneRequestId");
+
+                    b.ToTable("SendPhoneRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.SendPhoneResponse", b =>
+                {
+                    b.Property<long>("SendPhoneResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("__abp")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("authUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("bankName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("displayText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isSterling")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isValidCardForStatement")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("success")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("unAuthorizedRequest")
+                        .HasColumnType("bit");
+
+                    b.HasKey("SendPhoneResponseId");
+
+                    b.ToTable("SendPhoneResponse");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.SendPinRequest", b =>
+                {
+                    b.Property<long>("SendPinRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("cardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SendPinRequestId");
+
+                    b.ToTable("SendPinRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.SendPinResponse", b =>
+                {
+                    b.Property<long>("SendPinResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("__abp")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("authUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("bankName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("displayText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isSterling")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isValidCardForStatement")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("success")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("unAuthorizedRequest")
+                        .HasColumnType("bit");
+
+                    b.HasKey("SendPinResponseId");
+
+                    b.ToTable("SendPinResponse");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.SetDisbursementAccountRequest", b =>
@@ -4097,6 +4482,78 @@ namespace SocialPay.Domain.Migrations
                     b.HasIndex("ClientAuthenticationId");
 
                     b.ToTable("UssdServiceRequestLog");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.ValidateChargeRequest", b =>
+                {
+                    b.Property<long>("ValidateChargeRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("cardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ValidateChargeRequestId");
+
+                    b.ToTable("ValidateChargeRequest");
+                });
+
+            modelBuilder.Entity("SocialPay.Domain.Entities.ValidateChargeResponse", b =>
+                {
+                    b.Property<long>("ValidateChargeResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("__abp")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("authUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("bankName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cardStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("displayText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isSterling")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isValidCardForStatement")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("success")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("unAuthorizedRequest")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ValidateChargeResponseId");
+
+                    b.ToTable("ValidateChargeResponse");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.VendAirtimeRequestLog", b =>
@@ -4886,11 +5343,19 @@ namespace SocialPay.Domain.Migrations
                         .WithMany("Product")
                         .HasForeignKey("ClientAuthenticationId");
 
+                    b.HasOne("SocialPay.Domain.Entities.InventoryHistory", null)
+                        .WithMany("Product")
+                        .HasForeignKey("InventoryHistoryId");
+
                     b.HasOne("SocialPay.Domain.Entities.ProductCategory", "ProductCategory")
                         .WithMany("Product")
                         .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SocialPay.Domain.Entities.PurchasedProduct", null)
+                        .WithMany("Product")
+                        .HasForeignKey("PurchasedProductId");
                 });
 
             modelBuilder.Entity("SocialPay.Domain.Entities.ProductCategory", b =>

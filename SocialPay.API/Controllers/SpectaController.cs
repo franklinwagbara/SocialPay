@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SocialPay.Core.Extensions.Common;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Notification;
 using System;
@@ -110,7 +111,7 @@ namespace SocialPay.API.Controllers
         [HttpGet]
         [Route("business-segment-all-list")]
         //public async Task<IActionResult> BusinessSegmentAllListAsync() => Response(await _spectaBusinessSegmentAllList.BusinessSegmentAllList(User.FindFirstValue(ClaimTypes.Email)).ConfigureAwait(false));
-        public async Task<IActionResult> BusinessSegmentAllListAsync(string Email) => Response(await _spectaBusinessSegmentAllList.BusinessSegmentAllList(Email).ConfigureAwait(false));
+        public async Task<IActionResult> BusinessSegmentAllListAsync() => Response(await _spectaBusinessSegmentAllList.BusinessSegmentAllList().ConfigureAwait(false));
 
         [HttpPost]
         [Route("request-ticket")]

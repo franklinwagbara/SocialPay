@@ -4,10 +4,11 @@ using Newtonsoft.Json;
 using RestSharp;
 using SocialPay.Core.Configurations;
 using SocialPay.Core.Extensions.Common;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Domain;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -21,14 +22,14 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
         private readonly AppSettings _appSettings;
         private readonly SpectaOnboardingSettings _spectaOnboardingSettings;
         private readonly SocialPayDbContext _context;
-
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaOnboardingService));
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
         private readonly HttpClient _client;
-        public AuthenticationService(IOptions<AppSettings> appSettings, IOptions<SpectaOnboardingSettings> spectaOnboardingSettings, SocialPayDbContext context)
+        public AuthenticationService(IOptions<AppSettings> appSettings, IOptions<SpectaOnboardingSettings> spectaOnboardingSettings, SocialPayDbContext context, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _appSettings = appSettings.Value;
             _spectaOnboardingSettings = spectaOnboardingSettings.Value;
             _context = context;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
             _client = new HttpClient
             {
                 BaseAddress = new Uri(_appSettings.paywithSpectaBaseUrl),
@@ -45,7 +46,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
                 client.Timeout = -1;
 
                 var request = new RestRequest(Method.POST);
-                request.AddHeader("Abp.TenantId", _appSettings.SpectaRegistrationTenantId);
+                request.AddHeader("Abp.TenantId", _spectaOnboardingSettings.SpectaRegistrationTenantId);
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", requestobj, ParameterType.RequestBody);
                 IRestResponse response = await Task.FromResult(client.Execute(request));
@@ -55,8 +56,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "AuthenticateInfo" + " | " + model.password + " | " + model.userNameOrEmailAddress + " | " + model.rememberClient + " | " + ex.Message.ToString() + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- AuthenticateInfo" }{ex}{"-"}{model.password}{"-"}{model.userNameOrEmailAddress}{"-"}{model.rememberClient}", true);
                 return apiResponse;
             }
 

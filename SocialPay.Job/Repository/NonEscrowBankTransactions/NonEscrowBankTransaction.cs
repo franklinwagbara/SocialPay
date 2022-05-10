@@ -16,7 +16,7 @@ namespace SocialPay.Job.Repository.NonEscrowBankTransactions
         private readonly NonEscrowJobLogger _nonescrowLogger;
         public NonEscrowBankTransaction(NonEscrowPendingBankTransaction transactions, IServiceProvider services, NonEscrowJobLogger nonescrowLogger)
         {
-            Services = services;
+             Services = services;
             _transactions = transactions;
             _nonescrowLogger = nonescrowLogger;
         }

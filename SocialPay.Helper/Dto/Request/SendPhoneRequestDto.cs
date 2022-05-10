@@ -4,9 +4,11 @@ using System.Text;
 
 namespace SocialPay.Helper.Dto.Request
 {
-    public class SendPhoneRequestDto
-    {
-        public string phoneNumber { get; set; }
-        public string cardId { get; set; }
-    }
+   
+        public class SendPhoneRequestDto
+        {
+            public string phoneNumber { get; set; }
+            public string cardId { get; set; }
+            public string Email { get; set; }
+        }
 }

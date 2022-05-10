@@ -4012,86 +4012,216 @@ INFO  2022-03-10 17:23:04,499 49887ms WalletRepoService      ?                  
 INFO  2022-03-10 17:23:09,974 55361ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 3/10/2022 5:23:09 PM
 INFO  2022-03-10 17:23:11,674 57061ms AuthRepoService        ?                  - Authenticate for login was successful | sheriff.ebelebe@gmail.com | 3/10/2022 5:23:11 PM
 INFO  2022-03-10 17:28:21,396 366784ms EmailService           ?                  - Email service response |  | 3/10/2022 5:28:21 PM
-INFO  2022-03-25 11:23:33,138 272609ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 11:23:33 AM
-INFO  2022-03-25 11:29:22,855 622326ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 11:29:22 AM
-INFO  2022-03-25 11:31:15,032 734503ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 11:31:15 AM
-INFO  2022-03-25 11:33:14,693 854164ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 11:33:14 AM
-INFO  2022-03-25 11:37:27,248 154519ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 11:37:27 AM
-INFO  2022-03-25 11:42:28,517 455788ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 11:42:28 AM
-INFO  2022-03-25 11:43:01,101 488372ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 11:43:01 AM
-INFO  2022-03-25 11:47:17,700 744971ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 11:47:17 AM
-INFO  2022-03-25 11:50:54,330 961600ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 11:50:54 AM
-INFO  2022-03-25 12:00:10,455 32918ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 12:00:10 PM
-INFO  2022-03-25 12:03:48,689 62440ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 12:03:48 PM
-INFO  2022-03-25 12:09:14,262 42085ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 12:09:14 PM
-INFO  2022-03-25 12:25:18,168 105165ms NibbsQRCodeAPIService  ?                  - Initiating CreateMerchantWallet request | {"Name":"Somtoochukwu okorie","Tin":"012348484","Phone":"4532366644","Email":"somtochukwu.okorie@sterling.ng","Contact":"08059310239","Address":"Somtoochukwu okorie","Fee":0.5} | 3/25/2022 12:25:18 PM
-INFO  2022-03-25 14:06:58,281 186404ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999232","accountNumber":"7060564377"} | 3/25/2022 2:06:58 PM
-INFO  2022-03-25 14:19:30,904 407095ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999232","accountNumber":"7060564377"} | 3/25/2022 2:19:30 PM
-INFO  2022-03-25 14:36:22,664 91805ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999232","accountNumber":"7060564377"} | 3/25/2022 2:36:22 PM
-INFO  2022-03-25 14:41:27,458 396599ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999232","accountNumber":"7060564377"} | 3/25/2022 2:41:27 PM
-INFO  2022-03-25 14:54:51,126 205753ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999232","accountNumber":"7060564377"} | 3/25/2022 2:54:51 PM
-INFO  2022-03-25 15:03:11,937 162864ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999232","accountNumber":"7060564377"} | 3/25/2022 3:03:11 PM
-INFO  2022-03-25 15:22:13,968 115580ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999232","accountNumber":"7060564377"} | 3/25/2022 3:22:13 PM
-INFO  2022-03-25 15:31:09,882 118110ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999232","accountNumber":"7060564377"} | 3/25/2022 3:31:09 PM
-INFO  2022-03-25 15:39:48,849 94099ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999232","accountNumber":"7060564377"} | 3/25/2022 3:39:48 PM
-INFO  2022-03-25 15:44:18,062 51470ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":null,"accountName":null,"accountNumber":null} | 3/25/2022 3:44:18 PM
-INFO  2022-03-25 15:48:14,660 288068ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":null,"accountName":null,"accountNumber":null} | 3/25/2022 3:48:14 PM
-INFO  2022-03-25 15:58:31,844 274100ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"NNONA CHIMDIKE","accountNumber":"7060564377"} | 3/25/2022 3:58:30 PM
-INFO  2022-03-25 15:58:44,664 286920ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"NNONA CHIMDIKE","accountNumber":"7060564377"} | 3/25/2022 3:58:44 PM
-INFO  2022-03-25 16:49:51,863 122425ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08164577759 | 3/25/2022 4:49:51 PM
-INFO  2022-03-25 16:49:59,002 129564ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 3/25/2022 4:49:59 PM
-INFO  2022-03-25 16:50:00,854 131415ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 4:50:00 PM
-INFO  2022-03-25 16:50:01,347 131908ms AuthRepoService        ?                  - Authenticate for login was successful | sheriff.ebelebe@gmail.com | 3/25/2022 4:50:01 PM
-INFO  2022-03-25 16:50:12,045 142606ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 4:50:12 PM
-INFO  2022-03-25 16:51:09,475 200037ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999058","accountNumber":"0030705200"} | 3/25/2022 4:51:09 PM
-INFO  2022-03-25 16:51:11,948 202509ms NibbsQRCodeAPIService  ?                  - Initiating QueryAccount request | {"bankNumber":"999058","accountNumber":"0085471051"} | 3/25/2022 4:51:11 PM
-INFO  2022-03-25 16:51:24,132 214693ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08164577759 | 3/25/2022 4:51:24 PM
-INFO  2022-03-25 16:51:24,632 215194ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 3/25/2022 4:51:24 PM
-INFO  2022-03-25 16:51:24,955 215516ms AuthRepoService        ?                  - Authenticate for login was successful | sheriff.ebelebe@gmail.com | 3/25/2022 4:51:24 PM
-INFO  2022-03-25 16:52:00,347 250908ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 4:52:00 PM
-INFO  2022-03-25 16:52:02,289 252850ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 4:52:02 PM
-INFO  2022-03-25 16:53:17,428 45084ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08164577759 | 3/25/2022 4:53:17 PM
-INFO  2022-03-25 16:53:18,515 46171ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 3/25/2022 4:53:18 PM
-INFO  2022-03-25 16:53:19,976 47632ms AuthRepoService        ?                  - Authenticate for login was successful | sheriff.ebelebe@gmail.com | 3/25/2022 4:53:19 PM
-INFO  2022-03-25 16:53:59,513 87169ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 3/25/2022 4:53:59 PM
-INFO  2022-03-25 16:54:00,402 88058ms TransactionService     ?                  - Response for GetCustomerOrders -  - 15 - 3/25/2022 4:54:00 PM
-INFO  2022-03-25 16:54:01,389 89044ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 4:54:01 PM
-INFO  2022-03-25 16:54:03,397 91053ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 4:54:03 PM
-INFO  2022-03-25 16:54:38,433 126089ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 3/25/2022 4:54:38 PM
-INFO  2022-03-25 17:00:02,421 34593ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:00:02 PM
-INFO  2022-03-25 17:00:05,888 38060ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:00:05 PM
-INFO  2022-03-25 17:00:40,308 72480ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync request | 08164577759 | 3/25/2022 5:00:40 PM
-INFO  2022-03-25 17:00:47,654 79826ms WalletRepoService      ?                  - Initiating GetWalletDetailsAsync response | {"Message":"The requested resource does not support http method 'GET'."} | 3/25/2022 5:00:47 PM
-INFO  2022-03-25 17:00:49,369 81541ms AuthRepoService        ?                  - Authenticate for login was successful | sheriff.ebelebe@gmail.com | 3/25/2022 5:00:49 PM
-INFO  2022-03-25 17:01:29,623 121795ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 3/25/2022 5:01:29 PM
-INFO  2022-03-25 17:03:04,244 216416ms TransactionService     ?                  - Response for GetCustomerOrders -  - 22 - 3/25/2022 5:03:04 PM
-INFO  2022-03-25 17:03:04,662 216834ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:03:04 PM
-INFO  2022-03-25 17:03:06,481 218654ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:03:06 PM
-INFO  2022-03-25 17:04:00,341 272514ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:04:00 PM
-INFO  2022-03-25 17:04:01,658 273830ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:04:01 PM
-INFO  2022-03-25 17:06:00,320 392492ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:06:00 PM
-INFO  2022-03-25 17:06:01,792 393964ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:06:01 PM
-INFO  2022-03-25 17:06:43,142 435314ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 3/25/2022 5:06:43 PM
-INFO  2022-03-25 17:12:02,978 53850ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:12:02 PM
-INFO  2022-03-25 17:12:07,649 58522ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:12:07 PM
-INFO  2022-03-25 17:12:12,682 63554ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 3/25/2022 5:12:12 PM
-INFO  2022-03-25 17:19:38,525 53753ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 3/25/2022 5:19:38 PM
-INFO  2022-03-25 17:27:20,828 62053ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 3/25/2022 5:27:20 PM
-INFO  2022-03-25 17:28:00,605 101830ms TransactionService     ?                  - Response for GetCustomerOrders -  - 49 - 3/25/2022 5:28:00 PM
-INFO  2022-03-25 17:28:01,317 102542ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:28:01 PM
-INFO  2022-03-25 17:28:09,284 110509ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:28:09 PM
-INFO  2022-03-25 17:30:00,579 221804ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:30:00 PM
-INFO  2022-03-25 17:30:11,706 232931ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:30:11 PM
-INFO  2022-03-25 17:32:00,438 341663ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:32:00 PM
-INFO  2022-03-25 17:32:02,145 343370ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:32:02 PM
-INFO  2022-03-25 17:33:42,315 63914ms TransactionService     ?                  - Task start to GetCustomerOrders -  - 3/25/2022 5:33:42 PM
-INFO  2022-03-25 17:34:02,710 84310ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:34:02 PM
-INFO  2022-03-25 17:34:19,990 101589ms TransactionService     ?                  - Response for GetCustomerOrders -  - 49 - 3/25/2022 5:34:19 PM
-INFO  2022-03-25 17:34:19,997 101596ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:34:19 PM
-INFO  2022-03-25 17:36:00,402 202001ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:36:00 PM
-INFO  2022-03-25 17:36:02,109 203708ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:36:02 PM
-INFO  2022-03-25 17:38:00,451 322050ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"OPEYEMI OLUGUNOJIN","accountNumber":"0074723622"} | 3/25/2022 5:38:00 PM
-INFO  2022-03-25 17:38:02,266 323865ms NibbsQRCodeAPIService  ?                  - Initiating Create sub Merchant request | {"mchNo":"M0000000105","bankNo":"999058","accountName":"EZELIBE ECHEZONA MICHAEL","accountNumber":"0070197142"} | 3/25/2022 5:38:02 PM
-INFO  2022-03-28 14:35:23,741 203340ms AccountsController     ?                  - Tasks starts to create account | sheriff.ebelebe@gmail.com | 3/28/2022 2:35:23 PM
-INFO  2022-03-28 14:37:52,799 352398ms AccountsController     ?                  - Tasks starts to create account | sheriff.ebelebe@gmail.com | 3/28/2022 2:37:52 PM
-INFO  2022-03-28 14:38:01,058 360657ms EmailService           ?                  - Email service response | sheriff.ebelebe@gmail.com | 3/28/2022 2:38:01 PM
+INFO  2022-03-24 11:30:49,634 98989ms AccountsController     ?                  - Tasks starts to create account | sheriff.ebelebe@gmail.com | 3/24/2022 11:30:49 AM
+ERROR 2022-05-05 07:40:27,772 333698ms PayWithSpectaService   ?                  - Error occured | CustomerRegistration | Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'SpectaRegisterCustomerRequest'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__169_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.Tasks.Task.<>c.<.cctor>b__274_0(Object obj)
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(DbContext _, Boolean result, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaCustomerRegistration.RegisterCustomer(RegisterCustomerRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaCustomerRegistration.cs:line 42
+ClientConnectionId:c26640fc-70a0-497d-9af2-614b9d428aa4
+Error Number:208,State:1,Class:16 | 5/5/2022 7:40:27 AM
+ERROR 2022-05-05 08:47:35,715 1184061ms PayWithSpectaService   ?                  - Error occured | CustomerRegistration | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SpectaRegisterCustomerRequestId'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__169_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.Tasks.Task.<>c.<.cctor>b__274_0(Object obj)
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:bf4d4ef3-d651-46b0-bcc1-6912af264b9f
+Error Number:207,State:1,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaCustomerRegistration.RegisterCustomer(RegisterCustomerRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaCustomerRegistration.cs:line 80 | 5/5/2022 8:47:35 AM
+ERROR 2022-05-05 09:01:54,354 2042701ms PayWithSpectaService   ?                  - Error occured | CustomerRegistration | Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SpectaRegisterCustomerRequestId'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__169_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:bf4d4ef3-d651-46b0-bcc1-6912af264b9f
+Error Number:207,State:1,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaCustomerRegistration.RegisterCustomer(RegisterCustomerRequestDto model) | 5/5/2022 9:01:54 AM
+ERROR 2022-05-05 09:39:20,034 910811ms dOrrInformationService ?                  - Error occured | AddOrrInformation | System.NullReferenceException: Object reference not set to an instance of an object.
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaAddOrrInformationService.AddOrrInformation(AddOrrInformationRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaAddOrrInformationService.cs:line 40 | 5/5/2022 9:39:20 AM
+ERROR 2022-05-05 14:15:24,395 133920ms pectaOnboardingService ?                  - Error occured | ConfirmTicketInfo | 0086699360 | 1 | 20118 | Object reference not set to an instance of an object. | 5/5/2022 2:15:24 PM
+ERROR 2022-05-05 15:05:13,453 158413ms taRequestTicketService ?                  - Error occured | RequestTicket | System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. To show additional information call EnableSensitiveDataLogging() when overriding DbContext.OnConfiguring.
+ ---> System.NullReferenceException: Object reference not set to an instance of an object.
+   at lambda_method(Closure )
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Evaluate(Expression expression, Boolean generateParameter)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitBinary(BinaryExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitBinary(BinaryExpression binaryExpression)
+   at System.Linq.Expressions.BinaryExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitLambda[T](Expression`1 node)
+   at System.Linq.Expressions.Expression`1.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitUnary(UnaryExpression node)
+   at System.Linq.Expressions.UnaryExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at System.Linq.Expressions.MethodCallExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.ExtractParameters(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExtractParameters(Expression query, IParameterValues parameterValues, IDiagnosticsLogger`1 logger, Boolean parameterize, Boolean generateContextAccessors)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, LambdaExpression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.SingleOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at SocialPay.Core.Services.SpectaOnboardingService.Services.SpectaRequestTicketService.RequestTicket(RequestTicketDto model) | 5/5/2022 3:05:13 PM
+ERROR 2022-05-05 15:05:43,146 188106ms pectaOnboardingService ?                  - Error occured | RequestTicketInfo | 0083645074 | 1 | 20118 | Object reference not set to an instance of an object. | 5/5/2022 3:05:43 PM
+ERROR 2022-05-05 15:19:30,178 1015138ms pectaOnboardingService ?                  - Error occured | CreateIndividualCurrentAccountInfo | NG0020009  | Nigeria | Microsoft.AspNetCore.Http.FormFile | Microsoft.AspNetCore.Http.FormFile | N-5053670 | Microsoft.AspNetCore.Http.FormFile | Value cannot be null. (Parameter 'content') | 5/5/2022 3:19:30 PM
+ERROR 2022-05-05 15:19:40,641 1025602ms pectaOnboardingService ?                  - Error occured | CreateIndividualCurrentAccountInfo | NG0020009  | Nigeria | Microsoft.AspNetCore.Http.FormFile | Microsoft.AspNetCore.Http.FormFile | N-5053670 | Microsoft.AspNetCore.Http.FormFile | Value cannot be null. (Parameter 'content') | 5/5/2022 3:19:40 PM
+ERROR 2022-05-05 15:21:10,026 1114986ms pectaOnboardingService ?                  - Error occured | CreateIndividualCurrentAccountInfo | NG0020009  | Nigeria | Microsoft.AspNetCore.Http.FormFile | Microsoft.AspNetCore.Http.FormFile | N-5053670 | Microsoft.AspNetCore.Http.FormFile | Value cannot be null. (Parameter 'content') | 5/5/2022 3:21:10 PM
+ERROR 2022-05-05 15:21:31,739 1136699ms pectaOnboardingService ?                  - Error occured | CreateIndividualCurrentAccountInfo | NG0020009  | Nigeria | Microsoft.AspNetCore.Http.FormFile | Microsoft.AspNetCore.Http.FormFile | N-5053670 | Microsoft.AspNetCore.Http.FormFile | Value cannot be null. (Parameter 'content') | 5/5/2022 3:21:31 PM
+ERROR 2022-05-05 18:50:14,839 152500ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Messaging\EmailService.cs:line 25 | 5/5/2022 6:50:14 PM
+ERROR 2022-05-05 19:00:10,675 748336ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Messaging\EmailService.cs:line 25 | 5/5/2022 7:00:10 PM
+ERROR 2022-05-05 19:04:43,955 1021616ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) | 5/5/2022 7:04:43 PM
+ERROR 2022-05-05 19:05:41,002 1078663ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) | 5/5/2022 7:05:41 PM
+ERROR 2022-05-05 19:11:39,091 98354ms EmailService           ?                  - Email service response: Error | sheriff.ebelebe@gmail.com | System.ServiceModel.CommunicationException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.WinHttpException (80072EE2, 12002): The operation timed out
+   at System.Threading.Tasks.RendezvousAwaitable`1.GetResult()
+   at System.Net.Http.WinHttpHandler.StartRequest(WinHttpRequestState state)
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.ServiceModelHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at System.ServiceModel.Channels.HttpChannelFactory`1.HttpClientRequestChannel.HttpClientChannelAsyncRequest.SendRequestAsync(Message message, TimeoutHelper timeoutHelper)
+   --- End of inner exception stack trace ---
+   at System.Runtime.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)
+   at System.ServiceModel.Channels.ServiceChannelProxy.TaskCreator.<>c__DisplayClass1_0.<CreateGenericTask>b__0(IAsyncResult asyncResult)
+--- End of stack trace from previous location where exception was thrown ---
+   at SocialPay.Core.Messaging.EmailService.SendMail(EmailRequestDto model, String endpoint) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Messaging\EmailService.cs:line 25 | 5/5/2022 7:11:39 PM
+ERROR 2022-05-05 19:49:04,022 237889ms SpectaChargeCard       ?                  - Error occured | ChargeCard | AutoMapper.AutoMapperMappingException: Missing type map configuration or unsupported mapping.
+
+Mapping types:
+Object -> ChargeCardRequest
+System.Object -> SocialPay.Domain.Entities.ChargeCardRequest
+   at lambda_method(Closure , Object , ChargeCardRequest , ResolutionContext )
+   at SocialPay.Core.Services.SpectaChargeCard.ChargeCard(ChargeCardRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaChargeCard.cs:line 41 | 5/5/2022 7:49:04 PM
+ERROR 2022-05-05 21:30:33,542 225016ms SpectaSendPhone        ?                  - Error occured | SendPhone | AutoMapper.AutoMapperMappingException: Missing type map configuration or unsupported mapping.
+
+Mapping types:
+Object -> SendPhoneRequest
+System.Object -> SocialPay.Domain.Entities.SendPhoneRequest
+   at lambda_method(Closure , Object , SendPhoneRequest , ResolutionContext )
+   at SocialPay.Core.Services.SpectaSendPhone.SendPhone(SendPhoneRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaSendPhone.cs:line 41 | 5/5/2022 9:30:33 PM
+ERROR 2022-05-05 21:41:19,777 231984ms SpectaSendOtp          ?                  - Error occured | SendOtp | System.NullReferenceException: Object reference not set to an instance of an object.
+   at SocialPay.Core.Services.SpectaSendOtp.SendOtp(SendOtpRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaSendOtp.cs:line 39 | 5/5/2022 9:41:19 PM
+ERROR 2022-05-05 21:41:49,361 261568ms SpectaSendOtp          ?                  - Error occured | SendOtp | System.NullReferenceException: Object reference not set to an instance of an object.
+   at SocialPay.Core.Services.SpectaSendOtp.SendOtp(SendOtpRequestDto model) in C:\Users\ebelebefs\source\repos\SocialPay.API\SocialPay.Core\Services\SpectaOnboardingService\Services\SpectaSendOtp.cs:line 39 | 5/5/2022 9:41:49 PM
+ERROR 2022-05-05 21:42:54,843 327050ms pectaOnboardingService ?                  - Error occured | SendOtpInfo | 0dd15457-0bf0-4e33-c9da-08d960c51f8f | 0 | Object reference not set to an instance of an object. | 5/5/2022 9:42:54 PM

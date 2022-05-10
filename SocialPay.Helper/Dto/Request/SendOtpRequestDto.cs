@@ -8,5 +8,6 @@ namespace SocialPay.Helper.Dto.Request
     {
         public int otp { get; set; }
         public string cardId { get; set; }
+        public string Email { get; set; }
     }
 }

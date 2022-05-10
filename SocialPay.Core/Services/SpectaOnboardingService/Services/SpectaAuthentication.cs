@@ -1,7 +1,8 @@
-﻿using SocialPay.Core.Services.SpectaOnboardingService.Interface;
+﻿using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,12 +12,13 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
 {
     public class SpectaAuthentication : ISpectaAuthentication
     {
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(SpectaAuthentication));
+        private readonly SpectaOnboardingLogger _spectaOnboardingLogger;
         private readonly ISpectaOnBoarding _spectaOnboardingService;
 
-        public SpectaAuthentication(ISpectaOnBoarding spectaOnboardingService)
+        public SpectaAuthentication(ISpectaOnBoarding spectaOnboardingService, SpectaOnboardingLogger spectaOnboardingLogger)
         {
             _spectaOnboardingService = spectaOnboardingService;
+            _spectaOnboardingLogger = spectaOnboardingLogger;
         }
 
         public async Task<WebApiResponse> Authenticate(AuthenticateRequestDto model)
@@ -31,8 +33,7 @@ namespace SocialPay.Core.Services.SpectaOnboardingService.Services
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Authentication" + " | " + ex + " | " + DateTime.Now);
-
+                _spectaOnboardingLogger.LogRequest($"{"Error occured -- Authentication "+ex.ToString()}{"-"}{DateTime.Now}", true);
                 return new WebApiResponse { ResponseCode = response.ResponseCode, Message = "Request Failed", Data = response.Data };
 
             }

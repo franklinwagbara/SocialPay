@@ -97,6 +97,11 @@ namespace SocialPay.Job.Repository.PayWithCard
                                 CreditAccountNo = _appSettings.socialT24AccountNo,
                             };
 
+
+
+
+
+
                             var request = new TransactionRequestDto { FT_Request = fioranoRequestBody };
 
                             var jsonRequest = JsonConvert.SerializeObject(request);
@@ -169,6 +174,17 @@ namespace SocialPay.Job.Repository.PayWithCard
                                         throw;
                                     }
                                 }
+
+                            }
+                            else
+                            {
+                                //Log failed response here
+                                
+
+
+
+
+
 
                             }
                            

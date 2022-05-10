@@ -44,7 +44,7 @@ namespace SocialPay.Job.Repository.BasicWalletFundService
                     await _transactions.ProcessTransactions(pendingTransactions);
                 }
 
-                Console.WriteLine("GenerateDailyReport : " + DateTime.Now.ToString());
+               // Console.WriteLine("GenerateDailyReport : " + DateTime.Now.ToString());
 
                 return "GenerateDailyReport";
             }
