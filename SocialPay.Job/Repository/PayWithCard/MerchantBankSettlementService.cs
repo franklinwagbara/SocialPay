@@ -42,7 +42,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
             _client = new HttpClient
             {
-                BaseAddress = new Uri("https://ipg-requery-dev.sterlingapps.p.azurewebsites.net/"),
+                BaseAddress = new Uri(_appSettings.InterswitchRequeryBaseURL),
             };
 
         }
@@ -64,7 +64,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                     _paywithcardjobLogger.LogRequest($"{"Transaction reference was empty " + interSwitchResponse}{"-"}{DateTime.Now}", false);
                     return false;
                 }
-                var path = "TransactionRequery";
+                var path = _appSettings.InterswitchPath;
                 var payload = new
                 {
                     transactionReference = reference,
