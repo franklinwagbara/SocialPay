@@ -157,5 +157,8 @@
         public string nibsQRCodeBankNumber { get; set; }
         public string MchQRCodeNumber { get; set; }
         public string TenantId { get; set; }
+        public string InterswitchRequeryBaseURL { get; set; }
+        public string InterswitchPath { get; set; }
+
     }
 }
