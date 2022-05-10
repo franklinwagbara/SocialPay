@@ -152,6 +152,10 @@
         public string TokenizationURL { get; set; }     
         public string WelcomeEmailImageExtensionPath { get; set; }     
         public string WebportalBaseUrl { get; set; }
+        public string nibsQRCodeQueryAccountUrl { get; set; }
+        public string nibsQRCodeUpdatedCreateMerchantURL { get; set; }
+        public string nibsQRCodeBankNumber { get; set; }
+        public string MchQRCodeNumber { get; set; }
         public string TenantId { get; set; }
     }
 }
