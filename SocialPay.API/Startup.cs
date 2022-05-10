@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,7 @@ using SocialPay.Core.Messaging.SendGrid;
 using SocialPay.Core.Repositories.Customer;
 using SocialPay.Core.Repositories.Invoice;
 using SocialPay.Core.Repositories.UserService;
+using SocialPay.Core.Services;
 using SocialPay.Core.Services.Account;
 using SocialPay.Core.Services.AirtimeVending;
 using SocialPay.Core.Services.Authentication;
@@ -33,6 +35,7 @@ using SocialPay.Core.Services.Data;
 using SocialPay.Core.Services.EventLogs;
 using SocialPay.Core.Services.Fiorano;
 using SocialPay.Core.Services.IBS;
+using SocialPay.Core.Services.ISpectaOnboardingService;
 using SocialPay.Core.Services.Loan;
 using SocialPay.Core.Services.Merchant;
 using SocialPay.Core.Services.Merchant.Interfaces;
@@ -42,7 +45,6 @@ using SocialPay.Core.Services.Products;
 using SocialPay.Core.Services.QrCode;
 using SocialPay.Core.Services.Report;
 using SocialPay.Core.Services.Specta;
-using SocialPay.Core.Services.SpectaOnboardingService.Interface;
 using SocialPay.Core.Services.SpectaOnboardingService.Services;
 using SocialPay.Core.Services.Store;
 using SocialPay.Core.Services.Tenant;
@@ -66,6 +68,7 @@ using SocialPay.Helper.SerilogService.Merchant;
 using SocialPay.Helper.SerilogService.NonEscrowJob;
 using SocialPay.Helper.SerilogService.NotificationJob;
 using SocialPay.Helper.SerilogService.PayWithCardJob;
+using SocialPay.Helper.SerilogService.SpectaOnboarding;
 using SocialPay.Helper.SerilogService.Store;
 using SocialPay.Helper.SerilogService.Transaction;
 using SocialPay.Helper.SerilogService.WalletJob;
@@ -294,6 +297,7 @@ namespace SocialPay.API
             services.AddSingleton<PayWithCardJobLogger>();
             services.AddSingleton<WalletJobLogger>();
             services.AddSingleton<BankTransactionJobLogger>();
+            services.AddSingleton<SpectaOnboardingLogger>();
             ///Loan Services
 
             services.AddScoped<LoanEligibiltyService>();
@@ -333,6 +337,10 @@ namespace SocialPay.API
             services.AddSingleton<IOnboardingNotificationService, OnboardingNotificationService>();
             services.AddSingleton<OnboardingNotificationRepository>();
             //services.AddSingleton<IDeliveryDayBankTransaction, DeliveryDayBankTransaction>();
+
+            services.AddScoped<ISettleCardPayment, SettleCardPaymentJobService>();
+            services.AddScoped<MerchantBankSettlementService>();
+
             var options = Configuration.GetSection(nameof(CronExpressions)).Get<CronExpressions>();
 
             //services.AddCronJob<AcceptedEscrowBankOrderTask>(c =>
@@ -349,11 +357,11 @@ namespace SocialPay.API
 
             ///Main jobs starts
 
-            services.AddCronJob<BindMerchantTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.BindMerchantTask;
-            });
+            //services.AddCronJob<BindMerchantTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.BindMerchantTask;
+            //});
 
             //services.AddCronJob<CreateNibbsSubMerchantTask>(c =>
             //{
@@ -361,44 +369,45 @@ namespace SocialPay.API
             //    c.CronExpression = options.CreateNibbsMerchantTask;
             //});
 
-            services.AddCronJob<CreateNibbsMerchantTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.CreateNibbsMerchantTask;
-            });
+            //services.AddCronJob<CreateNibbsMerchantTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CreateNibbsMerchantTask;
+            //});
 
             // current jobs to enable in their order of processing
 
-            services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.CreditDefaultMerchantWalletTask;
-            });
 
-            // This service is for other payment method like pay with specta
-            services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
-            });
-            services.AddCronJob<CardPaymentTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.CardPaymentTask;
-            });
+            //services.AddCronJob<CreditDefaultMerchantWalletTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CreditDefaultMerchantWalletTask;
+            //});
 
-            services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.NonEscrowWalletTransactionTask;
-            });
+            /// This service is for other payment method like pay with specta
+            //services.AddCronJob<NonEscrowOtherWalletTransactionTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.NonEscrowOtherWalletTransactionTask;
+            //});
+            //services.AddCronJob<CardPaymentTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.CardPaymentTask;
+            //});
 
-            services.AddCronJob<NonEscrowBankTransactionTask>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = options.NonEscrowBankTransactionTask;
-            });
-            // main jobs to enable ends
+            //services.AddCronJob<NonEscrowWalletTransactionTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.NonEscrowWalletTransactionTask;
+            //});
+
+            //services.AddCronJob<NonEscrowBankTransactionTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.NonEscrowBankTransactionTask;
+            //});
+
             // Notification to merchants to complet onboarding
 
 
@@ -408,11 +417,29 @@ namespace SocialPay.API
                 c.CronExpression = options.OnboardingNotificationTask;
             });
 
+            //services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.ProcessFailedMerchantWalletTask;
+            //});
+
+
+            services.AddCronJob<SettleCardPaymentTask>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = options.SettleCardPaymentTask;
+            });
+
+
+
+            
+
             //////services.AddCronJob<ProcessFailedMerchantWalletTask>(c =>
             //////{
             //////    c.TimeZoneInfo = TimeZoneInfo.Local;
             //////    c.CronExpression = options.ProcessFailedMerchantWalletTask;
             //////});
+
 
             ///Main jobs ends
 
@@ -421,6 +448,10 @@ namespace SocialPay.API
             ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
             ////////    c.CronExpression = options.DeclinedEscrowWalletTask;
             ////////});
+            ///
+
+
+
 
             //services.AddCronJob<DeliveryDayBankTask>(c =>
             //{
@@ -434,11 +465,11 @@ namespace SocialPay.API
             //    c.CronExpression = options.DeliveryDayWalletTask;
             //});
 
-            ////////services.AddCronJob<ExpiredProductNotificationTask>(c =>
-            ////////{
-            ////////    c.TimeZoneInfo = TimeZoneInfo.Local;
-            ////////    c.CronExpression = options.ExpiredProductNotificationTask;
-            ////////});
+            //services.AddCronJob<ExpiredProductNotificationTask>(c =>
+            //{
+            //    c.TimeZoneInfo = TimeZoneInfo.Local;
+            //    c.CronExpression = options.ExpiredProductNotificationTask;
+            //});
 
 
             var redisServer = Configuration.GetSection("RedisConnectionStrings")["RedisServer"];
@@ -455,7 +486,6 @@ namespace SocialPay.API
             //    option.Configuration = "172.18.4.114:6379";
             //    option.InstanceName = "master";   
             //});
-
             services.AddScoped<INotificationServices, NotificationService>();
             //services.AddSingleton<IHostedService, ExpiredProductNotificationTask>();
             services.AddSingleton<JobEmailService>();
@@ -542,7 +572,6 @@ namespace SocialPay.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
                 //app.UseSwagger();
                 //app.UseSwaggerUI(c =>
                 //{
