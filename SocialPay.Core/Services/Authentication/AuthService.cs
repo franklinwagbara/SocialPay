@@ -115,7 +115,7 @@ namespace SocialPay.Core.Services.Authentication
                     }
                     else
                     {
-                        return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked, Message = "Account locked" };
+                        return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked, Message = "Account locked " };
                     }
                 }
 
