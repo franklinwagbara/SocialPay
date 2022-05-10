@@ -103,8 +103,13 @@ namespace SocialPay.Job.Repository.PayWithCard
 
             try
             {
+<<<<<<< HEAD
+                using var scope = Services.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+=======
                 //using var scope = services.CreateScope();
                 //var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+>>>>>>> 18f6ecc5678fffc8f14734516327367b5157416f
 
                 foreach (var item in pendingRequest)
                 {
@@ -145,6 +150,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                     var getBankInfo = await context.MerchantBankInfo
                         .SingleOrDefaultAsync(x => x.ClientAuthenticationId == item.ClientAuthenticationId);
+<<<<<<< HEAD
 
                     if (getBankInfo == null)
                     {
@@ -158,6 +164,21 @@ namespace SocialPay.Job.Repository.PayWithCard
                     ////getBankInfo.Nuban = "0025998012";
                     ////item.TotalAmount = 300;
 
+=======
+
+                    if (getBankInfo == null)
+                    {
+                        _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService PendingBank Transaction Bank info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
+
+                        return null;
+                    }
+
+                    //For test purpose
+                    ////getBankInfo.BankCode = "000014";
+                    ////getBankInfo.Nuban = "0025998012";
+                    ////item.TotalAmount = 300;
+
+>>>>>>> 18f6ecc5678fffc8f14734516327367b5157416f
                     if (getBankInfo.BankCode == _appSettings.SterlingBankCode)
                     {
 

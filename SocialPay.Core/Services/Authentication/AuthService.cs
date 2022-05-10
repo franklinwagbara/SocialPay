@@ -105,7 +105,19 @@ namespace SocialPay.Core.Services.Authentication
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin, Message = "Invalid Logon" };
 
                 if (validateuserInfo.IsLocked == true)
-                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked, Message ="Account locked" };
+                {
+                    if((DateTime.Now - validateuserInfo.LastDateModified).Days >= 1)
+                    {
+                        //Unluck account
+                        validateuserInfo.IsLocked = false;
+                        validateuserInfo.LastDateModified = DateTime.Now;
+                        _context.ClientAuthentication.Update(validateuserInfo);
+                    }
+                    else
+                    {
+                        return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked, Message = "Account locked" };
+                    }
+                }
 
                 var refCode = validateuserInfo.ReferralCode;
 
