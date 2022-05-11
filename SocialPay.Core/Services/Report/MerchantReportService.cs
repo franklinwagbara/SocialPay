@@ -1039,7 +1039,7 @@ namespace SocialPay.Core.Services.Report
 
                 // _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getCustomerOrders.Count() };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Count() };
 
             }
             catch (Exception ex)
@@ -1100,9 +1100,9 @@ namespace SocialPay.Core.Services.Report
 
                 ////request = otherLinksresponse;
 
-                _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{getCustomerOrders.Count}{ " - "}{ DateTime.Now}");
+                _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{request.Count}{ " - "}{ DateTime.Now}");
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getCustomerOrders.Sum(x => x.TotalAmount) };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Sum(x => x.TotalAmount) };
 
             }
 

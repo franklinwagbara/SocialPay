@@ -103,21 +103,15 @@ namespace SocialPay.Core.Services.Authentication
                 // check if username exists
                 if (validateuserInfo == null)
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin, Message = "Invalid Logon" };
-                var userLoginAttempts = await _userRepoService.GetLoginAttemptAsync(validateuserInfo.ClientAuthenticationId);
 
                 if (validateuserInfo.IsLocked == true)
                 {
-                    
-                    if (DateTime.UtcNow.Subtract(validateuserInfo.LastDateModified).Days >= 1)
+                    if((DateTime.Now - validateuserInfo.LastDateModified).Days >= 1)
                     {
                         //Unluck account
                         validateuserInfo.IsLocked = false;
                         validateuserInfo.LastDateModified = DateTime.Now;
                         _context.ClientAuthentication.Update(validateuserInfo);
-
-                        userLoginAttempts.LoginAttempt = 0;
-                        userLoginAttempts.IsSuccessful = true;
-                        _context.ClientLoginStatus.Update(userLoginAttempts);
                     }
                     else
                     {
@@ -154,6 +148,7 @@ namespace SocialPay.Core.Services.Authentication
                     refCode = refercode;
                 }          
 
+                var userLoginAttempts = await _userRepoService.GetLoginAttemptAsync(validateuserInfo.ClientAuthenticationId);
 
                 var tokenResult = new LoginAPIResponse();
 
@@ -240,7 +235,7 @@ namespace SocialPay.Core.Services.Authentication
                             }
 
                             await transaction.CommitAsync();
-                            _accountLogger.LogRequest($"{"Invalid Logon"}{ " | " }{loginRequestDto.Email }{ " | " }{ DateTime.Now}",false);
+                            _accountLogger.LogRequest($"{"Authenticate for login was successful"}{ " | " }{loginRequestDto.Email }{ " | " }{ DateTime.Now}",false);
 
                             return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin, Message = "Invalid Logon" };
                         }
