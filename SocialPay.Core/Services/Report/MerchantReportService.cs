@@ -1004,8 +1004,8 @@ namespace SocialPay.Core.Services.Report
                 var getCustomerOrders = await _context.TransactionLog.Where(x=> x.ActivityStatus == TransactionJourneyStatusCodes.TransactionCompleted).ToListAsync();
                 if (getCustomerOrders == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
-                
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Count() };
+
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getCustomerOrders.Count() };
 
             }
             catch (Exception ex)
@@ -1066,9 +1066,9 @@ namespace SocialPay.Core.Services.Report
 
                 ////request = otherLinksresponse;
 
-                _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{request.Count}{ " - "}{ DateTime.Now}");
+                _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{getCustomerOrders.Count}{ " - "}{ DateTime.Now}");
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Sum(x => x.TotalAmount) };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getCustomerOrders.Sum(x => x.TotalAmount) };
 
             }
 
