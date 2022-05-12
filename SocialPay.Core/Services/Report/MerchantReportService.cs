@@ -1005,40 +1005,6 @@ namespace SocialPay.Core.Services.Report
                 if (getCustomerOrders == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                ////if (category == MerchantPaymentLinkCategory.InvoiceLink)
-                ////{
-                ////    var invoiceResponse = (from c in getCustomerOrders
-                ////                           join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
-                ////                           select new OrdersViewModel
-                ////                           {
-                ////                               MerchantAmount = m.UnitPrice,
-                ////                               TotalAmount = c.TotalAmount
-
-                ////                           })
-                ////               .OrderByDescending(x => x.CustomerTransactionId).ToList();
-
-                ////    request = invoiceResponse;
-
-                ////    _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{" - "}{category}{ " - "}{ request.Count}{ " - "}{DateTime.Now}");
-
-                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Count() };
-                ////}
-
-                ////var otherLinksresponse = (from c in getCustomerOrders
-                ////                          join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
-                ////                          join a in _context.MerchantBusinessInfo on m.ClientAuthenticationId equals a.ClientAuthenticationId
-                ////                          join b in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals b.PaymentReference
-                ////                          select new OrdersViewModel
-                ////                          {
-                ////                              TotalAmount = c.TotalAmount,
-                ////                              MerchantAmount = m.MerchantAmount,
-                ////                          })
-                ////                .OrderByDescending(x => x.CustomerTransactionId).ToList();
-
-                ////request = otherLinksresponse;
-
-                // _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
-
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getCustomerOrders.Count() };
 
             }
