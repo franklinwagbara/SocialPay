@@ -356,7 +356,7 @@ namespace SocialPay.API
             //    c.CronExpression = options.AcceptedWalletOrderTask;
             //});
 
-            ///Main jobs starts
+            ///Main jobs starts tn
 
             services.AddCronJob<BindMerchantTask>(c =>
             {
