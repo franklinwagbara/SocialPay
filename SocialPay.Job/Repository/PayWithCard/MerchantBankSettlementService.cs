@@ -62,7 +62,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                 if(reference == "")
                 {
                     _paywithcardjobLogger.LogRequest($"{"Transaction reference was empty " + interSwitchResponse}{"-"}{DateTime.Now}", false);
-                    return "";
+                    return AppResponseCodes.TransactionFailed;
                 }
                 var path = _appSettings.InterswitchPath;
                 var payload = new
@@ -132,8 +132,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                         await context.SaveChangesAsync();
                         return null;
                     }
-
-
+                    if (checkTransaction != AppResponseCodes.Success) return null;
 
                     //var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
 
