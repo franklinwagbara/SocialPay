@@ -104,8 +104,7 @@ namespace SocialPay.Job.Repository.PayWithCard
             try
             {
 
-                using var scope = Services.CreateScope();
-                 context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
+               
 
                 foreach (var item in pendingRequest)
                 {
