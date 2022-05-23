@@ -29,5 +29,8 @@ namespace SocialPay.Core.Configurations
         public string BankBranchListUrlExtension { get; set; }
         public string AvailableBankListUrlExtension { get; set; }
         public string SpectaPinVerificationWebportalUrl { get; set; }
+        public string AuthenticaUrlExtension { get; set; }
+        public string SendPinUrlExtension { get; set; }
+
     }
 }

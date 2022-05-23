@@ -11,33 +11,34 @@ namespace SocialPay.Helper.AutoMapperSettings
     {
         public MappingProfiles()
         {
-            CreateMap<SpectaRegisterCustomerRequest, RegisterCustomerRequestDto>();           
-            CreateMap<RegisterCustomerRequestDto, SpectaRegisterCustomerRequest>();
+            CreateMap<SpectaRegisterCustomerRequest, RegisterCustomerRequestDto>().ReverseMap();           
+            //CreateMap<RegisterCustomerRequestDto, SpectaRegisterCustomerRequest>();
 
-            CreateMap<SendEmailVerificationCodeRequest, SendEmailVerificationCodeRequestDto>();
-            CreateMap<SendEmailVerificationCodeRequestDto, SendEmailVerificationCodeRequest>();
-            CreateMap<VerifyEmailConfirmationCodeRequest, VerifyEmailConfirmationCodeRequestDto>();
-            CreateMap<VerifyEmailConfirmationCodeRequestDto, VerifyEmailConfirmationCodeRequest>();
-            CreateMap<VerifyBvnPhoneConfirmationCodeRequest, VerifyBvnPhoneConfirmationCodeRequestDto>();
-            CreateMap<VerifyBvnPhoneConfirmationCodeRequestDto, VerifyBvnPhoneConfirmationCodeRequest>();
+            CreateMap<SendEmailVerificationCodeRequest, SendEmailVerificationCodeRequestDto>().ReverseMap();
+            //CreateMap<SendEmailVerificationCodeRequestDto, SendEmailVerificationCodeRequest>();
+            CreateMap<VerifyEmailConfirmationCodeRequest, VerifyEmailConfirmationCodeRequestDto>().ReverseMap();
+            //CreateMap<VerifyEmailConfirmationCodeRequestDto, VerifyEmailConfirmationCodeRequest>();
+            CreateMap<VerifyBvnPhoneConfirmationCodeRequest, VerifyBvnPhoneConfirmationCodeRequestDto>().ReverseMap();
+           // CreateMap<VerifyBvnPhoneConfirmationCodeRequestDto, VerifyBvnPhoneConfirmationCodeRequest>();
 
-            CreateMap<ProductInventory, ProductInventoryDto>();
-            CreateMap<ProductInventoryDto, ProductInventory>();
+            CreateMap<ProductInventory, ProductInventoryDto>().ReverseMap();
+            //CreateMap<ProductInventoryDto, ProductInventory>();
 
-            CreateMap<AddOrrInformationRequest, AddOrrInformationRequestDto>();
-            CreateMap<AddOrrInformationRequestDto, AddOrrInformationRequest>();
+            CreateMap<AddOrrInformationRequest, AddOrrInformationRequestDto>().ReverseMap();
+            CreateMap<ChargeCardRequestDto, ChargeCardRequest>().ReverseMap();
 
-            CreateMap<ConfirmTicketRequest, ConfirmTicketRequestDto>();
-            CreateMap<ConfirmTicketRequestDto, ConfirmTicketRequest>();
+            CreateMap<ConfirmTicketRequest, ConfirmTicketRequestDto>().ReverseMap();
+            CreateMap<ConfirmTicketRequestDto, ConfirmTicketRequest>().ReverseMap();
 
-            CreateMap<RequestTicketRequest, RequestTicketDto>();
-            CreateMap<RequestTicketDto, RequestTicketRequest>();
+            CreateMap<RequestTicketRequest, RequestTicketDto>().ReverseMap();
+            CreateMap<SendOtpRequestDto, SendOtpRequest>().ReverseMap();
 
-            CreateMap<SetDisbursementAccountRequest, SetDisbursementAccountRequestDto>();
-            CreateMap<SetDisbursementAccountRequestDto, SetDisbursementAccountRequest>();
+            CreateMap<SetDisbursementAccountRequest, SetDisbursementAccountRequestDto>().ReverseMap();
+           CreateMap<SendPinRequestDto, SendPinRequest>().ReverseMap();
 
-            CreateMap<CreateIndividualCurrentAccountRequest, CreateIndividualCurrentAccountRequestDto>();
-            CreateMap<CreateIndividualCurrentAccountRequestDto, CreateIndividualCurrentAccountRequest>();
+            CreateMap<CreateIndividualCurrentAccountRequest, CreateIndividualCurrentAccountRequestDto>().ReverseMap();
+            CreateMap<ValidateChargeRequestDto, ValidateChargeRequest>().ReverseMap();
+            CreateMap<SendPhoneRequestDto, SendPhoneRequest>().ReverseMap();
         }
     }
 }

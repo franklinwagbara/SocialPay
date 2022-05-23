@@ -31,11 +31,13 @@ namespace SocialPay.Core.Services.Wallet
         {
             var apiResponse = new WalletToWalletResponseDto { };
 
-            _log4net.Info("Job Service" + "-" + "Wallet To Wallet TransferAsync" + " | " + model.toacct + " | " + model.paymentRef + " | " + model.frmacct + " | "+ model.amt + " | "+ DateTime.Now);
+            _log4net.Info("Job Service" + "-" + "Wallet To Wallet TransferAsync.........." + " | " + model.toacct + " | " + model.paymentRef + " | " + model.frmacct + " | "+ model.amt + " | "+ DateTime.Now);
 
             try
             {
                 var request = JsonConvert.SerializeObject(model);
+
+                //Unlocking
 
                 var response = await _client.PostAsync($"{_appSettings.walletExtensionUrl}{_appSettings.walletTowalletUrl}",
                   new StringContent(request, Encoding.UTF8, "application/json"));
@@ -48,6 +50,10 @@ namespace SocialPay.Core.Services.Wallet
                 {
                     apiResponse = JsonConvert.DeserializeObject<WalletToWalletResponseDto>(result);
                     apiResponse.responsedata = result;
+
+
+
+                   //Lock
 
                     return apiResponse;
                 }

@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SocialPay.Domain.Entities
+{
+    public class InventoryHistory : BaseEntity
+    {
+        public long InventoryHistoryId { get; set; }
+        public long ProductId { get; set; }
+        public long ClientAuthenticationId { get; set; }
+        public long Quantity { get; set; }
+        public decimal Amount { get; set; }
+        public bool IsAdded { get; set; }
+        public bool IsUpdated { get; set; }
+        public DateTime AddedDate { get; set; } = DateTime.Now;
+        public DateTime LastDateModified { get; set; }
+        public virtual ICollection<Product> Product { get; set; }
+    }
+}

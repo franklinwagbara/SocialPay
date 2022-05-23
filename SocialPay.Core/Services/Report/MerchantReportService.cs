@@ -1001,45 +1001,11 @@ namespace SocialPay.Core.Services.Report
             var request = new List<OrdersViewModel>();
             try
             {
-                var getCustomerOrders = await _context.TransactionLog.ToListAsync();
+                var getCustomerOrders = await _context.TransactionLog.Where(x=> x.ActivityStatus == TransactionJourneyStatusCodes.TransactionCompleted).ToListAsync();
                 if (getCustomerOrders == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                if (category == MerchantPaymentLinkCategory.InvoiceLink)
-                {
-                    var invoiceResponse = (from c in getCustomerOrders
-                                           join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
-                                           select new OrdersViewModel
-                                           {
-                                               MerchantAmount = m.UnitPrice,
-                                               TotalAmount = c.TotalAmount
-
-                                           })
-                               .OrderByDescending(x => x.CustomerTransactionId).ToList();
-
-                    request = invoiceResponse;
-
-                    _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{" - "}{category}{ " - "}{ request.Count}{ " - "}{DateTime.Now}");
-
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Count() };
-                }
-
-                var otherLinksresponse = (from c in getCustomerOrders
-                                          join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
-                                          join a in _context.MerchantBusinessInfo on m.ClientAuthenticationId equals a.ClientAuthenticationId
-                                          join b in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals b.PaymentReference
-                                          select new OrdersViewModel
-                                          {
-                                              TotalAmount = c.TotalAmount,
-                                              MerchantAmount = m.MerchantAmount,
-                                          })
-                                .OrderByDescending(x => x.CustomerTransactionId).ToList();
-
-                request = otherLinksresponse;
-
-                // _log4net.Info("Response for GetCustomerOrders" + " - " + category + " - " + request.Count + " - " + DateTime.Now);
-
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Count() };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getCustomerOrders.Count() };
 
             }
             catch (Exception ex)
@@ -1063,45 +1029,46 @@ namespace SocialPay.Core.Services.Report
             var request = new List<OrdersViewModel>();
             try
             {
-                var getCustomerOrders = await _context.TransactionLog.ToListAsync();
+                var getCustomerOrders = await _context.TransactionLog.Where(x => x.ActivityStatus == TransactionJourneyStatusCodes.TransactionCompleted).ToListAsync();
+
                 if (getCustomerOrders == null)
                     return new WebApiResponse { ResponseCode = AppResponseCodes.RecordNotFound };
 
-                if (category == MerchantPaymentLinkCategory.InvoiceLink)
-                {
-                    var invoiceResponse = (from c in getCustomerOrders
-                                           join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
-                                           select new OrdersViewModel
-                                           {
-                                               MerchantAmount = m.UnitPrice,
-                                               TotalAmount = c.TotalAmount
+                ////if (category == MerchantPaymentLinkCategory.InvoiceLink)
+                ////{
+                ////    var invoiceResponse = (from c in getCustomerOrders
+                ////                           join m in _context.InvoicePaymentLink on c.TransactionReference equals m.TransactionReference
+                ////                           select new OrdersViewModel
+                ////                           {
+                ////                               MerchantAmount = m.UnitPrice,
+                ////                               TotalAmount = c.TotalAmount
 
-                                           })
-                               .OrderByDescending(x => x.CustomerTransactionId).ToList();
+                ////                           })
+                ////               .OrderByDescending(x => x.CustomerTransactionId).ToList();
 
-                    request = invoiceResponse;
+                ////    request = invoiceResponse;
 
-                    _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{ request.Count}{ " - "}{ DateTime.Now}");
+                ////    _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{ request.Count}{ " - "}{ DateTime.Now}");
 
-                    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Sum(x => x.TotalAmount) };
-                }
+                ////    return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Sum(x => x.TotalAmount) };
+                ////}
 
-                var otherLinksresponse = (from c in getCustomerOrders
-                                          join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
-                                          join a in _context.MerchantBusinessInfo on m.ClientAuthenticationId equals a.ClientAuthenticationId
-                                          join b in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals b.PaymentReference
-                                          select new OrdersViewModel
-                                          {
-                                              TotalAmount = c.TotalAmount,
-                                              MerchantAmount = m.MerchantAmount,
-                                          })
-                                .OrderByDescending(x => x.CustomerTransactionId).ToList();
+                ////var otherLinksresponse = (from c in getCustomerOrders
+                ////                          join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
+                ////                          join a in _context.MerchantBusinessInfo on m.ClientAuthenticationId equals a.ClientAuthenticationId
+                ////                          join b in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals b.PaymentReference
+                ////                          select new OrdersViewModel
+                ////                          {
+                ////                              TotalAmount = c.TotalAmount,
+                ////                              MerchantAmount = m.MerchantAmount,
+                ////                          })
+                ////                .OrderByDescending(x => x.CustomerTransactionId).ToList();
 
-                request = otherLinksresponse;
+                ////request = otherLinksresponse;
 
-                _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{request.Count}{ " - "}{ DateTime.Now}");
+                _merchantLogger.LogRequest($"{"Response for GetCustomerOrders"}{ " - "}{ category}{ " - "}{getCustomerOrders.Count}{ " - "}{ DateTime.Now}");
 
-                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = request.Sum(x => x.TotalAmount) };
+                return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = getCustomerOrders.Sum(x => x.TotalAmount) };
 
             }
 
