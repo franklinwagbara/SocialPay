@@ -48,7 +48,7 @@ namespace SocialPay.Job.Repository.PayWithCard
         }
         public IServiceProvider Services { get; }
 
-        private async Task<bool> TransactionVerification(String interSwitchResponse, Decimal amount)
+        private async Task<string> TransactionVerification(String interSwitchResponse, Decimal amount)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                 if(reference == "")
                 {
                     _paywithcardjobLogger.LogRequest($"{"Transaction reference was empty " + interSwitchResponse}{"-"}{DateTime.Now}", false);
-                    return false;
+                    return "";
                 }
                 var path = _appSettings.InterswitchPath;
                 var payload = new
@@ -83,16 +83,16 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                 _paywithcardjobLogger.LogRequest($"{"response from verification of transaction from interswitch transaction ref" + " | " + interSwitchResponse + " | " + " |  request body" + request + " | response " + JsonConvert.SerializeObject(successfulResponse)}{DateTime.Now}", true);
 
-                if (successfulResponse.responseCode == "00") return true;
+                if (successfulResponse.responseCode == "00") return AppResponseCodes.Success;
 
-                return false;
+                return AppResponseCodes.TransactionFailed;
 
             }
             catch (Exception ex)
             {
                 _paywithcardjobLogger.LogRequest($"{"An error occured" + " | " + interSwitchResponse + " | " + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
-                return false;
+                return AppResponseCodes.InternalError;
             }
         }
 
@@ -118,8 +118,10 @@ namespace SocialPay.Job.Repository.PayWithCard
                         return null;
 
 
+                    var checkTransaction = await TransactionVerification(item.Message, item.TotalAmount);
+                    if (checkTransaction == AppResponseCodes.InternalError) return null;
 
-                    if (!await TransactionVerification(item.Message, item.TotalAmount))
+                    if (checkTransaction == AppResponseCodes.TransactionFailed)
                     {
 
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionNotVerified;
