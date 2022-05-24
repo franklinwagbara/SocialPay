@@ -58,8 +58,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                 //string[] transactionResponse = interSwitchResponse.Split("^");
                 //var transactionRef = transactionResponse[transactionResponse.Length - 1];
                 reference = RefNo(interSwitchResponse);
-
-                if(reference == "")
+                amount = amount + Convert.ToDecimal(107.50);
+                if (reference == "")
                 {
                     _paywithcardjobLogger.LogRequest($"{"Transaction reference was empty " + interSwitchResponse}{"-"}{DateTime.Now}", false);
                     return AppResponseCodes.TransactionFailed;
@@ -84,6 +84,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                 _paywithcardjobLogger.LogRequest($"{"response from verification of transaction from interswitch transaction ref" + " | " + interSwitchResponse + " | " + " |  request body" + request + " | response " + JsonConvert.SerializeObject(successfulResponse)}{DateTime.Now}", true);
 
                 if (successfulResponse.responseCode == "00") return AppResponseCodes.Success;
+                if (successfulResponse.responseCode == "Z25") return AppResponseCodes.TransactionFailed;
+
 
                 return AppResponseCodes.TransactionFailed;
 
@@ -126,7 +128,6 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionNotVerified;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -179,7 +180,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                         {
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                            getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
 
@@ -191,7 +191,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                       // getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
 
@@ -222,7 +222,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                     {
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
 
@@ -233,7 +232,6 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
                     getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                    getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
                     getTransInfo.LastDateModified = DateTime.Now;
                     context.Update(getTransInfo);
                     await context.SaveChangesAsync();
