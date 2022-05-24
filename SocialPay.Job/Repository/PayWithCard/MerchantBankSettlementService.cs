@@ -58,8 +58,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                 //string[] transactionResponse = interSwitchResponse.Split("^");
                 //var transactionRef = transactionResponse[transactionResponse.Length - 1];
                 reference = RefNo(interSwitchResponse);
-
-                if(reference == "")
+                amount = amount + Convert.ToDecimal(107.50);
+                if (reference == "")
                 {
                     _paywithcardjobLogger.LogRequest($"{"Transaction reference was empty " + interSwitchResponse}{"-"}{DateTime.Now}", false);
                     return AppResponseCodes.TransactionFailed;
@@ -84,6 +84,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                 _paywithcardjobLogger.LogRequest($"{"response from verification of transaction from interswitch transaction ref" + " | " + interSwitchResponse + " | " + " |  request body" + request + " | response " + JsonConvert.SerializeObject(successfulResponse)}{DateTime.Now}", true);
 
                 if (successfulResponse.responseCode == "00") return AppResponseCodes.Success;
+                if (successfulResponse.responseCode == "Z25") return AppResponseCodes.TransactionFailed;
+
 
                 return AppResponseCodes.TransactionFailed;
 
