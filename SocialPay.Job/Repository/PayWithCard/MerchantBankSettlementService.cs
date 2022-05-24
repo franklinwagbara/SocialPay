@@ -128,7 +128,6 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionNotVerified;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
                         await context.SaveChangesAsync();
@@ -181,7 +180,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                         {
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                            getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
 
@@ -193,7 +191,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                       // getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
 
@@ -224,7 +222,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                     {
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
 
@@ -235,7 +232,6 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
                     getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                    getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
                     getTransInfo.LastDateModified = DateTime.Now;
                     context.Update(getTransInfo);
                     await context.SaveChangesAsync();
