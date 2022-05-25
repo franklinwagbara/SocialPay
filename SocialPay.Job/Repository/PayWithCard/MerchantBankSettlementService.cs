@@ -189,13 +189,13 @@ namespace SocialPay.Job.Repository.PayWithCard
                             return null;
                         }
 
-                        //getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
-                        //getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
+                        getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
                        // getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                        //getTransInfo.LastDateModified = DateTime.Now;
-                        //context.Update(getTransInfo);
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
 
-                        //await context.SaveChangesAsync();
+                        await context.SaveChangesAsync();
 
                         var failedTransaction = new FailedTransactions
                         {
@@ -216,7 +216,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                     var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
                             item.PaymentReference, item.TransactionReference);
-                    _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService PendingBankTransaction inter bank response" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
+                    _paywithcardjobLogger.LogRequest($"{"Job Service" + "- " + "MerchantBankSettlementService PendingBankTransaction inter bank response" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                     if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
                     {
@@ -230,11 +230,11 @@ namespace SocialPay.Job.Repository.PayWithCard
                         return null;
                     }
 
-                    //getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
-                    //getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                    //getTransInfo.LastDateModified = DateTime.Now;
-                    //context.Update(getTransInfo);
-                    //await context.SaveChangesAsync();
+                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
+                    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                    getTransInfo.LastDateModified = DateTime.Now;
+                    context.Update(getTransInfo);
+                    await context.SaveChangesAsync();
 
 
                     var failedResponse = new FailedTransactions
