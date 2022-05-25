@@ -46,6 +46,9 @@ namespace SocialPay.Job.Repository.PayWithCard
                         .Where(x => x.TransactionJourney ==
                         TransactionJourneyStatusCodes.Approved && x.PaymentChannel == PaymentChannel.Card).Take(5).ToListAsync();
 
+                    //var pendingTransactions = await context.TransactionLog
+                    //    .Where(x => x.TransactionLogId == 20108).Take(5).ToListAsync();
+
                     var getNonEscrowTransactions = pendingTransactions.Where(x => x.LinkCategory == MerchantPaymentLinkCategory.Basic
                      || x.LinkCategory == MerchantPaymentLinkCategory.OneOffBasicLink).ToList();
 
