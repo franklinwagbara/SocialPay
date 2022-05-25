@@ -36,7 +36,7 @@ namespace SocialPay.Job.Repository.Fiorano
            string transactionRef, string creditAccountNo, string channel,
            string message, string paymentReference)
         {
-            _fioranoLogger.LogRequest($"{"Job Service" + "-" + "Inititiate Merchant Credit fiorano request" + " | " + transactionRef + " | " + paymentReference + " | " + creditAccountNo + " | " + debitAmount + " | "}{DateTime.Now}", false);
+            _fioranoLogger.LogRequest($"{"Job Service" + "- " + "Inititiate Merchant Credit fiorano request" + " | " + transactionRef + " | " + paymentReference + " | " + creditAccountNo + " | " + debitAmount + " | "}{DateTime.Now}", false);
 
             try
             {
