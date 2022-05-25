@@ -141,10 +141,10 @@ namespace SocialPay.Job.Repository.PayWithCard
 
 
 
-                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.Pending;
-                    getTransInfo.LastDateModified = DateTime.Now;
-                    context.Update(getTransInfo);
-                    await context.SaveChangesAsync();
+                    //getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.Pending;
+                    //getTransInfo.LastDateModified = DateTime.Now;
+                    //context.Update(getTransInfo);
+                    //await context.SaveChangesAsync();
 
                     transactionLogid = getTransInfo.TransactionLogId;
 
@@ -189,13 +189,13 @@ namespace SocialPay.Job.Repository.PayWithCard
                             return null;
                         }
 
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
-                        getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                        //getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
+                        //getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
                        // getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
+                        //getTransInfo.LastDateModified = DateTime.Now;
+                        //context.Update(getTransInfo);
 
-                        await context.SaveChangesAsync();
+                        //await context.SaveChangesAsync();
 
                         var failedTransaction = new FailedTransactions
                         {
@@ -230,11 +230,11 @@ namespace SocialPay.Job.Repository.PayWithCard
                         return null;
                     }
 
-                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
-                    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                    getTransInfo.LastDateModified = DateTime.Now;
-                    context.Update(getTransInfo);
-                    await context.SaveChangesAsync();
+                    //getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
+                    //getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                    //getTransInfo.LastDateModified = DateTime.Now;
+                    //context.Update(getTransInfo);
+                    //await context.SaveChangesAsync();
 
 
                     var failedResponse = new FailedTransactions
