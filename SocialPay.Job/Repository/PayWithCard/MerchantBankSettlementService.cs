@@ -113,8 +113,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                     _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                     var getTransInfo = await context.TransactionLog
-                        .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
-                        //&& x.TransactionJourney == TransactionJourneyStatusCodes.Approved);
+                        .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                        && x.TransactionJourney == TransactionJourneyStatusCodes.Approved);
 
                     if (getTransInfo == null)
                         return null;
