@@ -58,14 +58,13 @@ namespace SocialPay.Job.Repository.PayWithCard
                 //string[] transactionResponse = interSwitchResponse.Split("^");
                 //var transactionRef = transactionResponse[transactionResponse.Length - 1];
                 reference = RefNo(interSwitchResponse);
-
-                if(reference == "")
+                amount = amount + Convert.ToDecimal(107.50);
+                if (reference == "")
                 {
                     _paywithcardjobLogger.LogRequest($"{"Transaction reference was empty " + interSwitchResponse}{"-"}{DateTime.Now}", false);
                     return AppResponseCodes.TransactionFailed;
                 }
                 var path = _appSettings.InterswitchPath;
-                amount = amount + Convert.ToDecimal(107.50);
                 var payload = new
                 {
                     transactionReference = reference,
@@ -85,6 +84,8 @@ namespace SocialPay.Job.Repository.PayWithCard
                 _paywithcardjobLogger.LogRequest($"{"response from verification of transaction from interswitch transaction ref" + " | " + interSwitchResponse + " | " + " |  request body" + request + " | response " + JsonConvert.SerializeObject(successfulResponse)}{DateTime.Now}", true);
 
                 if (successfulResponse.responseCode == "00") return AppResponseCodes.Success;
+                if (successfulResponse.responseCode == "Z25") return AppResponseCodes.TransactionFailed;
+
 
                 return AppResponseCodes.TransactionFailed;
 
@@ -112,28 +113,27 @@ namespace SocialPay.Job.Repository.PayWithCard
                     _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                     var getTransInfo = await context.TransactionLog
-                        .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
-                        //&& x.TransactionJourney == TransactionJourneyStatusCodes.Approved);
+                        .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
+                        && x.TransactionJourney == TransactionJourneyStatusCodes.Approved);
 
                     if (getTransInfo == null)
                         return null;
 
 
-                    //var checkTransaction = await TransactionVerification(item.Message, item.TotalAmount);
-                    //if (checkTransaction == AppResponseCodes.InternalError) return null;
+                    var checkTransaction = await TransactionVerification(item.Message, item.TotalAmount);
+                    if (checkTransaction == AppResponseCodes.InternalError) return null;
 
-                    //if (checkTransaction == AppResponseCodes.TransactionFailed)
-                    //{
+                    if (checkTransaction == AppResponseCodes.TransactionFailed)
+                    {
 
-                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionNotVerified;
-                    //    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
-                    //    getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
-                    //    getTransInfo.LastDateModified = DateTime.Now;
-                    //    context.Update(getTransInfo);
-                    //    await context.SaveChangesAsync();
-                    //    return null;
-                    //}
-                    //if (checkTransaction != AppResponseCodes.Success) return null;
+                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionNotVerified;
+                        getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
+                        getTransInfo.LastDateModified = DateTime.Now;
+                        context.Update(getTransInfo);
+                        await context.SaveChangesAsync();
+                        return null;
+                    }
+                    if (checkTransaction != AppResponseCodes.Success) return null;
 
                     //var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
 
@@ -141,10 +141,10 @@ namespace SocialPay.Job.Repository.PayWithCard
 
 
 
-                    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.Pending;
-                    getTransInfo.LastDateModified = DateTime.Now;
-                    context.Update(getTransInfo);
-                    await context.SaveChangesAsync();
+                    //getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.Pending;
+                    //getTransInfo.LastDateModified = DateTime.Now;
+                    //context.Update(getTransInfo);
+                    //await context.SaveChangesAsync();
 
                     transactionLogid = getTransInfo.TransactionLogId;
 
@@ -180,7 +180,6 @@ namespace SocialPay.Job.Repository.PayWithCard
                         {
                             getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                            getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                             getTransInfo.LastDateModified = DateTime.Now;
                             context.Update(getTransInfo);
 
@@ -192,7 +191,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
+                       // getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
 
@@ -217,13 +216,12 @@ namespace SocialPay.Job.Repository.PayWithCard
                     var initiateInterBankRequest = await _interBankPendingTransferService.ProcessInterBankTransactions(getBankInfo.Nuban, item.TotalAmount,
                             getBankInfo.BankCode, _appSettings.socialT24AccountNo, item.ClientAuthenticationId,
                             item.PaymentReference, item.TransactionReference);
-                    _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService PendingBankTransaction inter bank response" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
+                    _paywithcardjobLogger.LogRequest($"{"Job Service" + "- " + "MerchantBankSettlementService PendingBankTransaction inter bank response" + " | " + initiateInterBankRequest.ResponseCode + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                     if (initiateInterBankRequest.ResponseCode == AppResponseCodes.Success)
                     {
                         getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionCompleted;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionCompleted;
                         getTransInfo.LastDateModified = DateTime.Now;
                         context.Update(getTransInfo);
 
@@ -234,7 +232,6 @@ namespace SocialPay.Job.Repository.PayWithCard
 
                     getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionFailed;
                     getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionFailed;
-                    getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionFailed;
                     getTransInfo.LastDateModified = DateTime.Now;
                     context.Update(getTransInfo);
                     await context.SaveChangesAsync();

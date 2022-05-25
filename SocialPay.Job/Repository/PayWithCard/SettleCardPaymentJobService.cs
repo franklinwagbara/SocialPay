@@ -33,7 +33,7 @@ namespace SocialPay.Job.Repository.PayWithCard
 
         public async Task<string> ProcessSettlement()
         {
-            _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "Process merchant settlement task" + " | "}{DateTime.Now}", false);
+            _paywithcardjobLogger.LogRequest($"{"Job Service " + "-" + "Process merchant settlement task" + " | "}{DateTime.Now}", false);
             try
             {
 
