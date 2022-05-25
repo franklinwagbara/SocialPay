@@ -56,7 +56,7 @@ namespace SocialPay.Job.Repository.Fiorano
                         DebitAcctNo = _appSettings.socialT24AccountNo,
                         TransactionBranch = "NG0020006",
                         narrations = narration,
-                        DebitAmount = debitAmount,
+                        DebitAmount = "10",//debitAmount,
                         CreditAccountNo = creditAccountNo,
                     };
 
