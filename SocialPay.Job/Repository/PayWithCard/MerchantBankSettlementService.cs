@@ -65,6 +65,7 @@ namespace SocialPay.Job.Repository.PayWithCard
                     return AppResponseCodes.TransactionFailed;
                 }
                 var path = _appSettings.InterswitchPath;
+                amount = amount + Convert.ToDecimal(107.50);
                 var payload = new
                 {
                     transactionReference = reference,
@@ -111,28 +112,28 @@ namespace SocialPay.Job.Repository.PayWithCard
                     _paywithcardjobLogger.LogRequest($"{"Job Service" + "-" + "MerchantBankSettlementService Pending Bank Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                     var getTransInfo = await context.TransactionLog
-                        .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId
-                        && x.TransactionJourney == TransactionJourneyStatusCodes.Approved);
+                        .SingleOrDefaultAsync(x => x.TransactionLogId == item.TransactionLogId);
+                        //&& x.TransactionJourney == TransactionJourneyStatusCodes.Approved);
 
                     if (getTransInfo == null)
                         return null;
 
 
-                    var checkTransaction = await TransactionVerification(item.Message, item.TotalAmount);
-                    if (checkTransaction == AppResponseCodes.InternalError) return null;
+                    //var checkTransaction = await TransactionVerification(item.Message, item.TotalAmount);
+                    //if (checkTransaction == AppResponseCodes.InternalError) return null;
 
-                    if (checkTransaction == AppResponseCodes.TransactionFailed)
-                    {
+                    //if (checkTransaction == AppResponseCodes.TransactionFailed)
+                    //{
 
-                        getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionNotVerified;
-                        getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
-                        getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
-                        getTransInfo.LastDateModified = DateTime.Now;
-                        context.Update(getTransInfo);
-                        await context.SaveChangesAsync();
-                        return null;
-                    }
-                    if (checkTransaction != AppResponseCodes.Success) return null;
+                    //    getTransInfo.TransactionJourney = TransactionJourneyStatusCodes.TransactionNotVerified;
+                    //    getTransInfo.ActivityStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
+                    //    getTransInfo.TransactionStatus = TransactionJourneyStatusCodes.TransactionNotVerified;
+                    //    getTransInfo.LastDateModified = DateTime.Now;
+                    //    context.Update(getTransInfo);
+                    //    await context.SaveChangesAsync();
+                    //    return null;
+                    //}
+                    //if (checkTransaction != AppResponseCodes.Success) return null;
 
                     //var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
 

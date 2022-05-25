@@ -65,30 +65,30 @@ namespace SocialPay.Job.Repository.Fiorano
 
                     var jsonRequest = JsonConvert.SerializeObject(request);
 
-                    var logRequest = new NonEscrowFioranoT24Request
-                    {
-                        SessionId = fioranoRequestBody.SessionId,
-                        CommissionCode = fioranoRequestBody.CommissionCode,
-                        CreditAccountNo = fioranoRequestBody.CreditAccountNo,
-                        CreditCurrency = _appSettings.fioranoCreditCurrency,
-                        DebitCurrency = _appSettings.fioranoDebitCurrency,
-                        JsonRequest = jsonRequest,
-                        TransactionBranch = "NG0020006",
-                        DebitAcctNo = fioranoRequestBody.DebitAcctNo,
-                        TransactionReference = transactionRef,
-                        DebitAmount = Convert.ToDecimal(fioranoRequestBody.DebitAmount),
-                        narrations = narration,
-                        TransactionType = _appSettings.fioranoTransactionType,
-                        TrxnLocation = _appSettings.fioranoTrxnLocation,
-                        VtellerAppID = _appSettings.fioranoVtellerAppID,
-                        Channel = channel,
-                        Message = message,
-                        PaymentReference = paymentReference
-                    };
+                    //var logRequest = new NonEscrowFioranoT24Request
+                    //{
+                    //    SessionId = fioranoRequestBody.SessionId,
+                    //    CommissionCode = fioranoRequestBody.CommissionCode,
+                    //    CreditAccountNo = fioranoRequestBody.CreditAccountNo,
+                    //    CreditCurrency = _appSettings.fioranoCreditCurrency,
+                    //    DebitCurrency = _appSettings.fioranoDebitCurrency,
+                    //    JsonRequest = jsonRequest,
+                    //    TransactionBranch = "NG0020006",
+                    //    DebitAcctNo = fioranoRequestBody.DebitAcctNo,
+                    //    TransactionReference = transactionRef,
+                    //    DebitAmount = Convert.ToDecimal(fioranoRequestBody.DebitAmount),
+                    //    narrations = narration,
+                    //    TransactionType = _appSettings.fioranoTransactionType,
+                    //    TrxnLocation = _appSettings.fioranoTrxnLocation,
+                    //    VtellerAppID = _appSettings.fioranoVtellerAppID,
+                    //    Channel = channel,
+                    //    Message = message,
+                    //    PaymentReference = paymentReference
+                    //};
 
-                    await context.NonEscrowFioranoT24Request.AddAsync(logRequest);
+                    //await context.NonEscrowFioranoT24Request.AddAsync(logRequest);
 
-                    await context.SaveChangesAsync();
+                    //await context.SaveChangesAsync();
                     _fioranoLogger.LogRequest($"{"Job Service" + "-" + "InititiateMerchantCredit NonEscrowFioranoT24Request was successfully logged" + " | " + transactionRef + " | " + paymentReference + " | "}{DateTime.Now}", false);
 
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
@@ -96,7 +96,7 @@ namespace SocialPay.Job.Repository.Fiorano
 
                     var logFioranoResponse = new FioranoT24TransactionResponse
                     {
-                        PaymentReference = logRequest.PaymentReference,
+                        //PaymentReference = logRequest.PaymentReference,
                         Balance = postTransaction.FTResponse.Balance,
                         CHARGEAMT = postTransaction.FTResponse.CHARGEAMT,
                         COMMAMT = postTransaction.FTResponse.COMMAMT,
@@ -109,7 +109,7 @@ namespace SocialPay.Job.Repository.Fiorano
 
                     await context.FioranoT24TransactionResponse.AddAsync(logFioranoResponse);
 
-                    await context.SaveChangesAsync();
+                    //await context.SaveChangesAsync();
 
                     if (postTransaction.ResponseCode == AppResponseCodes.Success)
                     {
