@@ -10,6 +10,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.InterBankJob;
 using System;
 using System.Threading.Tasks;
 
@@ -22,16 +23,17 @@ namespace SocialPay.Job.Repository.InterBankService
         private readonly IBSReposerviceJob _iBSReposerviceJob;
         private readonly SqlRepository _sqlRepository;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayInterBankPendingTransferService));
-
+        private readonly InterBankJobLogger _interbankLogger;
         public DeliveryDayInterBankPendingTransferService(IServiceProvider service, IOptions<AppSettings> appSettings,
             BankServiceRepositoryJobService bankServiceRepositoryJobService,
-            IBSReposerviceJob iBSReposerviceJob, SqlRepository sqlRepository)
+            IBSReposerviceJob iBSReposerviceJob, SqlRepository sqlRepository, InterBankJobLogger interbankLogger)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _bankServiceRepositoryJobService = bankServiceRepositoryJobService;
             _iBSReposerviceJob = iBSReposerviceJob;
             _sqlRepository = sqlRepository;
+            _interbankLogger = interbankLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -40,7 +42,7 @@ namespace SocialPay.Job.Repository.InterBankService
             string desBankCode, string sourceAccount, long clientId, 
             string paymentReference, string transactionReference)
         {
-            _log4net.Info("Job Service: ProcessInterBankTransactions" + " | " + paymentReference + " | " +  " | " + DateTime.Now);
+            _interbankLogger.LogRequest($"{"Job Service: ProcessInterBankTransactions" + " | " + paymentReference + " | "}{DateTime.Now}", false);
 
             try
             {
@@ -115,7 +117,7 @@ namespace SocialPay.Job.Repository.InterBankService
             }
             catch (Exception ex)
             {
-                _log4net.Error("An error occured. Base error" + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _interbankLogger.LogRequest($"{"An error occured. Base error" + " | " + paymentReference + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
@@ -133,8 +135,8 @@ namespace SocialPay.Job.Repository.InterBankService
                     //    context.Update(getTransInfo);
                     //    await context.SaveChangesAsync();
                     //}
+                    _interbankLogger.LogRequest($"{"An error occured. Duplicate transaction reference" + " | " + paymentReference + " | " + errorMessage + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
-                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + paymentReference + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction, Data = errorMessage };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

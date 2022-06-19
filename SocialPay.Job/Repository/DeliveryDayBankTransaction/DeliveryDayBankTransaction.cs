@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
+using SocialPay.Helper.SerilogService.BankTransactionJob;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,12 +12,13 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
     public class DeliveryDayBankTransaction : IDeliveryDayBankTransaction
     {
         private readonly DeliveryDayBankPendingTransaction _transactions;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayBankTransaction));
-
-        public DeliveryDayBankTransaction(DeliveryDayBankPendingTransaction transactions, IServiceProvider services)
+        //static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayBankTransaction));
+        private readonly BankTransactionJobLogger _banktransactionLogger;
+        public DeliveryDayBankTransaction(DeliveryDayBankPendingTransaction transactions, IServiceProvider services, BankTransactionJobLogger banktransactionLogger)
         {
             Services = services;
             _transactions = transactions;
+            _banktransactionLogger = banktransactionLogger;
         }
 
         public IServiceProvider Services { get; }
@@ -25,7 +27,7 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
         {
             try
             {
-                _log4net.Info("Job Service" + "-" + "DeliveryDayBankTransaction" + " | " + DateTime.Now);
+                _banktransactionLogger.LogRequest($"{"Job Service" + "-" + "DeliveryDayBankTransaction" + " | " }{DateTime.Now}", false);
 
                 using (var scope = Services.CreateScope())
                 {
@@ -38,7 +40,7 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
                   
                     var getEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Escrow
                     || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
-                    _log4net.Info("Job Service" + "-" + "DeliveryDayBankTransaction pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                    _banktransactionLogger.LogRequest($"{"Job Service" + "-" + "DeliveryDayBankTransaction pending transactions" + " | " + pendingTransactions.Count + " | "}{DateTime.Now}", false);
 
                     if (getEscrowTransactions.Count == 0)
                         return "No record";
@@ -52,7 +54,7 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service: DeliveryDayBankTransaction" + "-" + "Error occured" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _banktransactionLogger.LogRequest($"{"Job Service: DeliveryDayBankTransaction" + "-" + "Error occured" + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
                 return "Error";
             }
 

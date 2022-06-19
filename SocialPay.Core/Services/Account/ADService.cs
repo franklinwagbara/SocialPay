@@ -8,6 +8,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.Account;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Linq;
@@ -20,18 +21,19 @@ namespace SocialPay.Core.Services.Account
         private readonly SocialPayDbContext _context;
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(ADRepoService));
-
-        public ADRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings)
+        private readonly AccountLogger _accountLogger;
+        public ADRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings, AccountLogger accountLogger)
         {
             _context = context;
             _appSettings = appSettings.Value;
+            _accountLogger = accountLogger;
         }
 
         public async Task<WebApiResponse> RegisterUser(CreateUserRequestDto createUserRequestDto)
         {
             try
             {
-                _log4net.Info("RegisterUser" + " | " + createUserRequestDto.Username + " | " +  DateTime.Now);
+                _accountLogger.LogRequest($"{"RegisterUser"}{" | "}{createUserRequestDto.Username}{ " | "}{DateTime.Now}");
 
                 var aduserInfo = new ServiceSoapClient(ServiceSoapClient.EndpointConfiguration.ServiceSoap, _appSettings.EwsServiceUrl);
                 var banksLdap = new ldapSoapClient(ldapSoapClient.EndpointConfiguration.ldapSoap, _appSettings.LdapServiceUrl);
@@ -73,13 +75,13 @@ namespace SocialPay.Core.Services.Account
                 };
                 await _context.ClientAuthentication.AddAsync(model);
                 await _context.SaveChangesAsync();
-                _log4net.Info("RegisterUser was successful" + " | " + createUserRequestDto.Username + " | " + DateTime.Now);
+                _accountLogger.LogRequest($"{"RegisterUser was successful"}{" | "}{createUserRequestDto.Username}{" | "}{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = "Success" };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "RegisterUser" + " | " + createUserRequestDto.Username + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _accountLogger.LogRequest($"{"Error occured"}{ " | "}{"RegisterUser"}{ " | "}{ createUserRequestDto.Username}{" | "}{ ex.Message.ToString()}{ " | "}{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal error occured. Please try again", Data = "Internal error occured. Please try again" };
             }
@@ -94,7 +96,7 @@ namespace SocialPay.Core.Services.Account
                
                 if(!validateADUser)
                 {
-                    _log4net.Info("AD login failed" + " | " + username + " | " + DateTime.Now);
+                    _accountLogger.LogRequest($"{"AD login failed"}{ " | "}{username}{" | "}{ DateTime.Now}");
 
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin, Message = "Login failed on AD" };
                 }
@@ -103,7 +105,7 @@ namespace SocialPay.Core.Services.Account
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "while tryinh to login via AD" + " | " + username + " | " + ex + " | " + DateTime.Now);
+                _accountLogger.LogRequest($"{"Error occured"}{ " | "}{"while tryinh to login via AD"}{ " | "}{ username}{" | " }{ex}{" | "}{DateTime.Now}");
 
                 return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Internal server error. Please try again" };
             }

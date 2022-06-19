@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using SocialPay.Helper.SerilogService.Merchant;
 
 namespace SocialPay.Core.Services.Merchant.Services
 {
@@ -15,10 +16,11 @@ namespace SocialPay.Core.Services.Merchant.Services
     {
         private readonly SocialPayDbContext _context;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(MerchantsWithOutPaymentLinkService));
-
-        public MerchantsWithOutPaymentLinkService(SocialPayDbContext context)
+        private readonly MerchantsLogger _merchantLogger;
+        public MerchantsWithOutPaymentLinkService(SocialPayDbContext context, MerchantsLogger merchantLogger)
         {
             _context = context;
+            _merchantLogger = merchantLogger;
         }
         public async Task<WebApiResponse> MerchantsWithOutPaymentLink()
         {
@@ -37,19 +39,18 @@ namespace SocialPay.Core.Services.Merchant.Services
                                        ReferralCode = c.ReferralCode,
                                        RegisteredDate = c.DateEntered,
                                        LastDateModified = c.LastDateModified,
-                                   }).ToListAsync();
+                                   }).OrderByDescending(x=> x.RegisteredDate).ToListAsync();
 
                 if (query.Count == 0)
                 {
-                    _log4net.Info("No Record Found" + " | " + "Merchants WithOut Payment Link");
+                    _merchantLogger.LogRequest($"{"No Record Found"}{" | "}{"Merchants WithOut Payment Link"}");
                     return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Message = "No Recond Found", Data = query, StatusCode = ResponseCodes.RecordNotFound };
                 }
-                _log4net.Info("Successful" + " | " + "Merchants WithOut Payment Link");
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Message = "Success", Data = query, StatusCode = ResponseCodes.Success };
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured " + ex + " | " + "Merchants WithOut Payment Link");
+                _merchantLogger.LogRequest($"{"Error occured "}{ex}{" | "}{ "Merchants WithOut Payment Link"}");
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Failed, Data = null, Message = "Internal error occured", StatusCode = ResponseCodes.InternalError };
 
             }

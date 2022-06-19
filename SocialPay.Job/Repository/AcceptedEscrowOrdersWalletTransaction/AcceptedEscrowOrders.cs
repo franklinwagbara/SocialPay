@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
+using SocialPay.Helper.SerilogService.Escrow;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,11 +14,12 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
         private readonly AcceptedEscrowOrderTransactions _transactions;
 
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AcceptedEscrowOrders));
-
-        public AcceptedEscrowOrders(AcceptedEscrowOrderTransactions transactions, IServiceProvider services)
+        private readonly EscrowJobLogger _escrowLogger;
+        public AcceptedEscrowOrders(AcceptedEscrowOrderTransactions transactions, IServiceProvider services, EscrowJobLogger escrowLogger)
         {
             Services = services;
             _transactions = transactions;
+            _escrowLogger = escrowLogger;
         }
 
         public IServiceProvider Services { get; }
@@ -26,7 +28,8 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
         {
             try
             {
-                _log4net.Info("Job Service" + "-" + "AcceptedEscrowOrders" + " | " + DateTime.Now);
+                _escrowLogger.LogRequest($"{"Job Service" + "-" + "AcceptedEscrowOrders" + " | " }{DateTime.Now}", false);
+
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>(); 
@@ -38,8 +41,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
 
                     var getEscrowTransactions = pendingTransactions.Where(x => x.Category == MerchantPaymentLinkCategory.Escrow
                     || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
-                  
-                    _log4net.Info("Job Service" + "-" + "AcceptedEscrowOrders pending transactions" + " | " + getEscrowTransactions.Count + " | " + DateTime.Now);
+                    _escrowLogger.LogRequest($"{"Job Service" + "-" + "AcceptedEscrowOrders pending transactions" + " | " + getEscrowTransactions.Count + " | " }{DateTime.Now}", false);
                   
                     if (getEscrowTransactions.Count == 0)
                         return "No record";
@@ -54,7 +56,7 @@ namespace SocialPay.Job.Repository.AcceptedEscrowOrdersWalletTransaction
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service. AcceptedEscrowOrders: Error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _escrowLogger.LogRequest($"{"Job Service. AcceptedEscrowOrders: Error occured while fetching awaiting transactions" + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
                 return "Error";
             }
 

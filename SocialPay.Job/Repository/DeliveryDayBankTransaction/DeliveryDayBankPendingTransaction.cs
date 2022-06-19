@@ -7,6 +7,7 @@ using SocialPay.Domain;
 using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.BankTransactionJob;
 using SocialPay.Job.Repository.Fiorano;
 using SocialPay.Job.Repository.InterBankService;
 using System;
@@ -22,17 +23,19 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
         private readonly DeliveryDayFioranoTransferRepository _fioranoTransferRepository;
         private readonly DeliveryDayInterBankPendingTransferService _interBankPendingTransferService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayBankPendingTransaction));
+        private readonly BankTransactionJobLogger _banktransactionLogger;
 
         public DeliveryDayBankPendingTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
              DeliveryDayFioranoTransferRepository fioranoTransferRepository,
          DeliveryDayInterBankPendingTransferService interBankPendingTransferService,
-         BankServiceRepositoryJobService bankServiceRepositoryJobService)
+         BankServiceRepositoryJobService bankServiceRepositoryJobService, BankTransactionJobLogger banktransactionLogger)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _fioranoTransferRepository = fioranoTransferRepository;
             _interBankPendingTransferService = interBankPendingTransferService;
             _bankServiceRepositoryJobService = bankServiceRepositoryJobService;
+             _banktransactionLogger = banktransactionLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -47,8 +50,7 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
                     foreach (var item in pendingRequest)
                     {
-                        _log4net.Info("Job Service. Task starts to initiate DeliveryDayBankPendingTransaction" + " | " + item.PaymentReference + " | " +  " | " + DateTime.Now);
-
+                        _banktransactionLogger.LogRequest($"{"Job Service. Task starts to initiate DeliveryDayBankPendingTransaction" + " | " + item.PaymentReference + " | " + " | " }{DateTime.Now}", false);
 
                         var validateNuban = await _bankServiceRepositoryJobService.GetAccountFullInfoAsync(_appSettings.socialT24AccountNo, item.TotalAmount);
 
@@ -154,7 +156,7 @@ namespace SocialPay.Job.Repository.DeliveryDayBankTransaction
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service An error occured. Base error" + " | " + transactionLogId + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _banktransactionLogger.LogRequest($"{"Job Service An error occured. Base error" + " | " + transactionLogId + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 return null;
             }

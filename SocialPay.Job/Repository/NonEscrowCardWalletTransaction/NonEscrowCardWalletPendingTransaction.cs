@@ -9,6 +9,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.NonEscrowJob;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,13 +21,14 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
         private readonly AppSettings _appSettings;
         private readonly WalletRepoJobService _walletRepoJobService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(NonEscrowCardWalletPendingTransaction));
-
+        private readonly NonEscrowJobLogger _nonescrowLogger;
         public NonEscrowCardWalletPendingTransaction(IServiceProvider service, IOptions<AppSettings> appSettings,
-            WalletRepoJobService walletRepoJobService)
+            WalletRepoJobService walletRepoJobService, NonEscrowJobLogger nonescrowLogger)
         {
             Services = service;
             _appSettings = appSettings.Value;
             _walletRepoJobService = walletRepoJobService;
+            _nonescrowLogger = nonescrowLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -42,7 +44,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
 
                     foreach (var item in pendingRequest)
                     {
-                        _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                        _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction request" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                         var requestId = Guid.NewGuid().ToString();
                         var getTransInfo = await context.TransactionLog
@@ -64,7 +66,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
 
                         if (getWalletInfo == null)
                         {
-                            _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction wallet info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                            _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction wallet info is null" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                             return null;
                         }
@@ -101,7 +103,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
 
                         await context.SaveChangesAsync();
 
-                        _log4net.Info("Job Service" + "-" + "Saved default wallet details. Trying  to log wallet transfer" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                        _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Saved default wallet details. Trying  to log wallet transfer" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                         var initiateRequest = await _walletRepoJobService.WalletToWalletTransferAsync(walletModel);
 
@@ -132,13 +134,13 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
 
                                     await transaction.CommitAsync();
 
-                                    _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction successfully updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                                    _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction successfully updated" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | "}{DateTime.Now}", false);
 
                                     return null;
                                 }
                                 catch (Exception ex)
                                 {
-                                    _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                                    _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " }{DateTime.Now}", true);
 
                                     await transaction.RollbackAsync();
                                     return null;
@@ -146,7 +148,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                             }
                         }
 
-                        _log4net.Info("Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction Failed" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " + DateTime.Now);
+                        _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Non Escrow Card Wallet Pending Transaction Failed" + " | " + item.PaymentReference + " | " + item.TransactionReference + " | " }{DateTime.Now}", false);
 
 
                         var failedResponse = new FailedTransactions
@@ -164,7 +166,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _nonescrowLogger.LogRequest($"{"Job Service" + "-" + "Error occured" + " | " + transactionLogid + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
@@ -182,8 +184,7 @@ namespace SocialPay.Job.Repository.NonEscrowCardWalletTransaction
                     ////    context.Update(getTransInfo);
                     ////    await context.SaveChangesAsync();
                     ////}
-
-                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                    _nonescrowLogger.LogRequest($"{"An error occured. Duplicate transaction reference" + " | " + transactionLogid + " | " + errorMessage + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };

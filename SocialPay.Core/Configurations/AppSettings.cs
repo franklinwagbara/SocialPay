@@ -138,7 +138,6 @@
         public string createTenantUrl { get; set; }
         public string PayUClientId { get; set; }
         public string PayUClientSecret { get; set; }
-        public string SpectaRegistrationTenantId { get; set; }        
         public string OpenTimeout { get; set; }
         public string CloseTimeout { get; set; }
         public string ReceiveTimeout { get; set; }
@@ -152,6 +151,14 @@
         public string CreditBureauSearch_Crc { get; set; }
         public string TokenizationURL { get; set; }     
         public string WelcomeEmailImageExtensionPath { get; set; }     
-        public string WebportalBaseUrl { get; set; }     
+        public string WebportalBaseUrl { get; set; }
+        public string nibsQRCodeQueryAccountUrl { get; set; }
+        public string nibsQRCodeUpdatedCreateMerchantURL { get; set; }
+        public string nibsQRCodeBankNumber { get; set; }
+        public string MchQRCodeNumber { get; set; }
+        public string TenantId { get; set; }
+        public string InterswitchRequeryBaseURL { get; set; }
+        public string InterswitchPath { get; set; }
+
     }
 }

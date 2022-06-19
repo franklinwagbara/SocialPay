@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SocialPay.Domain;
 using SocialPay.Helper;
+using SocialPay.Helper.SerilogService.WalletJob;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +13,12 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
     {
         private readonly DeliveryDayTransferService _transactions;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(DeliveryDayMerchantTransfer));
-
-        public DeliveryDayMerchantTransfer(IServiceProvider services, DeliveryDayTransferService transactions)
+        private readonly WalletJobLogger _walletLogger;
+        public DeliveryDayMerchantTransfer(IServiceProvider services, DeliveryDayTransferService transactions, WalletJobLogger walletLogger)
         {
             Services = services;
             _transactions = transactions;
+            _walletLogger = walletLogger;
         }
         public IServiceProvider Services { get; }
 
@@ -24,8 +26,8 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
         {
             try
             {
-                _log4net.Info("Job Service" + "-" + "Tasks starts to process DeliveryDayMerchantTransfer transactions" + " | " + DateTime.Now);
-                
+                _walletLogger.LogRequest($"{"Job Service" + "-" + "Tasks starts to process DeliveryDayMerchantTransfer transactions" + " | " }{DateTime.Now}", false);
+
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<SocialPayDbContext>();
@@ -39,7 +41,8 @@ namespace SocialPay.Job.Repository.DeliveryDayMerchantWalletTransaction
                        == MerchantPaymentLinkCategory.Escrow
                    || x.Category == MerchantPaymentLinkCategory.OneOffEscrowLink).ToList();
 
-                    _log4net.Info("Total number of pending transactions" + " | " + pendingTransactions.Count + " | " + DateTime.Now);
+                    _walletLogger.LogRequest($"{"Total number of pending transactions" + " | " + pendingTransactions.Count + " | "}{DateTime.Now}", false);
+
                     if (getvalidRequest.Count == 0)
                         return "No record";
 

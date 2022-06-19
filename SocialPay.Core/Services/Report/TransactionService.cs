@@ -61,23 +61,23 @@ namespace SocialPay.Core.Services.Report
                 }
 
                 var otherLinksresponse = (from c in getCustomerOrders
-                                          join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
-                                          join a in _context.MerchantBusinessInfo on m.ClientAuthenticationId equals a.ClientAuthenticationId
-                                          join b in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals b.PaymentReference
+                                          //join m in _context.MerchantPaymentSetup on c.TransactionReference equals m.TransactionReference
+                                          //join a in _context.MerchantBusinessInfo on m.ClientAuthenticationId equals a.ClientAuthenticationId
+                                          //join b in _context.CustomerOtherPaymentsInfo on c.PaymentReference equals b.PaymentReference
                                           select new OrdersViewModel
                                           {
-                                              MerchantAmount = m.MerchantAmount,
+                                              MerchantAmount = _context.MerchantPaymentSetup.Where(x => x.ClientAuthenticationId == c.ClientAuthenticationId).Select(x => x.MerchantAmount).FirstOrDefault(),//m.MerchantAmount,
                                               DeliveryTime = c.DeliveryDate,
-                                              ShippingFee = m.ShippingFee,
-                                              TransactionReference = m.TransactionReference,
-                                              DeliveryMethod = m.DeliveryMethod,
-                                              MerchantDescription = m.MerchantDescription,
+                                              ShippingFee = _context.MerchantPaymentSetup.Where(x => x.ClientAuthenticationId == c.ClientAuthenticationId).Select(x => x.ShippingFee).FirstOrDefault(),//m.ShippingFee,
+                                              TransactionReference = _context.MerchantPaymentSetup.Where(x => x.ClientAuthenticationId == c.ClientAuthenticationId).Select(x => x.TransactionReference).FirstOrDefault(),//m.TransactionReference,
+                                              DeliveryMethod = _context.MerchantPaymentSetup.Where(x => x.ClientAuthenticationId == c.ClientAuthenticationId).Select(x => x.DeliveryMethod).FirstOrDefault(),//m.DeliveryMethod,
+                                              MerchantDescription = _context.MerchantPaymentSetup.Where(x => x.ClientAuthenticationId == c.ClientAuthenticationId).Select(x => x.MerchantDescription).FirstOrDefault(),//m.MerchantDescription,
                                               TotalAmount = c.TotalAmount,
-                                              PaymentCategory = m.PaymentCategory,
+                                              PaymentCategory = _context.MerchantPaymentSetup.Where(x => x.ClientAuthenticationId == c.ClientAuthenticationId).Select(x => x.PaymentCategory).FirstOrDefault(),//m.PaymentCategory,
                                               ClientId = c.ClientAuthenticationId,
                                               CustomerTransactionReference = c.CustomerTransactionReference,
-                                              MerchantName = a.BusinessName,
-                                              CustomerName = b.Fullname,
+                                              MerchantName = _context.MerchantBusinessInfo.Where(x => x.ClientAuthenticationId == c.ClientAuthenticationId).Select(x => x.BusinessName).FirstOrDefault(),//a.BusinessName,
+                                              CustomerName = _context.CustomerOtherPaymentsInfo.Where(x=>x.PaymentReference == c.PaymentReference).Select(x=>x.Fullname).FirstOrDefault(),//b.Fullname,
                                               PaymentReference = c.PaymentReference,
                                               TransactionStatus = c.TransactionJourney,
                                               TransactionDate = Convert.ToString(c.TransactionDate),

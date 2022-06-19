@@ -22,6 +22,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
@@ -39,6 +40,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ApiLogs\BillsPaymentLogs\" />
+    <Folder Include="ApiLogs\AccountLogs\" />
+    <Folder Include="ApiLogs\CustomerLogs\" />
+    <Folder Include="ApiLogs\FioranoT24Logs\" />
+    <Folder Include="ApiLogs\MerchantsLogs\" />
+    <Folder Include="ApiLogs\TransactionLogs\" />
     <Folder Include="wwwroot\CustomerDocuments\" />
   </ItemGroup>
 

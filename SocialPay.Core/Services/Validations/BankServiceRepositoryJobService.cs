@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using SocialPay.Core.Configurations;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
+using SocialPay.Helper.SerilogService.FioranoT24;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.Linq;
@@ -14,13 +15,15 @@ namespace SocialPay.Core.Services.Validations
     {
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(BankServiceRepositoryJobService));
-        public BankServiceRepositoryJobService(IOptions<AppSettings> appSettings)
+        private readonly FioranoT24Logger _fioranoT24Logger;
+        public BankServiceRepositoryJobService(IOptions<AppSettings> appSettings, FioranoT24Logger fioranoT24Logger)
         {
             _appSettings = appSettings.Value;
+            _fioranoT24Logger = fioranoT24Logger;
         }
         public async Task<string> LockAccountWithReasonAsync(LockAccountRequestDto model)
         {
-            _log4net.Info("Job Service" + "-" + "LockAccountWithReasonAsync" + " | " + model.acct + " | " + model.amt + " | " + model.eDate + " | " + model.reasonForLocking + " | " + model.sDate + " | " +  DateTime.Now);
+            _fioranoT24Logger.LogRequest($"{"Job Service"}{"-"}{"LockAccountWithReasonAsync"}{" | "}{model.acct}{ " | "}{model.amt}{" | "}{model.eDate}{" | "}{ model.reasonForLocking}{" | "}{model.sDate}{" | "}{DateTime.Now}");
 
             try
             {
@@ -32,15 +35,15 @@ namespace SocialPay.Core.Services.Validations
                 // var bankService = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, ServicesPoint.CoreBanking);
                 var result = getUserInfo.LockAmountWithReasonResult;
 
-                var response = result.Split("|")[1];               
+                var response = result.Split("|")[1];
 
-                _log4net.Info("Job Service" + "-" + "LockAccountWithReasonAsync response" + " | " + model.acct + " | " + model.amt + " | " + result + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Job Service"}{ "-"}{ "LockAccountWithReasonAsync response"}{ " | "}{model.acct}{" | "}{model.amt}{" | "}{ result}{ " | "}{ DateTime.Now}");
 
                 return response;
             }
             catch (Exception ex)
             {
-                _log4net.Error("Job Service" + "-" + "Error occured" + " | " + "BankServiceRepositoryJobService" + " | " + model.acct + " | " + model.amt + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Job Service"}{"-" + "Error occured"}{" | "}{"BankServiceRepositoryJobService"}{" | "}{model.acct}{" | "}{model.amt}{" | "}{ex.Message.ToString()}{" | "}{DateTime.Now}");
 
                 return "Error";
             }
@@ -52,14 +55,14 @@ namespace SocialPay.Core.Services.Validations
         {
             try
             {
-                _log4net.Info("Initiating GetAccountFullInfoAsync request" + " | " + amount + " | " + nuban + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Initiating GetAccountFullInfoAsync request"}{" | "}{amount}{" | "}{nuban}{" | "}{ DateTime.Now}");
 
                 var banks = new banksSoapClient(banksSoapClient.EndpointConfiguration.banksSoap, _appSettings.BankServiceUrl);
 
                 var getUserInfo = await banks.getAccountFullInfoAsync(nuban);
 
                 var validAccount = getUserInfo.Nodes[1];
-                _log4net.Info("Initiating GetAccountFullInfoAsync response" + " | " + amount + " | " + nuban + " | " + validAccount + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Initiating GetAccountFullInfoAsync response"}{" | " }{amount}{" | "}{nuban}{" | "}{validAccount}{" | "}{DateTime.Now}");
 
                 var accountDetail = validAccount.Descendants("BankAccountFullInfo")
 
@@ -79,7 +82,7 @@ namespace SocialPay.Core.Services.Validations
 
                 if (accountDetail == null)
                 {
-                    _log4net.Info("Invalid account" + " | " + amount + " | " + nuban + " | " + validAccount + " | " +  DateTime.Now);
+                    _fioranoT24Logger.LogRequest($"{"Invalid account"}{ " | "}{ amount}{" | "}{nuban}{" | "}{validAccount}{" | "}{DateTime.Now}");
 
                     return new AccountInfoViewModel
                     {
@@ -87,16 +90,16 @@ namespace SocialPay.Core.Services.Validations
                         NUBAN = nuban
                     };
                 }
-                    
+
 
                 decimal usableBalance = Convert.ToDecimal(accountDetail.UsableBal);
 
-                if (usableBalance < amount)
-                {
-                    _log4net.Info("Insufficient funds" + " | " + amount + " | " + nuban + " | " + validAccount + " | " + usableBalance + "-" + DateTime.Now);
+                //if (usableBalance < amount)
+                //{
+                //    _fioranoT24Logger.LogRequest($"{"Insufficient funds"}{" | "}{amount}{" | "}{nuban}{" | "}{validAccount}{" | "}{usableBalance}{"-"}{DateTime.Now}");
 
-                    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InsufficientFunds, NUBAN = nuban, UsableBal = accountDetail.UsableBal };
-                }
+                //    return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InsufficientFunds, NUBAN = nuban, UsableBal = accountDetail.UsableBal };
+                //}
 
                 accountDetail.ResponseCode = AppResponseCodes.Success;
 
@@ -104,7 +107,7 @@ namespace SocialPay.Core.Services.Validations
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "GetAccountFullInfoAsync" + " | " + amount + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _fioranoT24Logger.LogRequest($"{"Error occured"}{" | "}{"GetAccountFullInfoAsync"}{" | "}{amount}{" | "}{ex.Message.ToString()}{" | "}{DateTime.Now}",true);
 
                 return new AccountInfoViewModel { ResponseCode = AppResponseCodes.InternalError };
             }

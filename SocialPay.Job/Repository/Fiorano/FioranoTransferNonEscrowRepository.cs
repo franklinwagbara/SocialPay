@@ -8,6 +8,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.FioranoJob;
 using System;
 using System.Threading.Tasks;
 
@@ -18,13 +19,14 @@ namespace SocialPay.Job.Repository.Fiorano
         private readonly CreditDebitService _creditDebitService;
         private readonly AppSettings _appSettings;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(FioranoTransferNonEscrowRepository));
-
+        private readonly FioranoJobLogger _fioranoLogger;
         public FioranoTransferNonEscrowRepository(IOptions<AppSettings> appSettings, CreditDebitService creditDebitService,
-            IServiceProvider services)
+            IServiceProvider services, FioranoJobLogger fioranoLogger)
         {
             _appSettings = appSettings.Value;
             _creditDebitService = creditDebitService;
             Services = services;
+            _fioranoLogger = fioranoLogger;
         }
 
         public IServiceProvider Services { get; }
@@ -34,7 +36,7 @@ namespace SocialPay.Job.Repository.Fiorano
            string transactionRef, string creditAccountNo, string channel,
            string message, string paymentReference)
         {
-            _log4net.Info("Job Service" + "-" + "Inititiate Merchant Credit fiorano request" + " | " + transactionRef + " | " + paymentReference + " | " + creditAccountNo + " | "+ debitAmount + " | "+ DateTime.Now);
+            _fioranoLogger.LogRequest($"{"Job Service" + "- " + "Inititiate Merchant Credit fiorano request" + " | " + transactionRef + " | " + paymentReference + " | " + creditAccountNo + " | " + debitAmount + " | "}{DateTime.Now}", false);
 
             try
             {
@@ -87,12 +89,10 @@ namespace SocialPay.Job.Repository.Fiorano
                     await context.NonEscrowFioranoT24Request.AddAsync(logRequest);
 
                     await context.SaveChangesAsync();
-
-                    _log4net.Info("Job Service" + "-" + "InititiateMerchantCredit NonEscrowFioranoT24Request was successfully logged" + " | " + transactionRef + " | " + paymentReference + " | " +  DateTime.Now);
+                    _fioranoLogger.LogRequest($"{"Job Service" + "-" + "InititiateMerchantCredit NonEscrowFioranoT24Request was successfully logged" + " | " + transactionRef + " | " + paymentReference + " | "}{DateTime.Now}", false);
 
                     var postTransaction = await _creditDebitService.InitiateTransaction(jsonRequest);
-
-                    _log4net.Info("Job Service" + "-" + "InititiateMerchantCredit fiorano base response" + " | " + transactionRef + " | " + paymentReference + " | " + postTransaction.FTResponse + " | " + postTransaction.Message + " | " + DateTime.Now);
+                    _fioranoLogger.LogRequest($"{"Job Service" + "-" + "InititiateMerchantCredit fiorano base response" + " | " + transactionRef + " | " + paymentReference + " | " + postTransaction.FTResponse + " | " + postTransaction.Message + " | "}{DateTime.Now}", false);
 
                     var logFioranoResponse = new FioranoT24TransactionResponse
                     {
@@ -122,21 +122,21 @@ namespace SocialPay.Job.Repository.Fiorano
             }
             catch (SqlException db)
             {
-                _log4net.Error("An error occured. Db exception" + " | " + transactionRef + " | " + paymentReference + " | " + db.Message.ToString() + " | " + DateTime.Now);
+                _fioranoLogger.LogRequest($"{"An error occured. Db exception" + " | " + transactionRef + " | " + paymentReference + " | " + db.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = db.Message.ToString() };
             }
 
             catch (Exception ex)
             {
-                _log4net.Error("An error occured." + " | " + transactionRef + " | " + paymentReference + " | " + ex.Message.ToString() + " | " + DateTime.Now);
+                _fioranoLogger.LogRequest($"{"An error occured." + " | " + transactionRef + " | " + paymentReference + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
 
                 var se = ex.InnerException as SqlException;
                 var code = se.Number;
                 var errorMessage = se.Message;
                 if (errorMessage.Contains("Violation") || code == 2627)
                 {
-                    _log4net.Error("An error occured. Duplicate transaction reference" + " | " + transactionRef + " | " + paymentReference + " | "+ ex.Message.ToString() + " | " + DateTime.Now);
+                    _fioranoLogger.LogRequest($"{"An error occured. Duplicate transaction reference" + " | " + transactionRef + " | " + paymentReference + " | " + ex.Message.ToString() + " | "}{DateTime.Now}", true);
                     return new WebApiResponse { ResponseCode = AppResponseCodes.DuplicateTransaction, Data = errorMessage };
                 }
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError, Data = errorMessage };

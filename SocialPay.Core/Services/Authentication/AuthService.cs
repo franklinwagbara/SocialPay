@@ -15,6 +15,7 @@ using SocialPay.Domain.Entities;
 using SocialPay.Helper;
 using SocialPay.Helper.Dto.Request;
 using SocialPay.Helper.Dto.Response;
+using SocialPay.Helper.SerilogService.Account;
 using SocialPay.Helper.ViewModel;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -37,11 +38,11 @@ namespace SocialPay.Core.Services.Authentication
         private readonly IPersonalInfoService _personalInfoService;
         private readonly EventLogService _eventLogService;
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(AuthRepoService));
-
+        private readonly AccountLogger _accountLogger;
         public AuthRepoService(SocialPayDbContext context, IOptions<AppSettings> appSettings,
             Utilities utilities, ADRepoService aDRepoService, IDistributedCache distributedCache,
             WalletRepoService walletRepoService, UserRepoService userRepoService,
-            IPersonalInfoService personalInfoService, EventLogService eventLogService) : base(context)
+            IPersonalInfoService personalInfoService, EventLogService eventLogService, AccountLogger accountLogger) : base(context)
         {
             _context = context;
             _appSettings = appSettings.Value;
@@ -52,6 +53,7 @@ namespace SocialPay.Core.Services.Authentication
             _userRepoService = userRepoService;
             _personalInfoService = personalInfoService ?? throw new ArgumentNullException(nameof(personalInfoService));
             _eventLogService = eventLogService ?? throw new ArgumentNullException(nameof(eventLogService));
+            _accountLogger = accountLogger;
         }
 
         public async Task<ClientAuthentication> GetClientDetails(string email)
@@ -71,7 +73,7 @@ namespace SocialPay.Core.Services.Authentication
 
         public async Task<LoginAPIResponse> Authenticate(LoginRequestDto loginRequestDto)
         {
-            _log4net.Info("Authenticate" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
+            _accountLogger.LogRequest($"{"Authenticate" + " | "}{ loginRequestDto.Email}{" | " }{DateTime.Now }",false);
 
             try
             {
@@ -103,7 +105,19 @@ namespace SocialPay.Core.Services.Authentication
                     return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin, Message = "Invalid Logon" };
 
                 if (validateuserInfo.IsLocked == true)
-                    return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked, Message ="Account locked" };
+                {
+                    if((DateTime.Now - validateuserInfo.LastDateModified).Days >= 1)
+                    {
+                        //Unluck account
+                        validateuserInfo.IsLocked = false;
+                        validateuserInfo.LastDateModified = DateTime.Now;
+                        _context.ClientAuthentication.Update(validateuserInfo);
+                    }
+                    else
+                    {
+                        return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked, Message = "Account locked " };
+                    }
+                }
 
                 var refCode = validateuserInfo.ReferralCode;
 
@@ -144,7 +158,7 @@ namespace SocialPay.Core.Services.Authentication
 
                 if (validateuserInfo.RoleName == "Super Administrator")
                 {
-                    _log4net.Info("Authenticate for super admin" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
+                    _accountLogger.LogRequest($"{"Authenticate for super admin"}{" | "}{ loginRequestDto.Email}{" | "}{DateTime.Now}",false);
 
                     var validateUserAD = await _aDRepoService.ValidateUserAD(validateuserInfo.UserName, loginRequestDto.Password);
 
@@ -215,19 +229,20 @@ namespace SocialPay.Core.Services.Authentication
 
                                 await _context.SaveChangesAsync();
                                 await transaction.CommitAsync();
-                                _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
+                                _accountLogger.LogRequest($"{"Authenticate for login was successful"}{ " | "}{loginRequestDto.Email}{" | "}{DateTime.Now}", false);
 
                                 return new LoginAPIResponse { ResponseCode = AppResponseCodes.AccountIsLocked, Message = "Account Locked" };
                             }
 
                             await transaction.CommitAsync();
-                            _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
+                            _accountLogger.LogRequest($"{"Authenticate for login was successful"}{ " | " }{loginRequestDto.Email }{ " | " }{ DateTime.Now}",false);
 
                             return new LoginAPIResponse { ResponseCode = AppResponseCodes.InvalidLogin, Message = "Invalid Logon" };
                         }
                         catch (Exception ex)
                         {
-                            _log4net.Error("Error occured" + " | " + "Authenticate" + " | " + loginRequestDto.Email + " | " + ex + " | " + DateTime.Now);
+
+                            _accountLogger.LogRequest($"{"Error occured" }{ " | " }{ "Authenticate"}{ " | "}{ loginRequestDto.Email}{ " | "}{ ex.Message.ToString() }{ " | "}{ DateTime.Now}",true);
 
                             return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured while trying to login" };
                         }
@@ -296,7 +311,7 @@ namespace SocialPay.Core.Services.Authentication
                     tokenResult.Refcode = refCode;
                     tokenResult.QRStatus = validateuserInfo.MerchantQRCodeOnboarding.Count == 0 ? NibbsMerchantOnboarding.NotProfiled : validateuserInfo.MerchantQRCodeOnboarding.Select(x => x.Status).FirstOrDefault();
 
-                    _log4net.Info("Authenticate for login was successful" + " | " + loginRequestDto.Email + " | " + DateTime.Now);
+                    _accountLogger.LogRequest($"{"Authenticate for login was successful"}{" | "}{loginRequestDto.Email}{ " | "}{ DateTime.Now}");
 
                     return tokenResult;
                 }
@@ -380,7 +395,7 @@ namespace SocialPay.Core.Services.Authentication
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "Authenticate" + " | " + loginRequestDto.Email + " | " + ex + " | " + DateTime.Now);
+                _accountLogger.LogRequest($"{"Error occured"}{" | "}{"Authenticate"}{" | "}{loginRequestDto.Email}{" | "}{ex.Message.ToString()}{ " | "}{ DateTime.Now}");
 
                 return new LoginAPIResponse { ResponseCode = AppResponseCodes.InternalError, Message = "Error occured while trying to login" };
             }
@@ -407,7 +422,7 @@ namespace SocialPay.Core.Services.Authentication
 
         public async Task<WebApiResponse> CreateAccount(string email, string password, string fullname, string phoneNumber)
         {
-            _log4net.Info("CreateAccount" + " | " + email + " | " + phoneNumber + " | " + DateTime.Now);
+            _accountLogger.LogRequest($"{"CreateAccount"}{" | "}{ email}{" | "}{phoneNumber}{" | "}{ DateTime.Now}");
 
             try
             {
@@ -448,13 +463,13 @@ namespace SocialPay.Core.Services.Authentication
                         await _context.GuestAccountLog.AddAsync(logGuestAccess);
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
-                        _log4net.Info("CreateAccount was successful" + " | " + email + " | " + phoneNumber + " | " + DateTime.Now);
+                        _accountLogger.LogRequest($"{"CreateAccount was successful"}{"|" }{email}{" | " }{phoneNumber }{" | "}{DateTime.Now}");
 
                         return new WebApiResponse { ResponseCode = AppResponseCodes.Success, Data = model.ClientAuthenticationId };
                     }
                     catch (Exception ex)
                     {
-                        _log4net.Error("Error occured" + " | " + "CreateAccount" + " | " + email + " | " + phoneNumber + " | " + ex + " | " + DateTime.Now);
+                        _accountLogger.LogRequest($"{"Error occured" }{" | " }{"CreateAccount" }{" | "}{email }{" | " }{phoneNumber }{" | " }{ex.Message.ToString() }{" | "} {DateTime.Now}",true);
 
                         await transaction.RollbackAsync();
                         return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
@@ -466,7 +481,7 @@ namespace SocialPay.Core.Services.Authentication
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "CreateAccount" + " | " + email + " | " + phoneNumber + " | " + ex + " | " + DateTime.Now);
+                _accountLogger.LogRequest($"{ "Error occured"}{ " | "}{ "CreateAccount"}{ " | "}{ email}{ " | "}{ phoneNumber}{ " | "}{ ex.Message.ToString()}{ " | "}{ DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -474,7 +489,7 @@ namespace SocialPay.Core.Services.Authentication
 
         public async Task<WebApiResponse> ModifyUserAccount(UpdateUserRequestDto updateUserRequestDto)
         {
-            _log4net.Info("ModifyUserAccount request" + " | " + updateUserRequestDto.Email + " | " + DateTime.Now);
+            _accountLogger.LogRequest($"{"ModifyUserAccount request"}{ " | "}{ updateUserRequestDto.Email}{" | "}{DateTime.Now}");
 
             try
             {
@@ -493,7 +508,7 @@ namespace SocialPay.Core.Services.Authentication
             }
             catch (Exception ex)
             {
-                _log4net.Error("Error occured" + " | " + "ModifyUserAccount" + " | " + updateUserRequestDto.Email + " | " + ex + " | " + DateTime.Now);
+                _accountLogger.LogRequest($"{"Error occured"}{ " | "}{"ModifyUserAccount"}{" | "}{updateUserRequestDto.Email}{" | "}{ex.Message.ToString() }{" | "}{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }
@@ -501,7 +516,7 @@ namespace SocialPay.Core.Services.Authentication
 
         public async Task<WebApiResponse> UnlockUserAccount(UpdateUserRequestDto updateUserRequestDto, long clientId, string email)
         {
-            _log4net.Info("UnlockUserAccount request" + " | " + updateUserRequestDto.Email + " | " + DateTime.Now);
+            _accountLogger.LogRequest($"{"UnlockUserAccount request"}{" | "}{updateUserRequestDto.Email}{ " | "}{ DateTime.Now}");
 
             try
             {
@@ -533,13 +548,13 @@ namespace SocialPay.Core.Services.Authentication
 
                 await _eventLogService.ActivityRequestLog(eventLog);
 
-                _log4net.Info($"{"Account was successfully unblocked. - "}{updateUserRequestDto.Email} {" - "}{DateTime.Now}");
+                _accountLogger.LogRequest($"{"Account was successfully unblocked. - "}{updateUserRequestDto.Email} {" - "}{DateTime.Now}");
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.Success };
             }
             catch (Exception ex)
             {
-                _log4net.Error($"{"Error occured while trying to unblock user. - "}{updateUserRequestDto.Email} {" - "}{ex}{" - "}{DateTime.Now}");
+                _accountLogger.LogRequest($"{"Error occured while trying to unblock user. - "}{updateUserRequestDto.Email} {" - "}{ex.Message.ToString()}{" - "}{DateTime.Now}",true);
 
                 return new WebApiResponse { ResponseCode = AppResponseCodes.InternalError };
             }

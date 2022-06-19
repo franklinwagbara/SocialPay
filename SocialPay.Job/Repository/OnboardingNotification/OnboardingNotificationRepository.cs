@@ -43,7 +43,7 @@ namespace SocialPay.Job.Repository.OnboardingNotification
 
                     var emailModal = new EmailRequestDto
                     {
-                        Subject = "Complet Onboarding",
+                        Subject = "Complete Onboarding",
                         DestinationEmail = item.Email,
                         SourceEmail = _appSettings.senderEmailInfo
                     };
@@ -81,6 +81,10 @@ namespace SocialPay.Job.Repository.OnboardingNotification
                         notificationType = user.StatusCode
 
                     };
+
+                    user.LastDateModified = DateTime.Now;
+                    context.Update(user);
+                    await context.SaveChangesAsync();
 
                     await context.AddAsync(payloadOnboardingNotification);
                     await context.SaveChangesAsync();
